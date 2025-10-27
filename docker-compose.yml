@@ -1,0 +1,49 @@
+services:
+  web_api:
+    build: . # build the Docker image 
+    container_name: OrbisWebApi
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Local
+      - MSSQL_SA_PASSWORD=A&VeryComplex123Password
+    ports:
+      - "8080:8080"
+    depends_on:
+      - sql
+    networks:
+        - your-network
+  sql:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    container_name: sql_server2022
+    ports: # not actually needed, because the two services are on the same network.
+      - "1433:1433" 
+    user: root
+    environment:
+      - ACCEPT_EULA=y
+      - SA_PASSWORD=A&VeryComplex123Password
+    volumes:
+      - type: bind
+        source: ./schema.sql
+        target: /tmp/scripts/schema.sql
+      - type: bind
+        source: ./data.sql
+        target: /tmp/scripts/data.sql
+    command: >
+      /bin/bash -c "
+      /opt/mssql/bin/sqlservr &
+
+      until /opt/mssql-tools18/bin/sqlcmd -l 1 -S . -U sa -P 'A&VeryComplex123Password' -C -Q 'SELECT 1' &> /dev/null; do
+        >&2 echo '>>>>>>>>>> SQL Server is unavailable - sleeping <<<<<<<<<<';
+        sleep 5;
+      done;
+      echo '>>>>>>>>>> SQL Server is ready - executing init script <<<<<<<<<<';
+      /opt/mssql-tools18/bin/sqlcmd -l 5 -S . -U sa -P 'A&VeryComplex123Password' -C -d master -i "/tmp/scripts/schema.sql";
+      sleep 5;
+      /opt/mssql-tools18/bin/sqlcmd -l 5 -S . -U sa -P 'A&VeryComplex123Password' -C -d master -i "/tmp/scripts/data.sql";
+
+      sleep infinity;"
+    networks:
+        - your-network
+      
+networks:
+    your-network:
+        name: your-network

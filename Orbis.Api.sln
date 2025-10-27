@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31611.283
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orbis.Web.Api", "Orbis.Web.Api\Orbis.Web.Api.csproj", "{1C66DA9B-B27B-4EDD-A6D5-9F59967AFD73}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orbis.Core.Business", "Orbis.Core.Business\Orbis.Core.Business.csproj", "{93E15126-9CED-41C5-A433-3523C290AF93}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orbis.Core.Domain", "Orbis.Core.Domain\Orbis.Core.Domain.csproj", "{C6545C85-3847-4FDE-B2BD-0B278594CD59}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Orbis.Web.Api.Test", "Orbis.Web.Api.Test\Orbis.Web.Api.Test.csproj", "{14CF5949-7872-4CD4-958D-35DD171BF319}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Éléments de solution", "Éléments de solution", "{386C8A5E-3CF5-46B1-AC89-AD09142EA224}"
+	ProjectSection(SolutionItems) = preProject
+		data.sql = data.sql
+		docker-compose.yml = docker-compose.yml
+		dockerfile = dockerfile
+		ReadMe.md = ReadMe.md
+		schema.sql = schema.sql
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C66DA9B-B27B-4EDD-A6D5-9F59967AFD73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C66DA9B-B27B-4EDD-A6D5-9F59967AFD73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C66DA9B-B27B-4EDD-A6D5-9F59967AFD73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C66DA9B-B27B-4EDD-A6D5-9F59967AFD73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93E15126-9CED-41C5-A433-3523C290AF93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93E15126-9CED-41C5-A433-3523C290AF93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93E15126-9CED-41C5-A433-3523C290AF93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93E15126-9CED-41C5-A433-3523C290AF93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6545C85-3847-4FDE-B2BD-0B278594CD59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6545C85-3847-4FDE-B2BD-0B278594CD59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6545C85-3847-4FDE-B2BD-0B278594CD59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6545C85-3847-4FDE-B2BD-0B278594CD59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14CF5949-7872-4CD4-958D-35DD171BF319}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14CF5949-7872-4CD4-958D-35DD171BF319}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14CF5949-7872-4CD4-958D-35DD171BF319}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14CF5949-7872-4CD4-958D-35DD171BF319}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {61F7FB11-1E47-470C-91E2-47F8143E1572}
+	EndGlobalSection
+EndGlobal
