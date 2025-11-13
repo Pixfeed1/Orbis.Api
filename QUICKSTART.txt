@@ -1,0 +1,241 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║                                                                        ║
+║   🚀 RÉCUPÉRATION POSTGRESQL/ZAMMAD - DÉMARRAGE ULTRA-RAPIDE          ║
+║                                                                        ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+📦 FICHIERS INCLUS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ zammad_recovery_ultimate.sh    - Script principal (7 techniques)
+✅ analyze_recovered_files.sh     - Analyseur de résultats
+✅ quickstart.sh                   - Démarrage automatique
+📖 GUIDE_UTILISATION.md            - Guide complet détaillé
+📖 README_RECOVERY.md              - Vue d'ensemble et docs
+📄 QUICKSTART.txt                  - Ce fichier
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+⚡ OPTION 1: DÉMARRAGE AUTOMATIQUE (RECOMMANDÉ)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Copiez/collez ces 2 commandes:
+
+    cd /chemin/vers/scripts
+    sudo ./quickstart.sh
+
+Le script fera TOUT automatiquement:
+• Vérification des prérequis
+• Installation des outils manquants
+• Configuration du device loop
+• Récupération complète (90-180 min)
+• Analyse automatique des résultats
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+⚙️  OPTION 2: LANCEMENT MANUEL (CONTRÔLE TOTAL)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Étape 1: Préparation (5 min)
+────────────────────────────────────────────────────────────────────────
+
+    # Installer les outils
+    sudo apt update
+    sudo apt install -y e2fsprogs scalpel binwalk
+
+    # Monter l'image en loop
+    sudo losetup -fP /mnt/d/rescue/vps-sda1.img
+
+    # Vérifier le device assigné
+    losetup -a
+    # Devrait afficher: /dev/loop0: [...]
+
+
+Étape 2: Récupération (90-180 min)
+────────────────────────────────────────────────────────────────────────
+
+    # Lancer le script principal
+    sudo ./zammad_recovery_ultimate.sh /dev/loop0 /mnt/d/recovery_output
+
+    # Le script va exécuter 7 techniques de récupération:
+    # [1/7] DEBUGFS - Inodes supprimés
+    # [2/7] SCALPEL - Carving par signatures
+    # [3/7] BINWALK - Extraction archives
+    # [4/7] STRINGS - Recherche patterns
+    # [5/7] EXTRACTION MANUELLE - Offsets
+    # [6/7] FOCUS DOCKER - Volumes Zammad
+    # [7/7] DÉCOMPRESSION - Archives .gz
+
+
+Étape 3: Analyse (10-20 min)
+────────────────────────────────────────────────────────────────────────
+
+    # Consulter le rapport
+    cat /mnt/d/recovery_output/reports/RAPPORT_FINAL.txt
+
+    # Lancer l'analyse automatique
+    ./analyze_recovered_files.sh /mnt/d/recovery_output
+
+    # Vérifier les meilleurs candidats
+    ls -lh /mnt/d/recovery_output/BEST_CANDIDATES/
+
+
+Étape 4: Validation (5-10 min)
+────────────────────────────────────────────────────────────────────────
+
+    # Pour chaque fichier trouvé:
+    cd /mnt/d/recovery_output/BEST_CANDIDATES
+
+    # Examiner le contenu
+    head -100 fichier.sql
+    file fichier.sql
+
+    # Tester la restauration
+    sudo -u postgres psql -d test_db -f fichier.sql
+
+
+Étape 5: Nettoyage
+────────────────────────────────────────────────────────────────────────
+
+    # Démonter le device loop
+    sudo losetup -d /dev/loop0
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📋 VOTRE CONFIGURATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Image disque     : /mnt/d/rescue/vps-sda1.img
+Taille           : 158 GB (ext4)
+Sortie par défaut: /mnt/d/recovery_output
+
+Date suppression : 10 novembre 2025
+Date clone       : 12 novembre 2025
+Réinstallation   : 10 novembre soir (⚠️ écrasement partiel)
+
+Cibles:
+• Backups PostgreSQL (.sql, .psql, .psql.gz)
+• Base zammad_production
+• Volumes Docker zammad-docker-compose_*
+
+Estimation: 30-50% de récupération possible
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+⏱️  DURÉES ESTIMÉES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+DEBUGFS (inodes)         :  5-10 min
+SCALPEL (signatures)     : 30-60 min  ⏳ (le plus long)
+BINWALK (archives)       : 20-40 min
+STRINGS (patterns)       : 10-20 min
+EXTRACTION MANUELLE      : 15-30 min
+FOCUS DOCKER             :  5-10 min
+DÉCOMPRESSION            :  5-10 min
+
+TOTAL                    : 90-180 minutes
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📂 STRUCTURE DES RÉSULTATS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+recovery_output/
+├── BEST_CANDIDATES/         🎯 À VÉRIFIER EN PRIORITÉ
+│   └── [fichiers prometteurs avec score élevé]
+│
+├── 1_debugfs/
+│   └── recovered_inode_*    ← Fichiers récupérés par inode
+│
+├── 2_scalpel/
+│   └── output/sql-*/        ← Fichiers SQL trouvés par signature
+│
+├── 5_manual/
+│   └── fragment_*.raw       ← Fragments extraits des offsets
+│
+└── reports/
+    ├── RAPPORT_FINAL.txt    📋 Rapport complet
+    └── recovery.log         📝 Log détaillé
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+⚠️  AVANT DE COMMENCER - CHECKLIST
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+□ J'ai au moins 20-30 GB d'espace disque libre
+□ J'ai 2-3 heures devant moi (ne pas interrompre)
+□ L'image disque est accessible
+□ Je ne travaille PAS sur l'image originale (copie)
+□ Les scripts sont dans le même répertoire
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+🆘 DÉPANNAGE RAPIDE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Problème: "Permission denied"
+Solution: Utilisez sudo devant toutes les commandes
+
+Problème: "Device not found"
+Solution: sudo losetup -fP /mnt/d/rescue/vps-sda1.img
+
+Problème: "Command not found" (debugfs/scalpel/binwalk)
+Solution: sudo apt install -y e2fsprogs scalpel binwalk
+
+Problème: "No space left on device"
+Solution: Libérez de l'espace ou changez le répertoire de sortie
+
+Problème: Le script est très lent
+Réponse: C'est NORMAL ! Scalpel seul prend 30-60 min sur 158GB
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+💡 ASTUCES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+• Surveillez la progression:
+  tail -f /mnt/d/recovery_output/reports/recovery.log
+
+• Vérifiez l'espace disque pendant l'exécution:
+  watch -n 60 df -h /mnt/d
+
+• Recherchez vos données spécifiques:
+  grep -r "votre_mot_clé" /mnt/d/recovery_output/
+
+• Testez un fichier SQL rapidement:
+  head -50 fichier.sql | grep -i "create\|insert\|postgresql"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+📖 DOCUMENTATION COMPLÈTE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Pour plus de détails:
+
+• README_RECOVERY.md      - Vue d'ensemble et fonctionnalités
+• GUIDE_UTILISATION.md    - Instructions détaillées pas à pas
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+
+🚀 LANCEMENT EN UNE COMMANDE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    sudo ./quickstart.sh
+
+C'est tout ! Le reste est automatique. ✨
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Bonne récupération ! 🍀
+
+Kit créé le 13 novembre 2025 | Version Ultimate Edition
