@@ -371,12 +371,13 @@ class GCP_Admin_Clients {
 					<th><?php esc_html_e( 'Poids (kg)', 'gestionnaire-colis-pro' ); ?></th>
 					<th><?php esc_html_e( 'Frais de stockage', 'gestionnaire-colis-pro' ); ?></th>
 					<th><?php esc_html_e( 'Total', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Commande', 'gestionnaire-colis-pro' ); ?></th>
 					<th><?php esc_html_e( 'Statut', 'gestionnaire-colis-pro' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php if ( empty( $shipments ) ) : ?>
-					<tr><td colspan="7"><?php esc_html_e( 'Aucune expédition.', 'gestionnaire-colis-pro' ); ?></td></tr>
+					<tr><td colspan="8"><?php esc_html_e( 'Aucune expédition.', 'gestionnaire-colis-pro' ); ?></td></tr>
 				<?php else : ?>
 					<?php foreach ( $shipments as $shipment ) : ?>
 						<tr>
@@ -386,6 +387,23 @@ class GCP_Admin_Clients {
 							<td><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
 							<td><?php echo esc_html( GCP_Format::price( (float) $shipment->storage_fees ) ); ?></td>
 							<td><?php echo esc_html( GCP_Format::price( (float) $shipment->total_price ) ); ?></td>
+							<td>
+								<?php $order = ! empty( $shipment->order_id ) && function_exists( 'wc_get_order' ) ? wc_get_order( (int) $shipment->order_id ) : null; ?>
+								<?php if ( $order ) : ?>
+									<a href="<?php echo esc_url( $order->get_edit_order_url() ); ?>">
+										<?php
+										printf(
+											/* translators: %s: order number. */
+											esc_html__( 'n°%s', 'gestionnaire-colis-pro' ),
+											esc_html( $order->get_order_number() )
+										);
+										?>
+									</a>
+									(<?php echo esc_html( wc_get_order_status_name( $order->get_status() ) ); ?>)
+								<?php else : ?>
+									—
+								<?php endif; ?>
+							</td>
 							<td>
 								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="gcp-status-form">
 									<?php wp_nonce_field( 'gcp_set_shipment_status_' . (int) $shipment->id ); ?>

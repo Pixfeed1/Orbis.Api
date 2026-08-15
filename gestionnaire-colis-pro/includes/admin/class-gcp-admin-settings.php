@@ -143,6 +143,11 @@ class GCP_Admin_Settings {
 								<input type="checkbox" name="notify_admin_on_request" value="1" <?php checked( ! empty( $settings['notify_admin_on_request'] ) ); ?> />
 								<?php esc_html_e( 'Prévenir l’administrateur lors d’une demande d’expédition', 'gestionnaire-colis-pro' ); ?>
 							</label>
+							<br />
+							<label>
+								<input type="checkbox" name="send_invoice_on_request" value="1" <?php checked( ! empty( $settings['send_invoice_on_request'] ) ); ?> />
+								<?php esc_html_e( 'Envoyer la facture WooCommerce (avec lien de paiement) lors d’une demande d’expédition', 'gestionnaire-colis-pro' ); ?>
+							</label>
 						</td>
 					</tr>
 				</table>
@@ -213,6 +218,7 @@ class GCP_Admin_Settings {
 
 		$settings['notify_client_on_parcel'] = empty( $_POST['notify_client_on_parcel'] ) ? 0 : 1;
 		$settings['notify_admin_on_request'] = empty( $_POST['notify_admin_on_request'] ) ? 0 : 1;
+		$settings['send_invoice_on_request'] = empty( $_POST['send_invoice_on_request'] ) ? 0 : 1;
 
 		GCP_Settings::update( $settings );
 

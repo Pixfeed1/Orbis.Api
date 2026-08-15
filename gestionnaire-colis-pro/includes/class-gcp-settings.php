@@ -70,6 +70,7 @@ class GCP_Settings {
 			),
 			'notify_client_on_parcel' => 1,
 			'notify_admin_on_request' => 1,
+			'send_invoice_on_request' => 1,
 		);
 	}
 

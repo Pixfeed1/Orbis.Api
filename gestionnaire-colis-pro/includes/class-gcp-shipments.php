@@ -140,6 +140,16 @@ class GCP_Shipments {
 
 		GCP_Parcels::attach_to_shipment( $parcel_ids, $shipment_id );
 
+		// Native WooCommerce payment: the request becomes a real order and the
+		// shipment waits for its payment. Without WooCommerce, it stays
+		// "requested" and is handled manually.
+		if ( GCP_Orders::available() ) {
+			$order_result = GCP_Orders::create_for_shipment( self::get( $shipment_id ), $client );
+			if ( ! is_wp_error( $order_result ) ) {
+				self::set_status( $shipment_id, 'awaiting_payment' );
+			}
+		}
+
 		GCP_History::log(
 			(int) $client->id,
 			'shipment_requested',
@@ -285,6 +295,8 @@ class GCP_Shipments {
 				);
 			}
 		}
+
+		GCP_Orders::sync_from_shipment( $shipment, $status );
 
 		GCP_History::log(
 			(int) $shipment->client_id,

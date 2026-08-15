@@ -202,11 +202,15 @@ class GCP_Account {
 					<th><?php esc_html_e( 'Colis', 'gestionnaire-colis-pro' ); ?></th>
 					<th><?php esc_html_e( 'Poids (kg)', 'gestionnaire-colis-pro' ); ?></th>
 					<th><?php esc_html_e( 'Statut', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Paiement', 'gestionnaire-colis-pro' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php foreach ( $shipments as $shipment ) : ?>
-					<?php $refs = wp_list_pluck( GCP_Shipments::parcels( (int) $shipment->id ), 'reference' ); ?>
+					<?php
+					$refs  = wp_list_pluck( GCP_Shipments::parcels( (int) $shipment->id ), 'reference' );
+					$order = ! empty( $shipment->order_id ) && function_exists( 'wc_get_order' ) ? wc_get_order( (int) $shipment->order_id ) : null;
+					?>
 					<tr>
 						<td data-title="<?php esc_attr_e( 'Référence', 'gestionnaire-colis-pro' ); ?>"><strong><?php echo esc_html( $shipment->reference ); ?></strong></td>
 						<td data-title="<?php esc_attr_e( 'Demandée le', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Format::date( $shipment->requested_at ) ); ?></td>
@@ -214,6 +218,23 @@ class GCP_Account {
 						<td data-title="<?php esc_attr_e( 'Colis', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( implode( ', ', $refs ) ); ?></td>
 						<td data-title="<?php esc_attr_e( 'Poids (kg)', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
 						<td data-title="<?php esc_attr_e( 'Statut', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Shipments::status_label( $shipment->status ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Paiement', 'gestionnaire-colis-pro' ); ?>">
+							<?php if ( $order && $order->needs_payment() ) : ?>
+								<a class="woocommerce-button button pay" href="<?php echo esc_url( $order->get_checkout_payment_url() ); ?>"><?php esc_html_e( 'Payer', 'gestionnaire-colis-pro' ); ?></a>
+							<?php elseif ( $order ) : ?>
+								<a href="<?php echo esc_url( $order->get_view_order_url() ); ?>">
+									<?php
+									printf(
+										/* translators: %s: order number. */
+										esc_html__( 'Commande n°%s', 'gestionnaire-colis-pro' ),
+										esc_html( $order->get_order_number() )
+									);
+									?>
+								</a>
+							<?php else : ?>
+								—
+							<?php endif; ?>
+						</td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
@@ -367,6 +388,16 @@ class GCP_Account {
 		if ( is_wp_error( $result ) ) {
 			wp_safe_redirect( add_query_arg( 'gcp_error', rawurlencode( $result->get_error_message() ), $url ) );
 			exit;
+		}
+
+		// Send the customer straight to the native WooCommerce payment page.
+		$shipment = GCP_Shipments::get( (int) $result );
+		if ( $shipment && ! empty( $shipment->order_id ) && function_exists( 'wc_get_order' ) ) {
+			$order = wc_get_order( (int) $shipment->order_id );
+			if ( $order && $order->needs_payment() ) {
+				wp_safe_redirect( $order->get_checkout_payment_url() );
+				exit;
+			}
 		}
 
 		wp_safe_redirect( add_query_arg( 'gcp_requested', '1', $url ) );

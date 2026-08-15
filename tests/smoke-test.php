@@ -280,6 +280,47 @@ $visible_ids = array_map( 'intval', wp_list_pluck( GCP_Documents::for_client( $c
 gcp_check( 'La vue client exclut les documents internes', ! in_array( (int) $doc_admin_id, $visible_ids, true ) && in_array( (int) $doc_id, $visible_ids, true ) );
 
 // ---------------------------------------------------------------------------
+// Native WooCommerce order integration.
+// ---------------------------------------------------------------------------
+$wc_parcel1 = GCP_Parcels::create( array( 'client_id' => $client_id, 'weight' => 2.0, 'allow_grouping' => 1 ) );
+$wc_parcel2 = GCP_Parcels::create( array( 'client_id' => $client_id, 'weight' => 1.0, 'allow_grouping' => 1 ) );
+
+$wc_ship_id = GCP_Shipments::request( $client_id, array( $wc_parcel1 ), 'colissimo' );
+gcp_check( 'Expedition avec commande creee', is_int( $wc_ship_id ) );
+
+$wc_ship = GCP_Shipments::get( $wc_ship_id );
+gcp_check( 'Commande WooCommerce liee (order_id > 0)', (int) $wc_ship->order_id > 0 );
+gcp_check( 'Expedition en attente de paiement', 'awaiting_payment' === $wc_ship->status );
+gcp_check( 'Colis en attente de paiement', 'awaiting_payment' === GCP_Parcels::get( $wc_parcel1 )->status );
+
+$wc_order = wc_get_order( (int) $wc_ship->order_id );
+gcp_check( 'La commande existe et attend un paiement', $wc_order && $wc_order->needs_payment() );
+gcp_check( 'Meta _gcp_shipment_id sur la commande', (int) $wc_order->get_meta( '_gcp_shipment_id' ) === $wc_ship_id );
+gcp_check( 'Total commande = tarif colis + frais de stockage', (float) $wc_order->get_total() === (float) $wc_ship->total_price );
+gcp_check( 'Une ligne de frais par colis presente', 1 === count( $wc_order->get_fees() ) || 2 === count( $wc_order->get_fees() ) );
+gcp_check( 'Transporteur en ligne de livraison', 1 === count( $wc_order->get_shipping_methods() ) );
+
+// Payment through the native WooCommerce flow.
+$wc_order->payment_complete( 'TEST-TXN-1' );
+$wc_ship = GCP_Shipments::get( $wc_ship_id );
+gcp_check( 'Commande payee => expedition payee', 'paid' === $wc_ship->status );
+gcp_check( 'Commande payee => colis payes', 'paid' === GCP_Parcels::get( $wc_parcel1 )->status );
+
+// Shipping the parcels completes the order.
+GCP_Shipments::set_status( $wc_ship_id, 'shipped' );
+$wc_order = wc_get_order( (int) $wc_ship->order_id );
+gcp_check( 'Expedition expediee => commande terminee', $wc_order->has_status( 'completed' ) );
+
+// Cancelling an unpaid order puts the parcels back in stock.
+$wc_ship2_id = GCP_Shipments::request( $client_id, array( $wc_parcel2 ), 'colissimo' );
+$wc_ship2    = GCP_Shipments::get( $wc_ship2_id );
+$wc_order2   = wc_get_order( (int) $wc_ship2->order_id );
+$wc_order2->update_status( 'cancelled' );
+$wc_ship2 = GCP_Shipments::get( $wc_ship2_id );
+gcp_check( 'Commande annulee => expedition annulee', 'cancelled' === $wc_ship2->status );
+gcp_check( 'Commande annulee => colis de retour en stock', 'available' === GCP_Parcels::get( $wc_parcel2 )->status );
+
+// ---------------------------------------------------------------------------
 // Decimal comma normalization.
 // ---------------------------------------------------------------------------
 gcp_check( 'Poids "2,5" normalise en 2.5', 2.5 === GCP_Parcels::to_float( '2,5' ) );

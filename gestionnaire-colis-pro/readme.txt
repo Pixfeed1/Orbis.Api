@@ -4,7 +4,7 @@ Tags: woocommerce, colis, expedition, logistique, clients
 Requires at least: 6.2
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,10 @@ Gestionnaire Colis Pro fournit un système complet de gestion des clients et des
 = Côté client =
 
 Le client ne voit que les informations utiles (numéro de colis, date de réception, numéro de suivi, poids, statut, regroupement autorisé) dans son espace Mon compte WooCommerce : « Mes colis », « Mes expéditions », « Mes documents » et « Demande d'expédition ». Les commentaires internes et les dimensions ne sont jamais affichés au client.
+
+= Paiement natif WooCommerce =
+
+Chaque demande d'expédition crée une commande WooCommerce détaillée (une ligne par colis, frais de stockage, transporteur en ligne de livraison). Le client est redirigé vers la page de paiement standard WooCommerce et règle avec les moyens de paiement configurés dans la boutique. Les statuts restent synchronisés dans les deux sens : commande payée → expédition « payée » ; expédition « expédiée » → commande terminée ; commande annulée → colis remis en stock.
 
 = Extensible =
 
@@ -72,6 +76,11 @@ Par défaut, non. Ajoutez l'option `gcp_remove_data_on_uninstall` avec la valeur
 Oui. Les documents clients et les photos de réception sont stockés dans un répertoire protégé (accès direct refusé, noms de fichiers aléatoires) et servis uniquement via un point de téléchargement authentifié : un client ne peut télécharger que ses propres documents marqués « visibles », les photos sont réservées à l'administration.
 
 == Changelog ==
+
+= 1.2.0 =
+* Paiement natif WooCommerce : chaque demande d'expédition crée une commande WooCommerce (une ligne de frais par colis, frais de stockage, transporteur en ligne de livraison) ; le client est redirigé vers la page de paiement standard et un e-mail de facture WooCommerce (avec lien de paiement) peut être envoyé automatiquement.
+* Synchronisation bidirectionnelle des statuts : commande payée → expédition payée ; expédition expédiée → commande terminée ; commande annulée → expédition annulée et colis remis en stock.
+* Fiche client : la colonne « Commande » relie chaque expédition à sa commande WooCommerce ; l'espace client affiche un bouton « Payer » tant que la commande n'est pas réglée.
 
 = 1.1.0 =
 * Sécurité : les documents clients et les photos de réception sont désormais stockés dans un répertoire privé (.htaccess + noms aléatoires) et servis via un point de téléchargement authentifié avec contrôle de propriété (nonce + capacité). Types de fichiers restreints (images, PDF, Office).

@@ -3,7 +3,7 @@
  * Plugin Name:       Gestionnaire Colis Pro
  * Plugin URI:        https://github.com/pixfeed1/orbis.api
  * Description:       Gestion des clients et des colis pour une activité de réception, stockage, regroupement et expédition de colis. Intégré à WooCommerce.
- * Version:           1.1.0
+ * Version:           1.2.0
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Requires Plugins:  woocommerce
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-define( 'GCP_VERSION', '1.1.0' );
+define( 'GCP_VERSION', '1.2.0' );
 define( 'GCP_PLUGIN_FILE', __FILE__ );
 define( 'GCP_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GCP_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -38,6 +38,7 @@ require_once GCP_PLUGIN_DIR . 'includes/class-gcp-history.php';
 require_once GCP_PLUGIN_DIR . 'includes/class-gcp-clients.php';
 require_once GCP_PLUGIN_DIR . 'includes/class-gcp-parcels.php';
 require_once GCP_PLUGIN_DIR . 'includes/class-gcp-shipments.php';
+require_once GCP_PLUGIN_DIR . 'includes/class-gcp-orders.php';
 require_once GCP_PLUGIN_DIR . 'includes/class-gcp-documents.php';
 require_once GCP_PLUGIN_DIR . 'includes/class-gcp-emails.php';
 require_once GCP_PLUGIN_DIR . 'includes/class-gcp-ajax.php';
