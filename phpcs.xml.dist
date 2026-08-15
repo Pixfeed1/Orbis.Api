@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<ruleset name="Gestionnaire Colis Pro">
+	<description>Coding standards for the Gestionnaire Colis Pro plugin.</description>
+
+	<file>gestionnaire-colis-pro</file>
+
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/tests/*</exclude-pattern>
+
+	<arg value="sp"/>
+	<arg name="extensions" value="php"/>
+	<arg name="parallel" value="8"/>
+
+	<rule ref="WordPress">
+		<!-- Filenames follow the class-*.php convention used here. -->
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+	</rule>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="gestionnaire-colis-pro"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="gcp"/>
+				<element value="GCP"/>
+			</property>
+		</properties>
+		<!-- "gcp" is a deliberate 3-letter project prefix (like WooCommerce's
+		     own "wc"); everything is consistently namespaced with it. -->
+		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.ShortPrefixPassed"/>
+	</rule>
+
+	<rule ref="WordPress.WP.Capabilities">
+		<properties>
+			<property name="custom_capabilities" type="array">
+				<element value="gcp_manage"/>
+			</property>
+		</properties>
+	</rule>
+
+	<config name="minimum_wp_version" value="6.2"/>
+</ruleset>
