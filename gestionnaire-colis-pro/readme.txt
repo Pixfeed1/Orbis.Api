@@ -55,8 +55,8 @@ The architecture is built to grow: actions and filters (`gcp_parcel_created`, `g
 
 1. Upload the `gestionnaire-colis-pro` folder to `/wp-content/plugins/`, or install it from the Plugins screen.
 2. Activate the plugin. WooCommerce must be installed and active.
-3. Go to "Colis Pro → Réglages" to configure the pricing tiers, storage fees and carriers.
-4. Create a client record from "Colis Pro → Clients", then register parcels from "Colis Pro → Nouveau colis".
+3. Go to "Colis Pro → Settings" to configure the pricing tiers, storage fees and carriers.
+4. Create a client record from "Colis Pro → Clients", then register parcels from "Colis Pro → New parcel".
 
 == Frequently Asked Questions ==
 
@@ -70,7 +70,7 @@ Every parcel gets a free storage period (15 days by default). Beyond it, fees ar
 
 = Are documents private? =
 
-Yes. Client documents and reception photos are stored in a protected directory (direct access denied, randomized file names) and served only through an authenticated download endpoint: a customer can only download their own documents marked as visible; reception photos are restricted to the staff.
+Yes. Files never go through the public media library: they live in a protected directory and are only served after login, with ownership checks. A customer can only download their own documents; reception photos are restricted to the staff.
 
 = Is the plugin GDPR-ready? =
 
@@ -78,7 +78,7 @@ Yes. It registers a personal data exporter and eraser with the native WordPress 
 
 = Is any data removed on uninstall? =
 
-Not by default. Add the `gcp_remove_data_on_uninstall` option with the value `yes` to remove the tables, settings and private files when the plugin is deleted.
+Not by default: deleting the plugin keeps your clients, parcels and files safe. A site administrator can opt in to a full cleanup by setting the `gcp_remove_data_on_uninstall` option to `yes` before deleting the plugin, for example with WP-CLI: `wp option update gcp_remove_data_on_uninstall yes`.
 
 == Screenshots ==
 
@@ -123,5 +123,5 @@ Not by default. Add the `gcp_remove_data_on_uninstall` option with the value `ye
 
 == Upgrade Notice ==
 
-= 1.0.0 =
-Initial release.
+= 1.5.0 =
+Adds GDPR integration with the native WordPress privacy tools.
