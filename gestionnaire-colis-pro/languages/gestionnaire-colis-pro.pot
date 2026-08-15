@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Gestionnaire Colis Pro 1.4.0\n"
+"Project-Id-Version: Gestionnaire Colis Pro 1.5.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/gestionnaire-colis-pro\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-15T17:29:56+00:00\n"
+"POT-Creation-Date: 2026-08-15T17:41:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: gestionnaire-colis-pro\n"
@@ -17,6 +17,8 @@ msgstr ""
 #. Plugin Name of the plugin
 #: gestionnaire-colis-pro.php
 #: includes/admin/class-gcp-admin.php:46
+#: includes/class-gcp-privacy.php:40
+#: includes/class-gcp-privacy.php:55
 msgid "Gestionnaire Colis Pro"
 msgstr ""
 
@@ -94,6 +96,7 @@ msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:88
 #: includes/admin/class-gcp-admin-clients.php:368
+#: includes/class-gcp-privacy.php:149
 #: includes/frontend/class-gcp-account.php:234
 #: includes/frontend/class-gcp-account.php:251
 msgid "Reference"
@@ -111,6 +114,7 @@ msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:91
 #: includes/admin/class-gcp-admin-clients.php:229
+#: includes/class-gcp-privacy.php:102
 msgid "Phone"
 msgstr ""
 
@@ -121,6 +125,7 @@ msgid "Parcels in stock"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:93
+#: includes/class-gcp-privacy.php:106
 msgid "Created on"
 msgstr ""
 
@@ -191,6 +196,7 @@ msgid "History"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:216
+#: includes/class-gcp-privacy.php:98
 msgid "Client reference"
 msgstr ""
 
@@ -225,6 +231,7 @@ msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:289
 #: includes/admin/class-gcp-admin-parcels.php:69
+#: includes/class-gcp-privacy.php:135
 msgid "Received on"
 msgstr ""
 
@@ -238,6 +245,7 @@ msgstr ""
 #: includes/admin/class-gcp-admin-parcels.php:71
 #: includes/admin/class-gcp-admin-parcels.php:191
 #: includes/admin/class-gcp-admin.php:130
+#: includes/class-gcp-privacy.php:127
 #: includes/frontend/class-gcp-account.php:188
 #: includes/frontend/class-gcp-account.php:199
 #: includes/frontend/class-gcp-account.php:238
@@ -281,6 +289,8 @@ msgstr ""
 #: includes/admin/class-gcp-admin-clients.php:417
 #: includes/admin/class-gcp-admin-parcels.php:53
 #: includes/admin/class-gcp-admin-parcels.php:74
+#: includes/class-gcp-privacy.php:131
+#: includes/class-gcp-privacy.php:157
 #: includes/frontend/class-gcp-account.php:189
 #: includes/frontend/class-gcp-account.php:200
 #: includes/frontend/class-gcp-account.php:240
@@ -319,12 +329,14 @@ msgid "OK"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:369
+#: includes/class-gcp-privacy.php:161
 #: includes/frontend/class-gcp-account.php:235
 #: includes/frontend/class-gcp-account.php:252
 msgid "Requested on"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:370
+#: includes/class-gcp-privacy.php:153
 #: includes/frontend/class-gcp-account.php:236
 #: includes/frontend/class-gcp-account.php:253
 #: templates/emails/gcp-shipment-requested.php:40
@@ -332,6 +344,7 @@ msgid "Carrier"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:373
+#: includes/class-gcp-privacy.php:165
 #: includes/frontend/class-gcp-account.php:239
 #: includes/frontend/class-gcp-account.php:256
 msgid "Total"
@@ -352,10 +365,12 @@ msgid "#%s"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:445
+#: includes/class-gcp-privacy.php:179
 msgid "Title"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:446
+#: includes/class-gcp-privacy.php:183
 msgid "Added on"
 msgstr ""
 
@@ -471,6 +486,7 @@ msgstr ""
 
 #: includes/admin/class-gcp-admin-parcels.php:190
 #: includes/admin/class-gcp-admin.php:129
+#: includes/class-gcp-privacy.php:119
 #: includes/frontend/class-gcp-account.php:185
 #: includes/frontend/class-gcp-account.php:196
 #: includes/frontend/class-gcp-account.php:358
@@ -887,6 +903,37 @@ msgstr ""
 msgid "Parcel %1$s: status “%2$s” → “%3$s”."
 msgstr ""
 
+#: includes/class-gcp-privacy.php:94
+msgid "Client record (Gestionnaire Colis Pro)"
+msgstr ""
+
+#: includes/class-gcp-privacy.php:115
+msgid "Parcels (Gestionnaire Colis Pro)"
+msgstr ""
+
+#: includes/class-gcp-privacy.php:123
+#: includes/frontend/class-gcp-account.php:187
+#: includes/frontend/class-gcp-account.php:198
+#: templates/emails/gcp-parcel-received.php:39
+msgid "Tracking number"
+msgstr ""
+
+#: includes/class-gcp-privacy.php:145
+msgid "Shipments (Gestionnaire Colis Pro)"
+msgstr ""
+
+#: includes/class-gcp-privacy.php:175
+msgid "Documents (Gestionnaire Colis Pro)"
+msgstr ""
+
+#: includes/class-gcp-privacy.php:278
+msgid "Personal data erased following a privacy request."
+msgstr ""
+
+#: includes/class-gcp-privacy.php:284
+msgid "Parcel and shipment records are retained as business/accounting records; documents, phone number, notes, tracking numbers and photos have been removed."
+msgstr ""
+
 #: includes/class-gcp-shipments.php:24
 msgctxt "shipment status"
 msgid "Requested"
@@ -1071,12 +1118,6 @@ msgstr ""
 #: includes/frontend/class-gcp-account.php:186
 #: includes/frontend/class-gcp-account.php:197
 msgid "Reception date"
-msgstr ""
-
-#: includes/frontend/class-gcp-account.php:187
-#: includes/frontend/class-gcp-account.php:198
-#: templates/emails/gcp-parcel-received.php:39
-msgid "Tracking number"
 msgstr ""
 
 #: includes/frontend/class-gcp-account.php:227

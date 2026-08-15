@@ -46,6 +46,7 @@ final class GCP_Plugin {
 		GCP_Ajax::init();
 		GCP_Downloads::init();
 		GCP_Orders::init();
+		GCP_Privacy::init();
 
 		if ( is_admin() ) {
 			require_once GCP_PLUGIN_DIR . 'includes/admin/class-gcp-admin.php';

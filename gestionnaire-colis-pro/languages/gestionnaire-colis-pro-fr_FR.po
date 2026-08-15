@@ -809,3 +809,21 @@ msgstr "Total :"
 
 msgid "Client record:"
 msgstr "Fiche client :"
+
+msgid "Client record (Gestionnaire Colis Pro)"
+msgstr "Fiche client (Gestionnaire Colis Pro)"
+
+msgid "Parcels (Gestionnaire Colis Pro)"
+msgstr "Colis (Gestionnaire Colis Pro)"
+
+msgid "Shipments (Gestionnaire Colis Pro)"
+msgstr "Expéditions (Gestionnaire Colis Pro)"
+
+msgid "Documents (Gestionnaire Colis Pro)"
+msgstr "Documents (Gestionnaire Colis Pro)"
+
+msgid "Personal data erased following a privacy request."
+msgstr "Données personnelles effacées à la suite d’une demande de confidentialité."
+
+msgid "Parcel and shipment records are retained as business/accounting records; documents, phone number, notes, tracking numbers and photos have been removed."
+msgstr "Les enregistrements de colis et d’expéditions sont conservés à titre de justificatifs comptables ; les documents, le numéro de téléphone, les notes, les numéros de suivi et les photos ont été supprimés."

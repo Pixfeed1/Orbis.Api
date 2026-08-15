@@ -363,6 +363,62 @@ gcp_check( 'Commande annulee => colis de retour en stock', 'available' === GCP_P
 gcp_check( 'Poids "2,5" normalise en 2.5', 2.5 === GCP_Parcels::to_float( '2,5' ) );
 
 // ---------------------------------------------------------------------------
+// Privacy (GDPR): exporter, eraser, account-deletion cleanup.
+// ---------------------------------------------------------------------------
+$priv_uid = wp_insert_user(
+	array(
+		'user_login' => 'rgpd_' . wp_generate_password( 6, false ),
+		'user_email' => 'rgpd+' . time() . '@example.com',
+		'user_pass'  => wp_generate_password(),
+		'role'       => 'customer',
+	)
+);
+$priv_email  = get_userdata( $priv_uid )->user_email;
+$priv_client = GCP_Clients::create( $priv_uid, '0696000001' );
+$priv_parcel = GCP_Parcels::create(
+	array(
+		'client_id'       => $priv_client,
+		'tracking_number' => 'RGPD-TRACK-1',
+		'weight'          => 1.5,
+		'internal_note'   => 'Note interne RGPD',
+	)
+);
+$priv_file = 'rgpd-' . wp_generate_password( 8, false ) . '.pdf';
+GCP_Files::ensure_dir();
+file_put_contents( GCP_Files::base_dir() . '/' . $priv_file, '%PDF-1.4 rgpd' );
+GCP_Documents::add( $priv_client, array( 'path' => $priv_file, 'name' => 'piece.pdf', 'type' => 'application/pdf' ), 'Piece', 'client' );
+
+$exporters = apply_filters( 'wp_privacy_personal_data_exporters', array() );
+gcp_check( 'Exportateur RGPD enregistre', isset( $exporters['gestionnaire-colis-pro'] ) );
+$erasers = apply_filters( 'wp_privacy_personal_data_erasers', array() );
+gcp_check( 'Effaceur RGPD enregistre', isset( $erasers['gestionnaire-colis-pro'] ) );
+
+$export = GCP_Privacy::export( $priv_email );
+$groups = array_unique( wp_list_pluck( $export['data'], 'group_id' ) );
+gcp_check( 'Export RGPD : fiche client presente', in_array( 'gcp_client', $groups, true ) );
+gcp_check( 'Export RGPD : colis presents', in_array( 'gcp_parcels', $groups, true ) );
+gcp_check( 'Export RGPD : termine en une passe', true === $export['done'] );
+gcp_check( 'Export RGPD : e-mail inconnu vide', array() === GCP_Privacy::export( 'inconnu@example.com' )['data'] );
+
+$erase = GCP_Privacy::erase( $priv_email );
+gcp_check( 'Effacement RGPD : donnees supprimees', true === $erase['items_removed'] );
+gcp_check( 'Effacement RGPD : conservation signalee', true === $erase['items_retained'] && ! empty( $erase['messages'] ) );
+
+$priv_c = GCP_Clients::get( $priv_client );
+$priv_p = GCP_Parcels::get( $priv_parcel );
+gcp_check( 'Effacement RGPD : telephone efface', '' === (string) $priv_c->phone );
+gcp_check( 'Effacement RGPD : numero de suivi efface', '' === (string) $priv_p->tracking_number );
+gcp_check( 'Effacement RGPD : note interne effacee', '' === (string) $priv_p->internal_note );
+gcp_check( 'Effacement RGPD : documents supprimes', 0 === count( GCP_Documents::for_client( $priv_client ) ) );
+gcp_check( 'Effacement RGPD : fichier prive supprime', false === GCP_Files::resolve( $priv_file ) );
+gcp_check( 'Effacement RGPD : reference colis conservee (comptabilite)', 1 === preg_match( '/^COL\d{6}$/', $priv_p->reference ) );
+
+// Account deletion removes everything.
+wp_delete_user( $priv_uid );
+gcp_check( 'Suppression du compte : fiche client purgee', null === GCP_Clients::get( $priv_client ) );
+gcp_check( 'Suppression du compte : colis purges', null === GCP_Parcels::get( $priv_parcel ) );
+
+// ---------------------------------------------------------------------------
 // Statuses map.
 // ---------------------------------------------------------------------------
 $expected_statuses = array( 'available', 'ordered', 'awaiting_payment', 'paid', 'preparing', 'shipped', 'destroyed', 'cancelled' );

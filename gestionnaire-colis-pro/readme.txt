@@ -4,7 +4,7 @@ Tags: woocommerce, parcels, shipping, logistics, clients
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,10 @@ Every parcel gets a free storage period (15 days by default). Beyond it, fees ar
 
 Yes. Client documents and reception photos are stored in a protected directory (direct access denied, randomized file names) and served only through an authenticated download endpoint: a customer can only download their own documents marked as visible; reception photos are restricted to the staff.
 
+= Is the plugin GDPR-ready? =
+
+Yes. It registers a personal data exporter and eraser with the native WordPress privacy tools (Tools → Export/Erase Personal Data), and deleting a user account removes all of their plugin data, including private files.
+
 = Is any data removed on uninstall? =
 
 Not by default. Add the `gcp_remove_data_on_uninstall` option with the value `yes` to remove the tables, settings and private files when the plugin is deleted.
@@ -84,6 +88,9 @@ Not by default. Add the `gcp_remove_data_on_uninstall` option with the value `ye
 4. Customer "My parcels" screen in the WooCommerce My Account area.
 
 == Changelog ==
+
+= 1.5.0 =
+* Privacy (GDPR): the plugin now plugs into the native WordPress privacy tools. The personal data exporter includes the client record, parcels, shipments and documents; the eraser deletes documents and private files, blanks phone number, notes, tracking numbers and reception photos, and reports that parcel/shipment records are retained as accounting records. Deleting a WordPress user account removes all of their plugin data and private files.
 
 = 1.4.0 =
 * Internationalization: all source strings are now in English; the full French translation ships with the plugin (fr_FR .po/.mo), so French sites keep the exact same interface. Translation contexts preserve French grammatical agreement on statuses.
