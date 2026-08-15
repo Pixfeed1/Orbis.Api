@@ -23,6 +23,19 @@ foreach ( array( 'gcp_history', 'gcp_documents', 'gcp_parcels', 'gcp_shipments',
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 }
 
+// Remove the private files directory.
+$gcp_uploads = wp_upload_dir( null, false );
+$gcp_private = $gcp_uploads['basedir'] . '/gcp-private';
+if ( is_dir( $gcp_private ) ) {
+	foreach ( (array) scandir( $gcp_private ) as $gcp_entry ) {
+		if ( '.' !== $gcp_entry && '..' !== $gcp_entry ) {
+			wp_delete_file( $gcp_private . '/' . $gcp_entry );
+		}
+	}
+	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- removing the emptied private directory on uninstall.
+	rmdir( $gcp_private );
+}
+
 delete_option( 'gcp_settings' );
 delete_option( 'gcp_db_version' );
 delete_option( 'gcp_flush_rewrite_rules' );

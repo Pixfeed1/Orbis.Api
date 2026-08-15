@@ -80,7 +80,7 @@ class GCP_Parcels {
 	 *     @type float  $length           Length in cm (admin only).
 	 *     @type float  $width            Width in cm (admin only).
 	 *     @type float  $height           Height in cm (admin only).
-	 *     @type int    $photo_id         Attachment ID of the reception photo.
+	 *     @type string $photo_path       Private-directory path of the reception photo.
 	 *     @type string $internal_note    Internal admin-only comment.
 	 *     @type int    $allow_grouping   Whether grouping is allowed (1/0).
 	 *     @type array  $allowed_carriers Carrier slugs allowed for this parcel (empty = all).
@@ -123,7 +123,7 @@ class GCP_Parcels {
 				'length'           => isset( $data['length'] ) && '' !== $data['length'] ? self::to_float( $data['length'] ) : null,
 				'width'            => isset( $data['width'] ) && '' !== $data['width'] ? self::to_float( $data['width'] ) : null,
 				'height'           => isset( $data['height'] ) && '' !== $data['height'] ? self::to_float( $data['height'] ) : null,
-				'photo_id'         => ! empty( $data['photo_id'] ) ? (int) $data['photo_id'] : null,
+				'photo_path'       => ! empty( $data['photo_path'] ) ? sanitize_file_name( $data['photo_path'] ) : '',
 				'internal_note'    => isset( $data['internal_note'] ) ? sanitize_textarea_field( $data['internal_note'] ) : '',
 				'allow_grouping'   => empty( $data['allow_grouping'] ) ? 0 : 1,
 				'allowed_carriers' => wp_json_encode( $carriers ),

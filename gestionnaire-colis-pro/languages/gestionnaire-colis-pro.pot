@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Gestionnaire Colis Pro 1.0.0\n"
+"Project-Id-Version: Gestionnaire Colis Pro 1.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/gestionnaire-colis-pro\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-15T11:07:40+00:00\n"
+"POT-Creation-Date: 2026-08-15T12:02:20+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: gestionnaire-colis-pro\n"
@@ -41,17 +41,19 @@ msgid "https://github.com/pixfeed1"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:24
-#: includes/admin/class-gcp-admin-clients.php:480
-#: includes/admin/class-gcp-admin-clients.php:502
-#: includes/admin/class-gcp-admin-clients.php:527
-#: includes/admin/class-gcp-admin-clients.php:565
+#: includes/admin/class-gcp-admin-clients.php:495
+#: includes/admin/class-gcp-admin-clients.php:517
+#: includes/admin/class-gcp-admin-clients.php:542
+#: includes/admin/class-gcp-admin-clients.php:572
 #: includes/admin/class-gcp-admin-parcels.php:24
 #: includes/admin/class-gcp-admin-parcels.php:147
 #: includes/admin/class-gcp-admin-parcels.php:288
-#: includes/admin/class-gcp-admin-parcels.php:353
+#: includes/admin/class-gcp-admin-parcels.php:349
 #: includes/admin/class-gcp-admin-settings.php:24
 #: includes/admin/class-gcp-admin-settings.php:163
 #: includes/class-gcp-ajax.php:35
+#: includes/class-gcp-downloads.php:120
+#: includes/class-gcp-downloads.php:137
 msgid "Accès refusé."
 msgstr ""
 
@@ -82,7 +84,7 @@ msgid "Utilisateur WordPress"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:78
-#: includes/frontend/class-gcp-account.php:330
+#: includes/frontend/class-gcp-account.php:329
 msgid "— Sélectionner —"
 msgstr ""
 
@@ -91,7 +93,7 @@ msgid "Créer la fiche client"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:88
-#: includes/admin/class-gcp-admin-clients.php:352
+#: includes/admin/class-gcp-admin-clients.php:368
 #: includes/frontend/class-gcp-account.php:199
 #: includes/frontend/class-gcp-account.php:211
 msgid "Référence"
@@ -108,13 +110,13 @@ msgid "E-mail"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:91
-#: includes/admin/class-gcp-admin-clients.php:221
+#: includes/admin/class-gcp-admin-clients.php:229
 msgid "Téléphone"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:92
-#: includes/admin/class-gcp-admin-clients.php:168
-#: includes/admin/class-gcp-admin-clients.php:194
+#: includes/admin/class-gcp-admin-clients.php:176
+#: includes/admin/class-gcp-admin-clients.php:202
 msgid "Colis en stock"
 msgstr ""
 
@@ -127,20 +129,20 @@ msgstr ""
 msgid "Aucun client trouvé."
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:130
-#: includes/class-gcp-documents.php:31
-#: includes/class-gcp-parcels.php:85
+#: includes/admin/class-gcp-admin-clients.php:138
+#: includes/class-gcp-documents.php:32
+#: includes/class-gcp-parcels.php:95
 #: includes/class-gcp-shipments.php:61
 msgid "Client introuvable."
 msgstr ""
 
 #. translators: 1: client reference, 2: client name.
-#: includes/admin/class-gcp-admin-clients.php:155
+#: includes/admin/class-gcp-admin-clients.php:163
 #, php-format
 msgid "Fiche client %1$s — %2$s"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:161
+#: includes/admin/class-gcp-admin-clients.php:169
 #: includes/admin/class-gcp-admin-parcels.php:44
 #: includes/admin/class-gcp-admin-parcels.php:156
 #: includes/admin/class-gcp-admin.php:75
@@ -148,91 +150,91 @@ msgstr ""
 msgid "Nouveau colis"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:172
+#: includes/admin/class-gcp-admin-clients.php:180
 msgid "Poids total stocké"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:176
+#: includes/admin/class-gcp-admin-clients.php:184
 msgid "Expéditions réalisées"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:180
+#: includes/admin/class-gcp-admin-clients.php:188
 msgid "Frais de stockage dus"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:184
+#: includes/admin/class-gcp-admin-clients.php:192
 msgid "Dernière réception"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:188
+#: includes/admin/class-gcp-admin-clients.php:196
 msgid "Dernière expédition"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:193
+#: includes/admin/class-gcp-admin-clients.php:201
 msgid "Informations"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:195
+#: includes/admin/class-gcp-admin-clients.php:203
 msgid "Colis expédiés"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:196
+#: includes/admin/class-gcp-admin-clients.php:204
 msgid "Expéditions"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:197
+#: includes/admin/class-gcp-admin-clients.php:205
 msgid "Documents"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:198
+#: includes/admin/class-gcp-admin-clients.php:206
 msgid "Historique"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:208
+#: includes/admin/class-gcp-admin-clients.php:216
 msgid "Référence client"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:212
+#: includes/admin/class-gcp-admin-clients.php:220
 msgid "Utilisateur"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:225
+#: includes/admin/class-gcp-admin-clients.php:233
 msgid "Notes internes (jamais visibles par le client)"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:229
+#: includes/admin/class-gcp-admin-clients.php:237
 msgid "Enregistrer"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:247
+#: includes/admin/class-gcp-admin-clients.php:255
 msgid "Ajouter un document"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:255
+#: includes/admin/class-gcp-admin-clients.php:263
 msgid "Visible par le client"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:257
+#: includes/admin/class-gcp-admin-clients.php:265
 msgid "Ajouter"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:280
+#: includes/admin/class-gcp-admin-clients.php:288
 #: includes/admin/class-gcp-admin-parcels.php:67
 msgid "Numéro"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:281
+#: includes/admin/class-gcp-admin-clients.php:289
 #: includes/admin/class-gcp-admin-parcels.php:69
 msgid "Reçu le"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:282
+#: includes/admin/class-gcp-admin-clients.php:290
 #: includes/admin/class-gcp-admin-parcels.php:70
 msgid "Suivi"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:283
-#: includes/admin/class-gcp-admin-clients.php:355
+#: includes/admin/class-gcp-admin-clients.php:291
+#: includes/admin/class-gcp-admin-clients.php:371
 #: includes/admin/class-gcp-admin-parcels.php:71
 #: includes/admin/class-gcp-admin-parcels.php:191
 #: includes/admin/class-gcp-admin.php:130
@@ -240,36 +242,40 @@ msgstr ""
 #: includes/frontend/class-gcp-account.php:164
 #: includes/frontend/class-gcp-account.php:203
 #: includes/frontend/class-gcp-account.php:215
-#: includes/frontend/class-gcp-account.php:302
+#: includes/frontend/class-gcp-account.php:301
 msgid "Poids (kg)"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:284
+#: includes/admin/class-gcp-admin-clients.php:292
 #: includes/admin/class-gcp-admin-parcels.php:72
 msgid "Tarif"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:285
+#: includes/admin/class-gcp-admin-clients.php:293
 #: includes/admin/class-gcp-admin-parcels.php:73
 #: includes/admin/class-gcp-admin-parcels.php:248
 msgid "Regroupement"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:286
-#: includes/admin/class-gcp-admin-clients.php:356
+#: includes/admin/class-gcp-admin-clients.php:294
+#: includes/admin/class-gcp-admin-clients.php:372
 msgid "Frais de stockage"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:287
+#: includes/admin/class-gcp-admin-clients.php:295
 #: includes/admin/class-gcp-admin-parcels.php:193
 #: includes/admin/class-gcp-admin.php:132
 msgid "Commentaire interne"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:289
-#: includes/admin/class-gcp-admin-clients.php:330
-#: includes/admin/class-gcp-admin-clients.php:358
-#: includes/admin/class-gcp-admin-clients.php:378
+#: includes/admin/class-gcp-admin-clients.php:296
+msgid "Photo"
+msgstr ""
+
+#: includes/admin/class-gcp-admin-clients.php:298
+#: includes/admin/class-gcp-admin-clients.php:346
+#: includes/admin/class-gcp-admin-clients.php:374
+#: includes/admin/class-gcp-admin-clients.php:394
 #: includes/admin/class-gcp-admin-parcels.php:53
 #: includes/admin/class-gcp-admin-parcels.php:74
 #: includes/frontend/class-gcp-account.php:154
@@ -279,20 +285,20 @@ msgstr ""
 msgid "Statut"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:295
+#: includes/admin/class-gcp-admin-clients.php:304
 msgid "Aucun colis."
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:304
+#: includes/admin/class-gcp-admin-clients.php:313
 #: includes/admin/class-gcp-admin-parcels.php:102
 #: includes/admin/class-gcp-admin-parcels.php:204
 #: includes/admin/class-gcp-admin.php:127
 #: includes/frontend/class-gcp-account.php:166
-#: includes/frontend/class-gcp-account.php:321
+#: includes/frontend/class-gcp-account.php:320
 msgid "Oui"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:304
+#: includes/admin/class-gcp-admin-clients.php:313
 #: includes/admin/class-gcp-admin-parcels.php:102
 #: includes/admin/class-gcp-admin-parcels.php:204
 #: includes/admin/class-gcp-admin.php:128
@@ -300,101 +306,101 @@ msgstr ""
 msgid "Non"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:336
-#: includes/admin/class-gcp-admin-clients.php:384
+#: includes/admin/class-gcp-admin-clients.php:318
+msgid "Voir"
+msgstr ""
+
+#: includes/admin/class-gcp-admin-clients.php:352
+#: includes/admin/class-gcp-admin-clients.php:400
 msgid "OK"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:353
+#: includes/admin/class-gcp-admin-clients.php:369
 #: includes/frontend/class-gcp-account.php:200
 #: includes/frontend/class-gcp-account.php:212
 msgid "Demandée le"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:354
+#: includes/admin/class-gcp-admin-clients.php:370
 #: includes/frontend/class-gcp-account.php:201
 #: includes/frontend/class-gcp-account.php:213
 msgid "Transporteur"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:357
+#: includes/admin/class-gcp-admin-clients.php:373
 msgid "Total"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:363
+#: includes/admin/class-gcp-admin-clients.php:379
 msgid "Aucune expédition."
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:406
+#: includes/admin/class-gcp-admin-clients.php:422
 msgid "Titre"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:407
+#: includes/admin/class-gcp-admin-clients.php:423
 msgid "Ajouté le"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:408
+#: includes/admin/class-gcp-admin-clients.php:424
 msgid "Visibilité"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:409
+#: includes/admin/class-gcp-admin-clients.php:425
 msgid "Fichier"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:414
+#: includes/admin/class-gcp-admin-clients.php:430
 msgid "Aucun document."
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:420
+#: includes/admin/class-gcp-admin-clients.php:436
 msgid "Interne"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:420
+#: includes/admin/class-gcp-admin-clients.php:436
 #: includes/admin/class-gcp-admin-parcels.php:68
 msgid "Client"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:424
+#: includes/admin/class-gcp-admin-clients.php:439
 msgid "Télécharger"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:448
+#: includes/admin/class-gcp-admin-clients.php:463
 msgid "Date"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:449
+#: includes/admin/class-gcp-admin-clients.php:464
 msgid "Événement"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:450
+#: includes/admin/class-gcp-admin-clients.php:465
 msgid "Détail"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:451
+#: includes/admin/class-gcp-admin-clients.php:466
 msgid "Par"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:456
+#: includes/admin/class-gcp-admin-clients.php:471
 msgid "Aucune opération enregistrée."
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:492
+#: includes/admin/class-gcp-admin-clients.php:507
 msgid "Fiche client créée."
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:517
+#: includes/admin/class-gcp-admin-clients.php:532
 msgid "Fiche client mise à jour."
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:535
-msgid "Aucun fichier envoyé."
-msgstr ""
-
-#: includes/admin/class-gcp-admin-clients.php:555
+#: includes/admin/class-gcp-admin-clients.php:562
 msgid "Document ajouté."
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:582
+#: includes/admin/class-gcp-admin-clients.php:589
 msgid "Statut de l’expédition mis à jour."
 msgstr ""
 
@@ -450,7 +456,7 @@ msgstr ""
 #: includes/admin/class-gcp-admin.php:129
 #: includes/frontend/class-gcp-account.php:150
 #: includes/frontend/class-gcp-account.php:161
-#: includes/frontend/class-gcp-account.php:301
+#: includes/frontend/class-gcp-account.php:300
 msgid "Numéro du colis"
 msgstr ""
 
@@ -458,7 +464,7 @@ msgstr ""
 #: includes/admin/class-gcp-admin.php:131
 #: includes/frontend/class-gcp-account.php:155
 #: includes/frontend/class-gcp-account.php:166
-#: includes/frontend/class-gcp-account.php:303
+#: includes/frontend/class-gcp-account.php:302
 msgid "Regroupement autorisé"
 msgstr ""
 
@@ -540,12 +546,12 @@ msgid "Enregistrer le colis"
 msgstr ""
 
 #. translators: %s: parcel reference.
-#: includes/admin/class-gcp-admin-parcels.php:340
+#: includes/admin/class-gcp-admin-parcels.php:336
 #, php-format
 msgid "Colis %s enregistré. Le tarif a été calculé automatiquement."
 msgstr ""
 
-#: includes/admin/class-gcp-admin-parcels.php:370
+#: includes/admin/class-gcp-admin-parcels.php:366
 msgid "Statut du colis mis à jour."
 msgstr ""
 
@@ -664,18 +670,27 @@ msgstr ""
 msgid "Fiche client %s créée."
 msgstr ""
 
-#: includes/class-gcp-documents.php:35
+#: includes/class-gcp-documents.php:36
+#: includes/class-gcp-files.php:198
 msgid "Fichier introuvable."
 msgstr ""
 
-#: includes/class-gcp-documents.php:52
+#: includes/class-gcp-documents.php:56
 msgid "Impossible d’enregistrer le document."
 msgstr ""
 
 #. translators: %s: document title.
-#: includes/class-gcp-documents.php:60
+#: includes/class-gcp-documents.php:64
 #, php-format
 msgid "Document « %s » ajouté."
+msgstr ""
+
+#: includes/class-gcp-downloads.php:116
+msgid "Document introuvable."
+msgstr ""
+
+#: includes/class-gcp-downloads.php:143
+msgid "Photo introuvable."
 msgstr ""
 
 #. translators: 1: site name, 2: parcel reference.
@@ -715,6 +730,14 @@ msgid ""
 "Connectez-vous à l’administration pour la traiter."
 msgstr ""
 
+#: includes/class-gcp-files.php:111
+msgid "Aucun fichier envoyé."
+msgstr ""
+
+#: includes/class-gcp-files.php:115
+msgid "Impossible de créer le répertoire de stockage protégé."
+msgstr ""
+
 #: includes/class-gcp-parcels.php:24
 msgid "Disponible"
 msgstr ""
@@ -749,34 +772,34 @@ msgstr ""
 msgid "Annulé"
 msgstr ""
 
-#: includes/class-gcp-parcels.php:90
+#: includes/class-gcp-parcels.php:100
 msgid "Le poids du colis doit être supérieur à zéro."
 msgstr ""
 
-#: includes/class-gcp-parcels.php:130
+#: includes/class-gcp-parcels.php:140
 msgid "Impossible d’enregistrer le colis."
 msgstr ""
 
 #. translators: 1: parcel reference, 2: weight in kg, 3: price.
-#: includes/class-gcp-parcels.php:149
+#: includes/class-gcp-parcels.php:159
 #, php-format
 msgid "Colis %1$s reçu (%2$s kg, tarif %3$s)."
 msgstr ""
 
-#: includes/class-gcp-parcels.php:343
+#: includes/class-gcp-parcels.php:353
 msgid "Statut de colis invalide."
 msgstr ""
 
-#: includes/class-gcp-parcels.php:348
+#: includes/class-gcp-parcels.php:358
 msgid "Colis introuvable."
 msgstr ""
 
-#: includes/class-gcp-parcels.php:369
+#: includes/class-gcp-parcels.php:379
 msgid "Impossible de mettre à jour le statut."
 msgstr ""
 
 #. translators: 1: parcel reference, 2: old status, 3: new status.
-#: includes/class-gcp-parcels.php:377
+#: includes/class-gcp-parcels.php:387
 #, php-format
 msgid "Colis %1$s : statut « %2$s » → « %3$s »."
 msgstr ""
@@ -867,14 +890,14 @@ msgid "Mes documents"
 msgstr ""
 
 #: includes/frontend/class-gcp-account.php:87
-#: includes/frontend/class-gcp-account.php:270
+#: includes/frontend/class-gcp-account.php:269
 msgid "Demande d’expédition"
 msgstr ""
 
 #: includes/frontend/class-gcp-account.php:130
 #: includes/frontend/class-gcp-account.php:185
 #: includes/frontend/class-gcp-account.php:235
-#: includes/frontend/class-gcp-account.php:273
+#: includes/frontend/class-gcp-account.php:272
 msgid "Aucune fiche client n’est associée à votre compte pour le moment."
 msgstr ""
 
@@ -904,30 +927,30 @@ msgstr ""
 msgid "Aucun document pour le moment."
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:278
+#: includes/frontend/class-gcp-account.php:277
 msgid "Votre demande d’expédition a bien été enregistrée. Nous revenons vers vous rapidement."
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:288
+#: includes/frontend/class-gcp-account.php:287
 msgid "Aucun colis disponible pour une expédition."
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:296
+#: includes/frontend/class-gcp-account.php:295
 msgid "Sélectionnez les colis à expédier :"
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:321
+#: includes/frontend/class-gcp-account.php:320
 msgid "Non — ce colis doit être expédié seul"
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:328
+#: includes/frontend/class-gcp-account.php:327
 msgid "Transporteur souhaité :"
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:336
+#: includes/frontend/class-gcp-account.php:335
 msgid "Seuls les transporteurs compatibles avec l’ensemble des colis sélectionnés pourront être retenus."
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:338
+#: includes/frontend/class-gcp-account.php:337
 msgid "Envoyer la demande"
 msgstr ""

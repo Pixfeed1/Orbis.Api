@@ -245,13 +245,12 @@ class GCP_Account {
 
 		echo '<ul class="gcp-documents-list">';
 		foreach ( $documents as $document ) {
-			$url = wp_get_attachment_url( (int) $document->attachment_id );
-			if ( ! $url ) {
+			if ( empty( $document->file_path ) ) {
 				continue;
 			}
 			printf(
-				'<li><a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a> <span class="gcp-doc-date">(%3$s)</span></li>',
-				esc_url( $url ),
+				'<li><a href="%1$s">%2$s</a> <span class="gcp-doc-date">(%3$s)</span></li>',
+				esc_url( GCP_Downloads::document_url( $document ) ),
 				esc_html( $document->title ),
 				esc_html( GCP_Format::date( $document->created_at ) )
 			);

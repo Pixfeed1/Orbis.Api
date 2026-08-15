@@ -10,20 +10,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Documents attached to a client record (media library attachments).
+ * Documents attached to a client record, stored in the private directory and
+ * served only through the authenticated download endpoint.
  */
 class GCP_Documents {
 
 	/**
-	 * Registers a document for a client.
+	 * Registers a document stored in the private directory.
 	 *
-	 * @param int    $client_id     Client ID.
-	 * @param int    $attachment_id Media attachment ID.
-	 * @param string $title         Document title.
-	 * @param string $visibility    'client' (visible to the client) or 'admin'.
+	 * @param int    $client_id  Client ID.
+	 * @param array  $file       File info from GCP_Files::upload() (path, name, type).
+	 * @param string $title      Optional title; defaults to the original file name.
+	 * @param string $visibility 'client' (visible to the client) or 'admin'.
 	 * @return int|WP_Error Document ID.
 	 */
-	public static function add( $client_id, $attachment_id, $title = '', $visibility = 'client' ) {
+	public static function add( $client_id, $file, $title = '', $visibility = 'client' ) {
 		global $wpdb;
 
 		$client = GCP_Clients::get( $client_id );
@@ -31,21 +32,24 @@ class GCP_Documents {
 			return new WP_Error( 'gcp_invalid_client', __( 'Client introuvable.', 'gestionnaire-colis-pro' ) );
 		}
 
-		if ( ! get_post( $attachment_id ) ) {
-			return new WP_Error( 'gcp_invalid_attachment', __( 'Fichier introuvable.', 'gestionnaire-colis-pro' ) );
+		if ( empty( $file['path'] ) || ! GCP_Files::resolve( $file['path'] ) ) {
+			return new WP_Error( 'gcp_invalid_file', __( 'Fichier introuvable.', 'gestionnaire-colis-pro' ) );
 		}
 
+		$name     = isset( $file['name'] ) ? sanitize_file_name( $file['name'] ) : '';
 		$inserted = $wpdb->insert(
 			$wpdb->prefix . 'gcp_documents',
 			array(
-				'client_id'     => (int) $client_id,
-				'attachment_id' => (int) $attachment_id,
-				'title'         => sanitize_text_field( $title ? $title : get_the_title( $attachment_id ) ),
-				'visibility'    => 'admin' === $visibility ? 'admin' : 'client',
-				'uploaded_by'   => get_current_user_id(),
-				'created_at'    => current_time( 'mysql', true ),
+				'client_id'   => (int) $client_id,
+				'file_path'   => sanitize_file_name( $file['path'] ),
+				'file_name'   => $name,
+				'mime_type'   => isset( $file['type'] ) ? sanitize_text_field( $file['type'] ) : '',
+				'title'       => sanitize_text_field( $title ? $title : $name ),
+				'visibility'  => 'admin' === $visibility ? 'admin' : 'client',
+				'uploaded_by' => get_current_user_id(),
+				'created_at'  => current_time( 'mysql', true ),
 			),
-			array( '%d', '%d', '%s', '%s', '%d', '%s' )
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%d', '%s' )
 		);
 
 		if ( ! $inserted ) {
@@ -57,10 +61,25 @@ class GCP_Documents {
 		GCP_History::log(
 			(int) $client_id,
 			'document_added',
-			sprintf( /* translators: %s: document title. */ __( 'Document « %s » ajouté.', 'gestionnaire-colis-pro' ), get_the_title( $attachment_id ) )
+			sprintf( /* translators: %s: document title. */ __( 'Document « %s » ajouté.', 'gestionnaire-colis-pro' ), $title ? $title : $name )
 		);
 
 		return $document_id;
+	}
+
+	/**
+	 * Returns a document row by ID.
+	 *
+	 * @param int $document_id Document ID.
+	 * @return object|null
+	 */
+	public static function get( $document_id ) {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		return $wpdb->get_row(
+			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}gcp_documents WHERE id = %d", (int) $document_id )
+		);
 	}
 
 	/**

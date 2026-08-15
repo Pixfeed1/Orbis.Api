@@ -4,7 +4,7 @@ Tags: woocommerce, colis, expedition, logistique, clients
 Requires at least: 6.2
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,7 +67,15 @@ Par défaut, non. Ajoutez l'option `gcp_remove_data_on_uninstall` avec la valeur
 3. Formulaire de création d'un colis avec recherche du client et stock affiché.
 4. Espace client « Mes colis » dans Mon compte WooCommerce.
 
+= Les documents sont-ils privés ? =
+
+Oui. Les documents clients et les photos de réception sont stockés dans un répertoire protégé (accès direct refusé, noms de fichiers aléatoires) et servis uniquement via un point de téléchargement authentifié : un client ne peut télécharger que ses propres documents marqués « visibles », les photos sont réservées à l'administration.
+
 == Changelog ==
+
+= 1.1.0 =
+* Sécurité : les documents clients et les photos de réception sont désormais stockés dans un répertoire privé (.htaccess + noms aléatoires) et servis via un point de téléchargement authentifié avec contrôle de propriété (nonce + capacité). Types de fichiers restreints (images, PDF, Office).
+* Correction : les poids et dimensions saisis avec une virgule décimale (« 2,5 ») sont désormais interprétés correctement.
 
 = 1.0.0 =
 * Version initiale : gestion des clients (références CL), création des colis (références COL), tarification automatique au poids, frais de stockage automatiques, regroupement, restrictions de transporteurs, demandes d'expédition, documents, historique et notifications e-mail.

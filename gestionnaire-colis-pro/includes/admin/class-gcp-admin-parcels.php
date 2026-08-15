@@ -290,20 +290,16 @@ class GCP_Admin_Parcels {
 
 		check_admin_referer( 'gcp_create_parcel' );
 
-		$photo_id = 0;
+		$photo_path = '';
 
 		if ( ! empty( $_FILES['gcp_photo']['name'] ) ) {
-			require_once ABSPATH . 'wp-admin/includes/file.php';
-			require_once ABSPATH . 'wp-admin/includes/media.php';
-			require_once ABSPATH . 'wp-admin/includes/image.php';
+			$photo = GCP_Files::upload( 'gcp_photo', GCP_Files::photo_mimes() );
 
-			$upload = media_handle_upload( 'gcp_photo', 0 );
-
-			if ( is_wp_error( $upload ) ) {
-				GCP_Admin::redirect( 'gcp-new-parcel', array(), $upload->get_error_message(), 'error' );
+			if ( is_wp_error( $photo ) ) {
+				GCP_Admin::redirect( 'gcp-new-parcel', array(), $photo->get_error_message(), 'error' );
 			}
 
-			$photo_id = (int) $upload;
+			$photo_path = $photo['path'];
 		}
 
 		$carriers = array();
@@ -319,7 +315,7 @@ class GCP_Admin_Parcels {
 				'length'           => isset( $_POST['length'] ) ? sanitize_text_field( wp_unslash( $_POST['length'] ) ) : '',
 				'width'            => isset( $_POST['width'] ) ? sanitize_text_field( wp_unslash( $_POST['width'] ) ) : '',
 				'height'           => isset( $_POST['height'] ) ? sanitize_text_field( wp_unslash( $_POST['height'] ) ) : '',
-				'photo_id'         => $photo_id,
+				'photo_path'       => $photo_path,
 				'internal_note'    => isset( $_POST['internal_note'] ) ? sanitize_textarea_field( wp_unslash( $_POST['internal_note'] ) ) : '',
 				'allow_grouping'   => ! empty( $_POST['allow_grouping'] ),
 				'allowed_carriers' => $carriers,

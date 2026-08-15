@@ -222,6 +222,69 @@ gcp_check( 'Historique contient la creation de colis', in_array( 'parcel_created
 gcp_check( 'Historique contient la demande d expedition', in_array( 'shipment_requested', $events, true ) );
 
 // ---------------------------------------------------------------------------
+// Private files: protected directory, path traversal, authorization.
+// ---------------------------------------------------------------------------
+gcp_check( 'Repertoire prive cree', GCP_Files::ensure_dir() );
+gcp_check( '.htaccess de protection present', file_exists( GCP_Files::base_dir() . '/.htaccess' ) );
+gcp_check( 'index.html present', file_exists( GCP_Files::base_dir() . '/index.html' ) );
+
+// Simulate a stored private file.
+$gcp_test_file = 'test-' . wp_generate_password( 12, false ) . '.pdf';
+file_put_contents( GCP_Files::base_dir() . '/' . $gcp_test_file, '%PDF-1.4 test' );
+
+gcp_check( 'resolve() accepte un fichier valide', false !== GCP_Files::resolve( $gcp_test_file ) );
+gcp_check( 'resolve() bloque la traversee ../wp-config.php', false === GCP_Files::resolve( '../../wp-config.php' ) );
+gcp_check( 'resolve() bloque un chemin absolu', false === GCP_Files::resolve( ABSPATH . 'wp-config.php' ) );
+
+$doc_id = GCP_Documents::add(
+	$client_id,
+	array(
+		'path' => $gcp_test_file,
+		'name' => 'facture.pdf',
+		'type' => 'application/pdf',
+	),
+	'Facture test',
+	'client'
+);
+gcp_check( 'Document prive enregistre', is_int( $doc_id ) );
+
+$doc       = GCP_Documents::get( $doc_id );
+$owner_uid = (int) GCP_Clients::get( $client_id )->user_id;
+$other_uid = wp_insert_user(
+	array(
+		'user_login' => 'intrus_' . wp_generate_password( 6, false ),
+		'user_email' => 'intrus+' . time() . '@example.com',
+		'user_pass'  => wp_generate_password(),
+		'role'       => 'customer',
+	)
+);
+$admin_uid = (int) get_users( array( 'role' => 'administrator', 'number' => 1 ) )[0]->ID;
+
+gcp_check( 'Le proprietaire peut telecharger son document', GCP_Downloads::user_can_download_document( $doc, $owner_uid ) );
+gcp_check( 'Un autre client ne peut PAS telecharger', ! GCP_Downloads::user_can_download_document( $doc, $other_uid ) );
+gcp_check( 'L administrateur peut telecharger', GCP_Downloads::user_can_download_document( $doc, $admin_uid ) );
+
+$doc_admin_id = GCP_Documents::add(
+	$client_id,
+	array(
+		'path' => $gcp_test_file,
+		'name' => 'interne.pdf',
+		'type' => 'application/pdf',
+	),
+	'Note interne',
+	'admin'
+);
+$doc_admin    = GCP_Documents::get( $doc_admin_id );
+gcp_check( 'Document interne invisible pour le proprietaire', ! GCP_Downloads::user_can_download_document( $doc_admin, $owner_uid ) );
+$visible_ids = array_map( 'intval', wp_list_pluck( GCP_Documents::for_client( $client_id, true ), 'id' ) );
+gcp_check( 'La vue client exclut les documents internes', ! in_array( (int) $doc_admin_id, $visible_ids, true ) && in_array( (int) $doc_id, $visible_ids, true ) );
+
+// ---------------------------------------------------------------------------
+// Decimal comma normalization.
+// ---------------------------------------------------------------------------
+gcp_check( 'Poids "2,5" normalise en 2.5', 2.5 === GCP_Parcels::to_float( '2,5' ) );
+
+// ---------------------------------------------------------------------------
 // Statuses map.
 // ---------------------------------------------------------------------------
 $expected_statuses = array( 'available', 'ordered', 'awaiting_payment', 'paid', 'preparing', 'shipped', 'destroyed', 'cancelled' );

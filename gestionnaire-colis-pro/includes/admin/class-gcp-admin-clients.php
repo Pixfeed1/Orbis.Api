@@ -293,6 +293,7 @@ class GCP_Admin_Clients {
 					<th><?php esc_html_e( 'Regroupement', 'gestionnaire-colis-pro' ); ?></th>
 					<th><?php esc_html_e( 'Frais de stockage', 'gestionnaire-colis-pro' ); ?></th>
 					<th><?php esc_html_e( 'Commentaire interne', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Photo', 'gestionnaire-colis-pro' ); ?></th>
 					<?php if ( $with_action ) : ?>
 						<th><?php esc_html_e( 'Statut', 'gestionnaire-colis-pro' ); ?></th>
 					<?php endif; ?>
@@ -300,7 +301,7 @@ class GCP_Admin_Clients {
 			</thead>
 			<tbody>
 				<?php if ( empty( $parcels ) ) : ?>
-					<tr><td colspan="9"><?php esc_html_e( 'Aucun colis.', 'gestionnaire-colis-pro' ); ?></td></tr>
+					<tr><td colspan="10"><?php esc_html_e( 'Aucun colis.', 'gestionnaire-colis-pro' ); ?></td></tr>
 				<?php else : ?>
 					<?php foreach ( $parcels as $parcel ) : ?>
 						<tr>
@@ -312,6 +313,13 @@ class GCP_Admin_Clients {
 							<td><?php echo $parcel->allow_grouping ? esc_html__( 'Oui', 'gestionnaire-colis-pro' ) : esc_html__( 'Non', 'gestionnaire-colis-pro' ); ?></td>
 							<td><?php echo esc_html( GCP_Format::price( GCP_Storage::fees_for_parcel( $parcel ) ) ); ?></td>
 							<td><?php echo esc_html( $parcel->internal_note ? $parcel->internal_note : '—' ); ?></td>
+							<td>
+								<?php if ( ! empty( $parcel->photo_path ) ) : ?>
+									<a href="<?php echo esc_url( GCP_Downloads::photo_url( $parcel ) ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Voir', 'gestionnaire-colis-pro' ); ?></a>
+								<?php else : ?>
+									—
+								<?php endif; ?>
+							</td>
 							<?php if ( $with_action ) : ?>
 								<td><?php self::parcel_status_form( $parcel ); ?></td>
 							<?php endif; ?>
@@ -427,9 +435,8 @@ class GCP_Admin_Clients {
 							<td><?php echo esc_html( GCP_Format::date( $document->created_at ) ); ?></td>
 							<td><?php echo 'admin' === $document->visibility ? esc_html__( 'Interne', 'gestionnaire-colis-pro' ) : esc_html__( 'Client', 'gestionnaire-colis-pro' ); ?></td>
 							<td>
-								<?php $url = wp_get_attachment_url( (int) $document->attachment_id ); ?>
-								<?php if ( $url ) : ?>
-									<a href="<?php echo esc_url( $url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Télécharger', 'gestionnaire-colis-pro' ); ?></a>
+								<?php if ( ! empty( $document->file_path ) ) : ?>
+									<a href="<?php echo esc_url( GCP_Downloads::document_url( $document ) ); ?>"><?php esc_html_e( 'Télécharger', 'gestionnaire-colis-pro' ); ?></a>
 								<?php else : ?>
 									—
 								<?php endif; ?>
@@ -539,22 +546,14 @@ class GCP_Admin_Clients {
 
 		check_admin_referer( 'gcp_add_document_' . $client_id );
 
-		if ( empty( $_FILES['gcp_document']['name'] ) ) {
-			GCP_Admin::redirect( 'gcp-clients', array( 'client' => $client_id ), __( 'Aucun fichier envoyé.', 'gestionnaire-colis-pro' ), 'error' );
-		}
+		$file = GCP_Files::upload( 'gcp_document', GCP_Files::document_mimes() );
 
-		require_once ABSPATH . 'wp-admin/includes/file.php';
-		require_once ABSPATH . 'wp-admin/includes/media.php';
-		require_once ABSPATH . 'wp-admin/includes/image.php';
-
-		$attachment_id = media_handle_upload( 'gcp_document', 0 );
-
-		if ( is_wp_error( $attachment_id ) ) {
-			GCP_Admin::redirect( 'gcp-clients', array( 'client' => $client_id ), $attachment_id->get_error_message(), 'error' );
+		if ( is_wp_error( $file ) ) {
+			GCP_Admin::redirect( 'gcp-clients', array( 'client' => $client_id ), $file->get_error_message(), 'error' );
 		}
 
 		$visibility = empty( $_POST['visibility_client'] ) ? 'admin' : 'client';
-		$result     = GCP_Documents::add( $client_id, $attachment_id, '', $visibility );
+		$result     = GCP_Documents::add( $client_id, $file, '', $visibility );
 
 		if ( is_wp_error( $result ) ) {
 			GCP_Admin::redirect( 'gcp-clients', array( 'client' => $client_id ), $result->get_error_message(), 'error' );
