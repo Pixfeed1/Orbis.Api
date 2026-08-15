@@ -315,7 +315,7 @@ class GCP_Admin_Parcels {
 			array(
 				'client_id'        => isset( $_POST['client_id'] ) ? absint( $_POST['client_id'] ) : 0,
 				'tracking_number'  => isset( $_POST['tracking_number'] ) ? sanitize_text_field( wp_unslash( $_POST['tracking_number'] ) ) : '',
-				'weight'           => isset( $_POST['weight'] ) ? (float) $_POST['weight'] : 0,
+				'weight'           => isset( $_POST['weight'] ) ? GCP_Parcels::to_float( sanitize_text_field( wp_unslash( $_POST['weight'] ) ) ) : 0,
 				'length'           => isset( $_POST['length'] ) ? sanitize_text_field( wp_unslash( $_POST['length'] ) ) : '',
 				'width'            => isset( $_POST['width'] ) ? sanitize_text_field( wp_unslash( $_POST['width'] ) ) : '',
 				'height'           => isset( $_POST['height'] ) ? sanitize_text_field( wp_unslash( $_POST['height'] ) ) : '',

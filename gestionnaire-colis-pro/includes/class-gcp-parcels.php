@@ -56,6 +56,16 @@ class GCP_Parcels {
 	}
 
 	/**
+	 * Normalizes a decimal value typed with a French comma (e.g. "2,5").
+	 *
+	 * @param mixed $value Raw value.
+	 * @return float
+	 */
+	public static function to_float( $value ) {
+		return (float) str_replace( ',', '.', (string) $value );
+	}
+
+	/**
 	 * Creates a parcel for a client.
 	 *
 	 * The price is computed automatically from the weight and stored with the
@@ -85,7 +95,7 @@ class GCP_Parcels {
 			return new WP_Error( 'gcp_invalid_client', __( 'Client introuvable.', 'gestionnaire-colis-pro' ) );
 		}
 
-		$weight = isset( $data['weight'] ) ? (float) $data['weight'] : 0;
+		$weight = isset( $data['weight'] ) ? self::to_float( $data['weight'] ) : 0;
 		if ( $weight <= 0 ) {
 			return new WP_Error( 'gcp_invalid_weight', __( 'Le poids du colis doit être supérieur à zéro.', 'gestionnaire-colis-pro' ) );
 		}
@@ -110,9 +120,9 @@ class GCP_Parcels {
 				'client_id'        => (int) $client->id,
 				'tracking_number'  => isset( $data['tracking_number'] ) ? sanitize_text_field( $data['tracking_number'] ) : '',
 				'weight'           => $weight,
-				'length'           => isset( $data['length'] ) && '' !== $data['length'] ? (float) $data['length'] : null,
-				'width'            => isset( $data['width'] ) && '' !== $data['width'] ? (float) $data['width'] : null,
-				'height'           => isset( $data['height'] ) && '' !== $data['height'] ? (float) $data['height'] : null,
+				'length'           => isset( $data['length'] ) && '' !== $data['length'] ? self::to_float( $data['length'] ) : null,
+				'width'            => isset( $data['width'] ) && '' !== $data['width'] ? self::to_float( $data['width'] ) : null,
+				'height'           => isset( $data['height'] ) && '' !== $data['height'] ? self::to_float( $data['height'] ) : null,
 				'photo_id'         => ! empty( $data['photo_id'] ) ? (int) $data['photo_id'] : null,
 				'internal_note'    => isset( $data['internal_note'] ) ? sanitize_textarea_field( $data['internal_note'] ) : '',
 				'allow_grouping'   => empty( $data['allow_grouping'] ) ? 0 : 1,
