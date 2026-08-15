@@ -1,0 +1,123 @@
+/* Gestionnaire Colis Pro — admin styles */
+
+.gcp-indicators {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin: 16px 0 24px;
+}
+
+.gcp-indicator {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	flex: 1 1 150px;
+	min-width: 150px;
+	padding: 12px 16px;
+}
+
+.gcp-indicator-value {
+	display: block;
+	font-size: 1.4em;
+	font-weight: 600;
+}
+
+.gcp-indicator-label {
+	color: #646970;
+	display: block;
+	margin-top: 4px;
+}
+
+.gcp-tab-panel {
+	display: none;
+	margin-top: 16px;
+}
+
+.gcp-tab-panel.gcp-tab-active {
+	display: block;
+}
+
+.gcp-inline-form {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 12px 0 24px;
+}
+
+.gcp-search-form .search-box {
+	display: flex;
+	gap: 8px;
+	margin: 12px 0;
+}
+
+.gcp-status-form {
+	display: flex;
+	gap: 4px;
+}
+
+.gcp-dimensions input {
+	width: 90px;
+}
+
+.gcp-dimensions label {
+	margin: 0 4px 0 12px;
+}
+
+.gcp-dimensions label:first-child {
+	margin-left: 0;
+}
+
+.gcp-carrier-choice {
+	display: inline-block;
+	margin-right: 16px;
+}
+
+.gcp-client-results {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-radius: 3px;
+	display: none;
+	margin-top: 4px;
+	max-height: 260px;
+	max-width: 400px;
+	overflow-y: auto;
+}
+
+.gcp-client-results.gcp-open {
+	display: block;
+}
+
+.gcp-client-result {
+	border-bottom: 1px solid #f0f0f1;
+	cursor: pointer;
+	display: block;
+	padding: 8px 10px;
+	width: 100%;
+	text-align: left;
+	background: transparent;
+	border-left: 0;
+	border-right: 0;
+	border-top: 0;
+}
+
+.gcp-client-result:hover,
+.gcp-client-result:focus {
+	background: #f0f6fc;
+}
+
+.gcp-client-result .gcp-result-ref {
+	font-weight: 600;
+}
+
+.gcp-client-result .gcp-result-meta {
+	color: #646970;
+	display: block;
+	font-size: 12px;
+}
+
+.gcp-tiers-table,
+.gcp-carriers-table {
+	max-width: 500px;
+}

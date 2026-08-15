@@ -1,0 +1,20 @@
+/* Gestionnaire Colis Pro — front styles */
+
+.gcp-front-table {
+	width: 100%;
+}
+
+.gcp-documents-list {
+	list-style: disc;
+	margin-left: 1.5em;
+}
+
+.gcp-doc-date {
+	color: #767676;
+	font-size: 0.9em;
+}
+
+.gcp-request-form .gcp-note {
+	color: #767676;
+	font-size: 0.9em;
+}
