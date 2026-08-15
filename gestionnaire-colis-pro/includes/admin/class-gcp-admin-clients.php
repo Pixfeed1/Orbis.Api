@@ -383,7 +383,12 @@ class GCP_Admin_Clients {
 						<tr>
 							<td><strong><?php echo esc_html( $shipment->reference ); ?></strong></td>
 							<td><?php echo esc_html( GCP_Format::date( $shipment->requested_at ) ); ?></td>
-							<td><?php echo esc_html( GCP_Carriers::name( $shipment->carrier ) ); ?></td>
+							<td>
+								<?php echo esc_html( GCP_Carriers::name( $shipment->carrier ) ); ?>
+								<?php if ( isset( $shipment->carrier_price ) && (float) $shipment->carrier_price > 0 ) : ?>
+									(<?php echo esc_html( GCP_Format::price( (float) $shipment->carrier_price ) ); ?>)
+								<?php endif; ?>
+							</td>
 							<td><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
 							<td><?php echo esc_html( GCP_Format::price( (float) $shipment->storage_fees ) ); ?></td>
 							<td><?php echo esc_html( GCP_Format::price( (float) $shipment->total_price ) ); ?></td>

@@ -1,0 +1,129 @@
+<?php
+/**
+ * "Parcel received" customer e-mail.
+ *
+ * @package GestionnaireColisPro
+ */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Native WooCommerce e-mail sent to the customer when a parcel is received.
+ */
+class GCP_Email_Parcel_Received extends WC_Email {
+
+	/**
+	 * Parcel row being notified.
+	 *
+	 * @var object|null
+	 */
+	public $parcel = null;
+
+	/**
+	 * Sets up the e-mail.
+	 */
+	public function __construct() {
+		$this->id             = 'gcp_parcel_received';
+		$this->customer_email = true;
+		$this->title          = __( 'Colis réceptionné (Gestionnaire Colis Pro)', 'gestionnaire-colis-pro' );
+		$this->description    = __( 'Envoyé au client lorsqu’un de ses colis est enregistré à l’entrepôt.', 'gestionnaire-colis-pro' );
+		$this->template_html  = 'emails/gcp-parcel-received.php';
+		$this->template_plain = 'emails/plain/gcp-parcel-received.php';
+		$this->template_base  = GCP_PLUGIN_DIR . 'templates/';
+		$this->placeholders   = array(
+			'{parcel_reference}' => '',
+		);
+
+		add_action( 'gcp_send_parcel_received_email', array( $this, 'trigger' ), 10, 2 );
+
+		parent::__construct();
+	}
+
+	/**
+	 * Default subject.
+	 *
+	 * @return string
+	 */
+	public function get_default_subject() {
+		return __( '[{site_title}] Votre colis {parcel_reference} a bien été réceptionné', 'gestionnaire-colis-pro' );
+	}
+
+	/**
+	 * Default heading.
+	 *
+	 * @return string
+	 */
+	public function get_default_heading() {
+		return __( 'Colis {parcel_reference} réceptionné', 'gestionnaire-colis-pro' );
+	}
+
+	/**
+	 * Sends the e-mail for a parcel.
+	 *
+	 * @param int    $parcel_id Parcel ID.
+	 * @param object $client    Client row.
+	 * @return void
+	 */
+	public function trigger( $parcel_id, $client ) {
+		$this->setup_locale();
+
+		$parcel = GCP_Parcels::get( $parcel_id );
+		$user   = $client ? get_userdata( (int) $client->user_id ) : null;
+
+		if ( $parcel && $user ) {
+			$this->parcel                             = $parcel;
+			$this->recipient                          = $user->user_email;
+			$this->placeholders['{parcel_reference}'] = $parcel->reference;
+		}
+
+		if ( $this->parcel && $this->is_enabled() && $this->get_recipient() ) {
+			$this->send( $this->get_recipient(), $this->get_subject(), $this->get_content(), $this->get_headers(), $this->get_attachments() );
+		}
+
+		$this->restore_locale();
+	}
+
+	/**
+	 * HTML content.
+	 *
+	 * @return string
+	 */
+	public function get_content_html() {
+		return wc_get_template_html(
+			$this->template_html,
+			array(
+				'parcel'             => $this->parcel,
+				'email_heading'      => $this->get_heading(),
+				'additional_content' => $this->get_additional_content(),
+				'sent_to_admin'      => false,
+				'plain_text'         => false,
+				'email'              => $this,
+			),
+			'',
+			$this->template_base
+		);
+	}
+
+	/**
+	 * Plain text content.
+	 *
+	 * @return string
+	 */
+	public function get_content_plain() {
+		return wc_get_template_html(
+			$this->template_plain,
+			array(
+				'parcel'             => $this->parcel,
+				'email_heading'      => $this->get_heading(),
+				'additional_content' => $this->get_additional_content(),
+				'sent_to_admin'      => false,
+				'plain_text'         => true,
+				'email'              => $this,
+			),
+			'',
+			$this->template_base
+		);
+	}
+}

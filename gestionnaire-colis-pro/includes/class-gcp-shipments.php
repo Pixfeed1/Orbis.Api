@@ -104,22 +104,24 @@ class GCP_Shipments {
 			$total_price  += (float) $parcel->price;
 		}
 
-		$storage_fees = GCP_Storage::fees_for_parcels( $parcels );
-		$now          = current_time( 'mysql', true );
+		$storage_fees  = GCP_Storage::fees_for_parcels( $parcels );
+		$carrier_price = GCP_Carriers::price_for( $carrier, $total_weight );
+		$now           = current_time( 'mysql', true );
 
 		$inserted = $wpdb->insert(
 			$wpdb->prefix . 'gcp_shipments',
 			array(
-				'reference'    => '',
-				'client_id'    => (int) $client->id,
-				'carrier'      => $carrier,
-				'status'       => 'requested',
-				'total_weight' => round( $total_weight, 3 ),
-				'total_price'  => round( $total_price + $storage_fees, 2 ),
-				'storage_fees' => $storage_fees,
-				'requested_at' => $now,
-				'created_at'   => $now,
-				'updated_at'   => $now,
+				'reference'     => '',
+				'client_id'     => (int) $client->id,
+				'carrier'       => $carrier,
+				'status'        => 'requested',
+				'total_weight'  => round( $total_weight, 3 ),
+				'total_price'   => round( $total_price + $storage_fees + $carrier_price, 2 ),
+				'storage_fees'  => $storage_fees,
+				'carrier_price' => $carrier_price,
+				'requested_at'  => $now,
+				'created_at'    => $now,
+				'updated_at'    => $now,
 			)
 		);
 

@@ -4,7 +4,7 @@ Tags: woocommerce, colis, expedition, logistique, clients
 Requires at least: 6.2
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,6 +60,10 @@ Non. Cette décision est prise uniquement par l'administration lors de la récep
 
 Chaque colis bénéficie d'une période de stockage gratuite (15 jours par défaut). Au-delà, les frais sont calculés automatiquement par jour et par colis selon le montant défini dans les réglages.
 
+= Les documents sont-ils privés ? =
+
+Oui. Les documents clients et les photos de réception sont stockés dans un répertoire protégé (accès direct refusé, noms de fichiers aléatoires) et servis uniquement via un point de téléchargement authentifié : un client ne peut télécharger que ses propres documents marqués « visibles », les photos sont réservées à l'administration.
+
 = Les données sont-elles supprimées à la désinstallation ? =
 
 Par défaut, non. Ajoutez l'option `gcp_remove_data_on_uninstall` avec la valeur `yes` pour supprimer les tables et réglages lors de la désinstallation.
@@ -71,11 +75,12 @@ Par défaut, non. Ajoutez l'option `gcp_remove_data_on_uninstall` avec la valeur
 3. Formulaire de création d'un colis avec recherche du client et stock affiché.
 4. Espace client « Mes colis » dans Mon compte WooCommerce.
 
-= Les documents sont-ils privés ? =
-
-Oui. Les documents clients et les photos de réception sont stockés dans un répertoire protégé (accès direct refusé, noms de fichiers aléatoires) et servis uniquement via un point de téléchargement authentifié : un client ne peut télécharger que ses propres documents marqués « visibles », les photos sont réservées à l'administration.
-
 == Changelog ==
+
+= 1.3.0 =
+* Tarifs par transporteur (prix de base + prix par kg) configurables dans les réglages ; le transport est facturé sur la ligne de livraison native de la commande WooCommerce et inclus dans le total de l'expédition.
+* Demande d'expédition : tarif affiché pour chaque transporteur et estimation du total en direct (colis + stockage + transport) pendant la sélection ; les transporteurs incompatibles avec la sélection sont désactivés.
+* E-mails natifs WooCommerce : « Colis réceptionné » (client) et « Demande d'expédition » (gestionnaire, destinataires configurables) sont enregistrés dans WooCommerce → Réglages → E-mails, avec gabarits HTML/texte surchargeables dans le thème ; repli wp_mail sans WooCommerce.
 
 = 1.2.0 =
 * Paiement natif WooCommerce : chaque demande d'expédition crée une commande WooCommerce (une ligne de frais par colis, frais de stockage, transporteur en ligne de livraison) ; le client est redirigé vers la page de paiement standard et un e-mail de facture WooCommerce (avec lien de paiement) peut être envoyé automatiquement.

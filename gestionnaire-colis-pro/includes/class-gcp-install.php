@@ -118,6 +118,7 @@ CREATE TABLE {$wpdb->prefix}gcp_shipments (
 	total_weight DECIMAL(10,3) NOT NULL DEFAULT 0,
 	total_price DECIMAL(12,2) NOT NULL DEFAULT 0,
 	storage_fees DECIMAL(12,2) NOT NULL DEFAULT 0,
+	carrier_price DECIMAL(12,2) NOT NULL DEFAULT 0,
 	requested_at DATETIME NOT NULL,
 	shipped_at DATETIME NULL,
 	created_at DATETIME NOT NULL,

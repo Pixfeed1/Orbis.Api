@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Gestionnaire Colis Pro 1.2.0\n"
+"Project-Id-Version: Gestionnaire Colis Pro 1.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/gestionnaire-colis-pro\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-15T12:16:32+00:00\n"
+"POT-Creation-Date: 2026-08-15T12:42:28+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: gestionnaire-colis-pro\n"
@@ -41,16 +41,16 @@ msgid "https://github.com/pixfeed1"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:24
-#: includes/admin/class-gcp-admin-clients.php:513
-#: includes/admin/class-gcp-admin-clients.php:535
-#: includes/admin/class-gcp-admin-clients.php:560
-#: includes/admin/class-gcp-admin-clients.php:590
+#: includes/admin/class-gcp-admin-clients.php:518
+#: includes/admin/class-gcp-admin-clients.php:540
+#: includes/admin/class-gcp-admin-clients.php:565
+#: includes/admin/class-gcp-admin-clients.php:595
 #: includes/admin/class-gcp-admin-parcels.php:24
 #: includes/admin/class-gcp-admin-parcels.php:147
 #: includes/admin/class-gcp-admin-parcels.php:288
 #: includes/admin/class-gcp-admin-parcels.php:349
 #: includes/admin/class-gcp-admin-settings.php:24
-#: includes/admin/class-gcp-admin-settings.php:168
+#: includes/admin/class-gcp-admin-settings.php:180
 #: includes/class-gcp-ajax.php:35
 #: includes/class-gcp-downloads.php:120
 #: includes/class-gcp-downloads.php:137
@@ -84,7 +84,7 @@ msgid "Utilisateur WordPress"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:78
-#: includes/frontend/class-gcp-account.php:350
+#: includes/frontend/class-gcp-account.php:363
 msgid "— Sélectionner —"
 msgstr ""
 
@@ -94,14 +94,14 @@ msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:88
 #: includes/admin/class-gcp-admin-clients.php:368
-#: includes/frontend/class-gcp-account.php:199
-#: includes/frontend/class-gcp-account.php:215
+#: includes/frontend/class-gcp-account.php:207
+#: includes/frontend/class-gcp-account.php:224
 msgid "Référence"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:89
 #: includes/admin/class-gcp-admin-settings.php:99
-#: includes/admin/class-gcp-admin-settings.php:116
+#: includes/admin/class-gcp-admin-settings.php:120
 msgid "Nom"
 msgstr ""
 
@@ -238,11 +238,11 @@ msgstr ""
 #: includes/admin/class-gcp-admin-parcels.php:71
 #: includes/admin/class-gcp-admin-parcels.php:191
 #: includes/admin/class-gcp-admin.php:130
-#: includes/frontend/class-gcp-account.php:153
-#: includes/frontend/class-gcp-account.php:164
-#: includes/frontend/class-gcp-account.php:203
-#: includes/frontend/class-gcp-account.php:219
-#: includes/frontend/class-gcp-account.php:322
+#: includes/frontend/class-gcp-account.php:161
+#: includes/frontend/class-gcp-account.php:172
+#: includes/frontend/class-gcp-account.php:211
+#: includes/frontend/class-gcp-account.php:228
+#: includes/frontend/class-gcp-account.php:332
 msgid "Poids (kg)"
 msgstr ""
 
@@ -276,13 +276,13 @@ msgstr ""
 #: includes/admin/class-gcp-admin-clients.php:298
 #: includes/admin/class-gcp-admin-clients.php:346
 #: includes/admin/class-gcp-admin-clients.php:375
-#: includes/admin/class-gcp-admin-clients.php:412
+#: includes/admin/class-gcp-admin-clients.php:417
 #: includes/admin/class-gcp-admin-parcels.php:53
 #: includes/admin/class-gcp-admin-parcels.php:74
-#: includes/frontend/class-gcp-account.php:154
-#: includes/frontend/class-gcp-account.php:165
-#: includes/frontend/class-gcp-account.php:204
-#: includes/frontend/class-gcp-account.php:220
+#: includes/frontend/class-gcp-account.php:162
+#: includes/frontend/class-gcp-account.php:173
+#: includes/frontend/class-gcp-account.php:213
+#: includes/frontend/class-gcp-account.php:230
 msgid "Statut"
 msgstr ""
 
@@ -294,8 +294,8 @@ msgstr ""
 #: includes/admin/class-gcp-admin-parcels.php:102
 #: includes/admin/class-gcp-admin-parcels.php:204
 #: includes/admin/class-gcp-admin.php:127
-#: includes/frontend/class-gcp-account.php:166
-#: includes/frontend/class-gcp-account.php:341
+#: includes/frontend/class-gcp-account.php:174
+#: includes/frontend/class-gcp-account.php:354
 msgid "Oui"
 msgstr ""
 
@@ -303,7 +303,7 @@ msgstr ""
 #: includes/admin/class-gcp-admin-parcels.php:102
 #: includes/admin/class-gcp-admin-parcels.php:204
 #: includes/admin/class-gcp-admin.php:128
-#: includes/frontend/class-gcp-account.php:166
+#: includes/frontend/class-gcp-account.php:174
 msgid "Non"
 msgstr ""
 
@@ -312,23 +312,26 @@ msgid "Voir"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:352
-#: includes/admin/class-gcp-admin-clients.php:418
+#: includes/admin/class-gcp-admin-clients.php:423
 msgid "OK"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:369
-#: includes/frontend/class-gcp-account.php:200
-#: includes/frontend/class-gcp-account.php:216
+#: includes/frontend/class-gcp-account.php:208
+#: includes/frontend/class-gcp-account.php:225
 msgid "Demandée le"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:370
-#: includes/frontend/class-gcp-account.php:201
-#: includes/frontend/class-gcp-account.php:217
+#: includes/frontend/class-gcp-account.php:209
+#: includes/frontend/class-gcp-account.php:226
+#: templates/emails/gcp-shipment-requested.php:40
 msgid "Transporteur"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-clients.php:373
+#: includes/frontend/class-gcp-account.php:212
+#: includes/frontend/class-gcp-account.php:229
 msgid "Total"
 msgstr ""
 
@@ -341,85 +344,86 @@ msgid "Aucune expédition."
 msgstr ""
 
 #. translators: %s: order number.
-#: includes/admin/class-gcp-admin-clients.php:397
+#: includes/admin/class-gcp-admin-clients.php:402
 #, php-format
 msgid "n°%s"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:440
+#: includes/admin/class-gcp-admin-clients.php:445
 msgid "Titre"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:441
+#: includes/admin/class-gcp-admin-clients.php:446
 msgid "Ajouté le"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:442
+#: includes/admin/class-gcp-admin-clients.php:447
 msgid "Visibilité"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:443
+#: includes/admin/class-gcp-admin-clients.php:448
 msgid "Fichier"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:448
+#: includes/admin/class-gcp-admin-clients.php:453
 msgid "Aucun document."
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:454
+#: includes/admin/class-gcp-admin-clients.php:459
 msgid "Interne"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:454
+#: includes/admin/class-gcp-admin-clients.php:459
 #: includes/admin/class-gcp-admin-parcels.php:68
 msgid "Client"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:457
+#: includes/admin/class-gcp-admin-clients.php:462
 msgid "Télécharger"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:481
+#: includes/admin/class-gcp-admin-clients.php:486
 msgid "Date"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:482
+#: includes/admin/class-gcp-admin-clients.php:487
 msgid "Événement"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:483
+#: includes/admin/class-gcp-admin-clients.php:488
 msgid "Détail"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:484
+#: includes/admin/class-gcp-admin-clients.php:489
 msgid "Par"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:489
+#: includes/admin/class-gcp-admin-clients.php:494
 msgid "Aucune opération enregistrée."
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:525
+#: includes/admin/class-gcp-admin-clients.php:530
 msgid "Fiche client créée."
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:550
+#: includes/admin/class-gcp-admin-clients.php:555
 msgid "Fiche client mise à jour."
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:580
+#: includes/admin/class-gcp-admin-clients.php:585
 msgid "Document ajouté."
 msgstr ""
 
-#: includes/admin/class-gcp-admin-clients.php:607
+#: includes/admin/class-gcp-admin-clients.php:612
 msgid "Statut de l’expédition mis à jour."
 msgstr ""
 
 #: includes/admin/class-gcp-admin-parcels.php:43
 #: includes/admin/class-gcp-admin.php:66
 #: includes/admin/class-gcp-admin.php:67
-#: includes/frontend/class-gcp-account.php:202
-#: includes/frontend/class-gcp-account.php:218
+#: includes/frontend/class-gcp-account.php:210
+#: includes/frontend/class-gcp-account.php:227
+#: templates/emails/gcp-shipment-requested.php:44
 msgid "Colis"
 msgstr ""
 
@@ -465,17 +469,18 @@ msgstr ""
 
 #: includes/admin/class-gcp-admin-parcels.php:190
 #: includes/admin/class-gcp-admin.php:129
-#: includes/frontend/class-gcp-account.php:150
-#: includes/frontend/class-gcp-account.php:161
-#: includes/frontend/class-gcp-account.php:321
+#: includes/frontend/class-gcp-account.php:158
+#: includes/frontend/class-gcp-account.php:169
+#: includes/frontend/class-gcp-account.php:331
+#: templates/emails/gcp-parcel-received.php:35
 msgid "Numéro du colis"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-parcels.php:192
 #: includes/admin/class-gcp-admin.php:131
-#: includes/frontend/class-gcp-account.php:155
-#: includes/frontend/class-gcp-account.php:166
-#: includes/frontend/class-gcp-account.php:323
+#: includes/frontend/class-gcp-account.php:163
+#: includes/frontend/class-gcp-account.php:174
+#: includes/frontend/class-gcp-account.php:333
 msgid "Regroupement autorisé"
 msgstr ""
 
@@ -621,40 +626,50 @@ msgid "Un transporteur désactivé n’est plus proposé, ni à la réception de
 msgstr ""
 
 #: includes/admin/class-gcp-admin-settings.php:100
-#: includes/admin/class-gcp-admin-settings.php:120
+#: includes/admin/class-gcp-admin-settings.php:124
 msgid "Identifiant"
 msgstr ""
 
 #: includes/admin/class-gcp-admin-settings.php:101
-#: includes/admin/class-gcp-admin-settings.php:125
+#: includes/admin/class-gcp-admin-settings.php:128
+msgid "Prix de base"
+msgstr ""
+
+#: includes/admin/class-gcp-admin-settings.php:102
+#: includes/admin/class-gcp-admin-settings.php:132
+msgid "Prix par kg"
+msgstr ""
+
+#: includes/admin/class-gcp-admin-settings.php:103
+#: includes/admin/class-gcp-admin-settings.php:137
 msgid "Actif"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-settings.php:132
+#: includes/admin/class-gcp-admin-settings.php:144
 msgid "Notifications"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-settings.php:135
+#: includes/admin/class-gcp-admin-settings.php:147
 msgid "E-mails"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-settings.php:139
+#: includes/admin/class-gcp-admin-settings.php:151
 msgid "Prévenir le client à la réception d’un colis"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-settings.php:144
+#: includes/admin/class-gcp-admin-settings.php:156
 msgid "Prévenir l’administrateur lors d’une demande d’expédition"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-settings.php:149
+#: includes/admin/class-gcp-admin-settings.php:161
 msgid "Envoyer la facture WooCommerce (avec lien de paiement) lors d’une demande d’expédition"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-settings.php:155
+#: includes/admin/class-gcp-admin-settings.php:167
 msgid "Enregistrer les réglages"
 msgstr ""
 
-#: includes/admin/class-gcp-admin-settings.php:225
+#: includes/admin/class-gcp-admin-settings.php:241
 msgid "Réglages enregistrés."
 msgstr ""
 
@@ -709,13 +724,13 @@ msgid "Photo introuvable."
 msgstr ""
 
 #. translators: 1: site name, 2: parcel reference.
-#: includes/class-gcp-emails.php:48
+#: includes/class-gcp-emails.php:134
 #, php-format
 msgid "[%1$s] Votre colis %2$s a bien été réceptionné"
 msgstr ""
 
 #. translators: 1: parcel reference, 2: weight, 3: tracking number, 4: free storage days.
-#: includes/class-gcp-emails.php:55
+#: includes/class-gcp-emails.php:141
 #, php-format
 msgid ""
 "Bonjour,\n"
@@ -728,13 +743,13 @@ msgid ""
 msgstr ""
 
 #. translators: 1: shipment reference, 2: client reference.
-#: includes/class-gcp-emails.php:85
+#: includes/class-gcp-emails.php:167
 #, php-format
 msgid "Nouvelle demande d’expédition %1$s (client %2$s)"
 msgstr ""
 
 #. translators: 1: shipment reference, 2: client reference, 3: parcels count, 4: carrier.
-#: includes/class-gcp-emails.php:92
+#: includes/class-gcp-emails.php:174
 #, php-format
 msgid ""
 "Une nouvelle demande d’expédition %1$s vient d’être créée par le client %2$s.\n"
@@ -899,122 +914,264 @@ msgstr ""
 msgid "Le transporteur choisi n’est pas autorisé pour le colis %s."
 msgstr ""
 
-#: includes/class-gcp-shipments.php:127
+#: includes/class-gcp-shipments.php:129
 msgid "Impossible de créer la demande d’expédition."
 msgstr ""
 
 #. translators: 1: shipment reference, 2: number of parcels, 3: carrier name.
-#: includes/class-gcp-shipments.php:158
+#: includes/class-gcp-shipments.php:160
 #, php-format
 msgid "Demande d’expédition %1$s créée (%2$d colis, transporteur %3$s)."
 msgstr ""
 
-#: includes/class-gcp-shipments.php:257
+#: includes/class-gcp-shipments.php:259
 msgid "Statut d’expédition invalide."
 msgstr ""
 
-#: includes/class-gcp-shipments.php:262
+#: includes/class-gcp-shipments.php:264
 msgid "Expédition introuvable."
 msgstr ""
 
 #. translators: 1: shipment reference, 2: old status, 3: new status.
-#: includes/class-gcp-shipments.php:306
+#: includes/class-gcp-shipments.php:308
 #, php-format
 msgid "Expédition %1$s : statut « %2$s » → « %3$s »."
 msgstr ""
 
+#: includes/emails/class-gcp-email-parcel-received.php:30
+msgid "Colis réceptionné (Gestionnaire Colis Pro)"
+msgstr ""
+
+#: includes/emails/class-gcp-email-parcel-received.php:31
+msgid "Envoyé au client lorsqu’un de ses colis est enregistré à l’entrepôt."
+msgstr ""
+
+#: includes/emails/class-gcp-email-parcel-received.php:50
+msgid "[{site_title}] Votre colis {parcel_reference} a bien été réceptionné"
+msgstr ""
+
+#: includes/emails/class-gcp-email-parcel-received.php:59
+msgid "Colis {parcel_reference} réceptionné"
+msgstr ""
+
+#: includes/emails/class-gcp-email-shipment-requested.php:37
+msgid "Demande d’expédition (Gestionnaire Colis Pro)"
+msgstr ""
+
+#: includes/emails/class-gcp-email-shipment-requested.php:38
+msgid "Envoyé au gestionnaire lorsqu’un client crée une demande d’expédition."
+msgstr ""
+
+#: includes/emails/class-gcp-email-shipment-requested.php:64
+msgid "Destinataire(s)"
+msgstr ""
+
+#. translators: %s: WP admin email.
+#: includes/emails/class-gcp-email-shipment-requested.php:67
+#, php-format
+msgid "Adresses séparées par des virgules. Par défaut : %s."
+msgstr ""
+
+#: includes/emails/class-gcp-email-shipment-requested.php:80
+msgid "[{site_title}] Nouvelle demande d’expédition {shipment_reference} (client {client_reference})"
+msgstr ""
+
+#: includes/emails/class-gcp-email-shipment-requested.php:89
+msgid "Nouvelle demande d’expédition {shipment_reference}"
+msgstr ""
+
 #: includes/frontend/class-gcp-account.php:84
-#: includes/frontend/class-gcp-account.php:127
+#: includes/frontend/class-gcp-account.php:135
 msgid "Mes colis"
 msgstr ""
 
 #: includes/frontend/class-gcp-account.php:85
-#: includes/frontend/class-gcp-account.php:182
+#: includes/frontend/class-gcp-account.php:190
 msgid "Mes expéditions"
 msgstr ""
 
 #: includes/frontend/class-gcp-account.php:86
-#: includes/frontend/class-gcp-account.php:253
+#: includes/frontend/class-gcp-account.php:263
 msgid "Mes documents"
 msgstr ""
 
 #: includes/frontend/class-gcp-account.php:87
-#: includes/frontend/class-gcp-account.php:290
+#: includes/frontend/class-gcp-account.php:300
 msgid "Demande d’expédition"
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:130
-#: includes/frontend/class-gcp-account.php:185
-#: includes/frontend/class-gcp-account.php:256
-#: includes/frontend/class-gcp-account.php:293
+#: includes/frontend/class-gcp-account.php:138
+#: includes/frontend/class-gcp-account.php:193
+#: includes/frontend/class-gcp-account.php:266
+#: includes/frontend/class-gcp-account.php:303
 msgid "Aucune fiche client n’est associée à votre compte pour le moment."
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:136
+#: includes/frontend/class-gcp-account.php:144
 msgid "Votre référence client :"
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:143
+#: includes/frontend/class-gcp-account.php:151
 msgid "Aucun colis pour le moment."
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:151
-#: includes/frontend/class-gcp-account.php:162
+#: includes/frontend/class-gcp-account.php:159
+#: includes/frontend/class-gcp-account.php:170
 msgid "Date de réception"
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:152
-#: includes/frontend/class-gcp-account.php:163
+#: includes/frontend/class-gcp-account.php:160
+#: includes/frontend/class-gcp-account.php:171
+#: templates/emails/gcp-parcel-received.php:39
 msgid "Numéro de suivi"
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:192
+#: includes/frontend/class-gcp-account.php:200
 msgid "Aucune expédition pour le moment."
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:205
-#: includes/frontend/class-gcp-account.php:221
+#: includes/frontend/class-gcp-account.php:214
+#: includes/frontend/class-gcp-account.php:231
 msgid "Paiement"
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:223
+#: includes/frontend/class-gcp-account.php:233
 msgid "Payer"
 msgstr ""
 
 #. translators: %s: order number.
-#: includes/frontend/class-gcp-account.php:229
+#: includes/frontend/class-gcp-account.php:239
 #, php-format
 msgid "Commande n°%s"
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:263
+#: includes/frontend/class-gcp-account.php:273
 msgid "Aucun document pour le moment."
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:298
+#: includes/frontend/class-gcp-account.php:308
 msgid "Votre demande d’expédition a bien été enregistrée. Nous revenons vers vous rapidement."
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:308
+#: includes/frontend/class-gcp-account.php:318
 msgid "Aucun colis disponible pour une expédition."
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:316
+#: includes/frontend/class-gcp-account.php:326
 msgid "Sélectionnez les colis à expédier :"
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:341
+#: includes/frontend/class-gcp-account.php:354
 msgid "Non — ce colis doit être expédié seul"
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:348
+#: includes/frontend/class-gcp-account.php:361
 msgid "Transporteur souhaité :"
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:356
+#. translators: 1: carrier name, 2: base price, 3: price per kg.
+#: includes/frontend/class-gcp-account.php:377
+#, php-format
+msgid "%1$s — %2$s + %3$s/kg"
+msgstr ""
+
+#: includes/frontend/class-gcp-account.php:388
+msgid "Total estimé :"
+msgstr ""
+
+#: includes/frontend/class-gcp-account.php:390
+msgid "(colis + frais de stockage + transport — confirmé sur la page de paiement)"
+msgstr ""
+
+#: includes/frontend/class-gcp-account.php:392
 msgid "Seuls les transporteurs compatibles avec l’ensemble des colis sélectionnés pourront être retenus."
 msgstr ""
 
-#: includes/frontend/class-gcp-account.php:358
+#: includes/frontend/class-gcp-account.php:394
 msgid "Envoyer la demande"
+msgstr ""
+
+#: templates/emails/gcp-parcel-received.php:21
+#: templates/emails/plain/gcp-parcel-received.php:17
+msgid "Bonjour,"
+msgstr ""
+
+#. translators: %s: parcel reference.
+#: templates/emails/gcp-parcel-received.php:27
+#: templates/emails/plain/gcp-parcel-received.php:20
+#, php-format
+msgid "Nous avons bien réceptionné votre colis %s à l’entrepôt. Il est désormais visible dans votre espace client, rubrique « Mes colis »."
+msgstr ""
+
+#: templates/emails/gcp-parcel-received.php:43
+msgid "Poids"
+msgstr ""
+
+#: templates/emails/gcp-parcel-received.php:47
+msgid "Stockage gratuit"
+msgstr ""
+
+#. translators: %d: number of free storage days.
+#: templates/emails/gcp-parcel-received.php:52
+#, php-format
+msgid "%d jour"
+msgid_plural "%d jours"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: 1: shipment reference, 2: client reference, 3: client name.
+#: templates/emails/gcp-shipment-requested.php:30
+#: templates/emails/plain/gcp-shipment-requested.php:22
+#, php-format
+msgid "La demande d’expédition %1$s vient d’être créée par le client %2$s (%3$s)."
+msgstr ""
+
+#: templates/emails/gcp-shipment-requested.php:48
+msgid "Poids total"
+msgstr ""
+
+#: templates/emails/gcp-shipment-requested.php:52
+msgid "Total (colis + stockage + transport)"
+msgstr ""
+
+#: templates/emails/gcp-shipment-requested.php:67
+msgid "Ouvrir la fiche client"
+msgstr ""
+
+#: templates/emails/plain/gcp-parcel-received.php:22
+msgid "Numéro du colis :"
+msgstr ""
+
+#: templates/emails/plain/gcp-parcel-received.php:23
+msgid "Numéro de suivi :"
+msgstr ""
+
+#: templates/emails/plain/gcp-parcel-received.php:24
+msgid "Poids :"
+msgstr ""
+
+#. translators: %d: number of free storage days.
+#: templates/emails/plain/gcp-parcel-received.php:26
+#, php-format
+msgid "Stockage gratuit : %d jours"
+msgstr ""
+
+#: templates/emails/plain/gcp-shipment-requested.php:24
+msgid "Transporteur :"
+msgstr ""
+
+#: templates/emails/plain/gcp-shipment-requested.php:25
+msgid "Colis :"
+msgstr ""
+
+#: templates/emails/plain/gcp-shipment-requested.php:26
+msgid "Poids total :"
+msgstr ""
+
+#: templates/emails/plain/gcp-shipment-requested.php:27
+msgid "Total :"
+msgstr ""
+
+#: templates/emails/plain/gcp-shipment-requested.php:29
+msgid "Fiche client :"
 msgstr ""

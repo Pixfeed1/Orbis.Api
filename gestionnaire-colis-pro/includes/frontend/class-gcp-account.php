@@ -97,6 +97,14 @@ class GCP_Account {
 	public static function enqueue_assets() {
 		if ( function_exists( 'is_account_page' ) && is_account_page() ) {
 			wp_enqueue_style( 'gcp-front', GCP_PLUGIN_URL . 'assets/css/front.css', array(), GCP_VERSION );
+			wp_enqueue_script( 'gcp-front', GCP_PLUGIN_URL . 'assets/js/front.js', array(), GCP_VERSION, true );
+			wp_localize_script(
+				'gcp-front',
+				'gcpFront',
+				array(
+					'currencySymbol' => function_exists( 'get_woocommerce_currency_symbol' ) ? html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOTES, 'UTF-8' ) : '€',
+				)
+			);
 		}
 	}
 
@@ -201,6 +209,7 @@ class GCP_Account {
 					<th><?php esc_html_e( 'Transporteur', 'gestionnaire-colis-pro' ); ?></th>
 					<th><?php esc_html_e( 'Colis', 'gestionnaire-colis-pro' ); ?></th>
 					<th><?php esc_html_e( 'Poids (kg)', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Total', 'gestionnaire-colis-pro' ); ?></th>
 					<th><?php esc_html_e( 'Statut', 'gestionnaire-colis-pro' ); ?></th>
 					<th><?php esc_html_e( 'Paiement', 'gestionnaire-colis-pro' ); ?></th>
 				</tr>
@@ -217,6 +226,7 @@ class GCP_Account {
 						<td data-title="<?php esc_attr_e( 'Transporteur', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Carriers::name( $shipment->carrier ) ); ?></td>
 						<td data-title="<?php esc_attr_e( 'Colis', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( implode( ', ', $refs ) ); ?></td>
 						<td data-title="<?php esc_attr_e( 'Poids (kg)', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Total', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Format::price( (float) $shipment->total_price ) ); ?></td>
 						<td data-title="<?php esc_attr_e( 'Statut', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Shipments::status_label( $shipment->status ) ); ?></td>
 						<td data-title="<?php esc_attr_e( 'Paiement', 'gestionnaire-colis-pro' ); ?>">
 							<?php if ( $order && $order->needs_payment() ) : ?>
@@ -334,6 +344,9 @@ class GCP_Account {
 									id="gcp-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"
 									data-grouping="<?php echo $parcel->allow_grouping ? '1' : '0'; ?>"
 									data-carriers="<?php echo esc_attr( implode( ',', GCP_Parcels::allowed_carrier_slugs( $parcel ) ) ); ?>"
+									data-weight="<?php echo esc_attr( (string) (float) $parcel->weight ); ?>"
+									data-price="<?php echo esc_attr( (string) (float) $parcel->price ); ?>"
+									data-storage="<?php echo esc_attr( (string) GCP_Storage::fees_for_parcel( $parcel ) ); ?>"
 								/>
 							</td>
 							<td><label for="gcp-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></label></td>
@@ -349,9 +362,32 @@ class GCP_Account {
 				<select name="gcp_carrier" id="gcp-carrier" required>
 					<option value=""><?php esc_html_e( '— Sélectionner —', 'gestionnaire-colis-pro' ); ?></option>
 					<?php foreach ( GCP_Carriers::all( true ) as $carrier ) : ?>
-						<option value="<?php echo esc_attr( $carrier['slug'] ); ?>"><?php echo esc_html( $carrier['name'] ); ?></option>
+						<?php
+						$base = isset( $carrier['price_base'] ) ? (float) $carrier['price_base'] : 0;
+						$rate = isset( $carrier['price_per_kg'] ) ? (float) $carrier['price_per_kg'] : 0;
+						?>
+						<option
+							value="<?php echo esc_attr( $carrier['slug'] ); ?>"
+							data-base="<?php echo esc_attr( (string) $base ); ?>"
+							data-rate="<?php echo esc_attr( (string) $rate ); ?>"
+						>
+							<?php
+							printf(
+								/* translators: 1: carrier name, 2: base price, 3: price per kg. */
+								esc_html__( '%1$s — %2$s + %3$s/kg', 'gestionnaire-colis-pro' ),
+								esc_html( $carrier['name'] ),
+								esc_html( GCP_Format::price( $base ) ),
+								esc_html( GCP_Format::price( $rate ) )
+							);
+							?>
+						</option>
 					<?php endforeach; ?>
 				</select>
+			</p>
+			<p id="gcp-estimate" class="gcp-estimate" hidden>
+				<strong><?php esc_html_e( 'Total estimé :', 'gestionnaire-colis-pro' ); ?></strong>
+				<span id="gcp-estimate-amount"></span>
+				<span class="gcp-note"><?php esc_html_e( '(colis + frais de stockage + transport — confirmé sur la page de paiement)', 'gestionnaire-colis-pro' ); ?></span>
 			</p>
 			<p class="gcp-note"><?php esc_html_e( 'Seuls les transporteurs compatibles avec l’ensemble des colis sélectionnés pourront être retenus.', 'gestionnaire-colis-pro' ); ?></p>
 

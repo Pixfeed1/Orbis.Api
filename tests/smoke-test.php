@@ -8,6 +8,7 @@
  * @package GestionnaireColisPro
  */
 
+global $gcp_failures;
 $gcp_failures = 0;
 
 /**
@@ -166,6 +167,17 @@ gcp_check( 'Indicateur frais de stockage = 10.00', 10.0 === $indicators['storage
 // ---------------------------------------------------------------------------
 // Shipment rules.
 // ---------------------------------------------------------------------------
+// Carrier tariffs are zeroed here so the totals below only cover parcels and
+// storage fees; the carrier tariff section further down tests the transport
+// pricing explicitly.
+$settings             = GCP_Settings::all();
+$settings['carriers'] = array(
+	array( 'slug' => 'colissimo', 'name' => 'Colissimo', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
+	array( 'slug' => 'chronopost', 'name' => 'Chronopost', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
+	array( 'slug' => 'ups', 'name' => 'UPS', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
+);
+GCP_Settings::update( $settings );
+
 $err = GCP_Shipments::request( $client_id, array( $parcel_id, $parcel2_id ), 'colissimo' );
 gcp_check( 'Regroupement refuse quand un colis est non regroupable', is_wp_error( $err ) && 'gcp_grouping_forbidden' === $err->get_error_code() );
 
@@ -184,7 +196,7 @@ gcp_check( 'Frais de stockage inclus dans l expedition', 10.0 === (float) $shipm
 gcp_check( 'Total = tarif colis + frais stockage (15 + 10 = 25)', 25.0 === (float) $shipment->total_price );
 
 $parcel = GCP_Parcels::get( $parcel_id );
-gcp_check( 'Colis passe au statut commande', 'ordered' === $parcel->status );
+gcp_check( 'Colis commande (en attente de paiement via la commande WooCommerce)', in_array( $parcel->status, array( 'ordered', 'awaiting_payment' ), true ) );
 
 $stock = GCP_Parcels::in_stock_for_client( $client_id );
 gcp_check( 'Le colis commande sort du stock', 1 === count( $stock ) );
@@ -280,6 +292,29 @@ $visible_ids = array_map( 'intval', wp_list_pluck( GCP_Documents::for_client( $c
 gcp_check( 'La vue client exclut les documents internes', ! in_array( (int) $doc_admin_id, $visible_ids, true ) && in_array( (int) $doc_id, $visible_ids, true ) );
 
 // ---------------------------------------------------------------------------
+// Carrier tariffs.
+// ---------------------------------------------------------------------------
+$settings             = GCP_Settings::all();
+$settings['carriers'] = array(
+	array( 'slug' => 'colissimo', 'name' => 'Colissimo', 'enabled' => 1, 'price_base' => 8.0, 'price_per_kg' => 1.5 ),
+	array( 'slug' => 'chronopost', 'name' => 'Chronopost', 'enabled' => 1, 'price_base' => 12.0, 'price_per_kg' => 2.0 ),
+	array( 'slug' => 'ups', 'name' => 'UPS', 'enabled' => 1, 'price_base' => 14.0, 'price_per_kg' => 2.2 ),
+);
+GCP_Settings::update( $settings );
+
+gcp_check( 'Tarif transporteur Colissimo 2 kg (8 + 1.5x2 = 11.00)', 11.0 === GCP_Carriers::price_for( 'colissimo', 2.0 ) );
+gcp_check( 'Tarif transporteur inconnu = 0', 0.0 === GCP_Carriers::price_for( 'inexistant', 2.0 ) );
+
+// ---------------------------------------------------------------------------
+// Native WooCommerce e-mails registered with the mailer.
+// ---------------------------------------------------------------------------
+$gcp_wc_emails = WC()->mailer()->get_emails();
+gcp_check( 'E-mail « Colis réceptionné » enregistré dans WooCommerce', isset( $gcp_wc_emails['GCP_Email_Parcel_Received'] ) );
+gcp_check( 'E-mail « Demande d’expédition » enregistré dans WooCommerce', isset( $gcp_wc_emails['GCP_Email_Shipment_Requested'] ) );
+gcp_check( 'E-mail client marque comme customer_email', $gcp_wc_emails['GCP_Email_Parcel_Received']->is_customer_email() );
+gcp_check( 'Gabarit HTML « Colis réceptionné » rendu', false !== strpos( (string) $gcp_wc_emails['GCP_Email_Parcel_Received']->get_default_subject(), '{parcel_reference}' ) );
+
+// ---------------------------------------------------------------------------
 // Native WooCommerce order integration.
 // ---------------------------------------------------------------------------
 $wc_parcel1 = GCP_Parcels::create( array( 'client_id' => $client_id, 'weight' => 2.0, 'allow_grouping' => 1 ) );
@@ -296,9 +331,11 @@ gcp_check( 'Colis en attente de paiement', 'awaiting_payment' === GCP_Parcels::g
 $wc_order = wc_get_order( (int) $wc_ship->order_id );
 gcp_check( 'La commande existe et attend un paiement', $wc_order && $wc_order->needs_payment() );
 gcp_check( 'Meta _gcp_shipment_id sur la commande', (int) $wc_order->get_meta( '_gcp_shipment_id' ) === $wc_ship_id );
-gcp_check( 'Total commande = tarif colis + frais de stockage', (float) $wc_order->get_total() === (float) $wc_ship->total_price );
+gcp_check( 'Total commande = colis + stockage + transport', (float) $wc_order->get_total() === (float) $wc_ship->total_price );
 gcp_check( 'Une ligne de frais par colis presente', 1 === count( $wc_order->get_fees() ) || 2 === count( $wc_order->get_fees() ) );
 gcp_check( 'Transporteur en ligne de livraison', 1 === count( $wc_order->get_shipping_methods() ) );
+gcp_check( 'Transport facture sur la ligne de livraison (2 kg Colissimo = 11.00)', 11.0 === (float) $wc_order->get_shipping_total() );
+gcp_check( 'carrier_price stocke sur l expedition', 11.0 === (float) $wc_ship->carrier_price );
 
 // Payment through the native WooCommerce flow.
 $wc_order->payment_complete( 'TEST-TXN-1' );

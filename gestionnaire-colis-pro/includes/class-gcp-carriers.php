@@ -61,6 +61,49 @@ class GCP_Carriers {
 	}
 
 	/**
+	 * Returns a carrier row by slug.
+	 *
+	 * @param string $slug Carrier slug.
+	 * @return array|null
+	 */
+	public static function get( $slug ) {
+		foreach ( self::all() as $carrier ) {
+			if ( $carrier['slug'] === $slug ) {
+				return $carrier;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Computes the transport price of a carrier for a total weight.
+	 *
+	 * Price = base price + (price per kg x weight).
+	 *
+	 * @param string $slug   Carrier slug.
+	 * @param float  $weight Total weight in kg.
+	 * @return float
+	 */
+	public static function price_for( $slug, $weight ) {
+		$carrier = self::get( $slug );
+
+		$base = $carrier && isset( $carrier['price_base'] ) ? (float) $carrier['price_base'] : 0.0;
+		$rate = $carrier && isset( $carrier['price_per_kg'] ) ? (float) $carrier['price_per_kg'] : 0.0;
+
+		$price = $base + ( $rate * max( 0, (float) $weight ) );
+
+		/**
+		 * Filters the transport price of a carrier.
+		 *
+		 * @param float  $price  Computed price.
+		 * @param string $slug   Carrier slug.
+		 * @param float  $weight Total weight in kg.
+		 */
+		return (float) apply_filters( 'gcp_carrier_price', round( $price, 2 ), $slug, (float) $weight );
+	}
+
+	/**
 	 * Returns the enabled carriers allowed for a given parcel.
 	 *
 	 * @param object $parcel Parcel row.

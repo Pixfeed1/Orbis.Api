@@ -98,6 +98,8 @@ class GCP_Admin_Settings {
 						<tr>
 							<th><?php esc_html_e( 'Nom', 'gestionnaire-colis-pro' ); ?></th>
 							<th><?php esc_html_e( 'Identifiant', 'gestionnaire-colis-pro' ); ?></th>
+							<th><?php esc_html_e( 'Prix de base', 'gestionnaire-colis-pro' ); ?></th>
+							<th><?php esc_html_e( 'Prix par kg', 'gestionnaire-colis-pro' ); ?></th>
 							<th><?php esc_html_e( 'Actif', 'gestionnaire-colis-pro' ); ?></th>
 						</tr>
 					</thead>
@@ -105,9 +107,11 @@ class GCP_Admin_Settings {
 						<?php
 						$carriers   = is_array( $settings['carriers'] ) ? $settings['carriers'] : array();
 						$carriers[] = array(
-							'slug'    => '',
-							'name'    => '',
-							'enabled' => 1,
+							'slug'         => '',
+							'name'         => '',
+							'enabled'      => 1,
+							'price_base'   => '',
+							'price_per_kg' => '',
 						); // Extra empty row to add a carrier.
 						foreach ( $carriers as $i => $carrier ) :
 							?>
@@ -119,6 +123,14 @@ class GCP_Admin_Settings {
 								<td>
 									<label class="screen-reader-text" for="gcp-carrier-s-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Identifiant', 'gestionnaire-colis-pro' ); ?></label>
 									<input type="text" id="gcp-carrier-s-<?php echo esc_attr( (string) $i ); ?>" name="carrier_slug[]" value="<?php echo esc_attr( $carrier['slug'] ); ?>" />
+								</td>
+								<td>
+									<label class="screen-reader-text" for="gcp-carrier-b-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Prix de base', 'gestionnaire-colis-pro' ); ?></label>
+									<input type="number" step="0.01" min="0" id="gcp-carrier-b-<?php echo esc_attr( (string) $i ); ?>" name="carrier_price_base[]" value="<?php echo esc_attr( isset( $carrier['price_base'] ) ? (string) $carrier['price_base'] : '' ); ?>" />
+								</td>
+								<td>
+									<label class="screen-reader-text" for="gcp-carrier-k-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Prix par kg', 'gestionnaire-colis-pro' ); ?></label>
+									<input type="number" step="0.01" min="0" id="gcp-carrier-k-<?php echo esc_attr( (string) $i ); ?>" name="carrier_price_per_kg[]" value="<?php echo esc_attr( isset( $carrier['price_per_kg'] ) ? (string) $carrier['price_per_kg'] : '' ); ?>" />
 								</td>
 								<td>
 									<input type="hidden" name="carrier_enabled[<?php echo esc_attr( (string) $i ); ?>]" value="<?php echo empty( $carrier['enabled'] ) ? '0' : '1'; ?>" class="gcp-carrier-enabled-value" />
@@ -196,6 +208,8 @@ class GCP_Admin_Settings {
 		$names    = isset( $_POST['carrier_name'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['carrier_name'] ) ) : array();
 		$slugs    = isset( $_POST['carrier_slug'] ) ? array_map( 'sanitize_key', wp_unslash( (array) $_POST['carrier_slug'] ) ) : array();
 		$enabled  = isset( $_POST['carrier_enabled'] ) ? array_map( 'absint', wp_unslash( (array) $_POST['carrier_enabled'] ) ) : array();
+		$bases    = isset( $_POST['carrier_price_base'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['carrier_price_base'] ) ) : array();
+		$rates    = isset( $_POST['carrier_price_per_kg'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['carrier_price_per_kg'] ) ) : array();
 
 		foreach ( $names as $i => $name ) {
 			$slug = isset( $slugs[ $i ] ) ? $slugs[ $i ] : '';
@@ -209,9 +223,11 @@ class GCP_Admin_Settings {
 				$name = ucfirst( $slug );
 			}
 			$carriers[] = array(
-				'slug'    => $slug,
-				'name'    => $name,
-				'enabled' => empty( $enabled[ $i ] ) ? 0 : 1,
+				'slug'         => $slug,
+				'name'         => $name,
+				'enabled'      => empty( $enabled[ $i ] ) ? 0 : 1,
+				'price_base'   => isset( $bases[ $i ] ) ? max( 0, GCP_Parcels::to_float( $bases[ $i ] ) ) : 0,
+				'price_per_kg' => isset( $rates[ $i ] ) ? max( 0, GCP_Parcels::to_float( $rates[ $i ] ) ) : 0,
 			);
 		}
 		$settings['carriers'] = $carriers;

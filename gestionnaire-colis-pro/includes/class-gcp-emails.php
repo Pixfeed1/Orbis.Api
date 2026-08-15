@@ -2,6 +2,11 @@
 /**
  * E-mail notifications.
  *
+ * With WooCommerce active, notifications are real WooCommerce e-mails
+ * (registered in WooCommerce → Settings → E-mails, using the shop's
+ * templates and colors). Without WooCommerce, a plain wp_mail() fallback
+ * keeps the notifications working.
+ *
  * @package GestionnaireColisPro
  */
 
@@ -10,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Sends transactional e-mails on parcel and shipment events.
+ * Routes plugin events to WooCommerce e-mails (or a wp_mail fallback).
  */
 class GCP_Emails {
 
@@ -20,8 +25,34 @@ class GCP_Emails {
 	 * @return void
 	 */
 	public static function init() {
+		add_filter( 'woocommerce_email_classes', array( __CLASS__, 'register_email_classes' ) );
 		add_action( 'gcp_parcel_created', array( __CLASS__, 'parcel_created' ), 10, 2 );
 		add_action( 'gcp_shipment_requested', array( __CLASS__, 'shipment_requested' ), 10, 3 );
+	}
+
+	/**
+	 * Registers the plugin e-mails with the WooCommerce mailer.
+	 *
+	 * @param array $emails Registered e-mail classes.
+	 * @return array
+	 */
+	public static function register_email_classes( $emails ) {
+		require_once GCP_PLUGIN_DIR . 'includes/emails/class-gcp-email-parcel-received.php';
+		require_once GCP_PLUGIN_DIR . 'includes/emails/class-gcp-email-shipment-requested.php';
+
+		$emails['GCP_Email_Parcel_Received']    = new GCP_Email_Parcel_Received();
+		$emails['GCP_Email_Shipment_Requested'] = new GCP_Email_Shipment_Requested();
+
+		return $emails;
+	}
+
+	/**
+	 * Whether the WooCommerce mailer can be used.
+	 *
+	 * @return bool
+	 */
+	private static function wc_mailer() {
+		return function_exists( 'WC' ) && is_callable( array( WC(), 'mailer' ) );
 	}
 
 	/**
@@ -36,6 +67,61 @@ class GCP_Emails {
 			return;
 		}
 
+		if ( self::wc_mailer() ) {
+			WC()->mailer(); // Loads the e-mail classes so their hooks are live.
+
+			/**
+			 * Fires to send the native "parcel received" WooCommerce e-mail.
+			 *
+			 * @param int    $parcel_id Parcel ID.
+			 * @param object $client    Client row.
+			 */
+			do_action( 'gcp_send_parcel_received_email', $parcel_id, $client );
+
+			return;
+		}
+
+		self::parcel_created_fallback( $parcel_id, $client );
+	}
+
+	/**
+	 * Notifies the shop manager that a shipment has been requested.
+	 *
+	 * @param int    $shipment_id Shipment ID.
+	 * @param object $client      Client row.
+	 * @param array  $parcel_ids  Parcel IDs.
+	 * @return void
+	 */
+	public static function shipment_requested( $shipment_id, $client, $parcel_ids ) {
+		if ( ! GCP_Settings::get( 'notify_admin_on_request', 1 ) ) {
+			return;
+		}
+
+		if ( self::wc_mailer() ) {
+			WC()->mailer();
+
+			/**
+			 * Fires to send the native "shipment requested" WooCommerce e-mail.
+			 *
+			 * @param int    $shipment_id Shipment ID.
+			 * @param object $client      Client row.
+			 */
+			do_action( 'gcp_send_shipment_requested_email', $shipment_id, $client );
+
+			return;
+		}
+
+		self::shipment_requested_fallback( $shipment_id, $client, $parcel_ids );
+	}
+
+	/**
+	 * Plain wp_mail fallback used when WooCommerce is not active.
+	 *
+	 * @param int    $parcel_id Parcel ID.
+	 * @param object $client    Client row.
+	 * @return void
+	 */
+	private static function parcel_created_fallback( $parcel_id, $client ) {
 		$user   = get_userdata( (int) $client->user_id );
 		$parcel = GCP_Parcels::get( $parcel_id );
 
@@ -63,18 +149,14 @@ class GCP_Emails {
 	}
 
 	/**
-	 * Notifies the shop administrator that a shipment has been requested.
+	 * Plain wp_mail fallback used when WooCommerce is not active.
 	 *
 	 * @param int    $shipment_id Shipment ID.
 	 * @param object $client      Client row.
 	 * @param array  $parcel_ids  Parcel IDs.
 	 * @return void
 	 */
-	public static function shipment_requested( $shipment_id, $client, $parcel_ids ) {
-		if ( ! GCP_Settings::get( 'notify_admin_on_request', 1 ) ) {
-			return;
-		}
-
+	private static function shipment_requested_fallback( $shipment_id, $client, $parcel_ids ) {
 		$shipment = GCP_Shipments::get( $shipment_id );
 		if ( ! $shipment ) {
 			return;

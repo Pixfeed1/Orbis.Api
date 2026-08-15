@@ -118,12 +118,12 @@ class GCP_Orders {
 			$order->add_item( $fee );
 		}
 
-		// The chosen carrier appears as the native shipping line; its price
-		// will come from the future carriers/pricing module.
+		// The chosen carrier appears as the native shipping line, priced from
+		// the carrier tariff (base + per-kg) configured in the settings.
 		$shipping_item = new WC_Order_Item_Shipping();
 		$shipping_item->set_method_title( GCP_Carriers::name( $shipment->carrier ) );
 		$shipping_item->set_method_id( 'gcp_carrier' );
-		$shipping_item->set_total( '0' );
+		$shipping_item->set_total( (string) $shipment->carrier_price );
 		$order->add_item( $shipping_item );
 
 		$order->update_meta_data( '_gcp_shipment_id', (int) $shipment->id );
