@@ -14,16 +14,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 echo esc_html( wp_strip_all_tags( $email_heading ) ) . "\n\n";
 
-echo esc_html__( 'Bonjour,', 'gestionnaire-colis-pro' ) . "\n\n";
+echo esc_html__( 'Hello,', 'gestionnaire-colis-pro' ) . "\n\n";
 
 /* translators: %s: parcel reference. */
-echo esc_html( sprintf( __( 'Nous avons bien réceptionné votre colis %s à l’entrepôt. Il est désormais visible dans votre espace client, rubrique « Mes colis ».', 'gestionnaire-colis-pro' ), $parcel->reference ) ) . "\n\n";
+echo esc_html( sprintf( __( 'We have received your parcel %s at the warehouse. It is now visible in your account, under “My parcels”.', 'gestionnaire-colis-pro' ), $parcel->reference ) ) . "\n\n";
 
-echo esc_html__( 'Numéro du colis :', 'gestionnaire-colis-pro' ) . ' ' . esc_html( $parcel->reference ) . "\n";
-echo esc_html__( 'Numéro de suivi :', 'gestionnaire-colis-pro' ) . ' ' . esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ) . "\n";
-echo esc_html__( 'Poids :', 'gestionnaire-colis-pro' ) . ' ' . esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ) . " kg\n";
+echo esc_html__( 'Parcel number:', 'gestionnaire-colis-pro' ) . ' ' . esc_html( $parcel->reference ) . "\n";
+echo esc_html__( 'Tracking number:', 'gestionnaire-colis-pro' ) . ' ' . esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ) . "\n";
+echo esc_html__( 'Weight:', 'gestionnaire-colis-pro' ) . ' ' . esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ) . " kg\n";
 /* translators: %d: number of free storage days. */
-echo esc_html( sprintf( __( 'Stockage gratuit : %d jours', 'gestionnaire-colis-pro' ), (int) GCP_Settings::get( 'free_storage_days', 15 ) ) ) . "\n";
+echo esc_html( sprintf( __( 'Free storage: %d days', 'gestionnaire-colis-pro' ), (int) GCP_Settings::get( 'free_storage_days', 15 ) ) ) . "\n";
 
 if ( $additional_content ) {
 	echo "\n" . esc_html( wp_strip_all_tags( wptexturize( $additional_content ) ) ) . "\n";

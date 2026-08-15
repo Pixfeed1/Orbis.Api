@@ -37,7 +37,7 @@ class GCP_Clients {
 
 		$user = get_userdata( $user_id );
 		if ( ! $user ) {
-			return new WP_Error( 'gcp_invalid_user', __( 'Utilisateur introuvable.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_invalid_user', __( 'User not found.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$existing = self::get_by_user( $user_id );
@@ -59,7 +59,7 @@ class GCP_Clients {
 		);
 
 		if ( ! $inserted ) {
-			return new WP_Error( 'gcp_db_error', __( 'Impossible de créer la fiche client.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_db_error', __( 'The client record could not be created.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$client_id = (int) $wpdb->insert_id;
@@ -73,7 +73,7 @@ class GCP_Clients {
 			array( '%d' )
 		);
 
-		GCP_History::log( $client_id, 'client_created', sprintf( /* translators: %s: client reference. */ __( 'Fiche client %s créée.', 'gestionnaire-colis-pro' ), $reference ) );
+		GCP_History::log( $client_id, 'client_created', sprintf( /* translators: %s: client reference. */ __( 'Client record %s created.', 'gestionnaire-colis-pro' ), $reference ) );
 
 		/**
 		 * Fires after a client record has been created.
@@ -148,6 +148,36 @@ class GCP_Clients {
 	}
 
 	/**
+	 * Returns the search SQL fragments (joins, where, parameters).
+	 *
+	 * @param string $term Search term (may be empty).
+	 * @return array { joins: string, where: string, params: array }
+	 */
+	private static function search_sql( $term ) {
+		global $wpdb;
+
+		$joins = "FROM {$wpdb->prefix}gcp_clients c
+			INNER JOIN {$wpdb->users} u ON u.ID = c.user_id";
+		$where  = '';
+		$params = array();
+
+		if ( '' !== $term ) {
+			$like   = '%' . $wpdb->esc_like( $term ) . '%';
+			$joins .= "
+			LEFT JOIN {$wpdb->usermeta} fn ON fn.user_id = u.ID AND fn.meta_key = 'first_name'
+			LEFT JOIN {$wpdb->usermeta} ln ON ln.user_id = u.ID AND ln.meta_key = 'last_name'";
+			$where  = ' WHERE (c.reference LIKE %s OR u.user_email LIKE %s OR u.display_name LIKE %s OR fn.meta_value LIKE %s OR ln.meta_value LIKE %s OR c.phone LIKE %s)';
+			$params = array( $like, $like, $like, $like, $like, $like );
+		}
+
+		return array(
+			'joins'  => $joins,
+			'where'  => $where,
+			'params' => $params,
+		);
+	}
+
+	/**
 	 * Searches clients by reference, name, e-mail or phone number.
 	 *
 	 * @param string $term  Search term.
@@ -155,58 +185,31 @@ class GCP_Clients {
 	 * @return object[] Rows with client fields plus user_email and display_name.
 	 */
 	public static function search( $term, $limit = 20 ) {
-		global $wpdb;
-
-		$term = trim( (string) $term );
-		$like = '%' . $wpdb->esc_like( $term ) . '%';
-
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-		return $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT c.*, u.user_email, u.display_name
-				FROM {$wpdb->prefix}gcp_clients c
-				INNER JOIN {$wpdb->users} u ON u.ID = c.user_id
-				LEFT JOIN {$wpdb->usermeta} fn ON fn.user_id = u.ID AND fn.meta_key = 'first_name'
-				LEFT JOIN {$wpdb->usermeta} ln ON ln.user_id = u.ID AND ln.meta_key = 'last_name'
-				WHERE c.reference LIKE %s
-					OR u.user_email LIKE %s
-					OR u.display_name LIKE %s
-					OR fn.meta_value LIKE %s
-					OR ln.meta_value LIKE %s
-					OR c.phone LIKE %s
-				GROUP BY c.id
-				ORDER BY c.id DESC
-				LIMIT %d",
-				$like,
-				$like,
-				$like,
-				$like,
-				$like,
-				$like,
-				(int) $limit
-			)
-		);
+		return self::paged_list( trim( (string) $term ), (int) $limit, 1 );
 	}
 
 	/**
-	 * Counts all clients matching an optional search term.
+	 * Counts the clients matching an optional search term (SQL COUNT, so it
+	 * scales to large client bases).
 	 *
 	 * @param string $term Search term.
 	 * @return int
 	 */
 	public static function count( $term = '' ) {
-		if ( '' !== $term ) {
-			return count( self::search( $term, 999999 ) );
-		}
-
 		global $wpdb;
 
+		$sql = self::search_sql( trim( (string) $term ) );
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- fragments contain only literals and placeholders; values go through $wpdb->prepare().
+		$query = "SELECT COUNT(DISTINCT c.id) {$sql['joins']}{$sql['where']}";
+
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-		return (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}gcp_clients" );
+		return (int) $wpdb->get_var( $sql['params'] ? $wpdb->prepare( $query, $sql['params'] ) : $query );
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
 	/**
-	 * Returns a paged list of clients with user data.
+	 * Returns a paged list of clients with user data (SQL LIMIT/OFFSET).
 	 *
 	 * @param string $term     Optional search term.
 	 * @param int    $per_page Items per page.
@@ -214,26 +217,23 @@ class GCP_Clients {
 	 * @return object[]
 	 */
 	public static function paged_list( $term = '', $per_page = 20, $paged = 1 ) {
-		if ( '' !== $term ) {
-			$all = self::search( $term, 999999 );
-
-			return array_slice( $all, ( $paged - 1 ) * $per_page, $per_page );
-		}
-
 		global $wpdb;
 
+		$sql    = self::search_sql( trim( (string) $term ) );
+		$params = $sql['params'];
+
+		$params[] = (int) $per_page;
+		$params[] = (int) ( ( max( 1, (int) $paged ) - 1 ) * $per_page );
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- fragments contain only literals and placeholders; values go through $wpdb->prepare().
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT c.*, u.user_email, u.display_name
-				FROM {$wpdb->prefix}gcp_clients c
-				INNER JOIN {$wpdb->users} u ON u.ID = c.user_id
-				ORDER BY c.id DESC
-				LIMIT %d OFFSET %d",
-				(int) $per_page,
-				(int) ( ( $paged - 1 ) * $per_page )
+				"SELECT c.*, u.user_email, u.display_name {$sql['joins']}{$sql['where']} GROUP BY c.id ORDER BY c.id DESC LIMIT %d OFFSET %d",
+				$params
 			)
 		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 	}
 
 	/**

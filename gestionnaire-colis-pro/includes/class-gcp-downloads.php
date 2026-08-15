@@ -113,11 +113,11 @@ class GCP_Downloads {
 		$document = GCP_Documents::get( $document_id );
 
 		if ( ! $document || empty( $document->file_path ) ) {
-			wp_die( esc_html__( 'Document introuvable.', 'gestionnaire-colis-pro' ), '', array( 'response' => 404 ) );
+			wp_die( esc_html__( 'Document not found.', 'gestionnaire-colis-pro' ), '', array( 'response' => 404 ) );
 		}
 
 		if ( ! self::user_can_download_document( $document, get_current_user_id() ) ) {
-			wp_die( esc_html__( 'Accès refusé.', 'gestionnaire-colis-pro' ), '', array( 'response' => 403 ) );
+			wp_die( esc_html__( 'Access denied.', 'gestionnaire-colis-pro' ), '', array( 'response' => 403 ) );
 		}
 
 		GCP_Files::send( $document->file_path, $document->file_name ? $document->file_name : $document->title );
@@ -134,13 +134,13 @@ class GCP_Downloads {
 		check_admin_referer( 'gcp_parcel_photo_' . $parcel_id );
 
 		if ( ! current_user_can( 'gcp_manage' ) ) {
-			wp_die( esc_html__( 'Accès refusé.', 'gestionnaire-colis-pro' ), '', array( 'response' => 403 ) );
+			wp_die( esc_html__( 'Access denied.', 'gestionnaire-colis-pro' ), '', array( 'response' => 403 ) );
 		}
 
 		$parcel = GCP_Parcels::get( $parcel_id );
 
 		if ( ! $parcel || empty( $parcel->photo_path ) ) {
-			wp_die( esc_html__( 'Photo introuvable.', 'gestionnaire-colis-pro' ), '', array( 'response' => 404 ) );
+			wp_die( esc_html__( 'Photo not found.', 'gestionnaire-colis-pro' ), '', array( 'response' => 404 ) );
 		}
 
 		GCP_Files::send( $parcel->photo_path, $parcel->reference . '-photo', true );

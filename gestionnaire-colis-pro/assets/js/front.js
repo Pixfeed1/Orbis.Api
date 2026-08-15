@@ -24,9 +24,10 @@
 	}
 
 	function formatPrice( value ) {
-		var symbol = window.gcpFront && window.gcpFront.currencySymbol ? window.gcpFront.currencySymbol : '€';
+		var symbol = window.gcpFront && window.gcpFront.currencySymbol ? window.gcpFront.currencySymbol : '';
+		var amount = value.toLocaleString( undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 } );
 
-		return value.toFixed( 2 ).replace( '.', ',' ) + ' ' + symbol;
+		return symbol ? amount + ' ' + symbol : amount;
 	}
 
 	function selectedBoxes() {

@@ -18,12 +18,39 @@ if ( ! defined( 'ABSPATH' ) ) {
 class GCP_Account {
 
 	/**
-	 * Endpoint slugs.
+	 * Returns the My Account endpoint slugs.
+	 *
+	 * The defaults are translatable (French sites get the historical
+	 * mes-colis/mes-expeditions/… URLs through the fr_FR translation) and each
+	 * slug is filterable so a site can pin its own.
+	 *
+	 * @return array Map of endpoint key => slug.
 	 */
-	const EP_PARCELS   = 'mes-colis';
-	const EP_SHIPMENTS = 'mes-expeditions';
-	const EP_DOCUMENTS = 'mes-documents';
-	const EP_REQUEST   = 'demande-expedition';
+	public static function endpoints() {
+		return array(
+			/**
+			 * Filters a My Account endpoint slug of the plugin.
+			 *
+			 * @param string $slug Sanitized endpoint slug.
+			 */
+			'parcels'   => apply_filters( 'gcp_endpoint_parcels', sanitize_title( _x( 'my-parcels', 'My Account endpoint slug', 'gestionnaire-colis-pro' ) ) ),
+			'shipments' => apply_filters( 'gcp_endpoint_shipments', sanitize_title( _x( 'my-shipments', 'My Account endpoint slug', 'gestionnaire-colis-pro' ) ) ),
+			'documents' => apply_filters( 'gcp_endpoint_documents', sanitize_title( _x( 'my-documents', 'My Account endpoint slug', 'gestionnaire-colis-pro' ) ) ),
+			'request'   => apply_filters( 'gcp_endpoint_request', sanitize_title( _x( 'shipment-request', 'My Account endpoint slug', 'gestionnaire-colis-pro' ) ) ),
+		);
+	}
+
+	/**
+	 * Returns one endpoint slug.
+	 *
+	 * @param string $key Endpoint key (parcels, shipments, documents, request).
+	 * @return string
+	 */
+	public static function endpoint( $key ) {
+		$endpoints = self::endpoints();
+
+		return isset( $endpoints[ $key ] ) ? $endpoints[ $key ] : '';
+	}
 
 	/**
 	 * Hooks everything.
@@ -31,29 +58,32 @@ class GCP_Account {
 	 * @return void
 	 */
 	public static function init() {
+		// Endpoints (and their content hooks) are registered on init, after the
+		// text domain has loaded, so translated slugs are taken into account.
 		add_action( 'init', array( __CLASS__, 'register_endpoints' ) );
 		add_filter( 'query_vars', array( __CLASS__, 'query_vars' ) );
 		add_filter( 'woocommerce_account_menu_items', array( __CLASS__, 'menu_items' ) );
-
-		add_action( 'woocommerce_account_' . self::EP_PARCELS . '_endpoint', array( __CLASS__, 'render_parcels' ) );
-		add_action( 'woocommerce_account_' . self::EP_SHIPMENTS . '_endpoint', array( __CLASS__, 'render_shipments' ) );
-		add_action( 'woocommerce_account_' . self::EP_DOCUMENTS . '_endpoint', array( __CLASS__, 'render_documents' ) );
-		add_action( 'woocommerce_account_' . self::EP_REQUEST . '_endpoint', array( __CLASS__, 'render_request' ) );
 
 		add_action( 'template_redirect', array( __CLASS__, 'handle_request_submit' ) );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
 	}
 
 	/**
-	 * Registers the My Account rewrite endpoints.
+	 * Registers the My Account rewrite endpoints and their render hooks.
 	 *
 	 * @return void
 	 */
 	public static function register_endpoints() {
-		add_rewrite_endpoint( self::EP_PARCELS, EP_ROOT | EP_PAGES );
-		add_rewrite_endpoint( self::EP_SHIPMENTS, EP_ROOT | EP_PAGES );
-		add_rewrite_endpoint( self::EP_DOCUMENTS, EP_ROOT | EP_PAGES );
-		add_rewrite_endpoint( self::EP_REQUEST, EP_ROOT | EP_PAGES );
+		$endpoints = self::endpoints();
+
+		foreach ( $endpoints as $slug ) {
+			add_rewrite_endpoint( $slug, EP_ROOT | EP_PAGES );
+		}
+
+		add_action( 'woocommerce_account_' . $endpoints['parcels'] . '_endpoint', array( __CLASS__, 'render_parcels' ) );
+		add_action( 'woocommerce_account_' . $endpoints['shipments'] . '_endpoint', array( __CLASS__, 'render_shipments' ) );
+		add_action( 'woocommerce_account_' . $endpoints['documents'] . '_endpoint', array( __CLASS__, 'render_documents' ) );
+		add_action( 'woocommerce_account_' . $endpoints['request'] . '_endpoint', array( __CLASS__, 'render_request' ) );
 	}
 
 	/**
@@ -63,12 +93,7 @@ class GCP_Account {
 	 * @return array
 	 */
 	public static function query_vars( $vars ) {
-		$vars[] = self::EP_PARCELS;
-		$vars[] = self::EP_SHIPMENTS;
-		$vars[] = self::EP_DOCUMENTS;
-		$vars[] = self::EP_REQUEST;
-
-		return $vars;
+		return array_merge( $vars, array_values( self::endpoints() ) );
 	}
 
 	/**
@@ -81,10 +106,12 @@ class GCP_Account {
 		$logout = isset( $items['customer-logout'] ) ? array( 'customer-logout' => $items['customer-logout'] ) : array();
 		unset( $items['customer-logout'] );
 
-		$items[ self::EP_PARCELS ]   = __( 'Mes colis', 'gestionnaire-colis-pro' );
-		$items[ self::EP_SHIPMENTS ] = __( 'Mes expéditions', 'gestionnaire-colis-pro' );
-		$items[ self::EP_DOCUMENTS ] = __( 'Mes documents', 'gestionnaire-colis-pro' );
-		$items[ self::EP_REQUEST ]   = __( 'Demande d’expédition', 'gestionnaire-colis-pro' );
+		$endpoints = self::endpoints();
+
+		$items[ $endpoints['parcels'] ]   = __( 'My parcels', 'gestionnaire-colis-pro' );
+		$items[ $endpoints['shipments'] ] = __( 'My shipments', 'gestionnaire-colis-pro' );
+		$items[ $endpoints['documents'] ] = __( 'My documents', 'gestionnaire-colis-pro' );
+		$items[ $endpoints['request'] ]   = __( 'Shipment request', 'gestionnaire-colis-pro' );
 
 		return array_merge( $items, $logout );
 	}
@@ -132,46 +159,46 @@ class GCP_Account {
 	public static function render_parcels() {
 		$client = self::current_client();
 
-		echo '<h2>' . esc_html__( 'Mes colis', 'gestionnaire-colis-pro' ) . '</h2>';
+		echo '<h2>' . esc_html__( 'My parcels', 'gestionnaire-colis-pro' ) . '</h2>';
 
 		if ( ! $client ) {
-			echo '<p>' . esc_html__( 'Aucune fiche client n’est associée à votre compte pour le moment.', 'gestionnaire-colis-pro' ) . '</p>';
+			echo '<p>' . esc_html__( 'No client record is linked to your account yet.', 'gestionnaire-colis-pro' ) . '</p>';
 			return;
 		}
 
 		printf(
 			'<p>%s <code>%s</code></p>',
-			esc_html__( 'Votre référence client :', 'gestionnaire-colis-pro' ),
+			esc_html__( 'Your client reference:', 'gestionnaire-colis-pro' ),
 			esc_html( $client->reference )
 		);
 
 		$parcels = GCP_Parcels::for_client( (int) $client->id );
 
 		if ( empty( $parcels ) ) {
-			echo '<p>' . esc_html__( 'Aucun colis pour le moment.', 'gestionnaire-colis-pro' ) . '</p>';
+			echo '<p>' . esc_html__( 'No parcels yet.', 'gestionnaire-colis-pro' ) . '</p>';
 			return;
 		}
 		?>
 		<table class="woocommerce-orders-table shop_table shop_table_responsive gcp-front-table">
 			<thead>
 				<tr>
-					<th><?php esc_html_e( 'Numéro du colis', 'gestionnaire-colis-pro' ); ?></th>
-					<th><?php esc_html_e( 'Date de réception', 'gestionnaire-colis-pro' ); ?></th>
-					<th><?php esc_html_e( 'Numéro de suivi', 'gestionnaire-colis-pro' ); ?></th>
-					<th><?php esc_html_e( 'Poids (kg)', 'gestionnaire-colis-pro' ); ?></th>
-					<th><?php esc_html_e( 'Statut', 'gestionnaire-colis-pro' ); ?></th>
-					<th><?php esc_html_e( 'Regroupement autorisé', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Parcel number', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Reception date', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Tracking number', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Weight (kg)', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Status', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Grouping allowed', 'gestionnaire-colis-pro' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php foreach ( $parcels as $parcel ) : ?>
 					<tr>
-						<td data-title="<?php esc_attr_e( 'Numéro du colis', 'gestionnaire-colis-pro' ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></td>
-						<td data-title="<?php esc_attr_e( 'Date de réception', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Format::date( $parcel->received_at ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Numéro de suivi', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Poids (kg)', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Statut', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Parcels::status_label( $parcel->status ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Regroupement autorisé', 'gestionnaire-colis-pro' ); ?>"><?php echo $parcel->allow_grouping ? esc_html__( 'Oui', 'gestionnaire-colis-pro' ) : esc_html__( 'Non', 'gestionnaire-colis-pro' ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Parcel number', 'gestionnaire-colis-pro' ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></td>
+						<td data-title="<?php esc_attr_e( 'Reception date', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Format::date( $parcel->received_at ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Tracking number', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Weight (kg)', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Status', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Parcels::status_label( $parcel->status ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Grouping allowed', 'gestionnaire-colis-pro' ); ?>"><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'gestionnaire-colis-pro' ) : esc_html__( 'No', 'gestionnaire-colis-pro' ); ?></td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
@@ -187,31 +214,31 @@ class GCP_Account {
 	public static function render_shipments() {
 		$client = self::current_client();
 
-		echo '<h2>' . esc_html__( 'Mes expéditions', 'gestionnaire-colis-pro' ) . '</h2>';
+		echo '<h2>' . esc_html__( 'My shipments', 'gestionnaire-colis-pro' ) . '</h2>';
 
 		if ( ! $client ) {
-			echo '<p>' . esc_html__( 'Aucune fiche client n’est associée à votre compte pour le moment.', 'gestionnaire-colis-pro' ) . '</p>';
+			echo '<p>' . esc_html__( 'No client record is linked to your account yet.', 'gestionnaire-colis-pro' ) . '</p>';
 			return;
 		}
 
 		$shipments = GCP_Shipments::for_client( (int) $client->id );
 
 		if ( empty( $shipments ) ) {
-			echo '<p>' . esc_html__( 'Aucune expédition pour le moment.', 'gestionnaire-colis-pro' ) . '</p>';
+			echo '<p>' . esc_html__( 'No shipments yet.', 'gestionnaire-colis-pro' ) . '</p>';
 			return;
 		}
 		?>
 		<table class="woocommerce-orders-table shop_table shop_table_responsive gcp-front-table">
 			<thead>
 				<tr>
-					<th><?php esc_html_e( 'Référence', 'gestionnaire-colis-pro' ); ?></th>
-					<th><?php esc_html_e( 'Demandée le', 'gestionnaire-colis-pro' ); ?></th>
-					<th><?php esc_html_e( 'Transporteur', 'gestionnaire-colis-pro' ); ?></th>
-					<th><?php esc_html_e( 'Colis', 'gestionnaire-colis-pro' ); ?></th>
-					<th><?php esc_html_e( 'Poids (kg)', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Reference', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Requested on', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Carrier', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Parcels', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Weight (kg)', 'gestionnaire-colis-pro' ); ?></th>
 					<th><?php esc_html_e( 'Total', 'gestionnaire-colis-pro' ); ?></th>
-					<th><?php esc_html_e( 'Statut', 'gestionnaire-colis-pro' ); ?></th>
-					<th><?php esc_html_e( 'Paiement', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Status', 'gestionnaire-colis-pro' ); ?></th>
+					<th><?php esc_html_e( 'Payment', 'gestionnaire-colis-pro' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -221,22 +248,22 @@ class GCP_Account {
 					$order = ! empty( $shipment->order_id ) && function_exists( 'wc_get_order' ) ? wc_get_order( (int) $shipment->order_id ) : null;
 					?>
 					<tr>
-						<td data-title="<?php esc_attr_e( 'Référence', 'gestionnaire-colis-pro' ); ?>"><strong><?php echo esc_html( $shipment->reference ); ?></strong></td>
-						<td data-title="<?php esc_attr_e( 'Demandée le', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Format::date( $shipment->requested_at ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Transporteur', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Carriers::name( $shipment->carrier ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Colis', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( implode( ', ', $refs ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Poids (kg)', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Reference', 'gestionnaire-colis-pro' ); ?>"><strong><?php echo esc_html( $shipment->reference ); ?></strong></td>
+						<td data-title="<?php esc_attr_e( 'Requested on', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Format::date( $shipment->requested_at ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Carrier', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Carriers::name( $shipment->carrier ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Parcels', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( implode( ', ', $refs ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Weight (kg)', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
 						<td data-title="<?php esc_attr_e( 'Total', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Format::price( (float) $shipment->total_price ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Statut', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Shipments::status_label( $shipment->status ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Paiement', 'gestionnaire-colis-pro' ); ?>">
+						<td data-title="<?php esc_attr_e( 'Status', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Shipments::status_label( $shipment->status ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Payment', 'gestionnaire-colis-pro' ); ?>">
 							<?php if ( $order && $order->needs_payment() ) : ?>
-								<a class="woocommerce-button button pay" href="<?php echo esc_url( $order->get_checkout_payment_url() ); ?>"><?php esc_html_e( 'Payer', 'gestionnaire-colis-pro' ); ?></a>
+								<a class="woocommerce-button button pay" href="<?php echo esc_url( $order->get_checkout_payment_url() ); ?>"><?php esc_html_e( 'Pay', 'gestionnaire-colis-pro' ); ?></a>
 							<?php elseif ( $order ) : ?>
 								<a href="<?php echo esc_url( $order->get_view_order_url() ); ?>">
 									<?php
 									printf(
 										/* translators: %s: order number. */
-										esc_html__( 'Commande n°%s', 'gestionnaire-colis-pro' ),
+										esc_html__( 'Order #%s', 'gestionnaire-colis-pro' ),
 										esc_html( $order->get_order_number() )
 									);
 									?>
@@ -260,17 +287,17 @@ class GCP_Account {
 	public static function render_documents() {
 		$client = self::current_client();
 
-		echo '<h2>' . esc_html__( 'Mes documents', 'gestionnaire-colis-pro' ) . '</h2>';
+		echo '<h2>' . esc_html__( 'My documents', 'gestionnaire-colis-pro' ) . '</h2>';
 
 		if ( ! $client ) {
-			echo '<p>' . esc_html__( 'Aucune fiche client n’est associée à votre compte pour le moment.', 'gestionnaire-colis-pro' ) . '</p>';
+			echo '<p>' . esc_html__( 'No client record is linked to your account yet.', 'gestionnaire-colis-pro' ) . '</p>';
 			return;
 		}
 
 		$documents = GCP_Documents::for_client( (int) $client->id, true );
 
 		if ( empty( $documents ) ) {
-			echo '<p>' . esc_html__( 'Aucun document pour le moment.', 'gestionnaire-colis-pro' ) . '</p>';
+			echo '<p>' . esc_html__( 'No documents yet.', 'gestionnaire-colis-pro' ) . '</p>';
 			return;
 		}
 
@@ -297,15 +324,15 @@ class GCP_Account {
 	public static function render_request() {
 		$client = self::current_client();
 
-		echo '<h2>' . esc_html__( 'Demande d’expédition', 'gestionnaire-colis-pro' ) . '</h2>';
+		echo '<h2>' . esc_html__( 'Shipment request', 'gestionnaire-colis-pro' ) . '</h2>';
 
 		if ( ! $client ) {
-			echo '<p>' . esc_html__( 'Aucune fiche client n’est associée à votre compte pour le moment.', 'gestionnaire-colis-pro' ) . '</p>';
+			echo '<p>' . esc_html__( 'No client record is linked to your account yet.', 'gestionnaire-colis-pro' ) . '</p>';
 			return;
 		}
 
 		if ( ! empty( $_GET['gcp_requested'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
-			wc_print_notice( __( 'Votre demande d’expédition a bien été enregistrée. Nous revenons vers vous rapidement.', 'gestionnaire-colis-pro' ), 'success' );
+			wc_print_notice( __( 'Your shipment request has been recorded. We will get back to you shortly.', 'gestionnaire-colis-pro' ), 'success' );
 		}
 
 		if ( ! empty( $_GET['gcp_error'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
@@ -315,7 +342,7 @@ class GCP_Account {
 		$parcels = GCP_Parcels::in_stock_for_client( (int) $client->id );
 
 		if ( empty( $parcels ) ) {
-			echo '<p>' . esc_html__( 'Aucun colis disponible pour une expédition.', 'gestionnaire-colis-pro' ) . '</p>';
+			echo '<p>' . esc_html__( 'No parcels available for a shipment.', 'gestionnaire-colis-pro' ) . '</p>';
 			return;
 		}
 		?>
@@ -323,14 +350,14 @@ class GCP_Account {
 			<?php wp_nonce_field( 'gcp_request_shipment' ); ?>
 			<input type="hidden" name="gcp_action" value="request_shipment" />
 
-			<p><?php esc_html_e( 'Sélectionnez les colis à expédier :', 'gestionnaire-colis-pro' ); ?></p>
+			<p><?php esc_html_e( 'Select the parcels to ship:', 'gestionnaire-colis-pro' ); ?></p>
 			<table class="woocommerce-orders-table shop_table shop_table_responsive gcp-front-table">
 				<thead>
 					<tr>
 						<th></th>
-						<th><?php esc_html_e( 'Numéro du colis', 'gestionnaire-colis-pro' ); ?></th>
-						<th><?php esc_html_e( 'Poids (kg)', 'gestionnaire-colis-pro' ); ?></th>
-						<th><?php esc_html_e( 'Regroupement autorisé', 'gestionnaire-colis-pro' ); ?></th>
+						<th><?php esc_html_e( 'Parcel number', 'gestionnaire-colis-pro' ); ?></th>
+						<th><?php esc_html_e( 'Weight (kg)', 'gestionnaire-colis-pro' ); ?></th>
+						<th><?php esc_html_e( 'Grouping allowed', 'gestionnaire-colis-pro' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -351,16 +378,16 @@ class GCP_Account {
 							</td>
 							<td><label for="gcp-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></label></td>
 							<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
-							<td><?php echo $parcel->allow_grouping ? esc_html__( 'Oui', 'gestionnaire-colis-pro' ) : esc_html__( 'Non — ce colis doit être expédié seul', 'gestionnaire-colis-pro' ); ?></td>
+							<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'gestionnaire-colis-pro' ) : esc_html__( 'No — this parcel must be shipped alone', 'gestionnaire-colis-pro' ); ?></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>
 			</table>
 
 			<p>
-				<label for="gcp-carrier"><?php esc_html_e( 'Transporteur souhaité :', 'gestionnaire-colis-pro' ); ?></label>
+				<label for="gcp-carrier"><?php esc_html_e( 'Preferred carrier:', 'gestionnaire-colis-pro' ); ?></label>
 				<select name="gcp_carrier" id="gcp-carrier" required>
-					<option value=""><?php esc_html_e( '— Sélectionner —', 'gestionnaire-colis-pro' ); ?></option>
+					<option value=""><?php esc_html_e( '— Select —', 'gestionnaire-colis-pro' ); ?></option>
 					<?php foreach ( GCP_Carriers::all( true ) as $carrier ) : ?>
 						<?php
 						$base = isset( $carrier['price_base'] ) ? (float) $carrier['price_base'] : 0;
@@ -385,13 +412,13 @@ class GCP_Account {
 				</select>
 			</p>
 			<p id="gcp-estimate" class="gcp-estimate" hidden>
-				<strong><?php esc_html_e( 'Total estimé :', 'gestionnaire-colis-pro' ); ?></strong>
+				<strong><?php esc_html_e( 'Estimated total:', 'gestionnaire-colis-pro' ); ?></strong>
 				<span id="gcp-estimate-amount"></span>
-				<span class="gcp-note"><?php esc_html_e( '(colis + frais de stockage + transport — confirmé sur la page de paiement)', 'gestionnaire-colis-pro' ); ?></span>
+				<span class="gcp-note"><?php esc_html_e( '(parcels + storage fees + transport — confirmed on the payment page)', 'gestionnaire-colis-pro' ); ?></span>
 			</p>
-			<p class="gcp-note"><?php esc_html_e( 'Seuls les transporteurs compatibles avec l’ensemble des colis sélectionnés pourront être retenus.', 'gestionnaire-colis-pro' ); ?></p>
+			<p class="gcp-note"><?php esc_html_e( 'Only carriers compatible with every selected parcel can be accepted.', 'gestionnaire-colis-pro' ); ?></p>
 
-			<button type="submit" class="woocommerce-button button"><?php esc_html_e( 'Envoyer la demande', 'gestionnaire-colis-pro' ); ?></button>
+			<button type="submit" class="woocommerce-button button"><?php esc_html_e( 'Send the request', 'gestionnaire-colis-pro' ); ?></button>
 		</form>
 		<?php
 	}
@@ -419,7 +446,7 @@ class GCP_Account {
 
 		$result = GCP_Shipments::request( (int) $client->id, $parcel_ids, $carrier );
 
-		$url = wc_get_account_endpoint_url( self::EP_REQUEST );
+		$url = wc_get_account_endpoint_url( self::endpoint( 'request' ) );
 
 		if ( is_wp_error( $result ) ) {
 			wp_safe_redirect( add_query_arg( 'gcp_error', rawurlencode( $result->get_error_message() ), $url ) );

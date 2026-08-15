@@ -21,14 +21,14 @@ class GCP_Parcels {
 	 */
 	public static function statuses() {
 		return array(
-			'available'        => __( 'Disponible', 'gestionnaire-colis-pro' ),
-			'ordered'          => __( 'Commandé', 'gestionnaire-colis-pro' ),
-			'awaiting_payment' => __( 'En attente de paiement', 'gestionnaire-colis-pro' ),
-			'paid'             => __( 'Payé', 'gestionnaire-colis-pro' ),
-			'preparing'        => __( 'En préparation', 'gestionnaire-colis-pro' ),
-			'shipped'          => __( 'Expédié', 'gestionnaire-colis-pro' ),
-			'destroyed'        => __( 'Détruit', 'gestionnaire-colis-pro' ),
-			'cancelled'        => __( 'Annulé', 'gestionnaire-colis-pro' ),
+			'available'        => _x( 'Available', 'parcel status', 'gestionnaire-colis-pro' ),
+			'ordered'          => _x( 'Ordered', 'parcel status', 'gestionnaire-colis-pro' ),
+			'awaiting_payment' => _x( 'Awaiting payment', 'parcel status', 'gestionnaire-colis-pro' ),
+			'paid'             => _x( 'Paid', 'parcel status', 'gestionnaire-colis-pro' ),
+			'preparing'        => _x( 'Preparing', 'parcel status', 'gestionnaire-colis-pro' ),
+			'shipped'          => _x( 'Shipped', 'parcel status', 'gestionnaire-colis-pro' ),
+			'destroyed'        => _x( 'Destroyed', 'parcel status', 'gestionnaire-colis-pro' ),
+			'cancelled'        => _x( 'Cancelled', 'parcel status', 'gestionnaire-colis-pro' ),
 		);
 	}
 
@@ -92,12 +92,12 @@ class GCP_Parcels {
 
 		$client = GCP_Clients::get( isset( $data['client_id'] ) ? (int) $data['client_id'] : 0 );
 		if ( ! $client ) {
-			return new WP_Error( 'gcp_invalid_client', __( 'Client introuvable.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_invalid_client', __( 'Client not found.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$weight = isset( $data['weight'] ) ? self::to_float( $data['weight'] ) : 0;
 		if ( $weight <= 0 ) {
-			return new WP_Error( 'gcp_invalid_weight', __( 'Le poids du colis doit être supérieur à zéro.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_invalid_weight', __( 'The parcel weight must be greater than zero.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$carriers = array();
@@ -137,7 +137,7 @@ class GCP_Parcels {
 		);
 
 		if ( ! $inserted ) {
-			return new WP_Error( 'gcp_db_error', __( 'Impossible d’enregistrer le colis.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_db_error', __( 'The parcel could not be saved.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$parcel_id = (int) $wpdb->insert_id;
@@ -156,7 +156,7 @@ class GCP_Parcels {
 			'parcel_created',
 			sprintf(
 				/* translators: 1: parcel reference, 2: weight in kg, 3: price. */
-				__( 'Colis %1$s reçu (%2$s kg, tarif %3$s).', 'gestionnaire-colis-pro' ),
+				__( 'Parcel %1$s received (%2$s kg, price %3$s).', 'gestionnaire-colis-pro' ),
 				$reference,
 				number_format_i18n( $weight, 3 ),
 				number_format_i18n( $price, 2 )
@@ -350,12 +350,12 @@ class GCP_Parcels {
 		global $wpdb;
 
 		if ( ! array_key_exists( $status, self::statuses() ) ) {
-			return new WP_Error( 'gcp_invalid_status', __( 'Statut de colis invalide.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_invalid_status', __( 'Invalid parcel status.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$parcel = self::get( $parcel_id );
 		if ( ! $parcel ) {
-			return new WP_Error( 'gcp_invalid_parcel', __( 'Colis introuvable.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_invalid_parcel', __( 'Parcel not found.', 'gestionnaire-colis-pro' ) );
 		}
 
 		if ( $parcel->status === $status ) {
@@ -376,7 +376,7 @@ class GCP_Parcels {
 		$updated = $wpdb->update( self::table(), $fields, array( 'id' => (int) $parcel_id ), $formats, array( '%d' ) );
 
 		if ( false === $updated ) {
-			return new WP_Error( 'gcp_db_error', __( 'Impossible de mettre à jour le statut.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_db_error', __( 'The status could not be updated.', 'gestionnaire-colis-pro' ) );
 		}
 
 		GCP_History::log(
@@ -384,7 +384,7 @@ class GCP_Parcels {
 			'parcel_status_changed',
 			sprintf(
 				/* translators: 1: parcel reference, 2: old status, 3: new status. */
-				__( 'Colis %1$s : statut « %2$s » → « %3$s ».', 'gestionnaire-colis-pro' ),
+				__( 'Parcel %1$s: status “%2$s” → “%3$s”.', 'gestionnaire-colis-pro' ),
 				$parcel->reference,
 				self::status_label( $parcel->status ),
 				self::status_label( $status )

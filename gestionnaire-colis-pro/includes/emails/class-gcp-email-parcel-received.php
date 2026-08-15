@@ -27,8 +27,8 @@ class GCP_Email_Parcel_Received extends WC_Email {
 	public function __construct() {
 		$this->id             = 'gcp_parcel_received';
 		$this->customer_email = true;
-		$this->title          = __( 'Colis réceptionné (Gestionnaire Colis Pro)', 'gestionnaire-colis-pro' );
-		$this->description    = __( 'Envoyé au client lorsqu’un de ses colis est enregistré à l’entrepôt.', 'gestionnaire-colis-pro' );
+		$this->title          = __( 'Parcel received (Gestionnaire Colis Pro)', 'gestionnaire-colis-pro' );
+		$this->description    = __( 'Sent to the client when one of their parcels is registered at the warehouse.', 'gestionnaire-colis-pro' );
 		$this->template_html  = 'emails/gcp-parcel-received.php';
 		$this->template_plain = 'emails/plain/gcp-parcel-received.php';
 		$this->template_base  = GCP_PLUGIN_DIR . 'templates/';
@@ -47,7 +47,7 @@ class GCP_Email_Parcel_Received extends WC_Email {
 	 * @return string
 	 */
 	public function get_default_subject() {
-		return __( '[{site_title}] Votre colis {parcel_reference} a bien été réceptionné', 'gestionnaire-colis-pro' );
+		return __( '[{site_title}] Your parcel {parcel_reference} has been received', 'gestionnaire-colis-pro' );
 	}
 
 	/**
@@ -56,7 +56,7 @@ class GCP_Email_Parcel_Received extends WC_Email {
 	 * @return string
 	 */
 	public function get_default_heading() {
-		return __( 'Colis {parcel_reference} réceptionné', 'gestionnaire-colis-pro' );
+		return __( 'Parcel {parcel_reference} received', 'gestionnaire-colis-pro' );
 	}
 
 	/**

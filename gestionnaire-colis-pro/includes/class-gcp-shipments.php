@@ -21,12 +21,12 @@ class GCP_Shipments {
 	 */
 	public static function statuses() {
 		return array(
-			'requested'        => __( 'Demandée', 'gestionnaire-colis-pro' ),
-			'awaiting_payment' => __( 'En attente de paiement', 'gestionnaire-colis-pro' ),
-			'paid'             => __( 'Payée', 'gestionnaire-colis-pro' ),
-			'preparing'        => __( 'En préparation', 'gestionnaire-colis-pro' ),
-			'shipped'          => __( 'Expédiée', 'gestionnaire-colis-pro' ),
-			'cancelled'        => __( 'Annulée', 'gestionnaire-colis-pro' ),
+			'requested'        => _x( 'Requested', 'shipment status', 'gestionnaire-colis-pro' ),
+			'awaiting_payment' => _x( 'Awaiting payment', 'shipment status', 'gestionnaire-colis-pro' ),
+			'paid'             => _x( 'Paid', 'shipment status', 'gestionnaire-colis-pro' ),
+			'preparing'        => _x( 'Preparing', 'shipment status', 'gestionnaire-colis-pro' ),
+			'shipped'          => _x( 'Shipped', 'shipment status', 'gestionnaire-colis-pro' ),
+			'cancelled'        => _x( 'Cancelled', 'shipment status', 'gestionnaire-colis-pro' ),
 		);
 	}
 
@@ -58,18 +58,18 @@ class GCP_Shipments {
 
 		$client = GCP_Clients::get( $client_id );
 		if ( ! $client ) {
-			return new WP_Error( 'gcp_invalid_client', __( 'Client introuvable.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_invalid_client', __( 'Client not found.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$parcel_ids = array_unique( array_filter( array_map( 'intval', (array) $parcel_ids ) ) );
 		if ( empty( $parcel_ids ) ) {
-			return new WP_Error( 'gcp_no_parcels', __( 'Sélectionnez au moins un colis.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_no_parcels', __( 'Select at least one parcel.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$carrier = sanitize_key( $carrier );
 		$enabled = wp_list_pluck( GCP_Carriers::all( true ), 'slug' );
 		if ( ! in_array( $carrier, $enabled, true ) ) {
-			return new WP_Error( 'gcp_invalid_carrier', __( 'Transporteur invalide.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_invalid_carrier', __( 'Invalid carrier.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$parcels      = array();
@@ -80,23 +80,23 @@ class GCP_Shipments {
 			$parcel = GCP_Parcels::get( $parcel_id );
 
 			if ( ! $parcel || (int) $parcel->client_id !== (int) $client->id ) {
-				return new WP_Error( 'gcp_invalid_parcel', __( 'Colis introuvable pour ce client.', 'gestionnaire-colis-pro' ) );
+				return new WP_Error( 'gcp_invalid_parcel', __( 'Parcel not found for this client.', 'gestionnaire-colis-pro' ) );
 			}
 
 			if ( 'available' !== $parcel->status ) {
 				/* translators: %s: parcel reference. */
-				return new WP_Error( 'gcp_parcel_unavailable', sprintf( __( 'Le colis %s n’est plus disponible.', 'gestionnaire-colis-pro' ), $parcel->reference ) );
+				return new WP_Error( 'gcp_parcel_unavailable', sprintf( __( 'Parcel %s is no longer available.', 'gestionnaire-colis-pro' ), $parcel->reference ) );
 			}
 
 			if ( ! $parcel->allow_grouping && count( $parcel_ids ) > 1 ) {
 				/* translators: %s: parcel reference. */
-				return new WP_Error( 'gcp_grouping_forbidden', sprintf( __( 'Le colis %s doit être expédié seul (regroupement interdit).', 'gestionnaire-colis-pro' ), $parcel->reference ) );
+				return new WP_Error( 'gcp_grouping_forbidden', sprintf( __( 'Parcel %s must be shipped alone (grouping forbidden).', 'gestionnaire-colis-pro' ), $parcel->reference ) );
 			}
 
 			$allowed = GCP_Parcels::allowed_carrier_slugs( $parcel );
 			if ( ! empty( $allowed ) && ! in_array( $carrier, $allowed, true ) ) {
 				/* translators: %s: parcel reference. */
-				return new WP_Error( 'gcp_carrier_forbidden', sprintf( __( 'Le transporteur choisi n’est pas autorisé pour le colis %s.', 'gestionnaire-colis-pro' ), $parcel->reference ) );
+				return new WP_Error( 'gcp_carrier_forbidden', sprintf( __( 'The chosen carrier is not allowed for parcel %s.', 'gestionnaire-colis-pro' ), $parcel->reference ) );
 			}
 
 			$parcels[]     = $parcel;
@@ -126,7 +126,7 @@ class GCP_Shipments {
 		);
 
 		if ( ! $inserted ) {
-			return new WP_Error( 'gcp_db_error', __( 'Impossible de créer la demande d’expédition.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_db_error', __( 'The shipment request could not be created.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$shipment_id = (int) $wpdb->insert_id;
@@ -157,7 +157,7 @@ class GCP_Shipments {
 			'shipment_requested',
 			sprintf(
 				/* translators: 1: shipment reference, 2: number of parcels, 3: carrier name. */
-				__( 'Demande d’expédition %1$s créée (%2$d colis, transporteur %3$s).', 'gestionnaire-colis-pro' ),
+				__( 'Shipment request %1$s created (%2$d parcels, carrier %3$s).', 'gestionnaire-colis-pro' ),
 				$reference,
 				count( $parcel_ids ),
 				GCP_Carriers::name( $carrier )
@@ -256,12 +256,12 @@ class GCP_Shipments {
 		global $wpdb;
 
 		if ( ! array_key_exists( $status, self::statuses() ) ) {
-			return new WP_Error( 'gcp_invalid_status', __( 'Statut d’expédition invalide.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_invalid_status', __( 'Invalid shipment status.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$shipment = self::get( $shipment_id );
 		if ( ! $shipment ) {
-			return new WP_Error( 'gcp_invalid_shipment', __( 'Expédition introuvable.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_invalid_shipment', __( 'Shipment not found.', 'gestionnaire-colis-pro' ) );
 		}
 
 		if ( $shipment->status === $status ) {
@@ -305,7 +305,7 @@ class GCP_Shipments {
 			'shipment_status_changed',
 			sprintf(
 				/* translators: 1: shipment reference, 2: old status, 3: new status. */
-				__( 'Expédition %1$s : statut « %2$s » → « %3$s ».', 'gestionnaire-colis-pro' ),
+				__( 'Shipment %1$s: status “%2$s” → “%3$s”.', 'gestionnaire-colis-pro' ),
 				$shipment->reference,
 				self::status_label( $shipment->status ),
 				self::status_label( $status )

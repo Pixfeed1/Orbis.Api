@@ -4,7 +4,7 @@ Tags: woocommerce, parcels, shipping, logistics, clients
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.1
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Client and parcel management for a parcel receiving, storage, grouping and forwa
 
 == Description ==
 
-Gestionnaire Colis Pro provides a complete client and parcel management system for a parcel forwarding business: receiving, storage, grouping and shipping of parcels (for example towards the French overseas territories). The plugin interface is currently provided in French.
+Gestionnaire Colis Pro provides a complete client and parcel management system for a parcel forwarding business: receiving, storage, grouping and shipping of parcels (for example towards the French overseas territories). The interface is in English and ships with a complete French translation.
 
 = Client management module =
 
@@ -33,7 +33,7 @@ Gestionnaire Colis Pro provides a complete client and parcel management system f
 
 = Customer side =
 
-Customers only see the information meant for them (parcel number, reception date, tracking number, weight, status, grouping allowed) in their WooCommerce My Account area: "Mes colis" (my parcels), "Mes expéditions" (my shipments), "Mes documents" (my documents) and "Demande d'expédition" (shipment request). Internal comments and dimensions are never displayed to customers.
+Customers only see the information meant for them (parcel number, reception date, tracking number, weight, status, grouping allowed) in their WooCommerce My Account area: "My parcels", "My shipments", "My documents" and "Shipment request" (mes-colis, mes-expeditions, mes-documents and demande-expedition on French sites). Internal comments and dimensions are never displayed to customers.
 
 = Native WooCommerce payments =
 
@@ -84,6 +84,14 @@ Not by default. Add the `gcp_remove_data_on_uninstall` option with the value `ye
 4. Customer "My parcels" screen in the WooCommerce My Account area.
 
 == Changelog ==
+
+= 1.4.0 =
+* Internationalization: all source strings are now in English; the full French translation ships with the plugin (fr_FR .po/.mo), so French sites keep the exact same interface. Translation contexts preserve French grammatical agreement on statuses.
+* The My Account endpoint slugs are now translatable and filterable (French sites keep mes-colis, mes-expeditions, mes-documents, demande-expedition; other languages get my-parcels, my-shipments, my-documents, shipment-request by default).
+* International default carriers (DHL, UPS, FedEx, Colissimo) on fresh installs.
+* New setting to apply the shop taxes to shipment orders (tax-free by default).
+* Client search pagination now runs in SQL (COUNT + LIMIT/OFFSET) and scales to large client bases.
+* The live estimate on the shipment request form follows the browser locale for number formatting.
 
 = 1.3.1 =
 * The readme is now written in English, as required by the WordPress.org plugin directory.

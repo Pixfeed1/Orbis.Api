@@ -29,11 +29,11 @@ class GCP_Documents {
 
 		$client = GCP_Clients::get( $client_id );
 		if ( ! $client ) {
-			return new WP_Error( 'gcp_invalid_client', __( 'Client introuvable.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_invalid_client', __( 'Client not found.', 'gestionnaire-colis-pro' ) );
 		}
 
 		if ( empty( $file['path'] ) || ! GCP_Files::resolve( $file['path'] ) ) {
-			return new WP_Error( 'gcp_invalid_file', __( 'Fichier introuvable.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_invalid_file', __( 'File not found.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$name     = isset( $file['name'] ) ? sanitize_file_name( $file['name'] ) : '';
@@ -53,7 +53,7 @@ class GCP_Documents {
 		);
 
 		if ( ! $inserted ) {
-			return new WP_Error( 'gcp_db_error', __( 'Impossible d’enregistrer le document.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_db_error', __( 'The document could not be saved.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$document_id = (int) $wpdb->insert_id;
@@ -61,7 +61,7 @@ class GCP_Documents {
 		GCP_History::log(
 			(int) $client_id,
 			'document_added',
-			sprintf( /* translators: %s: document title. */ __( 'Document « %s » ajouté.', 'gestionnaire-colis-pro' ), $title ? $title : $name )
+			sprintf( /* translators: %s: document title. */ __( 'Document “%s” added.', 'gestionnaire-colis-pro' ), $title ? $title : $name )
 		);
 
 		return $document_id;

@@ -38,6 +38,7 @@ final class GCP_Plugin {
 	 * Wires hooks.
 	 */
 	private function __construct() {
+		add_action( 'init', array( $this, 'load_textdomain' ), 1 );
 		add_action( 'init', array( 'GCP_Install', 'maybe_update' ), 5 );
 		add_action( 'before_woocommerce_init', array( $this, 'declare_wc_compatibility' ) );
 
@@ -53,6 +54,15 @@ final class GCP_Plugin {
 
 		require_once GCP_PLUGIN_DIR . 'includes/frontend/class-gcp-account.php';
 		GCP_Account::init();
+	}
+
+	/**
+	 * Loads the plugin translations bundled in the languages directory.
+	 *
+	 * @return void
+	 */
+	public function load_textdomain() {
+		load_plugin_textdomain( 'gestionnaire-colis-pro', false, dirname( plugin_basename( GCP_PLUGIN_FILE ) ) . '/languages' );
 	}
 
 	/**

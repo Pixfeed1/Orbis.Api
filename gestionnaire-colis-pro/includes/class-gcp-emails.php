@@ -131,14 +131,14 @@ class GCP_Emails {
 
 		$subject = sprintf(
 			/* translators: 1: site name, 2: parcel reference. */
-			__( '[%1$s] Votre colis %2$s a bien été réceptionné', 'gestionnaire-colis-pro' ),
+			__( '[%1$s] Your parcel %2$s has been received', 'gestionnaire-colis-pro' ),
 			wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ),
 			$parcel->reference
 		);
 
 		$message = sprintf(
 			/* translators: 1: parcel reference, 2: weight, 3: tracking number, 4: free storage days. */
-			__( "Bonjour,\n\nNous avons bien réceptionné votre colis %1\$s (poids : %2\$s kg, n° de suivi : %3\$s).\n\nIl est désormais disponible dans votre espace client, rubrique « Mes colis ». Vous bénéficiez de %4\$d jours de stockage gratuit.\n\nCordialement", 'gestionnaire-colis-pro' ),
+			__( "Hello,\n\nWe have received your parcel %1\$s (weight: %2\$s kg, tracking number: %3\$s).\n\nIt is now available in your account, under “My parcels”. You benefit from %4\$d days of free storage.\n\nBest regards", 'gestionnaire-colis-pro' ),
 			$parcel->reference,
 			number_format_i18n( (float) $parcel->weight, 3 ),
 			$parcel->tracking_number ? $parcel->tracking_number : '—',
@@ -164,14 +164,14 @@ class GCP_Emails {
 
 		$subject = sprintf(
 			/* translators: 1: shipment reference, 2: client reference. */
-			__( 'Nouvelle demande d’expédition %1$s (client %2$s)', 'gestionnaire-colis-pro' ),
+			__( 'New shipment request %1$s (client %2$s)', 'gestionnaire-colis-pro' ),
 			$shipment->reference,
 			$client->reference
 		);
 
 		$message = sprintf(
 			/* translators: 1: shipment reference, 2: client reference, 3: parcels count, 4: carrier. */
-			__( "Une nouvelle demande d’expédition %1\$s vient d’être créée par le client %2\$s.\n\nNombre de colis : %3\$d\nTransporteur souhaité : %4\$s\n\nConnectez-vous à l’administration pour la traiter.", 'gestionnaire-colis-pro' ),
+			__( "A new shipment request %1\$s has just been created by client %2\$s.\n\nNumber of parcels: %3\$d\nPreferred carrier: %4\$s\n\nLog in to the administration to process it.", 'gestionnaire-colis-pro' ),
 			$shipment->reference,
 			$client->reference,
 			count( $parcel_ids ),

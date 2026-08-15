@@ -32,7 +32,7 @@ class GCP_Ajax {
 		check_ajax_referer( 'gcp_admin', 'nonce' );
 
 		if ( ! current_user_can( 'gcp_manage' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Accès refusé.', 'gestionnaire-colis-pro' ) ), 403 );
+			wp_send_json_error( array( 'message' => __( 'Access denied.', 'gestionnaire-colis-pro' ) ), 403 );
 		}
 
 		$term = isset( $_GET['term'] ) ? sanitize_text_field( wp_unslash( $_GET['term'] ) ) : '';

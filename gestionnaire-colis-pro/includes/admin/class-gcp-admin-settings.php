@@ -21,41 +21,41 @@ class GCP_Admin_Settings {
 	 */
 	public static function render() {
 		if ( ! current_user_can( 'gcp_manage' ) ) {
-			wp_die( esc_html__( 'Accès refusé.', 'gestionnaire-colis-pro' ) );
+			wp_die( esc_html__( 'Access denied.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$settings = GCP_Settings::all();
 		?>
 		<div class="wrap gcp-wrap">
-			<h1><?php esc_html_e( 'Réglages — Gestionnaire Colis Pro', 'gestionnaire-colis-pro' ); ?></h1>
+			<h1><?php esc_html_e( 'Settings — Gestionnaire Colis Pro', 'gestionnaire-colis-pro' ); ?></h1>
 			<?php GCP_Admin::maybe_notice(); ?>
 
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<?php wp_nonce_field( 'gcp_save_settings' ); ?>
 				<input type="hidden" name="action" value="gcp_save_settings" />
 
-				<h2><?php esc_html_e( 'Stockage', 'gestionnaire-colis-pro' ); ?></h2>
+				<h2><?php esc_html_e( 'Storage', 'gestionnaire-colis-pro' ); ?></h2>
 				<table class="form-table" role="presentation">
 					<tr>
-						<th scope="row"><label for="gcp-free-days"><?php esc_html_e( 'Jours de stockage gratuits', 'gestionnaire-colis-pro' ); ?></label></th>
+						<th scope="row"><label for="gcp-free-days"><?php esc_html_e( 'Free storage days', 'gestionnaire-colis-pro' ); ?></label></th>
 						<td>
 							<input type="number" id="gcp-free-days" name="free_storage_days" min="0" value="<?php echo esc_attr( (string) $settings['free_storage_days'] ); ?>" />
-							<p class="description"><?php esc_html_e( 'Chaque colis bénéficie de cette période de stockage gratuit à compter de sa réception (15 jours par défaut).', 'gestionnaire-colis-pro' ); ?></p>
+							<p class="description"><?php esc_html_e( 'Every parcel gets this free storage period from its reception (15 days by default).', 'gestionnaire-colis-pro' ); ?></p>
 						</td>
 					</tr>
 					<tr>
-						<th scope="row"><label for="gcp-fee-day"><?php esc_html_e( 'Frais de stockage par jour et par colis', 'gestionnaire-colis-pro' ); ?></label></th>
+						<th scope="row"><label for="gcp-fee-day"><?php esc_html_e( 'Storage fee per day and per parcel', 'gestionnaire-colis-pro' ); ?></label></th>
 						<td><input type="number" id="gcp-fee-day" name="storage_fee_per_day" min="0" step="0.01" value="<?php echo esc_attr( (string) $settings['storage_fee_per_day'] ); ?>" /></td>
 					</tr>
 				</table>
 
-				<h2><?php esc_html_e( 'Tarification au poids', 'gestionnaire-colis-pro' ); ?></h2>
-				<p class="description"><?php esc_html_e( 'Le tarif d’un colis est déterminé par le premier palier dont le poids maximal est supérieur ou égal au poids du colis. Au-delà du dernier palier : prix de base + prix par kg.', 'gestionnaire-colis-pro' ); ?></p>
+				<h2><?php esc_html_e( 'Weight-based pricing', 'gestionnaire-colis-pro' ); ?></h2>
+				<p class="description"><?php esc_html_e( 'A parcel price is given by the first tier whose maximum weight is greater than or equal to the parcel weight. Beyond the last tier: base price + price per kg.', 'gestionnaire-colis-pro' ); ?></p>
 				<table class="widefat fixed striped gcp-tiers-table">
 					<thead>
 						<tr>
-							<th><?php esc_html_e( 'Poids maximal (kg)', 'gestionnaire-colis-pro' ); ?></th>
-							<th><?php esc_html_e( 'Prix', 'gestionnaire-colis-pro' ); ?></th>
+							<th><?php esc_html_e( 'Maximum weight (kg)', 'gestionnaire-colis-pro' ); ?></th>
+							<th><?php esc_html_e( 'Price', 'gestionnaire-colis-pro' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -69,11 +69,11 @@ class GCP_Admin_Settings {
 							?>
 							<tr>
 								<td>
-									<label class="screen-reader-text" for="gcp-tier-w-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Poids maximal (kg)', 'gestionnaire-colis-pro' ); ?></label>
+									<label class="screen-reader-text" for="gcp-tier-w-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Maximum weight (kg)', 'gestionnaire-colis-pro' ); ?></label>
 									<input type="number" id="gcp-tier-w-<?php echo esc_attr( (string) $i ); ?>" name="tier_max_weight[]" step="0.001" min="0" value="<?php echo esc_attr( (string) $tier['max_weight'] ); ?>" />
 								</td>
 								<td>
-									<label class="screen-reader-text" for="gcp-tier-p-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Prix', 'gestionnaire-colis-pro' ); ?></label>
+									<label class="screen-reader-text" for="gcp-tier-p-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Price', 'gestionnaire-colis-pro' ); ?></label>
 									<input type="number" id="gcp-tier-p-<?php echo esc_attr( (string) $i ); ?>" name="tier_price[]" step="0.01" min="0" value="<?php echo esc_attr( (string) $tier['price'] ); ?>" />
 								</td>
 							</tr>
@@ -82,25 +82,25 @@ class GCP_Admin_Settings {
 				</table>
 				<table class="form-table" role="presentation">
 					<tr>
-						<th scope="row"><label for="gcp-price-base"><?php esc_html_e( 'Prix de base (hors paliers)', 'gestionnaire-colis-pro' ); ?></label></th>
+						<th scope="row"><label for="gcp-price-base"><?php esc_html_e( 'Base price (beyond tiers)', 'gestionnaire-colis-pro' ); ?></label></th>
 						<td><input type="number" id="gcp-price-base" name="price_base" min="0" step="0.01" value="<?php echo esc_attr( (string) $settings['price_base'] ); ?>" /></td>
 					</tr>
 					<tr>
-						<th scope="row"><label for="gcp-price-kg"><?php esc_html_e( 'Prix par kg (hors paliers)', 'gestionnaire-colis-pro' ); ?></label></th>
+						<th scope="row"><label for="gcp-price-kg"><?php esc_html_e( 'Price per kg (beyond tiers)', 'gestionnaire-colis-pro' ); ?></label></th>
 						<td><input type="number" id="gcp-price-kg" name="price_per_kg" min="0" step="0.01" value="<?php echo esc_attr( (string) $settings['price_per_kg'] ); ?>" /></td>
 					</tr>
 				</table>
 
-				<h2><?php esc_html_e( 'Transporteurs', 'gestionnaire-colis-pro' ); ?></h2>
-				<p class="description"><?php esc_html_e( 'Un transporteur désactivé n’est plus proposé, ni à la réception des colis, ni aux clients.', 'gestionnaire-colis-pro' ); ?></p>
+				<h2><?php esc_html_e( 'Carriers', 'gestionnaire-colis-pro' ); ?></h2>
+				<p class="description"><?php esc_html_e( 'A disabled carrier is no longer offered, neither at parcel reception nor to clients.', 'gestionnaire-colis-pro' ); ?></p>
 				<table class="widefat fixed striped gcp-carriers-table">
 					<thead>
 						<tr>
-							<th><?php esc_html_e( 'Nom', 'gestionnaire-colis-pro' ); ?></th>
-							<th><?php esc_html_e( 'Identifiant', 'gestionnaire-colis-pro' ); ?></th>
-							<th><?php esc_html_e( 'Prix de base', 'gestionnaire-colis-pro' ); ?></th>
-							<th><?php esc_html_e( 'Prix par kg', 'gestionnaire-colis-pro' ); ?></th>
-							<th><?php esc_html_e( 'Actif', 'gestionnaire-colis-pro' ); ?></th>
+							<th><?php esc_html_e( 'Name', 'gestionnaire-colis-pro' ); ?></th>
+							<th><?php esc_html_e( 'Slug', 'gestionnaire-colis-pro' ); ?></th>
+							<th><?php esc_html_e( 'Base price', 'gestionnaire-colis-pro' ); ?></th>
+							<th><?php esc_html_e( 'Price per kg', 'gestionnaire-colis-pro' ); ?></th>
+							<th><?php esc_html_e( 'Enabled', 'gestionnaire-colis-pro' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -117,28 +117,42 @@ class GCP_Admin_Settings {
 							?>
 							<tr>
 								<td>
-									<label class="screen-reader-text" for="gcp-carrier-n-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Nom', 'gestionnaire-colis-pro' ); ?></label>
+									<label class="screen-reader-text" for="gcp-carrier-n-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Name', 'gestionnaire-colis-pro' ); ?></label>
 									<input type="text" id="gcp-carrier-n-<?php echo esc_attr( (string) $i ); ?>" name="carrier_name[]" value="<?php echo esc_attr( $carrier['name'] ); ?>" />
 								</td>
 								<td>
-									<label class="screen-reader-text" for="gcp-carrier-s-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Identifiant', 'gestionnaire-colis-pro' ); ?></label>
+									<label class="screen-reader-text" for="gcp-carrier-s-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Slug', 'gestionnaire-colis-pro' ); ?></label>
 									<input type="text" id="gcp-carrier-s-<?php echo esc_attr( (string) $i ); ?>" name="carrier_slug[]" value="<?php echo esc_attr( $carrier['slug'] ); ?>" />
 								</td>
 								<td>
-									<label class="screen-reader-text" for="gcp-carrier-b-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Prix de base', 'gestionnaire-colis-pro' ); ?></label>
+									<label class="screen-reader-text" for="gcp-carrier-b-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Base price', 'gestionnaire-colis-pro' ); ?></label>
 									<input type="number" step="0.01" min="0" id="gcp-carrier-b-<?php echo esc_attr( (string) $i ); ?>" name="carrier_price_base[]" value="<?php echo esc_attr( isset( $carrier['price_base'] ) ? (string) $carrier['price_base'] : '' ); ?>" />
 								</td>
 								<td>
-									<label class="screen-reader-text" for="gcp-carrier-k-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Prix par kg', 'gestionnaire-colis-pro' ); ?></label>
+									<label class="screen-reader-text" for="gcp-carrier-k-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Price per kg', 'gestionnaire-colis-pro' ); ?></label>
 									<input type="number" step="0.01" min="0" id="gcp-carrier-k-<?php echo esc_attr( (string) $i ); ?>" name="carrier_price_per_kg[]" value="<?php echo esc_attr( isset( $carrier['price_per_kg'] ) ? (string) $carrier['price_per_kg'] : '' ); ?>" />
 								</td>
 								<td>
 									<input type="hidden" name="carrier_enabled[<?php echo esc_attr( (string) $i ); ?>]" value="<?php echo empty( $carrier['enabled'] ) ? '0' : '1'; ?>" class="gcp-carrier-enabled-value" />
-									<input type="checkbox" class="gcp-carrier-enabled" <?php checked( ! empty( $carrier['enabled'] ) ); ?> aria-label="<?php esc_attr_e( 'Actif', 'gestionnaire-colis-pro' ); ?>" />
+									<input type="checkbox" class="gcp-carrier-enabled" <?php checked( ! empty( $carrier['enabled'] ) ); ?> aria-label="<?php esc_attr_e( 'Enabled', 'gestionnaire-colis-pro' ); ?>" />
 								</td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
+				</table>
+
+				<h2><?php esc_html_e( 'Orders', 'gestionnaire-colis-pro' ); ?></h2>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Taxes', 'gestionnaire-colis-pro' ); ?></th>
+						<td>
+							<label>
+								<input type="checkbox" name="orders_taxable" value="1" <?php checked( ! empty( $settings['orders_taxable'] ) ); ?> />
+								<?php esc_html_e( 'Apply the shop taxes to shipment orders (parcels, storage and transport lines)', 'gestionnaire-colis-pro' ); ?>
+							</label>
+							<p class="description"><?php esc_html_e( 'When unchecked, shipment orders are created tax-free.', 'gestionnaire-colis-pro' ); ?></p>
+						</td>
+					</tr>
 				</table>
 
 				<h2><?php esc_html_e( 'Notifications', 'gestionnaire-colis-pro' ); ?></h2>
@@ -148,23 +162,23 @@ class GCP_Admin_Settings {
 						<td>
 							<label>
 								<input type="checkbox" name="notify_client_on_parcel" value="1" <?php checked( ! empty( $settings['notify_client_on_parcel'] ) ); ?> />
-								<?php esc_html_e( 'Prévenir le client à la réception d’un colis', 'gestionnaire-colis-pro' ); ?>
+								<?php esc_html_e( 'Notify the client when a parcel is received', 'gestionnaire-colis-pro' ); ?>
 							</label>
 							<br />
 							<label>
 								<input type="checkbox" name="notify_admin_on_request" value="1" <?php checked( ! empty( $settings['notify_admin_on_request'] ) ); ?> />
-								<?php esc_html_e( 'Prévenir l’administrateur lors d’une demande d’expédition', 'gestionnaire-colis-pro' ); ?>
+								<?php esc_html_e( 'Notify the administrator when a shipment is requested', 'gestionnaire-colis-pro' ); ?>
 							</label>
 							<br />
 							<label>
 								<input type="checkbox" name="send_invoice_on_request" value="1" <?php checked( ! empty( $settings['send_invoice_on_request'] ) ); ?> />
-								<?php esc_html_e( 'Envoyer la facture WooCommerce (avec lien de paiement) lors d’une demande d’expédition', 'gestionnaire-colis-pro' ); ?>
+								<?php esc_html_e( 'Send the WooCommerce invoice (with payment link) when a shipment is requested', 'gestionnaire-colis-pro' ); ?>
 							</label>
 						</td>
 					</tr>
 				</table>
 
-				<?php submit_button( __( 'Enregistrer les réglages', 'gestionnaire-colis-pro' ) ); ?>
+				<?php submit_button( __( 'Save settings', 'gestionnaire-colis-pro' ) ); ?>
 			</form>
 		</div>
 		<?php
@@ -177,7 +191,7 @@ class GCP_Admin_Settings {
 	 */
 	public static function handle_save() {
 		if ( ! current_user_can( 'gcp_manage' ) ) {
-			wp_die( esc_html__( 'Accès refusé.', 'gestionnaire-colis-pro' ) );
+			wp_die( esc_html__( 'Access denied.', 'gestionnaire-colis-pro' ) );
 		}
 
 		check_admin_referer( 'gcp_save_settings' );
@@ -232,12 +246,13 @@ class GCP_Admin_Settings {
 		}
 		$settings['carriers'] = $carriers;
 
+		$settings['orders_taxable']          = empty( $_POST['orders_taxable'] ) ? 0 : 1;
 		$settings['notify_client_on_parcel'] = empty( $_POST['notify_client_on_parcel'] ) ? 0 : 1;
 		$settings['notify_admin_on_request'] = empty( $_POST['notify_admin_on_request'] ) ? 0 : 1;
 		$settings['send_invoice_on_request'] = empty( $_POST['send_invoice_on_request'] ) ? 0 : 1;
 
 		GCP_Settings::update( $settings );
 
-		GCP_Admin::redirect( 'gcp-settings', array(), __( 'Réglages enregistrés.', 'gestionnaire-colis-pro' ) );
+		GCP_Admin::redirect( 'gcp-settings', array(), __( 'Settings saved.', 'gestionnaire-colis-pro' ) );
 	}
 }

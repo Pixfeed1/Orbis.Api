@@ -68,7 +68,7 @@ class GCP_Orders {
 		global $wpdb;
 
 		if ( ! self::available() ) {
-			return new WP_Error( 'gcp_wc_missing', __( 'WooCommerce n’est pas disponible.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_wc_missing', __( 'WooCommerce is not available.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$order = wc_create_order(
@@ -93,18 +93,21 @@ class GCP_Orders {
 			$order->set_address( $shipping, 'shipping' );
 		}
 
+		// Fees follow the shop tax setting chosen in the plugin settings.
+		$tax_status = GCP_Settings::get( 'orders_taxable', 0 ) ? 'taxable' : 'none';
+
 		// One fee line per parcel, priced at reception time.
 		foreach ( GCP_Shipments::parcels( (int) $shipment->id ) as $parcel ) {
 			$fee = new WC_Order_Item_Fee();
 			$fee->set_name(
 				sprintf(
 					/* translators: 1: parcel reference, 2: weight in kg. */
-					__( 'Colis %1$s (%2$s kg)', 'gestionnaire-colis-pro' ),
+					__( 'Parcel %1$s (%2$s kg)', 'gestionnaire-colis-pro' ),
 					$parcel->reference,
 					wc_format_localized_decimal( (float) $parcel->weight )
 				)
 			);
-			$fee->set_tax_status( 'none' );
+			$fee->set_tax_status( $tax_status );
 			$fee->set_total( (string) $parcel->price );
 			$order->add_item( $fee );
 		}
@@ -112,8 +115,8 @@ class GCP_Orders {
 		// Storage fees, when due.
 		if ( (float) $shipment->storage_fees > 0 ) {
 			$fee = new WC_Order_Item_Fee();
-			$fee->set_name( __( 'Frais de stockage', 'gestionnaire-colis-pro' ) );
-			$fee->set_tax_status( 'none' );
+			$fee->set_name( __( 'Storage fees', 'gestionnaire-colis-pro' ) );
+			$fee->set_tax_status( $tax_status );
 			$fee->set_total( (string) $shipment->storage_fees );
 			$order->add_item( $fee );
 		}
@@ -131,11 +134,11 @@ class GCP_Orders {
 		$order->add_order_note(
 			sprintf(
 				/* translators: %s: shipment reference. */
-				__( 'Commande créée pour la demande d’expédition %s.', 'gestionnaire-colis-pro' ),
+				__( 'Order created for shipment request %s.', 'gestionnaire-colis-pro' ),
 				$shipment->reference
 			)
 		);
-		$order->calculate_totals( false );
+		$order->calculate_totals( (bool) GCP_Settings::get( 'orders_taxable', 0 ) );
 		$order->update_status( 'pending' );
 		$order->save();
 
@@ -157,7 +160,7 @@ class GCP_Orders {
 			'order_created',
 			sprintf(
 				/* translators: 1: order number, 2: shipment reference. */
-				__( 'Commande WooCommerce n°%1$s créée pour l’expédition %2$s.', 'gestionnaire-colis-pro' ),
+				__( 'WooCommerce order #%1$s created for shipment %2$s.', 'gestionnaire-colis-pro' ),
 				$order->get_order_number(),
 				$shipment->reference
 			),
@@ -269,9 +272,9 @@ class GCP_Orders {
 		self::$syncing = true;
 
 		if ( 'shipped' === $status && ! $order->has_status( array( 'completed', 'cancelled', 'refunded' ) ) ) {
-			$order->update_status( 'completed', sprintf( /* translators: %s: shipment reference. */ __( 'Expédition %s expédiée.', 'gestionnaire-colis-pro' ), $shipment->reference ) );
+			$order->update_status( 'completed', sprintf( /* translators: %s: shipment reference. */ __( 'Shipment %s shipped.', 'gestionnaire-colis-pro' ), $shipment->reference ) );
 		} elseif ( 'cancelled' === $status && $order->has_status( array( 'pending', 'on-hold', 'failed' ) ) ) {
-			$order->update_status( 'cancelled', sprintf( /* translators: %s: shipment reference. */ __( 'Expédition %s annulée.', 'gestionnaire-colis-pro' ), $shipment->reference ) );
+			$order->update_status( 'cancelled', sprintf( /* translators: %s: shipment reference. */ __( 'Shipment %s cancelled.', 'gestionnaire-colis-pro' ), $shipment->reference ) );
 		}
 
 		self::$syncing = false;

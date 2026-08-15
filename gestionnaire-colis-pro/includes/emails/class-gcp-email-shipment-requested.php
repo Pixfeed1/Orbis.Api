@@ -34,8 +34,8 @@ class GCP_Email_Shipment_Requested extends WC_Email {
 	 */
 	public function __construct() {
 		$this->id             = 'gcp_shipment_requested';
-		$this->title          = __( 'Demande d’expédition (Gestionnaire Colis Pro)', 'gestionnaire-colis-pro' );
-		$this->description    = __( 'Envoyé au gestionnaire lorsqu’un client crée une demande d’expédition.', 'gestionnaire-colis-pro' );
+		$this->title          = __( 'Shipment requested (Gestionnaire Colis Pro)', 'gestionnaire-colis-pro' );
+		$this->description    = __( 'Sent to the staff when a client creates a shipment request.', 'gestionnaire-colis-pro' );
 		$this->template_html  = 'emails/gcp-shipment-requested.php';
 		$this->template_plain = 'emails/plain/gcp-shipment-requested.php';
 		$this->template_base  = GCP_PLUGIN_DIR . 'templates/';
@@ -61,10 +61,10 @@ class GCP_Email_Shipment_Requested extends WC_Email {
 		parent::init_form_fields();
 
 		$this->form_fields['recipient'] = array(
-			'title'       => __( 'Destinataire(s)', 'gestionnaire-colis-pro' ),
+			'title'       => __( 'Recipient(s)', 'gestionnaire-colis-pro' ),
 			'type'        => 'text',
 			/* translators: %s: WP admin email. */
-			'description' => sprintf( __( 'Adresses séparées par des virgules. Par défaut : %s.', 'gestionnaire-colis-pro' ), '<code>' . esc_html( get_option( 'admin_email' ) ) . '</code>' ),
+			'description' => sprintf( __( 'Comma-separated addresses. Defaults to %s.', 'gestionnaire-colis-pro' ), '<code>' . esc_html( get_option( 'admin_email' ) ) . '</code>' ),
 			'placeholder' => '',
 			'default'     => '',
 			'desc_tip'    => true,
@@ -77,7 +77,7 @@ class GCP_Email_Shipment_Requested extends WC_Email {
 	 * @return string
 	 */
 	public function get_default_subject() {
-		return __( '[{site_title}] Nouvelle demande d’expédition {shipment_reference} (client {client_reference})', 'gestionnaire-colis-pro' );
+		return __( '[{site_title}] New shipment request {shipment_reference} (client {client_reference})', 'gestionnaire-colis-pro' );
 	}
 
 	/**
@@ -86,7 +86,7 @@ class GCP_Email_Shipment_Requested extends WC_Email {
 	 * @return string
 	 */
 	public function get_default_heading() {
-		return __( 'Nouvelle demande d’expédition {shipment_reference}', 'gestionnaire-colis-pro' );
+		return __( 'New shipment request {shipment_reference}', 'gestionnaire-colis-pro' );
 	}
 
 	/**

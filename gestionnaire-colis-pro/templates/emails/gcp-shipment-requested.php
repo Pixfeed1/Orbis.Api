@@ -27,7 +27,7 @@ $gcp_user    = get_userdata( (int) $client->user_id );
 	<?php
 	printf(
 		/* translators: 1: shipment reference, 2: client reference, 3: client name. */
-		esc_html__( 'La demande d’expédition %1$s vient d’être créée par le client %2$s (%3$s).', 'gestionnaire-colis-pro' ),
+		esc_html__( 'Shipment request %1$s has just been created by client %2$s (%3$s).', 'gestionnaire-colis-pro' ),
 		'<strong>' . esc_html( $shipment->reference ) . '</strong>',
 		'<strong>' . esc_html( $client->reference ) . '</strong>',
 		esc_html( $gcp_user ? $gcp_user->display_name : '' )
@@ -37,19 +37,19 @@ $gcp_user    = get_userdata( (int) $client->user_id );
 
 <table cellspacing="0" cellpadding="6" border="1" style="width: 100%; border: 1px solid #e5e5e5; border-collapse: collapse;">
 	<tr>
-		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Transporteur', 'gestionnaire-colis-pro' ); ?></th>
+		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Carrier', 'gestionnaire-colis-pro' ); ?></th>
 		<td><?php echo esc_html( GCP_Carriers::name( $shipment->carrier ) ); ?></td>
 	</tr>
 	<tr>
-		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Colis', 'gestionnaire-colis-pro' ); ?></th>
+		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Parcels', 'gestionnaire-colis-pro' ); ?></th>
 		<td><?php echo esc_html( implode( ', ', wp_list_pluck( $gcp_parcels, 'reference' ) ) ); ?></td>
 	</tr>
 	<tr>
-		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Poids total', 'gestionnaire-colis-pro' ); ?></th>
+		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Total weight', 'gestionnaire-colis-pro' ); ?></th>
 		<td><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?> kg</td>
 	</tr>
 	<tr>
-		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Total (colis + stockage + transport)', 'gestionnaire-colis-pro' ); ?></th>
+		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Total (parcels + storage + transport)', 'gestionnaire-colis-pro' ); ?></th>
 		<td><?php echo esc_html( GCP_Format::price( (float) $shipment->total_price ) ); ?></td>
 	</tr>
 </table>
@@ -64,7 +64,7 @@ $gcp_client_url = add_query_arg(
 );
 ?>
 <p>
-	<a href="<?php echo esc_url( $gcp_client_url ); ?>"><?php esc_html_e( 'Ouvrir la fiche client', 'gestionnaire-colis-pro' ); ?></a>
+	<a href="<?php echo esc_url( $gcp_client_url ); ?>"><?php esc_html_e( 'Open the client record', 'gestionnaire-colis-pro' ); ?></a>
 </p>
 
 <?php if ( $additional_content ) : ?>

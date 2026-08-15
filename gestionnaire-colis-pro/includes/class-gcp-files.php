@@ -108,11 +108,11 @@ class GCP_Files {
 	public static function upload( $file_key, $mimes ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- callers verify their own nonce before calling.
 		if ( empty( $_FILES[ $file_key ] ) || empty( $_FILES[ $file_key ]['name'] ) ) {
-			return new WP_Error( 'gcp_no_file', __( 'Aucun fichier envoyé.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_no_file', __( 'No file uploaded.', 'gestionnaire-colis-pro' ) );
 		}
 
 		if ( ! self::ensure_dir() ) {
-			return new WP_Error( 'gcp_dir_error', __( 'Impossible de créer le répertoire de stockage protégé.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'gcp_dir_error', __( 'The protected storage directory could not be created.', 'gestionnaire-colis-pro' ) );
 		}
 
 		require_once ABSPATH . 'wp-admin/includes/file.php';
@@ -195,7 +195,7 @@ class GCP_Files {
 		$path = self::resolve( $relative );
 
 		if ( ! $path ) {
-			wp_die( esc_html__( 'Fichier introuvable.', 'gestionnaire-colis-pro' ), '', array( 'response' => 404 ) );
+			wp_die( esc_html__( 'File not found.', 'gestionnaire-colis-pro' ), '', array( 'response' => 404 ) );
 		}
 
 		$type        = wp_check_filetype( $path );

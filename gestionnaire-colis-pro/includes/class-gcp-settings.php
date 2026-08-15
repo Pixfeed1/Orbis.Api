@@ -48,20 +48,6 @@ class GCP_Settings {
 			),
 			'carriers'                => array(
 				array(
-					'slug'         => 'colissimo',
-					'name'         => 'Colissimo',
-					'enabled'      => 1,
-					'price_base'   => 8.0,
-					'price_per_kg' => 1.5,
-				),
-				array(
-					'slug'         => 'chronopost',
-					'name'         => 'Chronopost',
-					'enabled'      => 1,
-					'price_base'   => 12.0,
-					'price_per_kg' => 2.0,
-				),
-				array(
 					'slug'         => 'dhl',
 					'name'         => 'DHL',
 					'enabled'      => 1,
@@ -75,10 +61,25 @@ class GCP_Settings {
 					'price_base'   => 14.0,
 					'price_per_kg' => 2.2,
 				),
+				array(
+					'slug'         => 'fedex',
+					'name'         => 'FedEx',
+					'enabled'      => 1,
+					'price_base'   => 14.0,
+					'price_per_kg' => 2.3,
+				),
+				array(
+					'slug'         => 'colissimo',
+					'name'         => 'Colissimo',
+					'enabled'      => 1,
+					'price_base'   => 8.0,
+					'price_per_kg' => 1.5,
+				),
 			),
 			'notify_client_on_parcel' => 1,
 			'notify_admin_on_request' => 1,
 			'send_invoice_on_request' => 1,
+			'orders_taxable'          => 0,
 		);
 	}
 

@@ -18,13 +18,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
-<p><?php esc_html_e( 'Bonjour,', 'gestionnaire-colis-pro' ); ?></p>
+<p><?php esc_html_e( 'Hello,', 'gestionnaire-colis-pro' ); ?></p>
 
 <p>
 	<?php
 	printf(
 		/* translators: %s: parcel reference. */
-		esc_html__( 'Nous avons bien réceptionné votre colis %s à l’entrepôt. Il est désormais visible dans votre espace client, rubrique « Mes colis ».', 'gestionnaire-colis-pro' ),
+		esc_html__( 'We have received your parcel %s at the warehouse. It is now visible in your account, under “My parcels”.', 'gestionnaire-colis-pro' ),
 		'<strong>' . esc_html( $parcel->reference ) . '</strong>'
 	);
 	?>
@@ -32,24 +32,24 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
 <table cellspacing="0" cellpadding="6" border="1" style="width: 100%; border: 1px solid #e5e5e5; border-collapse: collapse;">
 	<tr>
-		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Numéro du colis', 'gestionnaire-colis-pro' ); ?></th>
+		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Parcel number', 'gestionnaire-colis-pro' ); ?></th>
 		<td><?php echo esc_html( $parcel->reference ); ?></td>
 	</tr>
 	<tr>
-		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Numéro de suivi', 'gestionnaire-colis-pro' ); ?></th>
+		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Tracking number', 'gestionnaire-colis-pro' ); ?></th>
 		<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
 	</tr>
 	<tr>
-		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Poids', 'gestionnaire-colis-pro' ); ?></th>
+		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Weight', 'gestionnaire-colis-pro' ); ?></th>
 		<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?> kg</td>
 	</tr>
 	<tr>
-		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Stockage gratuit', 'gestionnaire-colis-pro' ); ?></th>
+		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Free storage', 'gestionnaire-colis-pro' ); ?></th>
 		<td>
 			<?php
 			printf(
 				/* translators: %d: number of free storage days. */
-				esc_html( _n( '%d jour', '%d jours', (int) GCP_Settings::get( 'free_storage_days', 15 ), 'gestionnaire-colis-pro' ) ),
+				esc_html( _n( '%d day', '%d days', (int) GCP_Settings::get( 'free_storage_days', 15 ), 'gestionnaire-colis-pro' ) ),
 				(int) GCP_Settings::get( 'free_storage_days', 15 )
 			);
 			?>

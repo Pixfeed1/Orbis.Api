@@ -63,8 +63,8 @@ class GCP_Admin {
 
 		add_submenu_page(
 			'gcp-clients',
-			__( 'Colis', 'gestionnaire-colis-pro' ),
-			__( 'Colis', 'gestionnaire-colis-pro' ),
+			__( 'Parcels', 'gestionnaire-colis-pro' ),
+			__( 'Parcels', 'gestionnaire-colis-pro' ),
 			'gcp_manage',
 			'gcp-parcels',
 			array( 'GCP_Admin_Parcels', 'render_list' )
@@ -72,8 +72,8 @@ class GCP_Admin {
 
 		add_submenu_page(
 			'gcp-clients',
-			__( 'Nouveau colis', 'gestionnaire-colis-pro' ),
-			__( 'Nouveau colis', 'gestionnaire-colis-pro' ),
+			__( 'New parcel', 'gestionnaire-colis-pro' ),
+			__( 'New parcel', 'gestionnaire-colis-pro' ),
 			'gcp_manage',
 			'gcp-new-parcel',
 			array( 'GCP_Admin_Parcels', 'render_new' )
@@ -81,8 +81,8 @@ class GCP_Admin {
 
 		add_submenu_page(
 			'gcp-clients',
-			__( 'Réglages', 'gestionnaire-colis-pro' ),
-			__( 'Réglages', 'gestionnaire-colis-pro' ),
+			__( 'Settings', 'gestionnaire-colis-pro' ),
+			__( 'Settings', 'gestionnaire-colis-pro' ),
 			'gcp_manage',
 			'gcp-settings',
 			array( 'GCP_Admin_Settings', 'render' )
@@ -122,15 +122,15 @@ class GCP_Admin {
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'gcp_admin' ),
 				'i18n'    => array(
-					'noResults'   => __( 'Aucun client trouvé.', 'gestionnaire-colis-pro' ),
-					'inStock'     => __( 'colis en stock', 'gestionnaire-colis-pro' ),
-					'yes'         => __( 'Oui', 'gestionnaire-colis-pro' ),
-					'no'          => __( 'Non', 'gestionnaire-colis-pro' ),
-					'refCol'      => __( 'Numéro du colis', 'gestionnaire-colis-pro' ),
-					'weightCol'   => __( 'Poids (kg)', 'gestionnaire-colis-pro' ),
-					'groupingCol' => __( 'Regroupement autorisé', 'gestionnaire-colis-pro' ),
-					'noteCol'     => __( 'Commentaire interne', 'gestionnaire-colis-pro' ),
-					'noParcels'   => __( 'Aucun colis en stock pour ce client.', 'gestionnaire-colis-pro' ),
+					'noResults'   => __( 'No clients found.', 'gestionnaire-colis-pro' ),
+					'inStock'     => __( 'parcel(s) in stock', 'gestionnaire-colis-pro' ),
+					'yes'         => __( 'Yes', 'gestionnaire-colis-pro' ),
+					'no'          => __( 'No', 'gestionnaire-colis-pro' ),
+					'refCol'      => __( 'Parcel number', 'gestionnaire-colis-pro' ),
+					'weightCol'   => __( 'Weight (kg)', 'gestionnaire-colis-pro' ),
+					'groupingCol' => __( 'Grouping allowed', 'gestionnaire-colis-pro' ),
+					'noteCol'     => __( 'Internal comment', 'gestionnaire-colis-pro' ),
+					'noParcels'   => __( 'No parcels in stock for this client.', 'gestionnaire-colis-pro' ),
 				),
 			)
 		);
