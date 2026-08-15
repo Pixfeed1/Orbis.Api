@@ -1,100 +1,112 @@
 === Gestionnaire Colis Pro ===
 Contributors: pixfeed
-Tags: woocommerce, colis, expedition, logistique, clients
+Tags: woocommerce, parcels, shipping, logistics, clients
 Requires at least: 6.2
-Tested up to: 6.7
+Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Gestion des clients et des colis pour une activité de réception, stockage, regroupement et expédition de colis, intégrée à WooCommerce.
+Client and parcel management for a parcel receiving, storage, grouping and forwarding business, natively integrated with WooCommerce.
 
 == Description ==
 
-Gestionnaire Colis Pro fournit un système complet de gestion des clients et des colis pour une activité de réexpédition (réception, stockage, regroupement et expédition de colis, notamment vers les DOM-TOM).
+Gestionnaire Colis Pro provides a complete client and parcel management system for a parcel forwarding business: receiving, storage, grouping and shipping of parcels (for example towards the French overseas territories). The plugin interface is currently provided in French.
 
-= Module de gestion des clients =
+= Client management module =
 
-* Chaque client est associé à un utilisateur WordPress/WooCommerce et dispose d'une fiche interne avec une référence unique courte (CL000001).
-* Recherche d'un client par référence, nom, prénom, adresse e-mail ou numéro de téléphone.
-* La fiche client centralise : informations du client, référence, colis en stock, colis expédiés, expéditions, documents transmis et historique des opérations.
-* Indicateurs calculés automatiquement : nombre de colis en stock, poids total stocké, nombre d'expéditions réalisées, frais de stockage dus, dernière réception, dernière expédition.
-* Stockage gratuit pendant 15 jours (configurable), puis frais calculés automatiquement selon les réglages.
-* Depuis la fiche client : créer un colis, consulter les colis, préparer une expédition, consulter les documents, accéder à l'historique.
+* Every client is linked to a WordPress/WooCommerce user and gets an internal record with a short unique reference (CL000001).
+* Search clients by reference, first name, last name, e-mail address or phone number.
+* The client record centralizes everything: client information, reference, parcels in stock, shipped parcels, shipments, transmitted documents and the full operation history.
+* Automatically computed indicators: parcels currently in stock, total stored weight, shipments done, storage fees due, last parcel reception, last shipment.
+* Free storage period per parcel (15 days by default, configurable), then automatic storage fees per day.
+* From the client record: create a parcel, browse parcels, prepare a shipment, check documents and read the history.
 
-= Module de création des colis =
+= Parcel creation module =
 
-* Recherche du client par référence interne, nom ou e-mail avec affichage immédiat de ses colis encore en stock.
-* Formulaire complet : numéro de suivi, poids réel, dimensions (visibles uniquement des administrateurs), photo à la réception (facultative), commentaire interne réservé à l'administration, autorisation ou interdiction du regroupement, transporteurs autorisés.
-* Numéro unique de colis généré automatiquement (COL000001), date de réception, créateur et statut initial « disponible ».
-* Cycle de vie : disponible, commandé, en attente de paiement, payé, en préparation, expédié, détruit, annulé.
-* Tarif calculé automatiquement selon le poids (paliers configurables) et enregistré dès la réception.
+* Search the client by internal reference, name or e-mail, with an immediate view of their parcels still in stock.
+* Complete form: carrier tracking number, real weight, dimensions (visible to administrators only), optional reception photo, internal comment reserved for the staff, grouping allowed or forbidden, allowed carriers per parcel.
+* Unique parcel number generated automatically (COL000001), reception date, creator and initial "available" status.
+* Life cycle: available, ordered, awaiting payment, paid, preparing, shipped, destroyed, cancelled.
+* The parcel price is computed automatically from its weight (configurable tiers) and stored at reception time.
 
-= Côté client =
+= Customer side =
 
-Le client ne voit que les informations utiles (numéro de colis, date de réception, numéro de suivi, poids, statut, regroupement autorisé) dans son espace Mon compte WooCommerce : « Mes colis », « Mes expéditions », « Mes documents » et « Demande d'expédition ». Les commentaires internes et les dimensions ne sont jamais affichés au client.
+Customers only see the information meant for them (parcel number, reception date, tracking number, weight, status, grouping allowed) in their WooCommerce My Account area: "Mes colis" (my parcels), "Mes expéditions" (my shipments), "Mes documents" (my documents) and "Demande d'expédition" (shipment request). Internal comments and dimensions are never displayed to customers.
 
-= Paiement natif WooCommerce =
+= Native WooCommerce payments =
 
-Chaque demande d'expédition crée une commande WooCommerce détaillée (une ligne par colis, frais de stockage, transporteur en ligne de livraison). Le client est redirigé vers la page de paiement standard WooCommerce et règle avec les moyens de paiement configurés dans la boutique. Les statuts restent synchronisés dans les deux sens : commande payée → expédition « payée » ; expédition « expédiée » → commande terminée ; commande annulée → colis remis en stock.
+Each shipment request creates a detailed WooCommerce order: one fee line per parcel, a storage fee line and the chosen carrier as a native shipping line priced from its configurable tariff (base price + price per kg). The customer is redirected to the standard WooCommerce payment page and pays with any payment gateway enabled in the shop. Statuses stay synchronized both ways: order paid → shipment "paid"; shipment "shipped" → order completed; order cancelled → parcels returned to stock. The shipment request form shows each carrier tariff, disables carriers that are not allowed for the selection, and displays a live total estimate (parcels + storage + transport).
+
+= Native WooCommerce e-mails =
+
+Two real WooCommerce e-mails are registered under WooCommerce → Settings → Emails: "Parcel received" (sent to the customer) and "Shipment requested" (sent to the staff, with configurable recipients). They use the shop e-mail template and can be overridden from the theme. Without WooCommerce, a plain-text fallback keeps notifications working.
+
+= Private documents =
+
+Client documents and reception photos are stored in a protected directory (direct access denied, randomized file names) and served only through an authenticated download endpoint: a customer can only download their own documents marked as visible; reception photos are restricted to the staff.
 
 = Extensible =
 
-Architecture pensée pour évoluer : actions et filtres (`gcp_parcel_created`, `gcp_shipment_requested`, `gcp_carriers`, `gcp_parcel_price`, …) pour ajouter import/export, statistiques, fidélité, API REST ou multi-entrepôts sans modifier le cœur.
+The architecture is built to grow: actions and filters (`gcp_parcel_created`, `gcp_shipment_requested`, `gcp_carriers`, `gcp_parcel_price`, `gcp_carrier_price`, …) allow adding import/export, statistics, loyalty programs, a REST API or multi-warehouse support without touching the core.
 
 == Installation ==
 
-1. Téléversez le dossier `gestionnaire-colis-pro` dans `/wp-content/plugins/`, ou installez-le depuis l'écran Extensions.
-2. Activez l'extension. WooCommerce doit être installé et actif.
-3. Rendez-vous dans « Colis Pro → Réglages » pour configurer les paliers de tarification, les frais de stockage et les transporteurs.
-4. Créez une fiche client depuis « Colis Pro → Clients », puis enregistrez vos colis depuis « Colis Pro → Nouveau colis ».
+1. Upload the `gestionnaire-colis-pro` folder to `/wp-content/plugins/`, or install it from the Plugins screen.
+2. Activate the plugin. WooCommerce must be installed and active.
+3. Go to "Colis Pro → Réglages" to configure the pricing tiers, storage fees and carriers.
+4. Create a client record from "Colis Pro → Clients", then register parcels from "Colis Pro → Nouveau colis".
 
 == Frequently Asked Questions ==
 
-= Le client peut-il modifier l'autorisation de regroupement ? =
+= Can the customer change the grouping permission? =
 
-Non. Cette décision est prise uniquement par l'administration lors de la réception du colis et n'est jamais modifiable par le client. Un colis dont le regroupement est interdit doit être expédié seul.
+No. This decision is made by the staff only, when the parcel is received, and can never be changed by the customer. A parcel whose grouping is forbidden must be shipped alone.
 
-= Comment sont calculés les frais de stockage ? =
+= How are storage fees computed? =
 
-Chaque colis bénéficie d'une période de stockage gratuite (15 jours par défaut). Au-delà, les frais sont calculés automatiquement par jour et par colis selon le montant défini dans les réglages.
+Every parcel gets a free storage period (15 days by default). Beyond it, fees are computed automatically per day and per parcel using the amount defined in the settings.
 
-= Les documents sont-ils privés ? =
+= Are documents private? =
 
-Oui. Les documents clients et les photos de réception sont stockés dans un répertoire protégé (accès direct refusé, noms de fichiers aléatoires) et servis uniquement via un point de téléchargement authentifié : un client ne peut télécharger que ses propres documents marqués « visibles », les photos sont réservées à l'administration.
+Yes. Client documents and reception photos are stored in a protected directory (direct access denied, randomized file names) and served only through an authenticated download endpoint: a customer can only download their own documents marked as visible; reception photos are restricted to the staff.
 
-= Les données sont-elles supprimées à la désinstallation ? =
+= Is any data removed on uninstall? =
 
-Par défaut, non. Ajoutez l'option `gcp_remove_data_on_uninstall` avec la valeur `yes` pour supprimer les tables et réglages lors de la désinstallation.
+Not by default. Add the `gcp_remove_data_on_uninstall` option with the value `yes` to remove the tables, settings and private files when the plugin is deleted.
 
 == Screenshots ==
 
-1. Liste des clients avec recherche multi-critères.
-2. Fiche client : indicateurs et onglets (colis, expéditions, documents, historique).
-3. Formulaire de création d'un colis avec recherche du client et stock affiché.
-4. Espace client « Mes colis » dans Mon compte WooCommerce.
+1. Clients list with multi-criteria search.
+2. Client record: indicators and tabs (parcels, shipments, documents, history).
+3. Parcel creation form with live client search and the client's current stock.
+4. Customer "My parcels" screen in the WooCommerce My Account area.
 
 == Changelog ==
 
+= 1.3.1 =
+* The readme is now written in English, as required by the WordPress.org plugin directory.
+* Development files are no longer shipped inside the plugin folder.
+
 = 1.3.0 =
-* Tarifs par transporteur (prix de base + prix par kg) configurables dans les réglages ; le transport est facturé sur la ligne de livraison native de la commande WooCommerce et inclus dans le total de l'expédition.
-* Demande d'expédition : tarif affiché pour chaque transporteur et estimation du total en direct (colis + stockage + transport) pendant la sélection ; les transporteurs incompatibles avec la sélection sont désactivés.
-* E-mails natifs WooCommerce : « Colis réceptionné » (client) et « Demande d'expédition » (gestionnaire, destinataires configurables) sont enregistrés dans WooCommerce → Réglages → E-mails, avec gabarits HTML/texte surchargeables dans le thème ; repli wp_mail sans WooCommerce.
+* Carrier tariffs (base price + price per kg) configurable in the settings; transport is billed on the native shipping line of the WooCommerce order and included in the shipment total.
+* Shipment request: each carrier shows its tariff, incompatible carriers are disabled, and a live total estimate (parcels + storage + transport) is displayed during selection.
+* Native WooCommerce e-mails: "Parcel received" (customer) and "Shipment requested" (staff, configurable recipients) registered under WooCommerce → Settings → Emails, with HTML/plain templates that can be overridden from the theme; wp_mail fallback without WooCommerce.
 
 = 1.2.0 =
-* Paiement natif WooCommerce : chaque demande d'expédition crée une commande WooCommerce (une ligne de frais par colis, frais de stockage, transporteur en ligne de livraison) ; le client est redirigé vers la page de paiement standard et un e-mail de facture WooCommerce (avec lien de paiement) peut être envoyé automatiquement.
-* Synchronisation bidirectionnelle des statuts : commande payée → expédition payée ; expédition expédiée → commande terminée ; commande annulée → expédition annulée et colis remis en stock.
-* Fiche client : la colonne « Commande » relie chaque expédition à sa commande WooCommerce ; l'espace client affiche un bouton « Payer » tant que la commande n'est pas réglée.
+* Native WooCommerce payments: each shipment request creates a WooCommerce order (one fee line per parcel, storage fees, carrier as shipping line); the customer is redirected to the standard payment page and a WooCommerce customer invoice e-mail (with payment link) can be sent automatically.
+* Two-way status synchronization: order paid → shipment paid; shipment shipped → order completed; order cancelled → shipment cancelled and parcels returned to stock.
+* Client record: the "Order" column links each shipment to its WooCommerce order; the customer area shows a "Pay" button while the order awaits payment.
 
 = 1.1.0 =
-* Sécurité : les documents clients et les photos de réception sont désormais stockés dans un répertoire privé (.htaccess + noms aléatoires) et servis via un point de téléchargement authentifié avec contrôle de propriété (nonce + capacité). Types de fichiers restreints (images, PDF, Office).
-* Correction : les poids et dimensions saisis avec une virgule décimale (« 2,5 ») sont désormais interprétés correctement.
+* Security: client documents and reception photos are now stored in a private directory (.htaccess + random names) and served through an authenticated download endpoint with ownership checks (nonce + capability). Restricted file types (images, PDF, Office).
+* Fix: weights and dimensions typed with a decimal comma ("2,5") are now interpreted correctly.
 
 = 1.0.0 =
-* Version initiale : gestion des clients (références CL), création des colis (références COL), tarification automatique au poids, frais de stockage automatiques, regroupement, restrictions de transporteurs, demandes d'expédition, documents, historique et notifications e-mail.
+* Initial release: client management (CL references), parcel creation (COL references), automatic weight-based pricing, automatic storage fees, grouping rules, carrier restrictions, shipment requests, documents, history and e-mail notifications.
 
 == Upgrade Notice ==
 
 = 1.0.0 =
-Version initiale.
+Initial release.
