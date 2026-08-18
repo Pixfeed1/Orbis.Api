@@ -38,8 +38,8 @@ if ! $WP plugin is-installed woocommerce 2>/dev/null; then
 fi
 $WP plugin activate woocommerce
 
-echo "==> Activating Gestionnaire Colis Pro"
-$WP plugin activate gestionnaire-colis-pro
+echo "==> Activating Colisly Parcel Forwarding"
+$WP plugin activate colisly-parcel-forwarding
 
 echo "==> Setting permalinks (My Account endpoints)"
 $WP rewrite structure '/%postname%/' --hard

@@ -1,0 +1,20 @@
+/* Gestionnaire Colis Pro — front styles */
+
+.colisly-front-table {
+	width: 100%;
+}
+
+.colisly-documents-list {
+	list-style: disc;
+	margin-left: 1.5em;
+}
+
+.colisly-doc-date {
+	color: #767676;
+	font-size: 0.9em;
+}
+
+.colisly-request-form .colisly-note {
+	color: #767676;
+	font-size: 0.9em;
+}

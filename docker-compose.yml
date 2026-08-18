@@ -28,7 +28,7 @@ services:
       WORDPRESS_DB_PASSWORD: wordpress
     volumes:
       - wp_data:/var/www/html
-      - ./gestionnaire-colis-pro:/var/www/html/wp-content/plugins/gestionnaire-colis-pro
+      - ./colisly-parcel-forwarding:/var/www/html/wp-content/plugins/colisly-parcel-forwarding
 
   cli:
     image: wordpress:cli-php8.2
@@ -43,7 +43,7 @@ services:
       WORDPRESS_DB_PASSWORD: wordpress
     volumes:
       - wp_data:/var/www/html
-      - ./gestionnaire-colis-pro:/var/www/html/wp-content/plugins/gestionnaire-colis-pro
+      - ./colisly-parcel-forwarding:/var/www/html/wp-content/plugins/colisly-parcel-forwarding
       - ./tests:/tests
     entrypoint: ["sleep", "infinity"]
 
