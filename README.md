@@ -2,7 +2,7 @@
 
 Extension WordPress/WooCommerce de gestion des clients et des colis pour une activité de réception, stockage, regroupement et expédition (réexpédition, notamment vers les DOM-TOM).
 
-Le plugin se trouve dans [`colisly-parcel-forwarding/`](colisly-parcel-forwarding/) et suit les standards du répertoire officiel WordPress.org (WordPress Coding Standards, i18n, nonces, échappement, tables préfixées créées via `dbDelta`).
+Le plugin se trouve dans [`colisly/`](colisly/) et suit les standards du répertoire officiel WordPress.org (WordPress Coding Standards, i18n, nonces, échappement, tables préfixées créées via `dbDelta`).
 
 ## Fonctionnalités
 
@@ -36,4 +36,4 @@ Environnement Docker (WordPress + WooCommerce + MariaDB) :
 Le script démarre les conteneurs, installe WordPress et WooCommerce, active le plugin et exécute la suite de tests de bout en bout (`tests/smoke-test.php`, 58 assertions).
 
 - Site : http://localhost:8080 — admin : `admin` / `admin`
-- PHPCS : `cd colisly-parcel-forwarding && phpcs` (standards WordPress, ruleset `phpcs.xml.dist`)
+- PHPCS : `cd colisly && phpcs` (standards WordPress, ruleset `phpcs.xml.dist`)

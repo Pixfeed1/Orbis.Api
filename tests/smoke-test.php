@@ -389,9 +389,9 @@ file_put_contents( COLISLY_Files::base_dir() . '/' . $priv_file, '%PDF-1.4 rgpd'
 COLISLY_Documents::add( $priv_client, array( 'path' => $priv_file, 'name' => 'piece.pdf', 'type' => 'application/pdf' ), 'Piece', 'client' );
 
 $exporters = apply_filters( 'wp_privacy_personal_data_exporters', array() );
-colisly_check( 'Exportateur RGPD enregistre', isset( $exporters['colisly-parcel-forwarding'] ) );
+colisly_check( 'Exportateur RGPD enregistre', isset( $exporters['colisly'] ) );
 $erasers = apply_filters( 'wp_privacy_personal_data_erasers', array() );
-colisly_check( 'Effaceur RGPD enregistre', isset( $erasers['colisly-parcel-forwarding'] ) );
+colisly_check( 'Effaceur RGPD enregistre', isset( $erasers['colisly'] ) );
 
 $export = COLISLY_Privacy::export( $priv_email );
 $groups = array_unique( wp_list_pluck( $export['data'], 'group_id' ) );

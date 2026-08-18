@@ -39,7 +39,7 @@ fi
 $WP plugin activate woocommerce
 
 echo "==> Activating Colisly Parcel Forwarding"
-$WP plugin activate colisly-parcel-forwarding
+$WP plugin activate colisly
 
 echo "==> Setting permalinks (My Account endpoints)"
 $WP rewrite structure '/%postname%/' --hard

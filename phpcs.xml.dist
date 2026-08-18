@@ -2,7 +2,7 @@
 <ruleset name="Colisly Parcel Forwarding">
 	<description>Coding standards for the Colisly Parcel Forwarding plugin.</description>
 
-	<file>colisly-parcel-forwarding</file>
+	<file>colisly</file>
 
 	<exclude-pattern>*/node_modules/*</exclude-pattern>
 	<exclude-pattern>*/vendor/*</exclude-pattern>
@@ -20,7 +20,7 @@
 	<rule ref="WordPress.WP.I18n">
 		<properties>
 			<property name="text_domain" type="array">
-				<element value="colisly-parcel-forwarding"/>
+				<element value="colisly"/>
 			</property>
 		</properties>
 	</rule>
