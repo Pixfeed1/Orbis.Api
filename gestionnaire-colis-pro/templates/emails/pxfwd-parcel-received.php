@@ -3,7 +3,7 @@
  * Parcel received e-mail (HTML).
  *
  * This template can be overridden by copying it to
- * yourtheme/woocommerce/emails/gcp-parcel-received.php.
+ * yourtheme/woocommerce/emails/pxfwd-parcel-received.php.
  *
  * @package GestionnaireColisPro
  * @var object   $parcel             Parcel row.
@@ -49,8 +49,8 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 			<?php
 			printf(
 				/* translators: %d: number of free storage days. */
-				esc_html( _n( '%d day', '%d days', (int) GCP_Settings::get( 'free_storage_days', 15 ), 'gestionnaire-colis-pro' ) ),
-				(int) GCP_Settings::get( 'free_storage_days', 15 )
+				esc_html( _n( '%d day', '%d days', (int) PXFWD_Settings::get( 'free_storage_days', 15 ), 'gestionnaire-colis-pro' ) ),
+				(int) PXFWD_Settings::get( 'free_storage_days', 15 )
 			);
 			?>
 		</td>

@@ -3,7 +3,7 @@
  * Shipment requested e-mail (HTML).
  *
  * This template can be overridden by copying it to
- * yourtheme/woocommerce/emails/gcp-shipment-requested.php.
+ * yourtheme/woocommerce/emails/pxfwd-shipment-requested.php.
  *
  * @package GestionnaireColisPro
  * @var object   $shipment           Shipment row.
@@ -19,8 +19,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 do_action( 'woocommerce_email_header', $email_heading, $email );
 
-$gcp_parcels = GCP_Shipments::parcels( (int) $shipment->id );
-$gcp_user    = get_userdata( (int) $client->user_id );
+$pxfwd_parcels = PXFWD_Shipments::parcels( (int) $shipment->id );
+$pxfwd_user    = get_userdata( (int) $client->user_id );
 ?>
 
 <p>
@@ -30,7 +30,7 @@ $gcp_user    = get_userdata( (int) $client->user_id );
 		esc_html__( 'Shipment request %1$s has just been created by client %2$s (%3$s).', 'gestionnaire-colis-pro' ),
 		'<strong>' . esc_html( $shipment->reference ) . '</strong>',
 		'<strong>' . esc_html( $client->reference ) . '</strong>',
-		esc_html( $gcp_user ? $gcp_user->display_name : '' )
+		esc_html( $pxfwd_user ? $pxfwd_user->display_name : '' )
 	);
 	?>
 </p>
@@ -38,11 +38,11 @@ $gcp_user    = get_userdata( (int) $client->user_id );
 <table cellspacing="0" cellpadding="6" border="1" style="width: 100%; border: 1px solid #e5e5e5; border-collapse: collapse;">
 	<tr>
 		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Carrier', 'gestionnaire-colis-pro' ); ?></th>
-		<td><?php echo esc_html( GCP_Carriers::name( $shipment->carrier ) ); ?></td>
+		<td><?php echo esc_html( PXFWD_Carriers::name( $shipment->carrier ) ); ?></td>
 	</tr>
 	<tr>
 		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Parcels', 'gestionnaire-colis-pro' ); ?></th>
-		<td><?php echo esc_html( implode( ', ', wp_list_pluck( $gcp_parcels, 'reference' ) ) ); ?></td>
+		<td><?php echo esc_html( implode( ', ', wp_list_pluck( $pxfwd_parcels, 'reference' ) ) ); ?></td>
 	</tr>
 	<tr>
 		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Total weight', 'gestionnaire-colis-pro' ); ?></th>
@@ -50,21 +50,21 @@ $gcp_user    = get_userdata( (int) $client->user_id );
 	</tr>
 	<tr>
 		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Total (parcels + storage + transport)', 'gestionnaire-colis-pro' ); ?></th>
-		<td><?php echo esc_html( GCP_Format::price( (float) $shipment->total_price ) ); ?></td>
+		<td><?php echo esc_html( PXFWD_Format::price( (float) $shipment->total_price ) ); ?></td>
 	</tr>
 </table>
 
 <?php
-$gcp_client_url = add_query_arg(
+$pxfwd_client_url = add_query_arg(
 	array(
-		'page'   => 'gcp-clients',
+		'page'   => 'pxfwd-clients',
 		'client' => (int) $client->id,
 	),
 	admin_url( 'admin.php' )
 );
 ?>
 <p>
-	<a href="<?php echo esc_url( $gcp_client_url ); ?>"><?php esc_html_e( 'Open the client record', 'gestionnaire-colis-pro' ); ?></a>
+	<a href="<?php echo esc_url( $pxfwd_client_url ); ?>"><?php esc_html_e( 'Open the client record', 'gestionnaire-colis-pro' ); ?></a>
 </p>
 
 <?php if ( $additional_content ) : ?>

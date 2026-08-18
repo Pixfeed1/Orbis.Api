@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Renders the clients list and the client record page.
  */
-class GCP_Admin_Clients {
+class PXFWD_Admin_Clients {
 
 	/**
 	 * Routes between the list view and the single client view.
@@ -20,7 +20,7 @@ class GCP_Admin_Clients {
 	 * @return void
 	 */
 	public static function render() {
-		if ( ! current_user_can( 'gcp_manage' ) ) {
+		if ( ! current_user_can( 'pxfwd_manage' ) ) {
 			wp_die( esc_html__( 'Access denied.', 'gestionnaire-colis-pro' ) );
 		}
 
@@ -46,33 +46,33 @@ class GCP_Admin_Clients {
 		// phpcs:enable
 
 		$per_page = 20;
-		$clients  = GCP_Clients::paged_list( $term, $per_page, $paged );
-		$total    = GCP_Clients::count( $term );
+		$clients  = PXFWD_Clients::paged_list( $term, $per_page, $paged );
+		$total    = PXFWD_Clients::count( $term );
 		?>
-		<div class="wrap gcp-wrap">
+		<div class="wrap pxfwd-wrap">
 			<h1 class="wp-heading-inline"><?php esc_html_e( 'Clients', 'gestionnaire-colis-pro' ); ?></h1>
 			<hr class="wp-header-end" />
-			<?php GCP_Admin::maybe_notice(); ?>
+			<?php PXFWD_Admin::maybe_notice(); ?>
 
-			<form method="get" class="gcp-search-form">
-				<input type="hidden" name="page" value="gcp-clients" />
+			<form method="get" class="pxfwd-search-form">
+				<input type="hidden" name="page" value="pxfwd-clients" />
 				<p class="search-box">
-					<label class="screen-reader-text" for="gcp-client-search"><?php esc_html_e( 'Search clients', 'gestionnaire-colis-pro' ); ?></label>
-					<input type="search" id="gcp-client-search" name="s" value="<?php echo esc_attr( $term ); ?>" placeholder="<?php esc_attr_e( 'Reference, name, e-mail, phone…', 'gestionnaire-colis-pro' ); ?>" />
+					<label class="screen-reader-text" for="pxfwd-client-search"><?php esc_html_e( 'Search clients', 'gestionnaire-colis-pro' ); ?></label>
+					<input type="search" id="pxfwd-client-search" name="s" value="<?php echo esc_attr( $term ); ?>" placeholder="<?php esc_attr_e( 'Reference, name, e-mail, phone…', 'gestionnaire-colis-pro' ); ?>" />
 					<button type="submit" class="button"><?php esc_html_e( 'Search', 'gestionnaire-colis-pro' ); ?></button>
 				</p>
 			</form>
 
 			<h2><?php esc_html_e( 'Add a client', 'gestionnaire-colis-pro' ); ?></h2>
-			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="gcp-inline-form">
-				<?php wp_nonce_field( 'gcp_create_client' ); ?>
-				<input type="hidden" name="action" value="gcp_create_client" />
-				<label for="gcp-new-client-user"><?php esc_html_e( 'WordPress user', 'gestionnaire-colis-pro' ); ?></label>
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="pxfwd-inline-form">
+				<?php wp_nonce_field( 'pxfwd_create_client' ); ?>
+				<input type="hidden" name="action" value="pxfwd_create_client" />
+				<label for="pxfwd-new-client-user"><?php esc_html_e( 'WordPress user', 'gestionnaire-colis-pro' ); ?></label>
 				<?php
 				wp_dropdown_users(
 					array(
 						'name'             => 'user_id',
-						'id'               => 'gcp-new-client-user',
+						'id'               => 'pxfwd-new-client-user',
 						'show'             => 'display_name_with_login',
 						'number'           => 200,
 						'show_option_none' => __( '— Select —', 'gestionnaire-colis-pro' ),
@@ -101,7 +101,7 @@ class GCP_Admin_Clients {
 							<?php
 							$url = add_query_arg(
 								array(
-									'page'   => 'gcp-clients',
+									'page'   => 'pxfwd-clients',
 									'client' => (int) $client->id,
 								),
 								admin_url( 'admin.php' )
@@ -112,8 +112,8 @@ class GCP_Admin_Clients {
 								<td><a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $client->display_name ); ?></a></td>
 								<td><?php echo esc_html( $client->user_email ); ?></td>
 								<td><?php echo esc_html( $client->phone ); ?></td>
-								<td><?php echo esc_html( number_format_i18n( count( GCP_Parcels::in_stock_for_client( (int) $client->id ) ) ) ); ?></td>
-								<td><?php echo esc_html( GCP_Format::date( $client->created_at ) ); ?></td>
+								<td><?php echo esc_html( number_format_i18n( count( PXFWD_Parcels::in_stock_for_client( (int) $client->id ) ) ) ); ?></td>
+								<td><?php echo esc_html( PXFWD_Format::date( $client->created_at ) ); ?></td>
 							</tr>
 						<?php endforeach; ?>
 					<?php endif; ?>
@@ -132,7 +132,7 @@ class GCP_Admin_Clients {
 	 * @return void
 	 */
 	private static function render_single( $client_id ) {
-		$client = GCP_Clients::get( $client_id );
+		$client = PXFWD_Clients::get( $client_id );
 
 		if ( ! $client ) {
 			echo '<div class="wrap"><p>' . esc_html__( 'Client not found.', 'gestionnaire-colis-pro' ) . '</p></div>';
@@ -140,22 +140,22 @@ class GCP_Admin_Clients {
 		}
 
 		$user       = get_userdata( (int) $client->user_id );
-		$indicators = GCP_Clients::indicators( $client_id );
-		$in_stock   = GCP_Parcels::in_stock_for_client( $client_id );
-		$shipped    = GCP_Parcels::shipped_for_client( $client_id );
-		$shipments  = GCP_Shipments::for_client( $client_id );
-		$documents  = GCP_Documents::for_client( $client_id );
-		$history    = GCP_History::for_client( $client_id );
+		$indicators = PXFWD_Clients::indicators( $client_id );
+		$in_stock   = PXFWD_Parcels::in_stock_for_client( $client_id );
+		$shipped    = PXFWD_Parcels::shipped_for_client( $client_id );
+		$shipments  = PXFWD_Shipments::for_client( $client_id );
+		$documents  = PXFWD_Documents::for_client( $client_id );
+		$history    = PXFWD_History::for_client( $client_id );
 
 		$new_parcel_url = add_query_arg(
 			array(
-				'page'   => 'gcp-new-parcel',
+				'page'   => 'pxfwd-new-parcel',
 				'client' => (int) $client->id,
 			),
 			admin_url( 'admin.php' )
 		);
 		?>
-		<div class="wrap gcp-wrap">
+		<div class="wrap pxfwd-wrap">
 			<h1 class="wp-heading-inline">
 				<?php
 				printf(
@@ -168,48 +168,48 @@ class GCP_Admin_Clients {
 			</h1>
 			<a href="<?php echo esc_url( $new_parcel_url ); ?>" class="page-title-action"><?php esc_html_e( 'New parcel', 'gestionnaire-colis-pro' ); ?></a>
 			<hr class="wp-header-end" />
-			<?php GCP_Admin::maybe_notice(); ?>
+			<?php PXFWD_Admin::maybe_notice(); ?>
 
-			<div class="gcp-indicators">
-				<div class="gcp-indicator">
-					<span class="gcp-indicator-value"><?php echo esc_html( number_format_i18n( $indicators['parcels_in_stock'] ) ); ?></span>
-					<span class="gcp-indicator-label"><?php esc_html_e( 'Parcels in stock', 'gestionnaire-colis-pro' ); ?></span>
+			<div class="pxfwd-indicators">
+				<div class="pxfwd-indicator">
+					<span class="pxfwd-indicator-value"><?php echo esc_html( number_format_i18n( $indicators['parcels_in_stock'] ) ); ?></span>
+					<span class="pxfwd-indicator-label"><?php esc_html_e( 'Parcels in stock', 'gestionnaire-colis-pro' ); ?></span>
 				</div>
-				<div class="gcp-indicator">
-					<span class="gcp-indicator-value"><?php echo esc_html( number_format_i18n( $indicators['weight_in_stock'], 3 ) ); ?> kg</span>
-					<span class="gcp-indicator-label"><?php esc_html_e( 'Total stored weight', 'gestionnaire-colis-pro' ); ?></span>
+				<div class="pxfwd-indicator">
+					<span class="pxfwd-indicator-value"><?php echo esc_html( number_format_i18n( $indicators['weight_in_stock'], 3 ) ); ?> kg</span>
+					<span class="pxfwd-indicator-label"><?php esc_html_e( 'Total stored weight', 'gestionnaire-colis-pro' ); ?></span>
 				</div>
-				<div class="gcp-indicator">
-					<span class="gcp-indicator-value"><?php echo esc_html( number_format_i18n( $indicators['shipments_count'] ) ); ?></span>
-					<span class="gcp-indicator-label"><?php esc_html_e( 'Shipments done', 'gestionnaire-colis-pro' ); ?></span>
+				<div class="pxfwd-indicator">
+					<span class="pxfwd-indicator-value"><?php echo esc_html( number_format_i18n( $indicators['shipments_count'] ) ); ?></span>
+					<span class="pxfwd-indicator-label"><?php esc_html_e( 'Shipments done', 'gestionnaire-colis-pro' ); ?></span>
 				</div>
-				<div class="gcp-indicator">
-					<span class="gcp-indicator-value"><?php echo esc_html( GCP_Format::price( $indicators['storage_fees_due'] ) ); ?></span>
-					<span class="gcp-indicator-label"><?php esc_html_e( 'Storage fees due', 'gestionnaire-colis-pro' ); ?></span>
+				<div class="pxfwd-indicator">
+					<span class="pxfwd-indicator-value"><?php echo esc_html( PXFWD_Format::price( $indicators['storage_fees_due'] ) ); ?></span>
+					<span class="pxfwd-indicator-label"><?php esc_html_e( 'Storage fees due', 'gestionnaire-colis-pro' ); ?></span>
 				</div>
-				<div class="gcp-indicator">
-					<span class="gcp-indicator-value"><?php echo esc_html( $indicators['last_reception'] ? GCP_Format::date( $indicators['last_reception'] ) : '—' ); ?></span>
-					<span class="gcp-indicator-label"><?php esc_html_e( 'Last reception', 'gestionnaire-colis-pro' ); ?></span>
+				<div class="pxfwd-indicator">
+					<span class="pxfwd-indicator-value"><?php echo esc_html( $indicators['last_reception'] ? PXFWD_Format::date( $indicators['last_reception'] ) : '—' ); ?></span>
+					<span class="pxfwd-indicator-label"><?php esc_html_e( 'Last reception', 'gestionnaire-colis-pro' ); ?></span>
 				</div>
-				<div class="gcp-indicator">
-					<span class="gcp-indicator-value"><?php echo esc_html( $indicators['last_shipment'] ? GCP_Format::date( $indicators['last_shipment'] ) : '—' ); ?></span>
-					<span class="gcp-indicator-label"><?php esc_html_e( 'Last shipment', 'gestionnaire-colis-pro' ); ?></span>
+				<div class="pxfwd-indicator">
+					<span class="pxfwd-indicator-value"><?php echo esc_html( $indicators['last_shipment'] ? PXFWD_Format::date( $indicators['last_shipment'] ) : '—' ); ?></span>
+					<span class="pxfwd-indicator-label"><?php esc_html_e( 'Last shipment', 'gestionnaire-colis-pro' ); ?></span>
 				</div>
 			</div>
 
-			<h2 class="nav-tab-wrapper gcp-tabs">
-				<a href="#gcp-tab-infos" class="nav-tab nav-tab-active"><?php esc_html_e( 'Information', 'gestionnaire-colis-pro' ); ?></a>
-				<a href="#gcp-tab-stock" class="nav-tab"><?php esc_html_e( 'Parcels in stock', 'gestionnaire-colis-pro' ); ?></a>
-				<a href="#gcp-tab-shipped" class="nav-tab"><?php esc_html_e( 'Shipped parcels', 'gestionnaire-colis-pro' ); ?></a>
-				<a href="#gcp-tab-shipments" class="nav-tab"><?php esc_html_e( 'Shipments', 'gestionnaire-colis-pro' ); ?></a>
-				<a href="#gcp-tab-documents" class="nav-tab"><?php esc_html_e( 'Documents', 'gestionnaire-colis-pro' ); ?></a>
-				<a href="#gcp-tab-history" class="nav-tab"><?php esc_html_e( 'History', 'gestionnaire-colis-pro' ); ?></a>
+			<h2 class="nav-tab-wrapper pxfwd-tabs">
+				<a href="#pxfwd-tab-infos" class="nav-tab nav-tab-active"><?php esc_html_e( 'Information', 'gestionnaire-colis-pro' ); ?></a>
+				<a href="#pxfwd-tab-stock" class="nav-tab"><?php esc_html_e( 'Parcels in stock', 'gestionnaire-colis-pro' ); ?></a>
+				<a href="#pxfwd-tab-shipped" class="nav-tab"><?php esc_html_e( 'Shipped parcels', 'gestionnaire-colis-pro' ); ?></a>
+				<a href="#pxfwd-tab-shipments" class="nav-tab"><?php esc_html_e( 'Shipments', 'gestionnaire-colis-pro' ); ?></a>
+				<a href="#pxfwd-tab-documents" class="nav-tab"><?php esc_html_e( 'Documents', 'gestionnaire-colis-pro' ); ?></a>
+				<a href="#pxfwd-tab-history" class="nav-tab"><?php esc_html_e( 'History', 'gestionnaire-colis-pro' ); ?></a>
 			</h2>
 
-			<div id="gcp-tab-infos" class="gcp-tab-panel gcp-tab-active">
+			<div id="pxfwd-tab-infos" class="pxfwd-tab-panel pxfwd-tab-active">
 				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-					<?php wp_nonce_field( 'gcp_update_client_' . (int) $client->id ); ?>
-					<input type="hidden" name="action" value="gcp_update_client" />
+					<?php wp_nonce_field( 'pxfwd_update_client_' . (int) $client->id ); ?>
+					<input type="hidden" name="action" value="pxfwd_update_client" />
 					<input type="hidden" name="client_id" value="<?php echo esc_attr( (string) $client->id ); ?>" />
 					<table class="form-table" role="presentation">
 						<tr>
@@ -226,38 +226,38 @@ class GCP_Admin_Clients {
 							</td>
 						</tr>
 						<tr>
-							<th scope="row"><label for="gcp-phone"><?php esc_html_e( 'Phone', 'gestionnaire-colis-pro' ); ?></label></th>
-							<td><input type="text" class="regular-text" id="gcp-phone" name="phone" value="<?php echo esc_attr( $client->phone ); ?>" /></td>
+							<th scope="row"><label for="pxfwd-phone"><?php esc_html_e( 'Phone', 'gestionnaire-colis-pro' ); ?></label></th>
+							<td><input type="text" class="regular-text" id="pxfwd-phone" name="phone" value="<?php echo esc_attr( $client->phone ); ?>" /></td>
 						</tr>
 						<tr>
-							<th scope="row"><label for="gcp-admin-notes"><?php esc_html_e( 'Internal notes (never visible to the client)', 'gestionnaire-colis-pro' ); ?></label></th>
-							<td><textarea id="gcp-admin-notes" name="admin_notes" rows="4" class="large-text"><?php echo esc_textarea( (string) $client->admin_notes ); ?></textarea></td>
+							<th scope="row"><label for="pxfwd-admin-notes"><?php esc_html_e( 'Internal notes (never visible to the client)', 'gestionnaire-colis-pro' ); ?></label></th>
+							<td><textarea id="pxfwd-admin-notes" name="admin_notes" rows="4" class="large-text"><?php echo esc_textarea( (string) $client->admin_notes ); ?></textarea></td>
 						</tr>
 					</table>
 					<?php submit_button( __( 'Save', 'gestionnaire-colis-pro' ) ); ?>
 				</form>
 			</div>
 
-			<div id="gcp-tab-stock" class="gcp-tab-panel">
+			<div id="pxfwd-tab-stock" class="pxfwd-tab-panel">
 				<?php self::parcels_table( $in_stock, true ); ?>
 			</div>
 
-			<div id="gcp-tab-shipped" class="gcp-tab-panel">
+			<div id="pxfwd-tab-shipped" class="pxfwd-tab-panel">
 				<?php self::parcels_table( $shipped, false ); ?>
 			</div>
 
-			<div id="gcp-tab-shipments" class="gcp-tab-panel">
+			<div id="pxfwd-tab-shipments" class="pxfwd-tab-panel">
 				<?php self::shipments_table( $shipments ); ?>
 			</div>
 
-			<div id="gcp-tab-documents" class="gcp-tab-panel">
+			<div id="pxfwd-tab-documents" class="pxfwd-tab-panel">
 				<?php self::documents_table( $documents ); ?>
 				<h3><?php esc_html_e( 'Add a document', 'gestionnaire-colis-pro' ); ?></h3>
-				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data" class="gcp-inline-form">
-					<?php wp_nonce_field( 'gcp_add_document_' . (int) $client->id ); ?>
-					<input type="hidden" name="action" value="gcp_add_document" />
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data" class="pxfwd-inline-form">
+					<?php wp_nonce_field( 'pxfwd_add_document_' . (int) $client->id ); ?>
+					<input type="hidden" name="action" value="pxfwd_add_document" />
 					<input type="hidden" name="client_id" value="<?php echo esc_attr( (string) $client->id ); ?>" />
-					<input type="file" name="gcp_document" required />
+					<input type="file" name="pxfwd_document" required />
 					<label>
 						<input type="checkbox" name="visibility_client" value="1" checked />
 						<?php esc_html_e( 'Visible to the client', 'gestionnaire-colis-pro' ); ?>
@@ -266,7 +266,7 @@ class GCP_Admin_Clients {
 				</form>
 			</div>
 
-			<div id="gcp-tab-history" class="gcp-tab-panel">
+			<div id="pxfwd-tab-history" class="pxfwd-tab-panel">
 				<?php self::history_table( $history ); ?>
 			</div>
 		</div>
@@ -306,16 +306,16 @@ class GCP_Admin_Clients {
 					<?php foreach ( $parcels as $parcel ) : ?>
 						<tr>
 							<td><strong><?php echo esc_html( $parcel->reference ); ?></strong></td>
-							<td><?php echo esc_html( GCP_Format::date( $parcel->received_at ) ); ?></td>
+							<td><?php echo esc_html( PXFWD_Format::date( $parcel->received_at ) ); ?></td>
 							<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
 							<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
-							<td><?php echo esc_html( GCP_Format::price( (float) $parcel->price ) ); ?></td>
+							<td><?php echo esc_html( PXFWD_Format::price( (float) $parcel->price ) ); ?></td>
 							<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'gestionnaire-colis-pro' ) : esc_html__( 'No', 'gestionnaire-colis-pro' ); ?></td>
-							<td><?php echo esc_html( GCP_Format::price( GCP_Storage::fees_for_parcel( $parcel ) ) ); ?></td>
+							<td><?php echo esc_html( PXFWD_Format::price( PXFWD_Storage::fees_for_parcel( $parcel ) ) ); ?></td>
 							<td><?php echo esc_html( $parcel->internal_note ? $parcel->internal_note : '—' ); ?></td>
 							<td>
 								<?php if ( ! empty( $parcel->photo_path ) ) : ?>
-									<a href="<?php echo esc_url( GCP_Downloads::photo_url( $parcel ) ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'View', 'gestionnaire-colis-pro' ); ?></a>
+									<a href="<?php echo esc_url( PXFWD_Downloads::photo_url( $parcel ) ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'View', 'gestionnaire-colis-pro' ); ?></a>
 								<?php else : ?>
 									—
 								<?php endif; ?>
@@ -339,13 +339,13 @@ class GCP_Admin_Clients {
 	 */
 	public static function parcel_status_form( $parcel ) {
 		?>
-		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="gcp-status-form">
-			<?php wp_nonce_field( 'gcp_set_parcel_status_' . (int) $parcel->id ); ?>
-			<input type="hidden" name="action" value="gcp_set_parcel_status" />
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="pxfwd-status-form">
+			<?php wp_nonce_field( 'pxfwd_set_parcel_status_' . (int) $parcel->id ); ?>
+			<input type="hidden" name="action" value="pxfwd_set_parcel_status" />
 			<input type="hidden" name="parcel_id" value="<?php echo esc_attr( (string) $parcel->id ); ?>" />
-			<label class="screen-reader-text" for="gcp-status-<?php echo esc_attr( (string) $parcel->id ); ?>"><?php esc_html_e( 'Status', 'gestionnaire-colis-pro' ); ?></label>
-			<select name="status" id="gcp-status-<?php echo esc_attr( (string) $parcel->id ); ?>">
-				<?php foreach ( GCP_Parcels::statuses() as $key => $label ) : ?>
+			<label class="screen-reader-text" for="pxfwd-status-<?php echo esc_attr( (string) $parcel->id ); ?>"><?php esc_html_e( 'Status', 'gestionnaire-colis-pro' ); ?></label>
+			<select name="status" id="pxfwd-status-<?php echo esc_attr( (string) $parcel->id ); ?>">
+				<?php foreach ( PXFWD_Parcels::statuses() as $key => $label ) : ?>
 					<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $parcel->status, $key ); ?>><?php echo esc_html( $label ); ?></option>
 				<?php endforeach; ?>
 			</select>
@@ -382,16 +382,16 @@ class GCP_Admin_Clients {
 					<?php foreach ( $shipments as $shipment ) : ?>
 						<tr>
 							<td><strong><?php echo esc_html( $shipment->reference ); ?></strong></td>
-							<td><?php echo esc_html( GCP_Format::date( $shipment->requested_at ) ); ?></td>
+							<td><?php echo esc_html( PXFWD_Format::date( $shipment->requested_at ) ); ?></td>
 							<td>
-								<?php echo esc_html( GCP_Carriers::name( $shipment->carrier ) ); ?>
+								<?php echo esc_html( PXFWD_Carriers::name( $shipment->carrier ) ); ?>
 								<?php if ( isset( $shipment->carrier_price ) && (float) $shipment->carrier_price > 0 ) : ?>
-									(<?php echo esc_html( GCP_Format::price( (float) $shipment->carrier_price ) ); ?>)
+									(<?php echo esc_html( PXFWD_Format::price( (float) $shipment->carrier_price ) ); ?>)
 								<?php endif; ?>
 							</td>
 							<td><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
-							<td><?php echo esc_html( GCP_Format::price( (float) $shipment->storage_fees ) ); ?></td>
-							<td><?php echo esc_html( GCP_Format::price( (float) $shipment->total_price ) ); ?></td>
+							<td><?php echo esc_html( PXFWD_Format::price( (float) $shipment->storage_fees ) ); ?></td>
+							<td><?php echo esc_html( PXFWD_Format::price( (float) $shipment->total_price ) ); ?></td>
 							<td>
 								<?php $order = ! empty( $shipment->order_id ) && function_exists( 'wc_get_order' ) ? wc_get_order( (int) $shipment->order_id ) : null; ?>
 								<?php if ( $order ) : ?>
@@ -410,13 +410,13 @@ class GCP_Admin_Clients {
 								<?php endif; ?>
 							</td>
 							<td>
-								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="gcp-status-form">
-									<?php wp_nonce_field( 'gcp_set_shipment_status_' . (int) $shipment->id ); ?>
-									<input type="hidden" name="action" value="gcp_set_shipment_status" />
+								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="pxfwd-status-form">
+									<?php wp_nonce_field( 'pxfwd_set_shipment_status_' . (int) $shipment->id ); ?>
+									<input type="hidden" name="action" value="pxfwd_set_shipment_status" />
 									<input type="hidden" name="shipment_id" value="<?php echo esc_attr( (string) $shipment->id ); ?>" />
-									<label class="screen-reader-text" for="gcp-ship-status-<?php echo esc_attr( (string) $shipment->id ); ?>"><?php esc_html_e( 'Status', 'gestionnaire-colis-pro' ); ?></label>
-									<select name="status" id="gcp-ship-status-<?php echo esc_attr( (string) $shipment->id ); ?>">
-										<?php foreach ( GCP_Shipments::statuses() as $key => $label ) : ?>
+									<label class="screen-reader-text" for="pxfwd-ship-status-<?php echo esc_attr( (string) $shipment->id ); ?>"><?php esc_html_e( 'Status', 'gestionnaire-colis-pro' ); ?></label>
+									<select name="status" id="pxfwd-ship-status-<?php echo esc_attr( (string) $shipment->id ); ?>">
+										<?php foreach ( PXFWD_Shipments::statuses() as $key => $label ) : ?>
 											<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $shipment->status, $key ); ?>><?php echo esc_html( $label ); ?></option>
 										<?php endforeach; ?>
 									</select>
@@ -455,11 +455,11 @@ class GCP_Admin_Clients {
 					<?php foreach ( $documents as $document ) : ?>
 						<tr>
 							<td><?php echo esc_html( $document->title ); ?></td>
-							<td><?php echo esc_html( GCP_Format::date( $document->created_at ) ); ?></td>
+							<td><?php echo esc_html( PXFWD_Format::date( $document->created_at ) ); ?></td>
 							<td><?php echo 'admin' === $document->visibility ? esc_html__( 'Internal', 'gestionnaire-colis-pro' ) : esc_html__( 'Client', 'gestionnaire-colis-pro' ); ?></td>
 							<td>
 								<?php if ( ! empty( $document->file_path ) ) : ?>
-									<a href="<?php echo esc_url( GCP_Downloads::document_url( $document ) ); ?>"><?php esc_html_e( 'Download', 'gestionnaire-colis-pro' ); ?></a>
+									<a href="<?php echo esc_url( PXFWD_Downloads::document_url( $document ) ); ?>"><?php esc_html_e( 'Download', 'gestionnaire-colis-pro' ); ?></a>
 								<?php else : ?>
 									—
 								<?php endif; ?>
@@ -496,7 +496,7 @@ class GCP_Admin_Clients {
 					<?php foreach ( $entries as $entry ) : ?>
 						<?php $author = $entry->user_id ? get_userdata( (int) $entry->user_id ) : null; ?>
 						<tr>
-							<td><?php echo esc_html( GCP_Format::date( $entry->created_at, true ) ); ?></td>
+							<td><?php echo esc_html( PXFWD_Format::date( $entry->created_at, true ) ); ?></td>
 							<td><code><?php echo esc_html( $entry->event ); ?></code></td>
 							<td><?php echo esc_html( (string) $entry->message ); ?></td>
 							<td><?php echo esc_html( $author ? $author->display_name : '—' ); ?></td>
@@ -514,20 +514,20 @@ class GCP_Admin_Clients {
 	 * @return void
 	 */
 	public static function handle_create() {
-		if ( ! current_user_can( 'gcp_manage' ) ) {
+		if ( ! current_user_can( 'pxfwd_manage' ) ) {
 			wp_die( esc_html__( 'Access denied.', 'gestionnaire-colis-pro' ) );
 		}
 
-		check_admin_referer( 'gcp_create_client' );
+		check_admin_referer( 'pxfwd_create_client' );
 
 		$user_id = isset( $_POST['user_id'] ) ? absint( $_POST['user_id'] ) : 0;
-		$result  = GCP_Clients::create( $user_id );
+		$result  = PXFWD_Clients::create( $user_id );
 
 		if ( is_wp_error( $result ) ) {
-			GCP_Admin::redirect( 'gcp-clients', array(), $result->get_error_message(), 'error' );
+			PXFWD_Admin::redirect( 'pxfwd-clients', array(), $result->get_error_message(), 'error' );
 		}
 
-		GCP_Admin::redirect( 'gcp-clients', array( 'client' => (int) $result ), __( 'Client record created.', 'gestionnaire-colis-pro' ) );
+		PXFWD_Admin::redirect( 'pxfwd-clients', array( 'client' => (int) $result ), __( 'Client record created.', 'gestionnaire-colis-pro' ) );
 	}
 
 	/**
@@ -536,15 +536,15 @@ class GCP_Admin_Clients {
 	 * @return void
 	 */
 	public static function handle_update() {
-		if ( ! current_user_can( 'gcp_manage' ) ) {
+		if ( ! current_user_can( 'pxfwd_manage' ) ) {
 			wp_die( esc_html__( 'Access denied.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$client_id = isset( $_POST['client_id'] ) ? absint( $_POST['client_id'] ) : 0;
 
-		check_admin_referer( 'gcp_update_client_' . $client_id );
+		check_admin_referer( 'pxfwd_update_client_' . $client_id );
 
-		GCP_Clients::update(
+		PXFWD_Clients::update(
 			$client_id,
 			array(
 				'phone'       => isset( $_POST['phone'] ) ? sanitize_text_field( wp_unslash( $_POST['phone'] ) ) : '',
@@ -552,7 +552,7 @@ class GCP_Admin_Clients {
 			)
 		);
 
-		GCP_Admin::redirect( 'gcp-clients', array( 'client' => $client_id ), __( 'Client record updated.', 'gestionnaire-colis-pro' ) );
+		PXFWD_Admin::redirect( 'pxfwd-clients', array( 'client' => $client_id ), __( 'Client record updated.', 'gestionnaire-colis-pro' ) );
 	}
 
 	/**
@@ -561,28 +561,28 @@ class GCP_Admin_Clients {
 	 * @return void
 	 */
 	public static function handle_add_document() {
-		if ( ! current_user_can( 'gcp_manage' ) ) {
+		if ( ! current_user_can( 'pxfwd_manage' ) ) {
 			wp_die( esc_html__( 'Access denied.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$client_id = isset( $_POST['client_id'] ) ? absint( $_POST['client_id'] ) : 0;
 
-		check_admin_referer( 'gcp_add_document_' . $client_id );
+		check_admin_referer( 'pxfwd_add_document_' . $client_id );
 
-		$file = GCP_Files::upload( 'gcp_document', GCP_Files::document_mimes() );
+		$file = PXFWD_Files::upload( 'pxfwd_document', PXFWD_Files::document_mimes() );
 
 		if ( is_wp_error( $file ) ) {
-			GCP_Admin::redirect( 'gcp-clients', array( 'client' => $client_id ), $file->get_error_message(), 'error' );
+			PXFWD_Admin::redirect( 'pxfwd-clients', array( 'client' => $client_id ), $file->get_error_message(), 'error' );
 		}
 
 		$visibility = empty( $_POST['visibility_client'] ) ? 'admin' : 'client';
-		$result     = GCP_Documents::add( $client_id, $file, '', $visibility );
+		$result     = PXFWD_Documents::add( $client_id, $file, '', $visibility );
 
 		if ( is_wp_error( $result ) ) {
-			GCP_Admin::redirect( 'gcp-clients', array( 'client' => $client_id ), $result->get_error_message(), 'error' );
+			PXFWD_Admin::redirect( 'pxfwd-clients', array( 'client' => $client_id ), $result->get_error_message(), 'error' );
 		}
 
-		GCP_Admin::redirect( 'gcp-clients', array( 'client' => $client_id ), __( 'Document added.', 'gestionnaire-colis-pro' ) );
+		PXFWD_Admin::redirect( 'pxfwd-clients', array( 'client' => $client_id ), __( 'Document added.', 'gestionnaire-colis-pro' ) );
 	}
 
 	/**
@@ -591,25 +591,25 @@ class GCP_Admin_Clients {
 	 * @return void
 	 */
 	public static function handle_set_shipment_status() {
-		if ( ! current_user_can( 'gcp_manage' ) ) {
+		if ( ! current_user_can( 'pxfwd_manage' ) ) {
 			wp_die( esc_html__( 'Access denied.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$shipment_id = isset( $_POST['shipment_id'] ) ? absint( $_POST['shipment_id'] ) : 0;
 
-		check_admin_referer( 'gcp_set_shipment_status_' . $shipment_id );
+		check_admin_referer( 'pxfwd_set_shipment_status_' . $shipment_id );
 
 		$status   = isset( $_POST['status'] ) ? sanitize_key( wp_unslash( $_POST['status'] ) ) : '';
-		$shipment = GCP_Shipments::get( $shipment_id );
-		$result   = GCP_Shipments::set_status( $shipment_id, $status );
+		$shipment = PXFWD_Shipments::get( $shipment_id );
+		$result   = PXFWD_Shipments::set_status( $shipment_id, $status );
 
 		$client_id = $shipment ? (int) $shipment->client_id : 0;
 
 		if ( is_wp_error( $result ) ) {
-			GCP_Admin::redirect( 'gcp-clients', array( 'client' => $client_id ), $result->get_error_message(), 'error' );
+			PXFWD_Admin::redirect( 'pxfwd-clients', array( 'client' => $client_id ), $result->get_error_message(), 'error' );
 		}
 
-		GCP_Admin::redirect( 'gcp-clients', array( 'client' => $client_id ), __( 'Shipment status updated.', 'gestionnaire-colis-pro' ) );
+		PXFWD_Admin::redirect( 'pxfwd-clients', array( 'client' => $client_id ), __( 'Shipment status updated.', 'gestionnaire-colis-pro' ) );
 	}
 
 	/**
@@ -631,7 +631,7 @@ class GCP_Admin_Clients {
 		$base = add_query_arg(
 			array_filter(
 				array(
-					'page' => 'gcp-clients',
+					'page' => 'pxfwd-clients',
 					's'    => isset( $extra['term'] ) ? $extra['term'] : '',
 				)
 			),

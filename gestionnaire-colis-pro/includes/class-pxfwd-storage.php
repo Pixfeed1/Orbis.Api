@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Computes automatic storage fees for parcels kept in the warehouse.
  */
-class GCP_Storage {
+class PXFWD_Storage {
 
 	/**
 	 * Returns the number of billable storage days for a parcel.
@@ -24,7 +24,7 @@ class GCP_Storage {
 	 * @return int
 	 */
 	public static function billable_days( $parcel ) {
-		$free_days = (int) GCP_Settings::get( 'free_storage_days', 15 );
+		$free_days = (int) PXFWD_Settings::get( 'free_storage_days', 15 );
 		$received  = strtotime( $parcel->received_at . ' UTC' );
 
 		if ( ! $received ) {
@@ -45,7 +45,7 @@ class GCP_Storage {
 	 * @return float
 	 */
 	public static function fees_for_parcel( $parcel ) {
-		$per_day = (float) GCP_Settings::get( 'storage_fee_per_day', 0 );
+		$per_day = (float) PXFWD_Settings::get( 'storage_fee_per_day', 0 );
 		$fees    = self::billable_days( $parcel ) * $per_day;
 
 		/**
@@ -54,7 +54,7 @@ class GCP_Storage {
 		 * @param float  $fees   Computed fees.
 		 * @param object $parcel Parcel row.
 		 */
-		return (float) apply_filters( 'gcp_parcel_storage_fees', round( $fees, 2 ), $parcel );
+		return (float) apply_filters( 'pxfwd_parcel_storage_fees', round( $fees, 2 ), $parcel );
 	}
 
 	/**

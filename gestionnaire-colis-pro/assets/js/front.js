@@ -8,23 +8,23 @@
 ( function () {
 	'use strict';
 
-	var form = document.querySelector( '.gcp-request-form' );
+	var form = document.querySelector( '.pxfwd-request-form' );
 
 	if ( ! form ) {
 		return;
 	}
 
-	var boxes = Array.prototype.slice.call( form.querySelectorAll( 'input[name="gcp_parcels[]"]' ) );
-	var select = form.querySelector( '#gcp-carrier' );
-	var estimate = document.getElementById( 'gcp-estimate' );
-	var amount = document.getElementById( 'gcp-estimate-amount' );
+	var boxes = Array.prototype.slice.call( form.querySelectorAll( 'input[name="pxfwd_parcels[]"]' ) );
+	var select = form.querySelector( '#pxfwd-carrier' );
+	var estimate = document.getElementById( 'pxfwd-estimate' );
+	var amount = document.getElementById( 'pxfwd-estimate-amount' );
 
 	if ( ! select || ! estimate || ! amount ) {
 		return;
 	}
 
 	function formatPrice( value ) {
-		var symbol = window.gcpFront && window.gcpFront.currencySymbol ? window.gcpFront.currencySymbol : '';
+		var symbol = window.pxfwdFront && window.pxfwdFront.currencySymbol ? window.pxfwdFront.currencySymbol : '';
 		var amount = value.toLocaleString( undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 } );
 
 		return symbol ? amount + ' ' + symbol : amount;

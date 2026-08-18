@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * The client only ever sees the information meant for them: internal notes,
  * dimensions and admin documents are never rendered here.
  */
-class GCP_Account {
+class PXFWD_Account {
 
 	/**
 	 * Returns the My Account endpoint slugs.
@@ -33,10 +33,10 @@ class GCP_Account {
 			 *
 			 * @param string $slug Sanitized endpoint slug.
 			 */
-			'parcels'   => apply_filters( 'gcp_endpoint_parcels', sanitize_title( _x( 'my-parcels', 'My Account endpoint slug', 'gestionnaire-colis-pro' ) ) ),
-			'shipments' => apply_filters( 'gcp_endpoint_shipments', sanitize_title( _x( 'my-shipments', 'My Account endpoint slug', 'gestionnaire-colis-pro' ) ) ),
-			'documents' => apply_filters( 'gcp_endpoint_documents', sanitize_title( _x( 'my-documents', 'My Account endpoint slug', 'gestionnaire-colis-pro' ) ) ),
-			'request'   => apply_filters( 'gcp_endpoint_request', sanitize_title( _x( 'shipment-request', 'My Account endpoint slug', 'gestionnaire-colis-pro' ) ) ),
+			'parcels'   => apply_filters( 'pxfwd_endpoint_parcels', sanitize_title( _x( 'my-parcels', 'My Account endpoint slug', 'gestionnaire-colis-pro' ) ) ),
+			'shipments' => apply_filters( 'pxfwd_endpoint_shipments', sanitize_title( _x( 'my-shipments', 'My Account endpoint slug', 'gestionnaire-colis-pro' ) ) ),
+			'documents' => apply_filters( 'pxfwd_endpoint_documents', sanitize_title( _x( 'my-documents', 'My Account endpoint slug', 'gestionnaire-colis-pro' ) ) ),
+			'request'   => apply_filters( 'pxfwd_endpoint_request', sanitize_title( _x( 'shipment-request', 'My Account endpoint slug', 'gestionnaire-colis-pro' ) ) ),
 		);
 	}
 
@@ -123,11 +123,11 @@ class GCP_Account {
 	 */
 	public static function enqueue_assets() {
 		if ( function_exists( 'is_account_page' ) && is_account_page() ) {
-			wp_enqueue_style( 'gcp-front', GCP_PLUGIN_URL . 'assets/css/front.css', array(), GCP_VERSION );
-			wp_enqueue_script( 'gcp-front', GCP_PLUGIN_URL . 'assets/js/front.js', array(), GCP_VERSION, true );
+			wp_enqueue_style( 'pxfwd-front', PXFWD_PLUGIN_URL . 'assets/css/front.css', array(), PXFWD_VERSION );
+			wp_enqueue_script( 'pxfwd-front', PXFWD_PLUGIN_URL . 'assets/js/front.js', array(), PXFWD_VERSION, true );
 			wp_localize_script(
-				'gcp-front',
-				'gcpFront',
+				'pxfwd-front',
+				'pxfwdFront',
 				array(
 					'currencySymbol' => function_exists( 'get_woocommerce_currency_symbol' ) ? html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOTES, 'UTF-8' ) : '€',
 				)
@@ -145,7 +145,7 @@ class GCP_Account {
 			return null;
 		}
 
-		return GCP_Clients::get_by_user( get_current_user_id() );
+		return PXFWD_Clients::get_by_user( get_current_user_id() );
 	}
 
 	/**
@@ -172,14 +172,14 @@ class GCP_Account {
 			esc_html( $client->reference )
 		);
 
-		$parcels = GCP_Parcels::for_client( (int) $client->id );
+		$parcels = PXFWD_Parcels::for_client( (int) $client->id );
 
 		if ( empty( $parcels ) ) {
 			echo '<p>' . esc_html__( 'No parcels yet.', 'gestionnaire-colis-pro' ) . '</p>';
 			return;
 		}
 		?>
-		<table class="woocommerce-orders-table shop_table shop_table_responsive gcp-front-table">
+		<table class="woocommerce-orders-table shop_table shop_table_responsive pxfwd-front-table">
 			<thead>
 				<tr>
 					<th><?php esc_html_e( 'Parcel number', 'gestionnaire-colis-pro' ); ?></th>
@@ -194,10 +194,10 @@ class GCP_Account {
 				<?php foreach ( $parcels as $parcel ) : ?>
 					<tr>
 						<td data-title="<?php esc_attr_e( 'Parcel number', 'gestionnaire-colis-pro' ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></td>
-						<td data-title="<?php esc_attr_e( 'Reception date', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Format::date( $parcel->received_at ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Reception date', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( PXFWD_Format::date( $parcel->received_at ) ); ?></td>
 						<td data-title="<?php esc_attr_e( 'Tracking number', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
 						<td data-title="<?php esc_attr_e( 'Weight (kg)', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Status', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Parcels::status_label( $parcel->status ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Status', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( PXFWD_Parcels::status_label( $parcel->status ) ); ?></td>
 						<td data-title="<?php esc_attr_e( 'Grouping allowed', 'gestionnaire-colis-pro' ); ?>"><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'gestionnaire-colis-pro' ) : esc_html__( 'No', 'gestionnaire-colis-pro' ); ?></td>
 					</tr>
 				<?php endforeach; ?>
@@ -221,14 +221,14 @@ class GCP_Account {
 			return;
 		}
 
-		$shipments = GCP_Shipments::for_client( (int) $client->id );
+		$shipments = PXFWD_Shipments::for_client( (int) $client->id );
 
 		if ( empty( $shipments ) ) {
 			echo '<p>' . esc_html__( 'No shipments yet.', 'gestionnaire-colis-pro' ) . '</p>';
 			return;
 		}
 		?>
-		<table class="woocommerce-orders-table shop_table shop_table_responsive gcp-front-table">
+		<table class="woocommerce-orders-table shop_table shop_table_responsive pxfwd-front-table">
 			<thead>
 				<tr>
 					<th><?php esc_html_e( 'Reference', 'gestionnaire-colis-pro' ); ?></th>
@@ -244,17 +244,17 @@ class GCP_Account {
 			<tbody>
 				<?php foreach ( $shipments as $shipment ) : ?>
 					<?php
-					$refs  = wp_list_pluck( GCP_Shipments::parcels( (int) $shipment->id ), 'reference' );
+					$refs  = wp_list_pluck( PXFWD_Shipments::parcels( (int) $shipment->id ), 'reference' );
 					$order = ! empty( $shipment->order_id ) && function_exists( 'wc_get_order' ) ? wc_get_order( (int) $shipment->order_id ) : null;
 					?>
 					<tr>
 						<td data-title="<?php esc_attr_e( 'Reference', 'gestionnaire-colis-pro' ); ?>"><strong><?php echo esc_html( $shipment->reference ); ?></strong></td>
-						<td data-title="<?php esc_attr_e( 'Requested on', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Format::date( $shipment->requested_at ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Carrier', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Carriers::name( $shipment->carrier ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Requested on', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( PXFWD_Format::date( $shipment->requested_at ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Carrier', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( PXFWD_Carriers::name( $shipment->carrier ) ); ?></td>
 						<td data-title="<?php esc_attr_e( 'Parcels', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( implode( ', ', $refs ) ); ?></td>
 						<td data-title="<?php esc_attr_e( 'Weight (kg)', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Total', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Format::price( (float) $shipment->total_price ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Status', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( GCP_Shipments::status_label( $shipment->status ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Total', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( PXFWD_Format::price( (float) $shipment->total_price ) ); ?></td>
+						<td data-title="<?php esc_attr_e( 'Status', 'gestionnaire-colis-pro' ); ?>"><?php echo esc_html( PXFWD_Shipments::status_label( $shipment->status ) ); ?></td>
 						<td data-title="<?php esc_attr_e( 'Payment', 'gestionnaire-colis-pro' ); ?>">
 							<?php if ( $order && $order->needs_payment() ) : ?>
 								<a class="woocommerce-button button pay" href="<?php echo esc_url( $order->get_checkout_payment_url() ); ?>"><?php esc_html_e( 'Pay', 'gestionnaire-colis-pro' ); ?></a>
@@ -294,23 +294,23 @@ class GCP_Account {
 			return;
 		}
 
-		$documents = GCP_Documents::for_client( (int) $client->id, true );
+		$documents = PXFWD_Documents::for_client( (int) $client->id, true );
 
 		if ( empty( $documents ) ) {
 			echo '<p>' . esc_html__( 'No documents yet.', 'gestionnaire-colis-pro' ) . '</p>';
 			return;
 		}
 
-		echo '<ul class="gcp-documents-list">';
+		echo '<ul class="pxfwd-documents-list">';
 		foreach ( $documents as $document ) {
 			if ( empty( $document->file_path ) ) {
 				continue;
 			}
 			printf(
-				'<li><a href="%1$s">%2$s</a> <span class="gcp-doc-date">(%3$s)</span></li>',
-				esc_url( GCP_Downloads::document_url( $document ) ),
+				'<li><a href="%1$s">%2$s</a> <span class="pxfwd-doc-date">(%3$s)</span></li>',
+				esc_url( PXFWD_Downloads::document_url( $document ) ),
 				esc_html( $document->title ),
-				esc_html( GCP_Format::date( $document->created_at ) )
+				esc_html( PXFWD_Format::date( $document->created_at ) )
 			);
 		}
 		echo '</ul>';
@@ -331,27 +331,27 @@ class GCP_Account {
 			return;
 		}
 
-		if ( ! empty( $_GET['gcp_requested'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
+		if ( ! empty( $_GET['pxfwd_requested'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
 			wc_print_notice( __( 'Your shipment request has been recorded. We will get back to you shortly.', 'gestionnaire-colis-pro' ), 'success' );
 		}
 
-		if ( ! empty( $_GET['gcp_error'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
-			wc_print_notice( sanitize_text_field( wp_unslash( $_GET['gcp_error'] ) ), 'error' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( ! empty( $_GET['pxfwd_error'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
+			wc_print_notice( sanitize_text_field( wp_unslash( $_GET['pxfwd_error'] ) ), 'error' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		}
 
-		$parcels = GCP_Parcels::in_stock_for_client( (int) $client->id );
+		$parcels = PXFWD_Parcels::in_stock_for_client( (int) $client->id );
 
 		if ( empty( $parcels ) ) {
 			echo '<p>' . esc_html__( 'No parcels available for a shipment.', 'gestionnaire-colis-pro' ) . '</p>';
 			return;
 		}
 		?>
-		<form method="post" class="gcp-request-form">
-			<?php wp_nonce_field( 'gcp_request_shipment' ); ?>
-			<input type="hidden" name="gcp_action" value="request_shipment" />
+		<form method="post" class="pxfwd-request-form">
+			<?php wp_nonce_field( 'pxfwd_request_shipment' ); ?>
+			<input type="hidden" name="pxfwd_action" value="request_shipment" />
 
 			<p><?php esc_html_e( 'Select the parcels to ship:', 'gestionnaire-colis-pro' ); ?></p>
-			<table class="woocommerce-orders-table shop_table shop_table_responsive gcp-front-table">
+			<table class="woocommerce-orders-table shop_table shop_table_responsive pxfwd-front-table">
 				<thead>
 					<tr>
 						<th></th>
@@ -366,17 +366,17 @@ class GCP_Account {
 							<td>
 								<input
 									type="checkbox"
-									name="gcp_parcels[]"
+									name="pxfwd_parcels[]"
 									value="<?php echo esc_attr( (string) $parcel->id ); ?>"
-									id="gcp-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"
+									id="pxfwd-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"
 									data-grouping="<?php echo $parcel->allow_grouping ? '1' : '0'; ?>"
-									data-carriers="<?php echo esc_attr( implode( ',', GCP_Parcels::allowed_carrier_slugs( $parcel ) ) ); ?>"
+									data-carriers="<?php echo esc_attr( implode( ',', PXFWD_Parcels::allowed_carrier_slugs( $parcel ) ) ); ?>"
 									data-weight="<?php echo esc_attr( (string) (float) $parcel->weight ); ?>"
 									data-price="<?php echo esc_attr( (string) (float) $parcel->price ); ?>"
-									data-storage="<?php echo esc_attr( (string) GCP_Storage::fees_for_parcel( $parcel ) ); ?>"
+									data-storage="<?php echo esc_attr( (string) PXFWD_Storage::fees_for_parcel( $parcel ) ); ?>"
 								/>
 							</td>
-							<td><label for="gcp-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></label></td>
+							<td><label for="pxfwd-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></label></td>
 							<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
 							<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'gestionnaire-colis-pro' ) : esc_html__( 'No — this parcel must be shipped alone', 'gestionnaire-colis-pro' ); ?></td>
 						</tr>
@@ -385,10 +385,10 @@ class GCP_Account {
 			</table>
 
 			<p>
-				<label for="gcp-carrier"><?php esc_html_e( 'Preferred carrier:', 'gestionnaire-colis-pro' ); ?></label>
-				<select name="gcp_carrier" id="gcp-carrier" required>
+				<label for="pxfwd-carrier"><?php esc_html_e( 'Preferred carrier:', 'gestionnaire-colis-pro' ); ?></label>
+				<select name="pxfwd_carrier" id="pxfwd-carrier" required>
 					<option value=""><?php esc_html_e( '— Select —', 'gestionnaire-colis-pro' ); ?></option>
-					<?php foreach ( GCP_Carriers::all( true ) as $carrier ) : ?>
+					<?php foreach ( PXFWD_Carriers::all( true ) as $carrier ) : ?>
 						<?php
 						$base = isset( $carrier['price_base'] ) ? (float) $carrier['price_base'] : 0;
 						$rate = isset( $carrier['price_per_kg'] ) ? (float) $carrier['price_per_kg'] : 0;
@@ -403,20 +403,20 @@ class GCP_Account {
 								/* translators: 1: carrier name, 2: base price, 3: price per kg. */
 								esc_html__( '%1$s — %2$s + %3$s/kg', 'gestionnaire-colis-pro' ),
 								esc_html( $carrier['name'] ),
-								esc_html( GCP_Format::price( $base ) ),
-								esc_html( GCP_Format::price( $rate ) )
+								esc_html( PXFWD_Format::price( $base ) ),
+								esc_html( PXFWD_Format::price( $rate ) )
 							);
 							?>
 						</option>
 					<?php endforeach; ?>
 				</select>
 			</p>
-			<p id="gcp-estimate" class="gcp-estimate" hidden>
+			<p id="pxfwd-estimate" class="pxfwd-estimate" hidden>
 				<strong><?php esc_html_e( 'Estimated total:', 'gestionnaire-colis-pro' ); ?></strong>
-				<span id="gcp-estimate-amount"></span>
-				<span class="gcp-note"><?php esc_html_e( '(parcels + storage fees + transport — confirmed on the payment page)', 'gestionnaire-colis-pro' ); ?></span>
+				<span id="pxfwd-estimate-amount"></span>
+				<span class="pxfwd-note"><?php esc_html_e( '(parcels + storage fees + transport — confirmed on the payment page)', 'gestionnaire-colis-pro' ); ?></span>
 			</p>
-			<p class="gcp-note"><?php esc_html_e( 'Only carriers compatible with every selected parcel can be accepted.', 'gestionnaire-colis-pro' ); ?></p>
+			<p class="pxfwd-note"><?php esc_html_e( 'Only carriers compatible with every selected parcel can be accepted.', 'gestionnaire-colis-pro' ); ?></p>
 
 			<button type="submit" class="woocommerce-button button"><?php esc_html_e( 'Send the request', 'gestionnaire-colis-pro' ); ?></button>
 		</form>
@@ -429,11 +429,11 @@ class GCP_Account {
 	 * @return void
 	 */
 	public static function handle_request_submit() {
-		if ( empty( $_POST['gcp_action'] ) || 'request_shipment' !== $_POST['gcp_action'] ) {
+		if ( empty( $_POST['pxfwd_action'] ) || 'request_shipment' !== $_POST['pxfwd_action'] ) {
 			return;
 		}
 
-		check_admin_referer( 'gcp_request_shipment' );
+		check_admin_referer( 'pxfwd_request_shipment' );
 
 		$client = self::current_client();
 
@@ -441,20 +441,20 @@ class GCP_Account {
 			return;
 		}
 
-		$parcel_ids = isset( $_POST['gcp_parcels'] ) ? array_map( 'absint', wp_unslash( (array) $_POST['gcp_parcels'] ) ) : array();
-		$carrier    = isset( $_POST['gcp_carrier'] ) ? sanitize_key( wp_unslash( $_POST['gcp_carrier'] ) ) : '';
+		$parcel_ids = isset( $_POST['pxfwd_parcels'] ) ? array_map( 'absint', wp_unslash( (array) $_POST['pxfwd_parcels'] ) ) : array();
+		$carrier    = isset( $_POST['pxfwd_carrier'] ) ? sanitize_key( wp_unslash( $_POST['pxfwd_carrier'] ) ) : '';
 
-		$result = GCP_Shipments::request( (int) $client->id, $parcel_ids, $carrier );
+		$result = PXFWD_Shipments::request( (int) $client->id, $parcel_ids, $carrier );
 
 		$url = wc_get_account_endpoint_url( self::endpoint( 'request' ) );
 
 		if ( is_wp_error( $result ) ) {
-			wp_safe_redirect( add_query_arg( 'gcp_error', rawurlencode( $result->get_error_message() ), $url ) );
+			wp_safe_redirect( add_query_arg( 'pxfwd_error', rawurlencode( $result->get_error_message() ), $url ) );
 			exit;
 		}
 
 		// Send the customer straight to the native WooCommerce payment page.
-		$shipment = GCP_Shipments::get( (int) $result );
+		$shipment = PXFWD_Shipments::get( (int) $result );
 		if ( $shipment && ! empty( $shipment->order_id ) && function_exists( 'wc_get_order' ) ) {
 			$order = wc_get_order( (int) $shipment->order_id );
 			if ( $order && $order->needs_payment() ) {
@@ -463,7 +463,7 @@ class GCP_Account {
 			}
 		}
 
-		wp_safe_redirect( add_query_arg( 'gcp_requested', '1', $url ) );
+		wp_safe_redirect( add_query_arg( 'pxfwd_requested', '1', $url ) );
 		exit;
 	}
 }

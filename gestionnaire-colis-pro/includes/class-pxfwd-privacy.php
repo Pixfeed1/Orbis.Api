@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Registers the plugin with the WordPress privacy tools.
  */
-class GCP_Privacy {
+class PXFWD_Privacy {
 
 	/**
 	 * Hooks the exporter, the eraser and the account-deletion cleanup.
@@ -68,7 +68,7 @@ class GCP_Privacy {
 	private static function client_by_email( $email ) {
 		$user = get_user_by( 'email', $email );
 
-		return $user ? GCP_Clients::get_by_user( (int) $user->ID ) : null;
+		return $user ? PXFWD_Clients::get_by_user( (int) $user->ID ) : null;
 	}
 
 	/**
@@ -90,9 +90,9 @@ class GCP_Privacy {
 		$items = array();
 
 		$items[] = array(
-			'group_id'    => 'gcp_client',
+			'group_id'    => 'pxfwd_client',
 			'group_label' => __( 'Client record (Gestionnaire Colis Pro)', 'gestionnaire-colis-pro' ),
-			'item_id'     => 'gcp-client-' . (int) $client->id,
+			'item_id'     => 'pxfwd-client-' . (int) $client->id,
 			'data'        => array(
 				array(
 					'name'  => __( 'Client reference', 'gestionnaire-colis-pro' ),
@@ -109,11 +109,11 @@ class GCP_Privacy {
 			),
 		);
 
-		foreach ( GCP_Parcels::for_client( (int) $client->id ) as $parcel ) {
+		foreach ( PXFWD_Parcels::for_client( (int) $client->id ) as $parcel ) {
 			$items[] = array(
-				'group_id'    => 'gcp_parcels',
+				'group_id'    => 'pxfwd_parcels',
 				'group_label' => __( 'Parcels (Gestionnaire Colis Pro)', 'gestionnaire-colis-pro' ),
-				'item_id'     => 'gcp-parcel-' . (int) $parcel->id,
+				'item_id'     => 'pxfwd-parcel-' . (int) $parcel->id,
 				'data'        => array(
 					array(
 						'name'  => __( 'Parcel number', 'gestionnaire-colis-pro' ),
@@ -129,7 +129,7 @@ class GCP_Privacy {
 					),
 					array(
 						'name'  => __( 'Status', 'gestionnaire-colis-pro' ),
-						'value' => GCP_Parcels::status_label( $parcel->status ),
+						'value' => PXFWD_Parcels::status_label( $parcel->status ),
 					),
 					array(
 						'name'  => __( 'Received on', 'gestionnaire-colis-pro' ),
@@ -139,11 +139,11 @@ class GCP_Privacy {
 			);
 		}
 
-		foreach ( GCP_Shipments::for_client( (int) $client->id ) as $shipment ) {
+		foreach ( PXFWD_Shipments::for_client( (int) $client->id ) as $shipment ) {
 			$items[] = array(
-				'group_id'    => 'gcp_shipments',
+				'group_id'    => 'pxfwd_shipments',
 				'group_label' => __( 'Shipments (Gestionnaire Colis Pro)', 'gestionnaire-colis-pro' ),
-				'item_id'     => 'gcp-shipment-' . (int) $shipment->id,
+				'item_id'     => 'pxfwd-shipment-' . (int) $shipment->id,
 				'data'        => array(
 					array(
 						'name'  => __( 'Reference', 'gestionnaire-colis-pro' ),
@@ -151,11 +151,11 @@ class GCP_Privacy {
 					),
 					array(
 						'name'  => __( 'Carrier', 'gestionnaire-colis-pro' ),
-						'value' => GCP_Carriers::name( $shipment->carrier ),
+						'value' => PXFWD_Carriers::name( $shipment->carrier ),
 					),
 					array(
 						'name'  => __( 'Status', 'gestionnaire-colis-pro' ),
-						'value' => GCP_Shipments::status_label( $shipment->status ),
+						'value' => PXFWD_Shipments::status_label( $shipment->status ),
 					),
 					array(
 						'name'  => __( 'Requested on', 'gestionnaire-colis-pro' ),
@@ -169,11 +169,11 @@ class GCP_Privacy {
 			);
 		}
 
-		foreach ( GCP_Documents::for_client( (int) $client->id, true ) as $document ) {
+		foreach ( PXFWD_Documents::for_client( (int) $client->id, true ) as $document ) {
 			$items[] = array(
-				'group_id'    => 'gcp_documents',
+				'group_id'    => 'pxfwd_documents',
 				'group_label' => __( 'Documents (Gestionnaire Colis Pro)', 'gestionnaire-colis-pro' ),
-				'item_id'     => 'gcp-document-' . (int) $document->id,
+				'item_id'     => 'pxfwd-document-' . (int) $document->id,
 				'data'        => array(
 					array(
 						'name'  => __( 'Title', 'gestionnaire-colis-pro' ),
@@ -222,20 +222,20 @@ class GCP_Privacy {
 		$client_id = (int) $client->id;
 
 		// Delete documents: private files first, then the rows.
-		foreach ( GCP_Documents::for_client( $client_id ) as $document ) {
+		foreach ( PXFWD_Documents::for_client( $client_id ) as $document ) {
 			if ( ! empty( $document->file_path ) ) {
-				GCP_Files::delete( $document->file_path );
+				PXFWD_Files::delete( $document->file_path );
 			}
 			$removed = true;
 		}
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-		$wpdb->delete( $wpdb->prefix . 'gcp_documents', array( 'client_id' => $client_id ), array( '%d' ) );
+		$wpdb->delete( $wpdb->prefix . 'pxfwd_documents', array( 'client_id' => $client_id ), array( '%d' ) );
 
 		// Blank direct identifiers on the client record.
 		if ( '' !== (string) $client->phone || null !== $client->admin_notes ) {
 			$removed = true;
 		}
-		GCP_Clients::update(
+		PXFWD_Clients::update(
 			$client_id,
 			array(
 				'phone'       => '',
@@ -244,16 +244,16 @@ class GCP_Privacy {
 		);
 
 		// Blank tracking numbers, internal notes and reception photos.
-		foreach ( GCP_Parcels::for_client( $client_id ) as $parcel ) {
+		foreach ( PXFWD_Parcels::for_client( $client_id ) as $parcel ) {
 			if ( ! empty( $parcel->photo_path ) ) {
-				GCP_Files::delete( $parcel->photo_path );
+				PXFWD_Files::delete( $parcel->photo_path );
 			}
 			if ( '' !== (string) $parcel->tracking_number || ! empty( $parcel->internal_note ) || ! empty( $parcel->photo_path ) ) {
 				$removed = true;
 			}
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			$wpdb->update(
-				$wpdb->prefix . 'gcp_parcels',
+				$wpdb->prefix . 'pxfwd_parcels',
 				array(
 					'tracking_number' => '',
 					'internal_note'   => '',
@@ -270,12 +270,12 @@ class GCP_Privacy {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query(
 			$wpdb->prepare(
-				"UPDATE {$wpdb->prefix}gcp_history SET message = '' WHERE client_id = %d",
+				"UPDATE {$wpdb->prefix}pxfwd_history SET message = '' WHERE client_id = %d",
 				$client_id
 			)
 		);
 
-		GCP_History::log( $client_id, 'privacy_erasure', __( 'Personal data erased following a privacy request.', 'gestionnaire-colis-pro' ) );
+		PXFWD_History::log( $client_id, 'privacy_erasure', __( 'Personal data erased following a privacy request.', 'gestionnaire-colis-pro' ) );
 
 		return array(
 			'items_removed'  => $removed,
@@ -296,7 +296,7 @@ class GCP_Privacy {
 	public static function on_user_deleted( $user_id ) {
 		global $wpdb;
 
-		$client = GCP_Clients::get_by_user( (int) $user_id );
+		$client = PXFWD_Clients::get_by_user( (int) $user_id );
 
 		if ( ! $client ) {
 			return;
@@ -304,24 +304,24 @@ class GCP_Privacy {
 
 		$client_id = (int) $client->id;
 
-		foreach ( GCP_Documents::for_client( $client_id ) as $document ) {
+		foreach ( PXFWD_Documents::for_client( $client_id ) as $document ) {
 			if ( ! empty( $document->file_path ) ) {
-				GCP_Files::delete( $document->file_path );
+				PXFWD_Files::delete( $document->file_path );
 			}
 		}
 
-		foreach ( GCP_Parcels::for_client( $client_id ) as $parcel ) {
+		foreach ( PXFWD_Parcels::for_client( $client_id ) as $parcel ) {
 			if ( ! empty( $parcel->photo_path ) ) {
-				GCP_Files::delete( $parcel->photo_path );
+				PXFWD_Files::delete( $parcel->photo_path );
 			}
 		}
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-		$wpdb->delete( $wpdb->prefix . 'gcp_documents', array( 'client_id' => $client_id ), array( '%d' ) );
-		$wpdb->delete( $wpdb->prefix . 'gcp_history', array( 'client_id' => $client_id ), array( '%d' ) );
-		$wpdb->delete( $wpdb->prefix . 'gcp_parcels', array( 'client_id' => $client_id ), array( '%d' ) );
-		$wpdb->delete( $wpdb->prefix . 'gcp_shipments', array( 'client_id' => $client_id ), array( '%d' ) );
-		$wpdb->delete( $wpdb->prefix . 'gcp_clients', array( 'id' => $client_id ), array( '%d' ) );
+		$wpdb->delete( $wpdb->prefix . 'pxfwd_documents', array( 'client_id' => $client_id ), array( '%d' ) );
+		$wpdb->delete( $wpdb->prefix . 'pxfwd_history', array( 'client_id' => $client_id ), array( '%d' ) );
+		$wpdb->delete( $wpdb->prefix . 'pxfwd_parcels', array( 'client_id' => $client_id ), array( '%d' ) );
+		$wpdb->delete( $wpdb->prefix . 'pxfwd_shipments', array( 'client_id' => $client_id ), array( '%d' ) );
+		$wpdb->delete( $wpdb->prefix . 'pxfwd_clients', array( 'id' => $client_id ), array( '%d' ) );
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 }

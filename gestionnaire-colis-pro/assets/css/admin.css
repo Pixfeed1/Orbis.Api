@@ -1,13 +1,13 @@
 /* Gestionnaire Colis Pro — admin styles */
 
-.gcp-indicators {
+.pxfwd-indicators {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 12px;
 	margin: 16px 0 24px;
 }
 
-.gcp-indicator {
+.pxfwd-indicator {
 	background: #fff;
 	border: 1px solid #c3c4c7;
 	border-radius: 4px;
@@ -17,28 +17,28 @@
 	padding: 12px 16px;
 }
 
-.gcp-indicator-value {
+.pxfwd-indicator-value {
 	display: block;
 	font-size: 1.4em;
 	font-weight: 600;
 }
 
-.gcp-indicator-label {
+.pxfwd-indicator-label {
 	color: #646970;
 	display: block;
 	margin-top: 4px;
 }
 
-.gcp-tab-panel {
+.pxfwd-tab-panel {
 	display: none;
 	margin-top: 16px;
 }
 
-.gcp-tab-panel.gcp-tab-active {
+.pxfwd-tab-panel.pxfwd-tab-active {
 	display: block;
 }
 
-.gcp-inline-form {
+.pxfwd-inline-form {
 	align-items: center;
 	display: flex;
 	flex-wrap: wrap;
@@ -46,35 +46,35 @@
 	margin: 12px 0 24px;
 }
 
-.gcp-search-form .search-box {
+.pxfwd-search-form .search-box {
 	display: flex;
 	gap: 8px;
 	margin: 12px 0;
 }
 
-.gcp-status-form {
+.pxfwd-status-form {
 	display: flex;
 	gap: 4px;
 }
 
-.gcp-dimensions input {
+.pxfwd-dimensions input {
 	width: 90px;
 }
 
-.gcp-dimensions label {
+.pxfwd-dimensions label {
 	margin: 0 4px 0 12px;
 }
 
-.gcp-dimensions label:first-child {
+.pxfwd-dimensions label:first-child {
 	margin-left: 0;
 }
 
-.gcp-carrier-choice {
+.pxfwd-carrier-choice {
 	display: inline-block;
 	margin-right: 16px;
 }
 
-.gcp-client-results {
+.pxfwd-client-results {
 	background: #fff;
 	border: 1px solid #c3c4c7;
 	border-radius: 3px;
@@ -85,11 +85,11 @@
 	overflow-y: auto;
 }
 
-.gcp-client-results.gcp-open {
+.pxfwd-client-results.pxfwd-open {
 	display: block;
 }
 
-.gcp-client-result {
+.pxfwd-client-result {
 	border-bottom: 1px solid #f0f0f1;
 	cursor: pointer;
 	display: block;
@@ -102,22 +102,22 @@
 	border-top: 0;
 }
 
-.gcp-client-result:hover,
-.gcp-client-result:focus {
+.pxfwd-client-result:hover,
+.pxfwd-client-result:focus {
 	background: #f0f6fc;
 }
 
-.gcp-client-result .gcp-result-ref {
+.pxfwd-client-result .pxfwd-result-ref {
 	font-weight: 600;
 }
 
-.gcp-client-result .gcp-result-meta {
+.pxfwd-client-result .pxfwd-result-meta {
 	color: #646970;
 	display: block;
 	font-size: 12px;
 }
 
-.gcp-tiers-table,
-.gcp-carriers-table {
+.pxfwd-tiers-table,
+.pxfwd-carriers-table {
 	max-width: 500px;
 }

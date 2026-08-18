@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Serves client documents and reception photos with authorization checks.
  */
-class GCP_Downloads {
+class PXFWD_Downloads {
 
 	/**
 	 * Hooks the download actions.
@@ -23,10 +23,10 @@ class GCP_Downloads {
 	 * @return void
 	 */
 	public static function init() {
-		add_action( 'admin_post_gcp_download_document', array( __CLASS__, 'document' ) );
-		add_action( 'admin_post_nopriv_gcp_download_document', array( __CLASS__, 'require_login' ) );
-		add_action( 'admin_post_gcp_parcel_photo', array( __CLASS__, 'photo' ) );
-		add_action( 'admin_post_nopriv_gcp_parcel_photo', array( __CLASS__, 'require_login' ) );
+		add_action( 'admin_post_pxfwd_download_document', array( __CLASS__, 'document' ) );
+		add_action( 'admin_post_nopriv_pxfwd_download_document', array( __CLASS__, 'require_login' ) );
+		add_action( 'admin_post_pxfwd_parcel_photo', array( __CLASS__, 'photo' ) );
+		add_action( 'admin_post_nopriv_pxfwd_parcel_photo', array( __CLASS__, 'require_login' ) );
 	}
 
 	/**
@@ -48,12 +48,12 @@ class GCP_Downloads {
 		return wp_nonce_url(
 			add_query_arg(
 				array(
-					'action'   => 'gcp_download_document',
+					'action'   => 'pxfwd_download_document',
 					'document' => (int) $document->id,
 				),
 				admin_url( 'admin-post.php' )
 			),
-			'gcp_download_document_' . (int) $document->id
+			'pxfwd_download_document_' . (int) $document->id
 		);
 	}
 
@@ -67,12 +67,12 @@ class GCP_Downloads {
 		return wp_nonce_url(
 			add_query_arg(
 				array(
-					'action' => 'gcp_parcel_photo',
+					'action' => 'pxfwd_parcel_photo',
 					'parcel' => (int) $parcel->id,
 				),
 				admin_url( 'admin-post.php' )
 			),
-			'gcp_parcel_photo_' . (int) $parcel->id
+			'pxfwd_parcel_photo_' . (int) $parcel->id
 		);
 	}
 
@@ -87,7 +87,7 @@ class GCP_Downloads {
 	 * @return bool
 	 */
 	public static function user_can_download_document( $document, $user_id ) {
-		if ( user_can( $user_id, 'gcp_manage' ) ) {
+		if ( user_can( $user_id, 'pxfwd_manage' ) ) {
 			return true;
 		}
 
@@ -95,7 +95,7 @@ class GCP_Downloads {
 			return false;
 		}
 
-		$client = GCP_Clients::get( (int) $document->client_id );
+		$client = PXFWD_Clients::get( (int) $document->client_id );
 
 		return $client && (int) $client->user_id === (int) $user_id;
 	}
@@ -108,9 +108,9 @@ class GCP_Downloads {
 	public static function document() {
 		$document_id = isset( $_GET['document'] ) ? absint( $_GET['document'] ) : 0;
 
-		check_admin_referer( 'gcp_download_document_' . $document_id );
+		check_admin_referer( 'pxfwd_download_document_' . $document_id );
 
-		$document = GCP_Documents::get( $document_id );
+		$document = PXFWD_Documents::get( $document_id );
 
 		if ( ! $document || empty( $document->file_path ) ) {
 			wp_die( esc_html__( 'Document not found.', 'gestionnaire-colis-pro' ), '', array( 'response' => 404 ) );
@@ -120,7 +120,7 @@ class GCP_Downloads {
 			wp_die( esc_html__( 'Access denied.', 'gestionnaire-colis-pro' ), '', array( 'response' => 403 ) );
 		}
 
-		GCP_Files::send( $document->file_path, $document->file_name ? $document->file_name : $document->title );
+		PXFWD_Files::send( $document->file_path, $document->file_name ? $document->file_name : $document->title );
 	}
 
 	/**
@@ -131,18 +131,18 @@ class GCP_Downloads {
 	public static function photo() {
 		$parcel_id = isset( $_GET['parcel'] ) ? absint( $_GET['parcel'] ) : 0;
 
-		check_admin_referer( 'gcp_parcel_photo_' . $parcel_id );
+		check_admin_referer( 'pxfwd_parcel_photo_' . $parcel_id );
 
-		if ( ! current_user_can( 'gcp_manage' ) ) {
+		if ( ! current_user_can( 'pxfwd_manage' ) ) {
 			wp_die( esc_html__( 'Access denied.', 'gestionnaire-colis-pro' ), '', array( 'response' => 403 ) );
 		}
 
-		$parcel = GCP_Parcels::get( $parcel_id );
+		$parcel = PXFWD_Parcels::get( $parcel_id );
 
 		if ( ! $parcel || empty( $parcel->photo_path ) ) {
 			wp_die( esc_html__( 'Photo not found.', 'gestionnaire-colis-pro' ), '', array( 'response' => 404 ) );
 		}
 
-		GCP_Files::send( $parcel->photo_path, $parcel->reference . '-photo', true );
+		PXFWD_Files::send( $parcel->photo_path, $parcel->reference . '-photo', true );
 	}
 }

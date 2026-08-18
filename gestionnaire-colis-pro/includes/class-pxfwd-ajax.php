@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Admin AJAX: client live search used by the parcel creation form.
  */
-class GCP_Ajax {
+class PXFWD_Ajax {
 
 	/**
 	 * Hooks AJAX actions.
@@ -20,7 +20,7 @@ class GCP_Ajax {
 	 * @return void
 	 */
 	public static function init() {
-		add_action( 'wp_ajax_gcp_search_clients', array( __CLASS__, 'search_clients' ) );
+		add_action( 'wp_ajax_pxfwd_search_clients', array( __CLASS__, 'search_clients' ) );
 	}
 
 	/**
@@ -29,9 +29,9 @@ class GCP_Ajax {
 	 * @return void
 	 */
 	public static function search_clients() {
-		check_ajax_referer( 'gcp_admin', 'nonce' );
+		check_ajax_referer( 'pxfwd_admin', 'nonce' );
 
-		if ( ! current_user_can( 'gcp_manage' ) ) {
+		if ( ! current_user_can( 'pxfwd_manage' ) ) {
 			wp_send_json_error( array( 'message' => __( 'Access denied.', 'gestionnaire-colis-pro' ) ), 403 );
 		}
 
@@ -43,8 +43,8 @@ class GCP_Ajax {
 
 		$results = array();
 
-		foreach ( GCP_Clients::search( $term ) as $client ) {
-			$stock     = GCP_Parcels::in_stock_for_client( (int) $client->id );
+		foreach ( PXFWD_Clients::search( $term ) as $client ) {
+			$stock     = PXFWD_Parcels::in_stock_for_client( (int) $client->id );
 			$results[] = array(
 				'id'        => (int) $client->id,
 				'reference' => $client->reference,

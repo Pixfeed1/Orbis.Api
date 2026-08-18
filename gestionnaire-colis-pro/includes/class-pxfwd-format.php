@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Date and price formatting used by both admin and frontend.
  */
-class GCP_Format {
+class PXFWD_Format {
 
 	/**
 	 * Formats a stored UTC datetime for display in the site timezone.

@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Records and reads the history of operations per client.
  */
-class GCP_History {
+class PXFWD_History {
 
 	/**
 	 * Logs an operation.
@@ -28,7 +28,7 @@ class GCP_History {
 		global $wpdb;
 
 		$wpdb->insert(
-			$wpdb->prefix . 'gcp_history',
+			$wpdb->prefix . 'pxfwd_history',
 			array(
 				'client_id'   => (int) $client_id,
 				'parcel_id'   => $parcel_id ? (int) $parcel_id : null,
@@ -48,7 +48,7 @@ class GCP_History {
 		 * @param string $event     Event key.
 		 * @param string $message   Message.
 		 */
-		do_action( 'gcp_history_logged', $client_id, $event, $message );
+		do_action( 'pxfwd_history_logged', $client_id, $event, $message );
 	}
 
 	/**
@@ -64,7 +64,7 @@ class GCP_History {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$wpdb->prefix}gcp_history WHERE client_id = %d ORDER BY id DESC LIMIT %d",
+				"SELECT * FROM {$wpdb->prefix}pxfwd_history WHERE client_id = %d ORDER BY id DESC LIMIT %d",
 				(int) $client_id,
 				(int) $limit
 			)

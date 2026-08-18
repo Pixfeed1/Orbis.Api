@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * CRUD and search for client records linked to WordPress users.
  */
-class GCP_Clients {
+class PXFWD_Clients {
 
 	/**
 	 * Returns the clients table name.
@@ -22,7 +22,7 @@ class GCP_Clients {
 	public static function table() {
 		global $wpdb;
 
-		return $wpdb->prefix . 'gcp_clients';
+		return $wpdb->prefix . 'pxfwd_clients';
 	}
 
 	/**
@@ -37,7 +37,7 @@ class GCP_Clients {
 
 		$user = get_userdata( $user_id );
 		if ( ! $user ) {
-			return new WP_Error( 'gcp_invalid_user', __( 'User not found.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_invalid_user', __( 'User not found.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$existing = self::get_by_user( $user_id );
@@ -59,7 +59,7 @@ class GCP_Clients {
 		);
 
 		if ( ! $inserted ) {
-			return new WP_Error( 'gcp_db_error', __( 'The client record could not be created.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_db_error', __( 'The client record could not be created.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$client_id = (int) $wpdb->insert_id;
@@ -73,7 +73,7 @@ class GCP_Clients {
 			array( '%d' )
 		);
 
-		GCP_History::log( $client_id, 'client_created', sprintf( /* translators: %s: client reference. */ __( 'Client record %s created.', 'gestionnaire-colis-pro' ), $reference ) );
+		PXFWD_History::log( $client_id, 'client_created', sprintf( /* translators: %s: client reference. */ __( 'Client record %s created.', 'gestionnaire-colis-pro' ), $reference ) );
 
 		/**
 		 * Fires after a client record has been created.
@@ -81,7 +81,7 @@ class GCP_Clients {
 		 * @param int $client_id Client ID.
 		 * @param int $user_id   WordPress user ID.
 		 */
-		do_action( 'gcp_client_created', $client_id, $user_id );
+		do_action( 'pxfwd_client_created', $client_id, $user_id );
 
 		return $client_id;
 	}
@@ -99,7 +99,7 @@ class GCP_Clients {
 		 * @param string $reference Reference.
 		 * @param int    $id        Client ID.
 		 */
-		return apply_filters( 'gcp_client_reference', 'CL' . str_pad( (string) $id, 6, '0', STR_PAD_LEFT ), $id );
+		return apply_filters( 'pxfwd_client_reference', 'CL' . str_pad( (string) $id, 6, '0', STR_PAD_LEFT ), $id );
 	}
 
 	/**
@@ -113,7 +113,7 @@ class GCP_Clients {
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}gcp_clients WHERE id = %d", (int) $client_id )
+			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}pxfwd_clients WHERE id = %d", (int) $client_id )
 		);
 	}
 
@@ -128,7 +128,7 @@ class GCP_Clients {
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}gcp_clients WHERE user_id = %d", (int) $user_id )
+			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}pxfwd_clients WHERE user_id = %d", (int) $user_id )
 		);
 	}
 
@@ -143,7 +143,7 @@ class GCP_Clients {
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}gcp_clients WHERE reference = %s", sanitize_text_field( $reference ) )
+			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}pxfwd_clients WHERE reference = %s", sanitize_text_field( $reference ) )
 		);
 	}
 
@@ -156,7 +156,7 @@ class GCP_Clients {
 	private static function search_sql( $term ) {
 		global $wpdb;
 
-		$joins = "FROM {$wpdb->prefix}gcp_clients c
+		$joins = "FROM {$wpdb->prefix}pxfwd_clients c
 			INNER JOIN {$wpdb->users} u ON u.ID = c.user_id";
 		$where  = '';
 		$params = array();
@@ -281,7 +281,7 @@ class GCP_Clients {
 		global $wpdb;
 
 		$client_id = (int) $client_id;
-		$in_stock  = GCP_Parcels::in_stock_for_client( $client_id );
+		$in_stock  = PXFWD_Parcels::in_stock_for_client( $client_id );
 
 		$weight = 0.0;
 		foreach ( $in_stock as $parcel ) {
@@ -291,7 +291,7 @@ class GCP_Clients {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$shipments_count = (int) $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$wpdb->prefix}gcp_shipments WHERE client_id = %d AND status = 'shipped'",
+				"SELECT COUNT(*) FROM {$wpdb->prefix}pxfwd_shipments WHERE client_id = %d AND status = 'shipped'",
 				$client_id
 			)
 		);
@@ -299,7 +299,7 @@ class GCP_Clients {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$last_reception = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT MAX(received_at) FROM {$wpdb->prefix}gcp_parcels WHERE client_id = %d",
+				"SELECT MAX(received_at) FROM {$wpdb->prefix}pxfwd_parcels WHERE client_id = %d",
 				$client_id
 			)
 		);
@@ -307,7 +307,7 @@ class GCP_Clients {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$last_shipment = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT MAX(shipped_at) FROM {$wpdb->prefix}gcp_shipments WHERE client_id = %d AND status = 'shipped'",
+				"SELECT MAX(shipped_at) FROM {$wpdb->prefix}pxfwd_shipments WHERE client_id = %d AND status = 'shipped'",
 				$client_id
 			)
 		);
@@ -316,7 +316,7 @@ class GCP_Clients {
 			'parcels_in_stock' => count( $in_stock ),
 			'weight_in_stock'  => round( $weight, 3 ),
 			'shipments_count'  => $shipments_count,
-			'storage_fees_due' => GCP_Storage::fees_for_parcels( $in_stock ),
+			'storage_fees_due' => PXFWD_Storage::fees_for_parcels( $in_stock ),
 			'last_reception'   => $last_reception ? $last_reception : '',
 			'last_shipment'    => $last_shipment ? $last_shipment : '',
 		);

@@ -8,8 +8,8 @@
  * @package GestionnaireColisPro
  */
 
-global $gcp_failures;
-$gcp_failures = 0;
+global $pxfwd_failures;
+$pxfwd_failures = 0;
 
 /**
  * Asserts a condition and prints the result.
@@ -18,13 +18,13 @@ $gcp_failures = 0;
  * @param bool   $condition Condition to check.
  * @return void
  */
-function gcp_check( $label, $condition ) {
-	global $gcp_failures;
+function pxfwd_check( $label, $condition ) {
+	global $pxfwd_failures;
 
 	if ( $condition ) {
 		echo "PASS: {$label}\n";
 	} else {
-		$gcp_failures++;
+		$pxfwd_failures++;
 		echo "FAIL: {$label}\n";
 	}
 }
@@ -32,14 +32,14 @@ function gcp_check( $label, $condition ) {
 // ---------------------------------------------------------------------------
 // Environment.
 // ---------------------------------------------------------------------------
-gcp_check( 'WooCommerce actif', class_exists( 'WooCommerce' ) );
-gcp_check( 'Plugin charge (GCP_Plugin)', class_exists( 'GCP_Plugin' ) );
+pxfwd_check( 'WooCommerce actif', class_exists( 'WooCommerce' ) );
+pxfwd_check( 'Plugin charge (PXFWD_Plugin)', class_exists( 'PXFWD_Plugin' ) );
 
 global $wpdb;
-foreach ( array( 'gcp_clients', 'gcp_parcels', 'gcp_shipments', 'gcp_documents', 'gcp_history' ) as $table ) {
+foreach ( array( 'pxfwd_clients', 'pxfwd_parcels', 'pxfwd_shipments', 'pxfwd_documents', 'pxfwd_history' ) as $table ) {
 	$full  = $wpdb->prefix . $table;
 	$found = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $full ) );
-	gcp_check( "Table {$full} creee", $found === $full );
+	pxfwd_check( "Table {$full} creee", $found === $full );
 }
 
 // ---------------------------------------------------------------------------
@@ -55,42 +55,42 @@ $user_id = wp_insert_user(
 		'role'       => 'customer',
 	)
 );
-gcp_check( 'Utilisateur WooCommerce cree', ! is_wp_error( $user_id ) );
+pxfwd_check( 'Utilisateur WooCommerce cree', ! is_wp_error( $user_id ) );
 
-$client_id = GCP_Clients::create( $user_id, '0690001122' );
-gcp_check( 'Fiche client creee', is_int( $client_id ) );
+$client_id = PXFWD_Clients::create( $user_id, '0690001122' );
+pxfwd_check( 'Fiche client creee', is_int( $client_id ) );
 
-$client = GCP_Clients::get( $client_id );
-gcp_check( 'Reference client au format CL000000', 1 === preg_match( '/^CL\d{6}$/', $client->reference ) );
+$client = PXFWD_Clients::get( $client_id );
+pxfwd_check( 'Reference client au format CL000000', 1 === preg_match( '/^CL\d{6}$/', $client->reference ) );
 
-$dup = GCP_Clients::create( $user_id );
-gcp_check( 'Pas de doublon de fiche pour le meme utilisateur', $dup === $client_id );
+$dup = PXFWD_Clients::create( $user_id );
+pxfwd_check( 'Pas de doublon de fiche pour le meme utilisateur', $dup === $client_id );
 
-gcp_check( 'Recherche par reference', ! empty( GCP_Clients::search( $client->reference ) ) );
-gcp_check( 'Recherche par prenom', ! empty( GCP_Clients::search( 'Jean' ) ) );
-gcp_check( 'Recherche par e-mail', ! empty( GCP_Clients::search( 'client.test' ) ) );
-gcp_check( 'Recherche par telephone', ! empty( GCP_Clients::search( '0690001122' ) ) );
+pxfwd_check( 'Recherche par reference', ! empty( PXFWD_Clients::search( $client->reference ) ) );
+pxfwd_check( 'Recherche par prenom', ! empty( PXFWD_Clients::search( 'Jean' ) ) );
+pxfwd_check( 'Recherche par e-mail', ! empty( PXFWD_Clients::search( 'client.test' ) ) );
+pxfwd_check( 'Recherche par telephone', ! empty( PXFWD_Clients::search( '0690001122' ) ) );
 
 // ---------------------------------------------------------------------------
 // Pricing.
 // ---------------------------------------------------------------------------
-$settings                  = GCP_Settings::all();
+$settings                  = PXFWD_Settings::all();
 $settings['pricing_tiers'] = array(
 	array( 'max_weight' => 1, 'price' => 7.5 ),
 	array( 'max_weight' => 5, 'price' => 15.0 ),
 );
 $settings['price_base']    = 5.0;
 $settings['price_per_kg']  = 2.0;
-GCP_Settings::update( $settings );
+PXFWD_Settings::update( $settings );
 
-gcp_check( 'Tarif palier 1 (0.5 kg = 7.50)', 7.5 === GCP_Pricing::price_for_weight( 0.5 ) );
-gcp_check( 'Tarif palier 2 (3 kg = 15.00)', 15.0 === GCP_Pricing::price_for_weight( 3 ) );
-gcp_check( 'Tarif hors palier (10 kg = 5 + 2x10 = 25.00)', 25.0 === GCP_Pricing::price_for_weight( 10 ) );
+pxfwd_check( 'Tarif palier 1 (0.5 kg = 7.50)', 7.5 === PXFWD_Pricing::price_for_weight( 0.5 ) );
+pxfwd_check( 'Tarif palier 2 (3 kg = 15.00)', 15.0 === PXFWD_Pricing::price_for_weight( 3 ) );
+pxfwd_check( 'Tarif hors palier (10 kg = 5 + 2x10 = 25.00)', 25.0 === PXFWD_Pricing::price_for_weight( 10 ) );
 
 // ---------------------------------------------------------------------------
 // Parcel creation.
 // ---------------------------------------------------------------------------
-$parcel_id = GCP_Parcels::create(
+$parcel_id = PXFWD_Parcels::create(
 	array(
 		'client_id'        => $client_id,
 		'tracking_number'  => 'TRK123456789FR',
@@ -103,66 +103,66 @@ $parcel_id = GCP_Parcels::create(
 		'allowed_carriers' => array( 'colissimo', 'chronopost' ),
 	)
 );
-gcp_check( 'Colis cree', is_int( $parcel_id ) );
+pxfwd_check( 'Colis cree', is_int( $parcel_id ) );
 
-$parcel = GCP_Parcels::get( $parcel_id );
-gcp_check( 'Reference colis au format COL000000', 1 === preg_match( '/^COL\d{6}$/', $parcel->reference ) );
-gcp_check( 'Statut initial disponible', 'available' === $parcel->status );
-gcp_check( 'Tarif calcule automatiquement (3.2 kg = 15.00)', 15.0 === (float) $parcel->price );
-gcp_check( 'Date de reception enregistree', ! empty( $parcel->received_at ) );
-gcp_check( 'Transporteurs autorises enregistres', array( 'colissimo', 'chronopost' ) === GCP_Parcels::allowed_carrier_slugs( $parcel ) );
+$parcel = PXFWD_Parcels::get( $parcel_id );
+pxfwd_check( 'Reference colis au format COL000000', 1 === preg_match( '/^COL\d{6}$/', $parcel->reference ) );
+pxfwd_check( 'Statut initial disponible', 'available' === $parcel->status );
+pxfwd_check( 'Tarif calcule automatiquement (3.2 kg = 15.00)', 15.0 === (float) $parcel->price );
+pxfwd_check( 'Date de reception enregistree', ! empty( $parcel->received_at ) );
+pxfwd_check( 'Transporteurs autorises enregistres', array( 'colissimo', 'chronopost' ) === PXFWD_Parcels::allowed_carrier_slugs( $parcel ) );
 
-$invalid = GCP_Parcels::create( array( 'client_id' => $client_id, 'weight' => 0 ) );
-gcp_check( 'Poids nul refuse', is_wp_error( $invalid ) );
+$invalid = PXFWD_Parcels::create( array( 'client_id' => $client_id, 'weight' => 0 ) );
+pxfwd_check( 'Poids nul refuse', is_wp_error( $invalid ) );
 
-$invalid2 = GCP_Parcels::create( array( 'client_id' => 999999, 'weight' => 1 ) );
-gcp_check( 'Client inexistant refuse', is_wp_error( $invalid2 ) );
+$invalid2 = PXFWD_Parcels::create( array( 'client_id' => 999999, 'weight' => 1 ) );
+pxfwd_check( 'Client inexistant refuse', is_wp_error( $invalid2 ) );
 
 // Second parcel, grouping forbidden.
-$parcel2_id = GCP_Parcels::create(
+$parcel2_id = PXFWD_Parcels::create(
 	array(
 		'client_id'      => $client_id,
 		'weight'         => 0.8,
 		'allow_grouping' => 0,
 	)
 );
-$parcel2    = GCP_Parcels::get( $parcel2_id );
-gcp_check( 'Second colis cree, regroupement interdit', '0' === (string) $parcel2->allow_grouping || 0 === (int) $parcel2->allow_grouping );
-gcp_check( 'Tarif second colis (0.8 kg = 7.50)', 7.5 === (float) $parcel2->price );
+$parcel2    = PXFWD_Parcels::get( $parcel2_id );
+pxfwd_check( 'Second colis cree, regroupement interdit', '0' === (string) $parcel2->allow_grouping || 0 === (int) $parcel2->allow_grouping );
+pxfwd_check( 'Tarif second colis (0.8 kg = 7.50)', 7.5 === (float) $parcel2->price );
 
-$stock = GCP_Parcels::in_stock_for_client( $client_id );
-gcp_check( 'Deux colis en stock', 2 === count( $stock ) );
+$stock = PXFWD_Parcels::in_stock_for_client( $client_id );
+pxfwd_check( 'Deux colis en stock', 2 === count( $stock ) );
 
 // ---------------------------------------------------------------------------
 // Indicators.
 // ---------------------------------------------------------------------------
-$indicators = GCP_Clients::indicators( $client_id );
-gcp_check( 'Indicateur colis en stock = 2', 2 === $indicators['parcels_in_stock'] );
-gcp_check( 'Indicateur poids stocke = 4.0 kg', 4.0 === $indicators['weight_in_stock'] );
-gcp_check( 'Indicateur expeditions = 0', 0 === $indicators['shipments_count'] );
-gcp_check( 'Derniere reception renseignee', '' !== $indicators['last_reception'] );
+$indicators = PXFWD_Clients::indicators( $client_id );
+pxfwd_check( 'Indicateur colis en stock = 2', 2 === $indicators['parcels_in_stock'] );
+pxfwd_check( 'Indicateur poids stocke = 4.0 kg', 4.0 === $indicators['weight_in_stock'] );
+pxfwd_check( 'Indicateur expeditions = 0', 0 === $indicators['shipments_count'] );
+pxfwd_check( 'Derniere reception renseignee', '' !== $indicators['last_reception'] );
 
 // ---------------------------------------------------------------------------
 // Storage fees.
 // ---------------------------------------------------------------------------
-$settings                        = GCP_Settings::all();
+$settings                        = PXFWD_Settings::all();
 $settings['free_storage_days']   = 15;
 $settings['storage_fee_per_day'] = 2.0;
-GCP_Settings::update( $settings );
+PXFWD_Settings::update( $settings );
 
-gcp_check( 'Frais de stockage nuls pendant la periode gratuite', 0.0 === GCP_Storage::fees_for_parcel( $parcel ) );
+pxfwd_check( 'Frais de stockage nuls pendant la periode gratuite', 0.0 === PXFWD_Storage::fees_for_parcel( $parcel ) );
 
 // Backdate the parcel by 20 days: 5 billable days x 2 = 10.
 $wpdb->update(
-	$wpdb->prefix . 'gcp_parcels',
+	$wpdb->prefix . 'pxfwd_parcels',
 	array( 'received_at' => gmdate( 'Y-m-d H:i:s', time() - 20 * DAY_IN_SECONDS ) ),
 	array( 'id' => $parcel_id )
 );
-$parcel = GCP_Parcels::get( $parcel_id );
-gcp_check( 'Frais de stockage apres 20 jours (5 j x 2 = 10.00)', 10.0 === GCP_Storage::fees_for_parcel( $parcel ) );
+$parcel = PXFWD_Parcels::get( $parcel_id );
+pxfwd_check( 'Frais de stockage apres 20 jours (5 j x 2 = 10.00)', 10.0 === PXFWD_Storage::fees_for_parcel( $parcel ) );
 
-$indicators = GCP_Clients::indicators( $client_id );
-gcp_check( 'Indicateur frais de stockage = 10.00', 10.0 === $indicators['storage_fees_due'] );
+$indicators = PXFWD_Clients::indicators( $client_id );
+pxfwd_check( 'Indicateur frais de stockage = 10.00', 10.0 === $indicators['storage_fees_due'] );
 
 // ---------------------------------------------------------------------------
 // Shipment rules.
@@ -170,98 +170,98 @@ gcp_check( 'Indicateur frais de stockage = 10.00', 10.0 === $indicators['storage
 // Carrier tariffs are zeroed here so the totals below only cover parcels and
 // storage fees; the carrier tariff section further down tests the transport
 // pricing explicitly.
-$settings             = GCP_Settings::all();
+$settings             = PXFWD_Settings::all();
 $settings['carriers'] = array(
 	array( 'slug' => 'colissimo', 'name' => 'Colissimo', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
 	array( 'slug' => 'chronopost', 'name' => 'Chronopost', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
 	array( 'slug' => 'ups', 'name' => 'UPS', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
 );
-GCP_Settings::update( $settings );
+PXFWD_Settings::update( $settings );
 
-$err = GCP_Shipments::request( $client_id, array( $parcel_id, $parcel2_id ), 'colissimo' );
-gcp_check( 'Regroupement refuse quand un colis est non regroupable', is_wp_error( $err ) && 'gcp_grouping_forbidden' === $err->get_error_code() );
+$err = PXFWD_Shipments::request( $client_id, array( $parcel_id, $parcel2_id ), 'colissimo' );
+pxfwd_check( 'Regroupement refuse quand un colis est non regroupable', is_wp_error( $err ) && 'pxfwd_grouping_forbidden' === $err->get_error_code() );
 
-$err2 = GCP_Shipments::request( $client_id, array( $parcel_id ), 'ups' );
-gcp_check( 'Transporteur non autorise pour le colis refuse', is_wp_error( $err2 ) && 'gcp_carrier_forbidden' === $err2->get_error_code() );
+$err2 = PXFWD_Shipments::request( $client_id, array( $parcel_id ), 'ups' );
+pxfwd_check( 'Transporteur non autorise pour le colis refuse', is_wp_error( $err2 ) && 'pxfwd_carrier_forbidden' === $err2->get_error_code() );
 
-$err3 = GCP_Shipments::request( $client_id, array( $parcel_id ), 'inexistant' );
-gcp_check( 'Transporteur inconnu refuse', is_wp_error( $err3 ) );
+$err3 = PXFWD_Shipments::request( $client_id, array( $parcel_id ), 'inexistant' );
+pxfwd_check( 'Transporteur inconnu refuse', is_wp_error( $err3 ) );
 
-$shipment_id = GCP_Shipments::request( $client_id, array( $parcel_id ), 'colissimo' );
-gcp_check( 'Demande d expedition creee', is_int( $shipment_id ) );
+$shipment_id = PXFWD_Shipments::request( $client_id, array( $parcel_id ), 'colissimo' );
+pxfwd_check( 'Demande d expedition creee', is_int( $shipment_id ) );
 
-$shipment = GCP_Shipments::get( $shipment_id );
-gcp_check( 'Reference expedition au format EXP000000', 1 === preg_match( '/^EXP\d{6}$/', $shipment->reference ) );
-gcp_check( 'Frais de stockage inclus dans l expedition', 10.0 === (float) $shipment->storage_fees );
-gcp_check( 'Total = tarif colis + frais stockage (15 + 10 = 25)', 25.0 === (float) $shipment->total_price );
+$shipment = PXFWD_Shipments::get( $shipment_id );
+pxfwd_check( 'Reference expedition au format EXP000000', 1 === preg_match( '/^EXP\d{6}$/', $shipment->reference ) );
+pxfwd_check( 'Frais de stockage inclus dans l expedition', 10.0 === (float) $shipment->storage_fees );
+pxfwd_check( 'Total = tarif colis + frais stockage (15 + 10 = 25)', 25.0 === (float) $shipment->total_price );
 
-$parcel = GCP_Parcels::get( $parcel_id );
-gcp_check( 'Colis commande (en attente de paiement via la commande WooCommerce)', in_array( $parcel->status, array( 'ordered', 'awaiting_payment' ), true ) );
+$parcel = PXFWD_Parcels::get( $parcel_id );
+pxfwd_check( 'Colis commande (en attente de paiement via la commande WooCommerce)', in_array( $parcel->status, array( 'ordered', 'awaiting_payment' ), true ) );
 
-$stock = GCP_Parcels::in_stock_for_client( $client_id );
-gcp_check( 'Le colis commande sort du stock', 1 === count( $stock ) );
+$stock = PXFWD_Parcels::in_stock_for_client( $client_id );
+pxfwd_check( 'Le colis commande sort du stock', 1 === count( $stock ) );
 
-$err4 = GCP_Shipments::request( $client_id, array( $parcel_id ), 'colissimo' );
-gcp_check( 'Colis deja commande refuse pour une nouvelle expedition', is_wp_error( $err4 ) );
+$err4 = PXFWD_Shipments::request( $client_id, array( $parcel_id ), 'colissimo' );
+pxfwd_check( 'Colis deja commande refuse pour une nouvelle expedition', is_wp_error( $err4 ) );
 
 // Status lifecycle and cascade.
-GCP_Shipments::set_status( $shipment_id, 'shipped' );
-$parcel   = GCP_Parcels::get( $parcel_id );
-$shipment = GCP_Shipments::get( $shipment_id );
-gcp_check( 'Expedition marquee expediee', 'shipped' === $shipment->status );
-gcp_check( 'Colis expedie en cascade', 'shipped' === $parcel->status );
-gcp_check( 'Date d expedition renseignee sur le colis', ! empty( $parcel->shipped_at ) );
+PXFWD_Shipments::set_status( $shipment_id, 'shipped' );
+$parcel   = PXFWD_Parcels::get( $parcel_id );
+$shipment = PXFWD_Shipments::get( $shipment_id );
+pxfwd_check( 'Expedition marquee expediee', 'shipped' === $shipment->status );
+pxfwd_check( 'Colis expedie en cascade', 'shipped' === $parcel->status );
+pxfwd_check( 'Date d expedition renseignee sur le colis', ! empty( $parcel->shipped_at ) );
 
-$indicators = GCP_Clients::indicators( $client_id );
-gcp_check( 'Indicateur expeditions realisees = 1', 1 === $indicators['shipments_count'] );
-gcp_check( 'Derniere expedition renseignee', '' !== $indicators['last_shipment'] );
+$indicators = PXFWD_Clients::indicators( $client_id );
+pxfwd_check( 'Indicateur expeditions realisees = 1', 1 === $indicators['shipments_count'] );
+pxfwd_check( 'Derniere expedition renseignee', '' !== $indicators['last_shipment'] );
 
 // Cancelled shipment puts parcels back in stock.
-$shipment2_id = GCP_Shipments::request( $client_id, array( $parcel2_id ), 'colissimo' );
-GCP_Shipments::set_status( $shipment2_id, 'cancelled' );
-$parcel2 = GCP_Parcels::get( $parcel2_id );
-gcp_check( 'Expedition annulee : colis de retour en stock', 'available' === $parcel2->status );
-gcp_check( 'Expedition annulee : colis detache de l expedition', empty( $parcel2->shipment_id ) );
+$shipment2_id = PXFWD_Shipments::request( $client_id, array( $parcel2_id ), 'colissimo' );
+PXFWD_Shipments::set_status( $shipment2_id, 'cancelled' );
+$parcel2 = PXFWD_Parcels::get( $parcel2_id );
+pxfwd_check( 'Expedition annulee : colis de retour en stock', 'available' === $parcel2->status );
+pxfwd_check( 'Expedition annulee : colis detache de l expedition', empty( $parcel2->shipment_id ) );
 
 // ---------------------------------------------------------------------------
 // History.
 // ---------------------------------------------------------------------------
-$history = GCP_History::for_client( $client_id );
-gcp_check( 'Historique rempli', count( $history ) >= 5 );
+$history = PXFWD_History::for_client( $client_id );
+pxfwd_check( 'Historique rempli', count( $history ) >= 5 );
 $events = wp_list_pluck( $history, 'event' );
-gcp_check( 'Historique contient la creation de fiche', in_array( 'client_created', $events, true ) );
-gcp_check( 'Historique contient la creation de colis', in_array( 'parcel_created', $events, true ) );
-gcp_check( 'Historique contient la demande d expedition', in_array( 'shipment_requested', $events, true ) );
+pxfwd_check( 'Historique contient la creation de fiche', in_array( 'client_created', $events, true ) );
+pxfwd_check( 'Historique contient la creation de colis', in_array( 'parcel_created', $events, true ) );
+pxfwd_check( 'Historique contient la demande d expedition', in_array( 'shipment_requested', $events, true ) );
 
 // ---------------------------------------------------------------------------
 // Private files: protected directory, path traversal, authorization.
 // ---------------------------------------------------------------------------
-gcp_check( 'Repertoire prive cree', GCP_Files::ensure_dir() );
-gcp_check( '.htaccess de protection present', file_exists( GCP_Files::base_dir() . '/.htaccess' ) );
-gcp_check( 'index.html present', file_exists( GCP_Files::base_dir() . '/index.html' ) );
+pxfwd_check( 'Repertoire prive cree', PXFWD_Files::ensure_dir() );
+pxfwd_check( '.htaccess de protection present', file_exists( PXFWD_Files::base_dir() . '/.htaccess' ) );
+pxfwd_check( 'index.html present', file_exists( PXFWD_Files::base_dir() . '/index.html' ) );
 
 // Simulate a stored private file.
-$gcp_test_file = 'test-' . wp_generate_password( 12, false ) . '.pdf';
-file_put_contents( GCP_Files::base_dir() . '/' . $gcp_test_file, '%PDF-1.4 test' );
+$pxfwd_test_file = 'test-' . wp_generate_password( 12, false ) . '.pdf';
+file_put_contents( PXFWD_Files::base_dir() . '/' . $pxfwd_test_file, '%PDF-1.4 test' );
 
-gcp_check( 'resolve() accepte un fichier valide', false !== GCP_Files::resolve( $gcp_test_file ) );
-gcp_check( 'resolve() bloque la traversee ../wp-config.php', false === GCP_Files::resolve( '../../wp-config.php' ) );
-gcp_check( 'resolve() bloque un chemin absolu', false === GCP_Files::resolve( ABSPATH . 'wp-config.php' ) );
+pxfwd_check( 'resolve() accepte un fichier valide', false !== PXFWD_Files::resolve( $pxfwd_test_file ) );
+pxfwd_check( 'resolve() bloque la traversee ../wp-config.php', false === PXFWD_Files::resolve( '../../wp-config.php' ) );
+pxfwd_check( 'resolve() bloque un chemin absolu', false === PXFWD_Files::resolve( ABSPATH . 'wp-config.php' ) );
 
-$doc_id = GCP_Documents::add(
+$doc_id = PXFWD_Documents::add(
 	$client_id,
 	array(
-		'path' => $gcp_test_file,
+		'path' => $pxfwd_test_file,
 		'name' => 'facture.pdf',
 		'type' => 'application/pdf',
 	),
 	'Facture test',
 	'client'
 );
-gcp_check( 'Document prive enregistre', is_int( $doc_id ) );
+pxfwd_check( 'Document prive enregistre', is_int( $doc_id ) );
 
-$doc       = GCP_Documents::get( $doc_id );
-$owner_uid = (int) GCP_Clients::get( $client_id )->user_id;
+$doc       = PXFWD_Documents::get( $doc_id );
+$owner_uid = (int) PXFWD_Clients::get( $client_id )->user_id;
 $other_uid = wp_insert_user(
 	array(
 		'user_login' => 'intrus_' . wp_generate_password( 6, false ),
@@ -272,95 +272,95 @@ $other_uid = wp_insert_user(
 );
 $admin_uid = (int) get_users( array( 'role' => 'administrator', 'number' => 1 ) )[0]->ID;
 
-gcp_check( 'Le proprietaire peut telecharger son document', GCP_Downloads::user_can_download_document( $doc, $owner_uid ) );
-gcp_check( 'Un autre client ne peut PAS telecharger', ! GCP_Downloads::user_can_download_document( $doc, $other_uid ) );
-gcp_check( 'L administrateur peut telecharger', GCP_Downloads::user_can_download_document( $doc, $admin_uid ) );
+pxfwd_check( 'Le proprietaire peut telecharger son document', PXFWD_Downloads::user_can_download_document( $doc, $owner_uid ) );
+pxfwd_check( 'Un autre client ne peut PAS telecharger', ! PXFWD_Downloads::user_can_download_document( $doc, $other_uid ) );
+pxfwd_check( 'L administrateur peut telecharger', PXFWD_Downloads::user_can_download_document( $doc, $admin_uid ) );
 
-$doc_admin_id = GCP_Documents::add(
+$doc_admin_id = PXFWD_Documents::add(
 	$client_id,
 	array(
-		'path' => $gcp_test_file,
+		'path' => $pxfwd_test_file,
 		'name' => 'interne.pdf',
 		'type' => 'application/pdf',
 	),
 	'Note interne',
 	'admin'
 );
-$doc_admin    = GCP_Documents::get( $doc_admin_id );
-gcp_check( 'Document interne invisible pour le proprietaire', ! GCP_Downloads::user_can_download_document( $doc_admin, $owner_uid ) );
-$visible_ids = array_map( 'intval', wp_list_pluck( GCP_Documents::for_client( $client_id, true ), 'id' ) );
-gcp_check( 'La vue client exclut les documents internes', ! in_array( (int) $doc_admin_id, $visible_ids, true ) && in_array( (int) $doc_id, $visible_ids, true ) );
+$doc_admin    = PXFWD_Documents::get( $doc_admin_id );
+pxfwd_check( 'Document interne invisible pour le proprietaire', ! PXFWD_Downloads::user_can_download_document( $doc_admin, $owner_uid ) );
+$visible_ids = array_map( 'intval', wp_list_pluck( PXFWD_Documents::for_client( $client_id, true ), 'id' ) );
+pxfwd_check( 'La vue client exclut les documents internes', ! in_array( (int) $doc_admin_id, $visible_ids, true ) && in_array( (int) $doc_id, $visible_ids, true ) );
 
 // ---------------------------------------------------------------------------
 // Carrier tariffs.
 // ---------------------------------------------------------------------------
-$settings             = GCP_Settings::all();
+$settings             = PXFWD_Settings::all();
 $settings['carriers'] = array(
 	array( 'slug' => 'colissimo', 'name' => 'Colissimo', 'enabled' => 1, 'price_base' => 8.0, 'price_per_kg' => 1.5 ),
 	array( 'slug' => 'chronopost', 'name' => 'Chronopost', 'enabled' => 1, 'price_base' => 12.0, 'price_per_kg' => 2.0 ),
 	array( 'slug' => 'ups', 'name' => 'UPS', 'enabled' => 1, 'price_base' => 14.0, 'price_per_kg' => 2.2 ),
 );
-GCP_Settings::update( $settings );
+PXFWD_Settings::update( $settings );
 
-gcp_check( 'Tarif transporteur Colissimo 2 kg (8 + 1.5x2 = 11.00)', 11.0 === GCP_Carriers::price_for( 'colissimo', 2.0 ) );
-gcp_check( 'Tarif transporteur inconnu = 0', 0.0 === GCP_Carriers::price_for( 'inexistant', 2.0 ) );
+pxfwd_check( 'Tarif transporteur Colissimo 2 kg (8 + 1.5x2 = 11.00)', 11.0 === PXFWD_Carriers::price_for( 'colissimo', 2.0 ) );
+pxfwd_check( 'Tarif transporteur inconnu = 0', 0.0 === PXFWD_Carriers::price_for( 'inexistant', 2.0 ) );
 
 // ---------------------------------------------------------------------------
 // Native WooCommerce e-mails registered with the mailer.
 // ---------------------------------------------------------------------------
-$gcp_wc_emails = WC()->mailer()->get_emails();
-gcp_check( 'E-mail « Colis réceptionné » enregistré dans WooCommerce', isset( $gcp_wc_emails['GCP_Email_Parcel_Received'] ) );
-gcp_check( 'E-mail « Demande d’expédition » enregistré dans WooCommerce', isset( $gcp_wc_emails['GCP_Email_Shipment_Requested'] ) );
-gcp_check( 'E-mail client marque comme customer_email', $gcp_wc_emails['GCP_Email_Parcel_Received']->is_customer_email() );
-gcp_check( 'Gabarit HTML « Colis réceptionné » rendu', false !== strpos( (string) $gcp_wc_emails['GCP_Email_Parcel_Received']->get_default_subject(), '{parcel_reference}' ) );
+$pxfwd_wc_emails = WC()->mailer()->get_emails();
+pxfwd_check( 'E-mail « Colis réceptionné » enregistré dans WooCommerce', isset( $pxfwd_wc_emails['PXFWD_Email_Parcel_Received'] ) );
+pxfwd_check( 'E-mail « Demande d’expédition » enregistré dans WooCommerce', isset( $pxfwd_wc_emails['PXFWD_Email_Shipment_Requested'] ) );
+pxfwd_check( 'E-mail client marque comme customer_email', $pxfwd_wc_emails['PXFWD_Email_Parcel_Received']->is_customer_email() );
+pxfwd_check( 'Gabarit HTML « Colis réceptionné » rendu', false !== strpos( (string) $pxfwd_wc_emails['PXFWD_Email_Parcel_Received']->get_default_subject(), '{parcel_reference}' ) );
 
 // ---------------------------------------------------------------------------
 // Native WooCommerce order integration.
 // ---------------------------------------------------------------------------
-$wc_parcel1 = GCP_Parcels::create( array( 'client_id' => $client_id, 'weight' => 2.0, 'allow_grouping' => 1 ) );
-$wc_parcel2 = GCP_Parcels::create( array( 'client_id' => $client_id, 'weight' => 1.0, 'allow_grouping' => 1 ) );
+$wc_parcel1 = PXFWD_Parcels::create( array( 'client_id' => $client_id, 'weight' => 2.0, 'allow_grouping' => 1 ) );
+$wc_parcel2 = PXFWD_Parcels::create( array( 'client_id' => $client_id, 'weight' => 1.0, 'allow_grouping' => 1 ) );
 
-$wc_ship_id = GCP_Shipments::request( $client_id, array( $wc_parcel1 ), 'colissimo' );
-gcp_check( 'Expedition avec commande creee', is_int( $wc_ship_id ) );
+$wc_ship_id = PXFWD_Shipments::request( $client_id, array( $wc_parcel1 ), 'colissimo' );
+pxfwd_check( 'Expedition avec commande creee', is_int( $wc_ship_id ) );
 
-$wc_ship = GCP_Shipments::get( $wc_ship_id );
-gcp_check( 'Commande WooCommerce liee (order_id > 0)', (int) $wc_ship->order_id > 0 );
-gcp_check( 'Expedition en attente de paiement', 'awaiting_payment' === $wc_ship->status );
-gcp_check( 'Colis en attente de paiement', 'awaiting_payment' === GCP_Parcels::get( $wc_parcel1 )->status );
+$wc_ship = PXFWD_Shipments::get( $wc_ship_id );
+pxfwd_check( 'Commande WooCommerce liee (order_id > 0)', (int) $wc_ship->order_id > 0 );
+pxfwd_check( 'Expedition en attente de paiement', 'awaiting_payment' === $wc_ship->status );
+pxfwd_check( 'Colis en attente de paiement', 'awaiting_payment' === PXFWD_Parcels::get( $wc_parcel1 )->status );
 
 $wc_order = wc_get_order( (int) $wc_ship->order_id );
-gcp_check( 'La commande existe et attend un paiement', $wc_order && $wc_order->needs_payment() );
-gcp_check( 'Meta _gcp_shipment_id sur la commande', (int) $wc_order->get_meta( '_gcp_shipment_id' ) === $wc_ship_id );
-gcp_check( 'Total commande = colis + stockage + transport', (float) $wc_order->get_total() === (float) $wc_ship->total_price );
-gcp_check( 'Une ligne de frais par colis presente', 1 === count( $wc_order->get_fees() ) || 2 === count( $wc_order->get_fees() ) );
-gcp_check( 'Transporteur en ligne de livraison', 1 === count( $wc_order->get_shipping_methods() ) );
-gcp_check( 'Transport facture sur la ligne de livraison (2 kg Colissimo = 11.00)', 11.0 === (float) $wc_order->get_shipping_total() );
-gcp_check( 'carrier_price stocke sur l expedition', 11.0 === (float) $wc_ship->carrier_price );
+pxfwd_check( 'La commande existe et attend un paiement', $wc_order && $wc_order->needs_payment() );
+pxfwd_check( 'Meta _pxfwd_shipment_id sur la commande', (int) $wc_order->get_meta( '_pxfwd_shipment_id' ) === $wc_ship_id );
+pxfwd_check( 'Total commande = colis + stockage + transport', (float) $wc_order->get_total() === (float) $wc_ship->total_price );
+pxfwd_check( 'Une ligne de frais par colis presente', 1 === count( $wc_order->get_fees() ) || 2 === count( $wc_order->get_fees() ) );
+pxfwd_check( 'Transporteur en ligne de livraison', 1 === count( $wc_order->get_shipping_methods() ) );
+pxfwd_check( 'Transport facture sur la ligne de livraison (2 kg Colissimo = 11.00)', 11.0 === (float) $wc_order->get_shipping_total() );
+pxfwd_check( 'carrier_price stocke sur l expedition', 11.0 === (float) $wc_ship->carrier_price );
 
 // Payment through the native WooCommerce flow.
 $wc_order->payment_complete( 'TEST-TXN-1' );
-$wc_ship = GCP_Shipments::get( $wc_ship_id );
-gcp_check( 'Commande payee => expedition payee', 'paid' === $wc_ship->status );
-gcp_check( 'Commande payee => colis payes', 'paid' === GCP_Parcels::get( $wc_parcel1 )->status );
+$wc_ship = PXFWD_Shipments::get( $wc_ship_id );
+pxfwd_check( 'Commande payee => expedition payee', 'paid' === $wc_ship->status );
+pxfwd_check( 'Commande payee => colis payes', 'paid' === PXFWD_Parcels::get( $wc_parcel1 )->status );
 
 // Shipping the parcels completes the order.
-GCP_Shipments::set_status( $wc_ship_id, 'shipped' );
+PXFWD_Shipments::set_status( $wc_ship_id, 'shipped' );
 $wc_order = wc_get_order( (int) $wc_ship->order_id );
-gcp_check( 'Expedition expediee => commande terminee', $wc_order->has_status( 'completed' ) );
+pxfwd_check( 'Expedition expediee => commande terminee', $wc_order->has_status( 'completed' ) );
 
 // Cancelling an unpaid order puts the parcels back in stock.
-$wc_ship2_id = GCP_Shipments::request( $client_id, array( $wc_parcel2 ), 'colissimo' );
-$wc_ship2    = GCP_Shipments::get( $wc_ship2_id );
+$wc_ship2_id = PXFWD_Shipments::request( $client_id, array( $wc_parcel2 ), 'colissimo' );
+$wc_ship2    = PXFWD_Shipments::get( $wc_ship2_id );
 $wc_order2   = wc_get_order( (int) $wc_ship2->order_id );
 $wc_order2->update_status( 'cancelled' );
-$wc_ship2 = GCP_Shipments::get( $wc_ship2_id );
-gcp_check( 'Commande annulee => expedition annulee', 'cancelled' === $wc_ship2->status );
-gcp_check( 'Commande annulee => colis de retour en stock', 'available' === GCP_Parcels::get( $wc_parcel2 )->status );
+$wc_ship2 = PXFWD_Shipments::get( $wc_ship2_id );
+pxfwd_check( 'Commande annulee => expedition annulee', 'cancelled' === $wc_ship2->status );
+pxfwd_check( 'Commande annulee => colis de retour en stock', 'available' === PXFWD_Parcels::get( $wc_parcel2 )->status );
 
 // ---------------------------------------------------------------------------
 // Decimal comma normalization.
 // ---------------------------------------------------------------------------
-gcp_check( 'Poids "2,5" normalise en 2.5', 2.5 === GCP_Parcels::to_float( '2,5' ) );
+pxfwd_check( 'Poids "2,5" normalise en 2.5', 2.5 === PXFWD_Parcels::to_float( '2,5' ) );
 
 // ---------------------------------------------------------------------------
 // Privacy (GDPR): exporter, eraser, account-deletion cleanup.
@@ -374,8 +374,8 @@ $priv_uid = wp_insert_user(
 	)
 );
 $priv_email  = get_userdata( $priv_uid )->user_email;
-$priv_client = GCP_Clients::create( $priv_uid, '0696000001' );
-$priv_parcel = GCP_Parcels::create(
+$priv_client = PXFWD_Clients::create( $priv_uid, '0696000001' );
+$priv_parcel = PXFWD_Parcels::create(
 	array(
 		'client_id'       => $priv_client,
 		'tracking_number' => 'RGPD-TRACK-1',
@@ -384,51 +384,73 @@ $priv_parcel = GCP_Parcels::create(
 	)
 );
 $priv_file = 'rgpd-' . wp_generate_password( 8, false ) . '.pdf';
-GCP_Files::ensure_dir();
-file_put_contents( GCP_Files::base_dir() . '/' . $priv_file, '%PDF-1.4 rgpd' );
-GCP_Documents::add( $priv_client, array( 'path' => $priv_file, 'name' => 'piece.pdf', 'type' => 'application/pdf' ), 'Piece', 'client' );
+PXFWD_Files::ensure_dir();
+file_put_contents( PXFWD_Files::base_dir() . '/' . $priv_file, '%PDF-1.4 rgpd' );
+PXFWD_Documents::add( $priv_client, array( 'path' => $priv_file, 'name' => 'piece.pdf', 'type' => 'application/pdf' ), 'Piece', 'client' );
 
 $exporters = apply_filters( 'wp_privacy_personal_data_exporters', array() );
-gcp_check( 'Exportateur RGPD enregistre', isset( $exporters['gestionnaire-colis-pro'] ) );
+pxfwd_check( 'Exportateur RGPD enregistre', isset( $exporters['gestionnaire-colis-pro'] ) );
 $erasers = apply_filters( 'wp_privacy_personal_data_erasers', array() );
-gcp_check( 'Effaceur RGPD enregistre', isset( $erasers['gestionnaire-colis-pro'] ) );
+pxfwd_check( 'Effaceur RGPD enregistre', isset( $erasers['gestionnaire-colis-pro'] ) );
 
-$export = GCP_Privacy::export( $priv_email );
+$export = PXFWD_Privacy::export( $priv_email );
 $groups = array_unique( wp_list_pluck( $export['data'], 'group_id' ) );
-gcp_check( 'Export RGPD : fiche client presente', in_array( 'gcp_client', $groups, true ) );
-gcp_check( 'Export RGPD : colis presents', in_array( 'gcp_parcels', $groups, true ) );
-gcp_check( 'Export RGPD : termine en une passe', true === $export['done'] );
-gcp_check( 'Export RGPD : e-mail inconnu vide', array() === GCP_Privacy::export( 'inconnu@example.com' )['data'] );
+pxfwd_check( 'Export RGPD : fiche client presente', in_array( 'pxfwd_client', $groups, true ) );
+pxfwd_check( 'Export RGPD : colis presents', in_array( 'pxfwd_parcels', $groups, true ) );
+pxfwd_check( 'Export RGPD : termine en une passe', true === $export['done'] );
+pxfwd_check( 'Export RGPD : e-mail inconnu vide', array() === PXFWD_Privacy::export( 'inconnu@example.com' )['data'] );
 
-$erase = GCP_Privacy::erase( $priv_email );
-gcp_check( 'Effacement RGPD : donnees supprimees', true === $erase['items_removed'] );
-gcp_check( 'Effacement RGPD : conservation signalee', true === $erase['items_retained'] && ! empty( $erase['messages'] ) );
+$erase = PXFWD_Privacy::erase( $priv_email );
+pxfwd_check( 'Effacement RGPD : donnees supprimees', true === $erase['items_removed'] );
+pxfwd_check( 'Effacement RGPD : conservation signalee', true === $erase['items_retained'] && ! empty( $erase['messages'] ) );
 
-$priv_c = GCP_Clients::get( $priv_client );
-$priv_p = GCP_Parcels::get( $priv_parcel );
-gcp_check( 'Effacement RGPD : telephone efface', '' === (string) $priv_c->phone );
-gcp_check( 'Effacement RGPD : numero de suivi efface', '' === (string) $priv_p->tracking_number );
-gcp_check( 'Effacement RGPD : note interne effacee', '' === (string) $priv_p->internal_note );
-gcp_check( 'Effacement RGPD : documents supprimes', 0 === count( GCP_Documents::for_client( $priv_client ) ) );
-gcp_check( 'Effacement RGPD : fichier prive supprime', false === GCP_Files::resolve( $priv_file ) );
-gcp_check( 'Effacement RGPD : reference colis conservee (comptabilite)', 1 === preg_match( '/^COL\d{6}$/', $priv_p->reference ) );
+$priv_c = PXFWD_Clients::get( $priv_client );
+$priv_p = PXFWD_Parcels::get( $priv_parcel );
+pxfwd_check( 'Effacement RGPD : telephone efface', '' === (string) $priv_c->phone );
+pxfwd_check( 'Effacement RGPD : numero de suivi efface', '' === (string) $priv_p->tracking_number );
+pxfwd_check( 'Effacement RGPD : note interne effacee', '' === (string) $priv_p->internal_note );
+pxfwd_check( 'Effacement RGPD : documents supprimes', 0 === count( PXFWD_Documents::for_client( $priv_client ) ) );
+pxfwd_check( 'Effacement RGPD : fichier prive supprime', false === PXFWD_Files::resolve( $priv_file ) );
+pxfwd_check( 'Effacement RGPD : reference colis conservee (comptabilite)', 1 === preg_match( '/^COL\d{6}$/', $priv_p->reference ) );
 
 // Account deletion removes everything.
 wp_delete_user( $priv_uid );
-gcp_check( 'Suppression du compte : fiche client purgee', null === GCP_Clients::get( $priv_client ) );
-gcp_check( 'Suppression du compte : colis purges', null === GCP_Parcels::get( $priv_parcel ) );
+pxfwd_check( 'Suppression du compte : fiche client purgee', null === PXFWD_Clients::get( $priv_client ) );
+pxfwd_check( 'Suppression du compte : colis purges', null === PXFWD_Parcels::get( $priv_parcel ) );
+
+// ---------------------------------------------------------------------------
+// Legacy "gcp" prefix migration: nothing must remain behind.
+// ---------------------------------------------------------------------------
+$legacy_tables = $wpdb->get_col( "SHOW TABLES LIKE '{$wpdb->prefix}gcp_%'" );
+pxfwd_check( 'Migration : aucune table gcp_ restante', array() === $legacy_tables );
+
+$legacy_options = 0;
+foreach ( array( 'settings', 'db_version', 'flush_rewrite_rules', 'remove_data_on_uninstall' ) as $legacy_option ) {
+	if ( false !== get_option( 'gcp_' . $legacy_option, false ) ) {
+		++$legacy_options;
+	}
+}
+pxfwd_check( 'Migration : aucune option gcp_ restante', 0 === $legacy_options );
+pxfwd_check( 'Migration : capacite gcp_manage retiree', ! get_role( 'administrator' )->has_cap( 'gcp_manage' ) );
+pxfwd_check( 'Migration : capacite pxfwd_manage presente', get_role( 'administrator' )->has_cap( 'pxfwd_manage' ) );
+pxfwd_check( 'Migration : dossier prive renomme', ! is_dir( wp_upload_dir( null, false )['basedir'] . '/gcp-private' ) && is_dir( PXFWD_Files::base_dir() ) );
+pxfwd_check(
+	'Migration : aucune commande avec l ancienne meta',
+	0 === count( wc_get_orders( array( 'limit' => -1, 'meta_key' => '_gcp_shipment_id', 'meta_compare' => 'EXISTS', 'return' => 'ids' ) ) )
+);
+pxfwd_check( 'Migration : les donnees clients ont survecu', PXFWD_Clients::count() > 0 && count( PXFWD_Parcels::for_client( PXFWD_Clients::paged_list( '', 1, 1 )[0]->id ) ) >= 0 );
 
 // ---------------------------------------------------------------------------
 // Statuses map.
 // ---------------------------------------------------------------------------
 $expected_statuses = array( 'available', 'ordered', 'awaiting_payment', 'paid', 'preparing', 'shipped', 'destroyed', 'cancelled' );
-gcp_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( GCP_Parcels::statuses() ) );
+pxfwd_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( PXFWD_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------
 // Result.
 // ---------------------------------------------------------------------------
-if ( $gcp_failures > 0 ) {
-	echo "\n{$gcp_failures} TEST(S) EN ECHEC\n";
+if ( $pxfwd_failures > 0 ) {
+	echo "\n{$pxfwd_failures} TEST(S) EN ECHEC\n";
 	exit( 1 );
 }
 

@@ -9,14 +9,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once GCP_PLUGIN_DIR . 'includes/admin/class-gcp-admin-clients.php';
-require_once GCP_PLUGIN_DIR . 'includes/admin/class-gcp-admin-parcels.php';
-require_once GCP_PLUGIN_DIR . 'includes/admin/class-gcp-admin-settings.php';
+require_once PXFWD_PLUGIN_DIR . 'includes/admin/class-pxfwd-admin-clients.php';
+require_once PXFWD_PLUGIN_DIR . 'includes/admin/class-pxfwd-admin-parcels.php';
+require_once PXFWD_PLUGIN_DIR . 'includes/admin/class-pxfwd-admin-settings.php';
 
 /**
  * Registers the admin menu and routes form submissions.
  */
-class GCP_Admin {
+class PXFWD_Admin {
 
 	/**
 	 * Hooks admin actions.
@@ -27,13 +27,13 @@ class GCP_Admin {
 		add_action( 'admin_menu', array( __CLASS__, 'register_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
 
-		add_action( 'admin_post_gcp_create_client', array( 'GCP_Admin_Clients', 'handle_create' ) );
-		add_action( 'admin_post_gcp_update_client', array( 'GCP_Admin_Clients', 'handle_update' ) );
-		add_action( 'admin_post_gcp_add_document', array( 'GCP_Admin_Clients', 'handle_add_document' ) );
-		add_action( 'admin_post_gcp_create_parcel', array( 'GCP_Admin_Parcels', 'handle_create' ) );
-		add_action( 'admin_post_gcp_set_parcel_status', array( 'GCP_Admin_Parcels', 'handle_set_status' ) );
-		add_action( 'admin_post_gcp_set_shipment_status', array( 'GCP_Admin_Clients', 'handle_set_shipment_status' ) );
-		add_action( 'admin_post_gcp_save_settings', array( 'GCP_Admin_Settings', 'handle_save' ) );
+		add_action( 'admin_post_pxfwd_create_client', array( 'PXFWD_Admin_Clients', 'handle_create' ) );
+		add_action( 'admin_post_pxfwd_update_client', array( 'PXFWD_Admin_Clients', 'handle_update' ) );
+		add_action( 'admin_post_pxfwd_add_document', array( 'PXFWD_Admin_Clients', 'handle_add_document' ) );
+		add_action( 'admin_post_pxfwd_create_parcel', array( 'PXFWD_Admin_Parcels', 'handle_create' ) );
+		add_action( 'admin_post_pxfwd_set_parcel_status', array( 'PXFWD_Admin_Parcels', 'handle_set_status' ) );
+		add_action( 'admin_post_pxfwd_set_shipment_status', array( 'PXFWD_Admin_Clients', 'handle_set_shipment_status' ) );
+		add_action( 'admin_post_pxfwd_save_settings', array( 'PXFWD_Admin_Settings', 'handle_save' ) );
 	}
 
 	/**
@@ -45,47 +45,47 @@ class GCP_Admin {
 		add_menu_page(
 			__( 'Gestionnaire Colis Pro', 'gestionnaire-colis-pro' ),
 			__( 'Colis Pro', 'gestionnaire-colis-pro' ),
-			'gcp_manage',
-			'gcp-clients',
-			array( 'GCP_Admin_Clients', 'render' ),
+			'pxfwd_manage',
+			'pxfwd-clients',
+			array( 'PXFWD_Admin_Clients', 'render' ),
 			'dashicons-archive',
 			56
 		);
 
 		add_submenu_page(
-			'gcp-clients',
+			'pxfwd-clients',
 			__( 'Clients', 'gestionnaire-colis-pro' ),
 			__( 'Clients', 'gestionnaire-colis-pro' ),
-			'gcp_manage',
-			'gcp-clients',
-			array( 'GCP_Admin_Clients', 'render' )
+			'pxfwd_manage',
+			'pxfwd-clients',
+			array( 'PXFWD_Admin_Clients', 'render' )
 		);
 
 		add_submenu_page(
-			'gcp-clients',
+			'pxfwd-clients',
 			__( 'Parcels', 'gestionnaire-colis-pro' ),
 			__( 'Parcels', 'gestionnaire-colis-pro' ),
-			'gcp_manage',
-			'gcp-parcels',
-			array( 'GCP_Admin_Parcels', 'render_list' )
+			'pxfwd_manage',
+			'pxfwd-parcels',
+			array( 'PXFWD_Admin_Parcels', 'render_list' )
 		);
 
 		add_submenu_page(
-			'gcp-clients',
+			'pxfwd-clients',
 			__( 'New parcel', 'gestionnaire-colis-pro' ),
 			__( 'New parcel', 'gestionnaire-colis-pro' ),
-			'gcp_manage',
-			'gcp-new-parcel',
-			array( 'GCP_Admin_Parcels', 'render_new' )
+			'pxfwd_manage',
+			'pxfwd-new-parcel',
+			array( 'PXFWD_Admin_Parcels', 'render_new' )
 		);
 
 		add_submenu_page(
-			'gcp-clients',
+			'pxfwd-clients',
 			__( 'Settings', 'gestionnaire-colis-pro' ),
 			__( 'Settings', 'gestionnaire-colis-pro' ),
-			'gcp_manage',
-			'gcp-settings',
-			array( 'GCP_Admin_Settings', 'render' )
+			'pxfwd_manage',
+			'pxfwd-settings',
+			array( 'PXFWD_Admin_Settings', 'render' )
 		);
 	}
 
@@ -96,31 +96,31 @@ class GCP_Admin {
 	 * @return void
 	 */
 	public static function enqueue_assets( $hook ) {
-		if ( false === strpos( $hook, 'gcp-' ) ) {
+		if ( false === strpos( $hook, 'pxfwd-' ) ) {
 			return;
 		}
 
 		wp_enqueue_style(
-			'gcp-admin',
-			GCP_PLUGIN_URL . 'assets/css/admin.css',
+			'pxfwd-admin',
+			PXFWD_PLUGIN_URL . 'assets/css/admin.css',
 			array(),
-			GCP_VERSION
+			PXFWD_VERSION
 		);
 
 		wp_enqueue_script(
-			'gcp-admin',
-			GCP_PLUGIN_URL . 'assets/js/admin.js',
+			'pxfwd-admin',
+			PXFWD_PLUGIN_URL . 'assets/js/admin.js',
 			array( 'jquery' ),
-			GCP_VERSION,
+			PXFWD_VERSION,
 			true
 		);
 
 		wp_localize_script(
-			'gcp-admin',
-			'gcpAdmin',
+			'pxfwd-admin',
+			'pxfwdAdmin',
 			array(
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'gcp_admin' ),
+				'nonce'   => wp_create_nonce( 'pxfwd_admin' ),
 				'i18n'    => array(
 					'noResults'   => __( 'No clients found.', 'gestionnaire-colis-pro' ),
 					'inStock'     => __( 'parcel(s) in stock', 'gestionnaire-colis-pro' ),
@@ -139,7 +139,7 @@ class GCP_Admin {
 	/**
 	 * Redirects back to a plugin admin page with a notice.
 	 *
-	 * @param string $page   Page slug (e.g. gcp-clients).
+	 * @param string $page   Page slug (e.g. pxfwd-clients).
 	 * @param array  $args   Extra query args.
 	 * @param string $notice Notice key.
 	 * @param string $type   Notice type: success|error.
@@ -151,8 +151,8 @@ class GCP_Admin {
 				array( 'page' => $page ),
 				$args,
 				$notice ? array(
-					'gcp_notice' => $notice,
-					'gcp_type'   => $type,
+					'pxfwd_notice' => $notice,
+					'pxfwd_type'   => $type,
 				) : array()
 			),
 			admin_url( 'admin.php' )
@@ -168,12 +168,12 @@ class GCP_Admin {
 	 * @return void
 	 */
 	public static function maybe_notice() {
-		if ( empty( $_GET['gcp_notice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
+		if ( empty( $_GET['pxfwd_notice'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
 			return;
 		}
 
-		$notice = sanitize_text_field( wp_unslash( $_GET['gcp_notice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$type   = isset( $_GET['gcp_type'] ) && 'error' === $_GET['gcp_type'] ? 'error' : 'success'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$notice = sanitize_text_field( wp_unslash( $_GET['pxfwd_notice'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$type   = isset( $_GET['pxfwd_type'] ) && 'error' === $_GET['pxfwd_type'] ? 'error' : 'success'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 
 		printf(
 			'<div class="notice notice-%1$s is-dismissible"><p>%2$s</p></div>',

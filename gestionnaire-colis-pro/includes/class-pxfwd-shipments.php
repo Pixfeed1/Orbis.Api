@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Shipment orders created from client requests or by the administration.
  */
-class GCP_Shipments {
+class PXFWD_Shipments {
 
 	/**
 	 * Shipment statuses.
@@ -56,20 +56,20 @@ class GCP_Shipments {
 	public static function request( $client_id, $parcel_ids, $carrier ) {
 		global $wpdb;
 
-		$client = GCP_Clients::get( $client_id );
+		$client = PXFWD_Clients::get( $client_id );
 		if ( ! $client ) {
-			return new WP_Error( 'gcp_invalid_client', __( 'Client not found.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_invalid_client', __( 'Client not found.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$parcel_ids = array_unique( array_filter( array_map( 'intval', (array) $parcel_ids ) ) );
 		if ( empty( $parcel_ids ) ) {
-			return new WP_Error( 'gcp_no_parcels', __( 'Select at least one parcel.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_no_parcels', __( 'Select at least one parcel.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$carrier = sanitize_key( $carrier );
-		$enabled = wp_list_pluck( GCP_Carriers::all( true ), 'slug' );
+		$enabled = wp_list_pluck( PXFWD_Carriers::all( true ), 'slug' );
 		if ( ! in_array( $carrier, $enabled, true ) ) {
-			return new WP_Error( 'gcp_invalid_carrier', __( 'Invalid carrier.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_invalid_carrier', __( 'Invalid carrier.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$parcels      = array();
@@ -77,26 +77,26 @@ class GCP_Shipments {
 		$total_price  = 0.0;
 
 		foreach ( $parcel_ids as $parcel_id ) {
-			$parcel = GCP_Parcels::get( $parcel_id );
+			$parcel = PXFWD_Parcels::get( $parcel_id );
 
 			if ( ! $parcel || (int) $parcel->client_id !== (int) $client->id ) {
-				return new WP_Error( 'gcp_invalid_parcel', __( 'Parcel not found for this client.', 'gestionnaire-colis-pro' ) );
+				return new WP_Error( 'pxfwd_invalid_parcel', __( 'Parcel not found for this client.', 'gestionnaire-colis-pro' ) );
 			}
 
 			if ( 'available' !== $parcel->status ) {
 				/* translators: %s: parcel reference. */
-				return new WP_Error( 'gcp_parcel_unavailable', sprintf( __( 'Parcel %s is no longer available.', 'gestionnaire-colis-pro' ), $parcel->reference ) );
+				return new WP_Error( 'pxfwd_parcel_unavailable', sprintf( __( 'Parcel %s is no longer available.', 'gestionnaire-colis-pro' ), $parcel->reference ) );
 			}
 
 			if ( ! $parcel->allow_grouping && count( $parcel_ids ) > 1 ) {
 				/* translators: %s: parcel reference. */
-				return new WP_Error( 'gcp_grouping_forbidden', sprintf( __( 'Parcel %s must be shipped alone (grouping forbidden).', 'gestionnaire-colis-pro' ), $parcel->reference ) );
+				return new WP_Error( 'pxfwd_grouping_forbidden', sprintf( __( 'Parcel %s must be shipped alone (grouping forbidden).', 'gestionnaire-colis-pro' ), $parcel->reference ) );
 			}
 
-			$allowed = GCP_Parcels::allowed_carrier_slugs( $parcel );
+			$allowed = PXFWD_Parcels::allowed_carrier_slugs( $parcel );
 			if ( ! empty( $allowed ) && ! in_array( $carrier, $allowed, true ) ) {
 				/* translators: %s: parcel reference. */
-				return new WP_Error( 'gcp_carrier_forbidden', sprintf( __( 'The chosen carrier is not allowed for parcel %s.', 'gestionnaire-colis-pro' ), $parcel->reference ) );
+				return new WP_Error( 'pxfwd_carrier_forbidden', sprintf( __( 'The chosen carrier is not allowed for parcel %s.', 'gestionnaire-colis-pro' ), $parcel->reference ) );
 			}
 
 			$parcels[]     = $parcel;
@@ -104,12 +104,12 @@ class GCP_Shipments {
 			$total_price  += (float) $parcel->price;
 		}
 
-		$storage_fees  = GCP_Storage::fees_for_parcels( $parcels );
-		$carrier_price = GCP_Carriers::price_for( $carrier, $total_weight );
+		$storage_fees  = PXFWD_Storage::fees_for_parcels( $parcels );
+		$carrier_price = PXFWD_Carriers::price_for( $carrier, $total_weight );
 		$now           = current_time( 'mysql', true );
 
 		$inserted = $wpdb->insert(
-			$wpdb->prefix . 'gcp_shipments',
+			$wpdb->prefix . 'pxfwd_shipments',
 			array(
 				'reference'     => '',
 				'client_id'     => (int) $client->id,
@@ -126,33 +126,33 @@ class GCP_Shipments {
 		);
 
 		if ( ! $inserted ) {
-			return new WP_Error( 'gcp_db_error', __( 'The shipment request could not be created.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_db_error', __( 'The shipment request could not be created.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$shipment_id = (int) $wpdb->insert_id;
 		$reference   = self::format_reference( $shipment_id );
 
 		$wpdb->update(
-			$wpdb->prefix . 'gcp_shipments',
+			$wpdb->prefix . 'pxfwd_shipments',
 			array( 'reference' => $reference ),
 			array( 'id' => $shipment_id ),
 			array( '%s' ),
 			array( '%d' )
 		);
 
-		GCP_Parcels::attach_to_shipment( $parcel_ids, $shipment_id );
+		PXFWD_Parcels::attach_to_shipment( $parcel_ids, $shipment_id );
 
 		// Native WooCommerce payment: the request becomes a real order and the
 		// shipment waits for its payment. Without WooCommerce, it stays
 		// "requested" and is handled manually.
-		if ( GCP_Orders::available() ) {
-			$order_result = GCP_Orders::create_for_shipment( self::get( $shipment_id ), $client );
+		if ( PXFWD_Orders::available() ) {
+			$order_result = PXFWD_Orders::create_for_shipment( self::get( $shipment_id ), $client );
 			if ( ! is_wp_error( $order_result ) ) {
 				self::set_status( $shipment_id, 'awaiting_payment' );
 			}
 		}
 
-		GCP_History::log(
+		PXFWD_History::log(
 			(int) $client->id,
 			'shipment_requested',
 			sprintf(
@@ -160,7 +160,7 @@ class GCP_Shipments {
 				__( 'Shipment request %1$s created (%2$d parcels, carrier %3$s).', 'gestionnaire-colis-pro' ),
 				$reference,
 				count( $parcel_ids ),
-				GCP_Carriers::name( $carrier )
+				PXFWD_Carriers::name( $carrier )
 			),
 			0,
 			$shipment_id
@@ -173,7 +173,7 @@ class GCP_Shipments {
 		 * @param object $client      Client row.
 		 * @param array  $parcel_ids  Parcel IDs.
 		 */
-		do_action( 'gcp_shipment_requested', $shipment_id, $client, $parcel_ids );
+		do_action( 'pxfwd_shipment_requested', $shipment_id, $client, $parcel_ids );
 
 		return $shipment_id;
 	}
@@ -191,7 +191,7 @@ class GCP_Shipments {
 		 * @param string $reference Reference.
 		 * @param int    $id        Shipment ID.
 		 */
-		return apply_filters( 'gcp_shipment_reference', 'EXP' . str_pad( (string) $id, 6, '0', STR_PAD_LEFT ), $id );
+		return apply_filters( 'pxfwd_shipment_reference', 'EXP' . str_pad( (string) $id, 6, '0', STR_PAD_LEFT ), $id );
 	}
 
 	/**
@@ -205,7 +205,7 @@ class GCP_Shipments {
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}gcp_shipments WHERE id = %d", (int) $shipment_id )
+			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}pxfwd_shipments WHERE id = %d", (int) $shipment_id )
 		);
 	}
 
@@ -221,7 +221,7 @@ class GCP_Shipments {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$wpdb->prefix}gcp_shipments WHERE client_id = %d ORDER BY id DESC",
+				"SELECT * FROM {$wpdb->prefix}pxfwd_shipments WHERE client_id = %d ORDER BY id DESC",
 				(int) $client_id
 			)
 		);
@@ -239,7 +239,7 @@ class GCP_Shipments {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$wpdb->prefix}gcp_parcels WHERE shipment_id = %d ORDER BY id ASC",
+				"SELECT * FROM {$wpdb->prefix}pxfwd_parcels WHERE shipment_id = %d ORDER BY id ASC",
 				(int) $shipment_id
 			)
 		);
@@ -256,12 +256,12 @@ class GCP_Shipments {
 		global $wpdb;
 
 		if ( ! array_key_exists( $status, self::statuses() ) ) {
-			return new WP_Error( 'gcp_invalid_status', __( 'Invalid shipment status.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_invalid_status', __( 'Invalid shipment status.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$shipment = self::get( $shipment_id );
 		if ( ! $shipment ) {
-			return new WP_Error( 'gcp_invalid_shipment', __( 'Shipment not found.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_invalid_shipment', __( 'Shipment not found.', 'gestionnaire-colis-pro' ) );
 		}
 
 		if ( $shipment->status === $status ) {
@@ -279,17 +279,17 @@ class GCP_Shipments {
 			$formats[]            = '%s';
 		}
 
-		$wpdb->update( $wpdb->prefix . 'gcp_shipments', $fields, array( 'id' => (int) $shipment_id ), $formats, array( '%d' ) );
+		$wpdb->update( $wpdb->prefix . 'pxfwd_shipments', $fields, array( 'id' => (int) $shipment_id ), $formats, array( '%d' ) );
 
 		// Cascade to parcels: shipment statuses map 1:1 onto parcel statuses,
 		// except a cancelled shipment which puts parcels back in stock.
 		$parcel_status = 'cancelled' === $status ? 'available' : $status;
 		foreach ( self::parcels( $shipment_id ) as $parcel ) {
-			GCP_Parcels::set_status( (int) $parcel->id, $parcel_status );
+			PXFWD_Parcels::set_status( (int) $parcel->id, $parcel_status );
 
 			if ( 'cancelled' === $status ) {
 				$wpdb->update(
-					$wpdb->prefix . 'gcp_parcels',
+					$wpdb->prefix . 'pxfwd_parcels',
 					array( 'shipment_id' => null ),
 					array( 'id' => (int) $parcel->id ),
 					array( '%d' ),
@@ -298,9 +298,9 @@ class GCP_Shipments {
 			}
 		}
 
-		GCP_Orders::sync_from_shipment( $shipment, $status );
+		PXFWD_Orders::sync_from_shipment( $shipment, $status );
 
-		GCP_History::log(
+		PXFWD_History::log(
 			(int) $shipment->client_id,
 			'shipment_status_changed',
 			sprintf(
@@ -321,7 +321,7 @@ class GCP_Shipments {
 		 * @param string $status      New status.
 		 * @param string $old_status  Previous status.
 		 */
-		do_action( 'gcp_shipment_status_changed', (int) $shipment_id, $status, $shipment->status );
+		do_action( 'pxfwd_shipment_status_changed', (int) $shipment_id, $status, $shipment->status );
 
 		return true;
 	}

@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * CRUD, status lifecycle and queries for parcels.
  */
-class GCP_Parcels {
+class PXFWD_Parcels {
 
 	/**
 	 * Statuses a parcel can have during its life cycle.
@@ -52,7 +52,7 @@ class GCP_Parcels {
 	public static function table() {
 		global $wpdb;
 
-		return $wpdb->prefix . 'gcp_parcels';
+		return $wpdb->prefix . 'pxfwd_parcels';
 	}
 
 	/**
@@ -90,19 +90,19 @@ class GCP_Parcels {
 	public static function create( $data ) {
 		global $wpdb;
 
-		$client = GCP_Clients::get( isset( $data['client_id'] ) ? (int) $data['client_id'] : 0 );
+		$client = PXFWD_Clients::get( isset( $data['client_id'] ) ? (int) $data['client_id'] : 0 );
 		if ( ! $client ) {
-			return new WP_Error( 'gcp_invalid_client', __( 'Client not found.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_invalid_client', __( 'Client not found.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$weight = isset( $data['weight'] ) ? self::to_float( $data['weight'] ) : 0;
 		if ( $weight <= 0 ) {
-			return new WP_Error( 'gcp_invalid_weight', __( 'The parcel weight must be greater than zero.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_invalid_weight', __( 'The parcel weight must be greater than zero.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$carriers = array();
 		if ( ! empty( $data['allowed_carriers'] ) && is_array( $data['allowed_carriers'] ) ) {
-			$known = wp_list_pluck( GCP_Carriers::all(), 'slug' );
+			$known = wp_list_pluck( PXFWD_Carriers::all(), 'slug' );
 			foreach ( $data['allowed_carriers'] as $slug ) {
 				$slug = sanitize_key( $slug );
 				if ( in_array( $slug, $known, true ) ) {
@@ -112,7 +112,7 @@ class GCP_Parcels {
 		}
 
 		$now      = current_time( 'mysql', true );
-		$price    = GCP_Pricing::price_for_weight( $weight );
+		$price    = PXFWD_Pricing::price_for_weight( $weight );
 		$inserted = $wpdb->insert(
 			self::table(),
 			array(
@@ -137,7 +137,7 @@ class GCP_Parcels {
 		);
 
 		if ( ! $inserted ) {
-			return new WP_Error( 'gcp_db_error', __( 'The parcel could not be saved.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_db_error', __( 'The parcel could not be saved.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$parcel_id = (int) $wpdb->insert_id;
@@ -151,7 +151,7 @@ class GCP_Parcels {
 			array( '%d' )
 		);
 
-		GCP_History::log(
+		PXFWD_History::log(
 			(int) $client->id,
 			'parcel_created',
 			sprintf(
@@ -170,7 +170,7 @@ class GCP_Parcels {
 		 * @param int    $parcel_id Parcel ID.
 		 * @param object $client    Client row.
 		 */
-		do_action( 'gcp_parcel_created', $parcel_id, $client );
+		do_action( 'pxfwd_parcel_created', $parcel_id, $client );
 
 		return $parcel_id;
 	}
@@ -188,7 +188,7 @@ class GCP_Parcels {
 		 * @param string $reference Reference.
 		 * @param int    $id        Parcel ID.
 		 */
-		return apply_filters( 'gcp_parcel_reference', 'COL' . str_pad( (string) $id, 6, '0', STR_PAD_LEFT ), $id );
+		return apply_filters( 'pxfwd_parcel_reference', 'COL' . str_pad( (string) $id, 6, '0', STR_PAD_LEFT ), $id );
 	}
 
 	/**
@@ -202,7 +202,7 @@ class GCP_Parcels {
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}gcp_parcels WHERE id = %d", (int) $parcel_id )
+			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}pxfwd_parcels WHERE id = %d", (int) $parcel_id )
 		);
 	}
 
@@ -235,7 +235,7 @@ class GCP_Parcels {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$wpdb->prefix}gcp_parcels WHERE client_id = %d AND status = 'available' ORDER BY received_at DESC",
+				"SELECT * FROM {$wpdb->prefix}pxfwd_parcels WHERE client_id = %d AND status = 'available' ORDER BY received_at DESC",
 				(int) $client_id
 			)
 		);
@@ -253,7 +253,7 @@ class GCP_Parcels {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$wpdb->prefix}gcp_parcels WHERE client_id = %d AND status = 'shipped' ORDER BY shipped_at DESC",
+				"SELECT * FROM {$wpdb->prefix}pxfwd_parcels WHERE client_id = %d AND status = 'shipped' ORDER BY shipped_at DESC",
 				(int) $client_id
 			)
 		);
@@ -271,7 +271,7 @@ class GCP_Parcels {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$wpdb->prefix}gcp_parcels WHERE client_id = %d ORDER BY received_at DESC",
+				"SELECT * FROM {$wpdb->prefix}pxfwd_parcels WHERE client_id = %d ORDER BY received_at DESC",
 				(int) $client_id
 			)
 		);
@@ -310,8 +310,8 @@ class GCP_Parcels {
 			$params[] = $args['status'];
 		}
 
-		$join = "FROM {$wpdb->prefix}gcp_parcels p
-			INNER JOIN {$wpdb->prefix}gcp_clients c ON c.id = p.client_id
+		$join = "FROM {$wpdb->prefix}pxfwd_parcels p
+			INNER JOIN {$wpdb->prefix}pxfwd_clients c ON c.id = p.client_id
 			INNER JOIN {$wpdb->users} u ON u.ID = c.user_id";
 
 		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders -- $join/$where are built from safe literals and placeholders; user values go through $wpdb->prepare(), which is skipped only when there is no placeholder at all.
@@ -350,12 +350,12 @@ class GCP_Parcels {
 		global $wpdb;
 
 		if ( ! array_key_exists( $status, self::statuses() ) ) {
-			return new WP_Error( 'gcp_invalid_status', __( 'Invalid parcel status.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_invalid_status', __( 'Invalid parcel status.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$parcel = self::get( $parcel_id );
 		if ( ! $parcel ) {
-			return new WP_Error( 'gcp_invalid_parcel', __( 'Parcel not found.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_invalid_parcel', __( 'Parcel not found.', 'gestionnaire-colis-pro' ) );
 		}
 
 		if ( $parcel->status === $status ) {
@@ -376,10 +376,10 @@ class GCP_Parcels {
 		$updated = $wpdb->update( self::table(), $fields, array( 'id' => (int) $parcel_id ), $formats, array( '%d' ) );
 
 		if ( false === $updated ) {
-			return new WP_Error( 'gcp_db_error', __( 'The status could not be updated.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_db_error', __( 'The status could not be updated.', 'gestionnaire-colis-pro' ) );
 		}
 
-		GCP_History::log(
+		PXFWD_History::log(
 			(int) $parcel->client_id,
 			'parcel_status_changed',
 			sprintf(
@@ -399,7 +399,7 @@ class GCP_Parcels {
 		 * @param string $status     New status.
 		 * @param string $old_status Previous status.
 		 */
-		do_action( 'gcp_parcel_status_changed', (int) $parcel_id, $status, $parcel->status );
+		do_action( 'pxfwd_parcel_status_changed', (int) $parcel_id, $status, $parcel->status );
 
 		return true;
 	}

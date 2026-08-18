@@ -10,9 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Central access to plugin settings stored in the gcp_settings option.
+ * Central access to plugin settings stored in the pxfwd_settings option.
  */
-class GCP_Settings {
+class PXFWD_Settings {
 
 	/**
 	 * Cached settings.
@@ -90,7 +90,7 @@ class GCP_Settings {
 	 */
 	public static function all() {
 		if ( null === self::$settings ) {
-			$saved          = get_option( 'gcp_settings', array() );
+			$saved          = get_option( 'pxfwd_settings', array() );
 			self::$settings = wp_parse_args( is_array( $saved ) ? $saved : array(), self::defaults() );
 		}
 
@@ -117,7 +117,7 @@ class GCP_Settings {
 	 * @return void
 	 */
 	public static function update( $settings ) {
-		update_option( 'gcp_settings', $settings );
+		update_option( 'pxfwd_settings', $settings );
 		self::$settings = null;
 	}
 }

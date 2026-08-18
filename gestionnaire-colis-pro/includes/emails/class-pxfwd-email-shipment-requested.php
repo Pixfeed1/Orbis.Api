@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Native WooCommerce e-mail sent to the shop manager when a client requests a
  * shipment.
  */
-class GCP_Email_Shipment_Requested extends WC_Email {
+class PXFWD_Email_Shipment_Requested extends WC_Email {
 
 	/**
 	 * Shipment row being notified.
@@ -33,18 +33,18 @@ class GCP_Email_Shipment_Requested extends WC_Email {
 	 * Sets up the e-mail.
 	 */
 	public function __construct() {
-		$this->id             = 'gcp_shipment_requested';
+		$this->id             = 'pxfwd_shipment_requested';
 		$this->title          = __( 'Shipment requested (Gestionnaire Colis Pro)', 'gestionnaire-colis-pro' );
 		$this->description    = __( 'Sent to the staff when a client creates a shipment request.', 'gestionnaire-colis-pro' );
-		$this->template_html  = 'emails/gcp-shipment-requested.php';
-		$this->template_plain = 'emails/plain/gcp-shipment-requested.php';
-		$this->template_base  = GCP_PLUGIN_DIR . 'templates/';
+		$this->template_html  = 'emails/pxfwd-shipment-requested.php';
+		$this->template_plain = 'emails/plain/pxfwd-shipment-requested.php';
+		$this->template_base  = PXFWD_PLUGIN_DIR . 'templates/';
 		$this->placeholders   = array(
 			'{shipment_reference}' => '',
 			'{client_reference}'   => '',
 		);
 
-		add_action( 'gcp_send_shipment_requested_email', array( $this, 'trigger' ), 10, 2 );
+		add_action( 'pxfwd_send_shipment_requested_email', array( $this, 'trigger' ), 10, 2 );
 
 		parent::__construct();
 
@@ -99,7 +99,7 @@ class GCP_Email_Shipment_Requested extends WC_Email {
 	public function trigger( $shipment_id, $client ) {
 		$this->setup_locale();
 
-		$shipment = GCP_Shipments::get( $shipment_id );
+		$shipment = PXFWD_Shipments::get( $shipment_id );
 
 		if ( $shipment && $client ) {
 			$this->shipment                             = $shipment;

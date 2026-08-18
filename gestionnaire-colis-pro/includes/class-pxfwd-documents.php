@@ -13,13 +13,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Documents attached to a client record, stored in the private directory and
  * served only through the authenticated download endpoint.
  */
-class GCP_Documents {
+class PXFWD_Documents {
 
 	/**
 	 * Registers a document stored in the private directory.
 	 *
 	 * @param int    $client_id  Client ID.
-	 * @param array  $file       File info from GCP_Files::upload() (path, name, type).
+	 * @param array  $file       File info from PXFWD_Files::upload() (path, name, type).
 	 * @param string $title      Optional title; defaults to the original file name.
 	 * @param string $visibility 'client' (visible to the client) or 'admin'.
 	 * @return int|WP_Error Document ID.
@@ -27,18 +27,18 @@ class GCP_Documents {
 	public static function add( $client_id, $file, $title = '', $visibility = 'client' ) {
 		global $wpdb;
 
-		$client = GCP_Clients::get( $client_id );
+		$client = PXFWD_Clients::get( $client_id );
 		if ( ! $client ) {
-			return new WP_Error( 'gcp_invalid_client', __( 'Client not found.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_invalid_client', __( 'Client not found.', 'gestionnaire-colis-pro' ) );
 		}
 
-		if ( empty( $file['path'] ) || ! GCP_Files::resolve( $file['path'] ) ) {
-			return new WP_Error( 'gcp_invalid_file', __( 'File not found.', 'gestionnaire-colis-pro' ) );
+		if ( empty( $file['path'] ) || ! PXFWD_Files::resolve( $file['path'] ) ) {
+			return new WP_Error( 'pxfwd_invalid_file', __( 'File not found.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$name     = isset( $file['name'] ) ? sanitize_file_name( $file['name'] ) : '';
 		$inserted = $wpdb->insert(
-			$wpdb->prefix . 'gcp_documents',
+			$wpdb->prefix . 'pxfwd_documents',
 			array(
 				'client_id'   => (int) $client_id,
 				'file_path'   => sanitize_file_name( $file['path'] ),
@@ -53,12 +53,12 @@ class GCP_Documents {
 		);
 
 		if ( ! $inserted ) {
-			return new WP_Error( 'gcp_db_error', __( 'The document could not be saved.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_db_error', __( 'The document could not be saved.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$document_id = (int) $wpdb->insert_id;
 
-		GCP_History::log(
+		PXFWD_History::log(
 			(int) $client_id,
 			'document_added',
 			sprintf( /* translators: %s: document title. */ __( 'Document “%s” added.', 'gestionnaire-colis-pro' ), $title ? $title : $name )
@@ -78,7 +78,7 @@ class GCP_Documents {
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}gcp_documents WHERE id = %d", (int) $document_id )
+			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}pxfwd_documents WHERE id = %d", (int) $document_id )
 		);
 	}
 
@@ -96,7 +96,7 @@ class GCP_Documents {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 			return $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT * FROM {$wpdb->prefix}gcp_documents WHERE client_id = %d AND visibility = 'client' ORDER BY id DESC",
+					"SELECT * FROM {$wpdb->prefix}pxfwd_documents WHERE client_id = %d AND visibility = 'client' ORDER BY id DESC",
 					(int) $client_id
 				)
 			);
@@ -105,7 +105,7 @@ class GCP_Documents {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT * FROM {$wpdb->prefix}gcp_documents WHERE client_id = %d ORDER BY id DESC",
+				"SELECT * FROM {$wpdb->prefix}pxfwd_documents WHERE client_id = %d ORDER BY id DESC",
 				(int) $client_id
 			)
 		);

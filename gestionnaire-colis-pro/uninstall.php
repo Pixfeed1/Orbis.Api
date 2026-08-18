@@ -3,7 +3,7 @@
  * Uninstall routine.
  *
  * Removes the plugin data when the plugin is deleted from the site,
- * only if the site owner opted in via the gcp_remove_data_on_uninstall option.
+ * only if the site owner opted in via the pxfwd_remove_data_on_uninstall option.
  *
  * @package GestionnaireColisPro
  */
@@ -12,31 +12,31 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-if ( 'yes' !== get_option( 'gcp_remove_data_on_uninstall', 'no' ) ) {
+if ( 'yes' !== get_option( 'pxfwd_remove_data_on_uninstall', 'no' ) ) {
 	return;
 }
 
 global $wpdb;
 
-foreach ( array( 'gcp_history', 'gcp_documents', 'gcp_parcels', 'gcp_shipments', 'gcp_clients' ) as $table ) {
+foreach ( array( 'pxfwd_history', 'pxfwd_documents', 'pxfwd_parcels', 'pxfwd_shipments', 'pxfwd_clients' ) as $pxfwd_table ) {
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.SchemaChange
-	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$pxfwd_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 }
 
 // Remove the private files directory.
-$gcp_uploads = wp_upload_dir( null, false );
-$gcp_private = $gcp_uploads['basedir'] . '/gcp-private';
-if ( is_dir( $gcp_private ) ) {
-	foreach ( (array) scandir( $gcp_private ) as $gcp_entry ) {
-		if ( '.' !== $gcp_entry && '..' !== $gcp_entry ) {
-			wp_delete_file( $gcp_private . '/' . $gcp_entry );
+$pxfwd_uploads = wp_upload_dir( null, false );
+$pxfwd_private = $pxfwd_uploads['basedir'] . '/pxfwd-private';
+if ( is_dir( $pxfwd_private ) ) {
+	foreach ( (array) scandir( $pxfwd_private ) as $pxfwd_entry ) {
+		if ( '.' !== $pxfwd_entry && '..' !== $pxfwd_entry ) {
+			wp_delete_file( $pxfwd_private . '/' . $pxfwd_entry );
 		}
 	}
 	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_rmdir -- removing the emptied private directory on uninstall.
-	rmdir( $gcp_private );
+	rmdir( $pxfwd_private );
 }
 
-delete_option( 'gcp_settings' );
-delete_option( 'gcp_db_version' );
-delete_option( 'gcp_flush_rewrite_rules' );
-delete_option( 'gcp_remove_data_on_uninstall' );
+delete_option( 'pxfwd_settings' );
+delete_option( 'pxfwd_db_version' );
+delete_option( 'pxfwd_flush_rewrite_rules' );
+delete_option( 'pxfwd_remove_data_on_uninstall' );

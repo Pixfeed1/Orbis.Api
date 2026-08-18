@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Provides the list of carriers configured in the plugin settings.
  */
-class GCP_Carriers {
+class PXFWD_Carriers {
 
 	/**
 	 * Returns all configured carriers.
@@ -21,7 +21,7 @@ class GCP_Carriers {
 	 * @return array[] List of carriers: slug, name, enabled.
 	 */
 	public static function all( $enabled_only = false ) {
-		$carriers = GCP_Settings::get( 'carriers', array() );
+		$carriers = PXFWD_Settings::get( 'carriers', array() );
 		$carriers = is_array( $carriers ) ? $carriers : array();
 
 		if ( $enabled_only ) {
@@ -41,7 +41,7 @@ class GCP_Carriers {
 		 * @param array $carriers     Carriers.
 		 * @param bool  $enabled_only Whether disabled carriers were filtered out.
 		 */
-		return apply_filters( 'gcp_carriers', $carriers, $enabled_only );
+		return apply_filters( 'pxfwd_carriers', $carriers, $enabled_only );
 	}
 
 	/**
@@ -100,7 +100,7 @@ class GCP_Carriers {
 		 * @param string $slug   Carrier slug.
 		 * @param float  $weight Total weight in kg.
 		 */
-		return (float) apply_filters( 'gcp_carrier_price', round( $price, 2 ), $slug, (float) $weight );
+		return (float) apply_filters( 'pxfwd_carrier_price', round( $price, 2 ), $slug, (float) $weight );
 	}
 
 	/**
@@ -110,7 +110,7 @@ class GCP_Carriers {
 	 * @return array[] Carriers allowed for this parcel.
 	 */
 	public static function for_parcel( $parcel ) {
-		$allowed = GCP_Parcels::allowed_carrier_slugs( $parcel );
+		$allowed = PXFWD_Parcels::allowed_carrier_slugs( $parcel );
 
 		return array_values(
 			array_filter(

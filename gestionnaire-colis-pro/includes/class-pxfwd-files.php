@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Handles uploads to, and downloads from, the plugin's private directory.
  */
-class GCP_Files {
+class PXFWD_Files {
 
 	/**
 	 * Allowed mime types for client documents.
@@ -60,7 +60,7 @@ class GCP_Files {
 	public static function base_dir() {
 		$uploads = wp_upload_dir( null, false );
 
-		return $uploads['basedir'] . '/gcp-private';
+		return $uploads['basedir'] . '/pxfwd-private';
 	}
 
 	/**
@@ -108,19 +108,19 @@ class GCP_Files {
 	public static function upload( $file_key, $mimes ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- callers verify their own nonce before calling.
 		if ( empty( $_FILES[ $file_key ] ) || empty( $_FILES[ $file_key ]['name'] ) ) {
-			return new WP_Error( 'gcp_no_file', __( 'No file uploaded.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_no_file', __( 'No file uploaded.', 'gestionnaire-colis-pro' ) );
 		}
 
 		if ( ! self::ensure_dir() ) {
-			return new WP_Error( 'gcp_dir_error', __( 'The protected storage directory could not be created.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_dir_error', __( 'The protected storage directory could not be created.', 'gestionnaire-colis-pro' ) );
 		}
 
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 
 		$to_private = static function ( $dirs ) {
-			$dirs['subdir'] = '/gcp-private';
-			$dirs['path']   = $dirs['basedir'] . '/gcp-private';
-			$dirs['url']    = $dirs['baseurl'] . '/gcp-private';
+			$dirs['subdir'] = '/pxfwd-private';
+			$dirs['path']   = $dirs['basedir'] . '/pxfwd-private';
+			$dirs['url']    = $dirs['baseurl'] . '/pxfwd-private';
 
 			return $dirs;
 		};
@@ -150,7 +150,7 @@ class GCP_Files {
 		remove_filter( 'upload_dir', $to_private );
 
 		if ( isset( $result['error'] ) ) {
-			return new WP_Error( 'gcp_upload_error', $result['error'] );
+			return new WP_Error( 'pxfwd_upload_error', $result['error'] );
 		}
 
 		return array(

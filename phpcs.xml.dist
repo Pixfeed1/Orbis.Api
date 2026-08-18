@@ -28,19 +28,23 @@
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
 		<properties>
 			<property name="prefixes" type="array">
-				<element value="gcp"/>
-				<element value="GCP"/>
+				<element value="pxfwd"/>
+				<element value="PXFWD"/>
 			</property>
 		</properties>
-		<!-- "gcp" is a deliberate 3-letter project prefix (like WooCommerce's
-		     own "wc"); everything is consistently namespaced with it. -->
-		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.ShortPrefixPassed"/>
+	</rule>
+
+	<!-- WooCommerce e-mail templates must fire WooCommerce's own header/footer
+	     hooks to render inside the shop e-mail layout. Those hook names belong
+	     to WooCommerce and must not carry this plugin's prefix. -->
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound">
+		<exclude-pattern>*/templates/emails/*</exclude-pattern>
 	</rule>
 
 	<rule ref="WordPress.WP.Capabilities">
 		<properties>
 			<property name="custom_capabilities" type="array">
-				<element value="gcp_manage"/>
+				<element value="pxfwd_manage"/>
 			</property>
 		</properties>
 	</rule>

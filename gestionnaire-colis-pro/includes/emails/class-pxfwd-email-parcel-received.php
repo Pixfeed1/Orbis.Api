@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Native WooCommerce e-mail sent to the customer when a parcel is received.
  */
-class GCP_Email_Parcel_Received extends WC_Email {
+class PXFWD_Email_Parcel_Received extends WC_Email {
 
 	/**
 	 * Parcel row being notified.
@@ -25,18 +25,18 @@ class GCP_Email_Parcel_Received extends WC_Email {
 	 * Sets up the e-mail.
 	 */
 	public function __construct() {
-		$this->id             = 'gcp_parcel_received';
+		$this->id             = 'pxfwd_parcel_received';
 		$this->customer_email = true;
 		$this->title          = __( 'Parcel received (Gestionnaire Colis Pro)', 'gestionnaire-colis-pro' );
 		$this->description    = __( 'Sent to the client when one of their parcels is registered at the warehouse.', 'gestionnaire-colis-pro' );
-		$this->template_html  = 'emails/gcp-parcel-received.php';
-		$this->template_plain = 'emails/plain/gcp-parcel-received.php';
-		$this->template_base  = GCP_PLUGIN_DIR . 'templates/';
+		$this->template_html  = 'emails/pxfwd-parcel-received.php';
+		$this->template_plain = 'emails/plain/pxfwd-parcel-received.php';
+		$this->template_base  = PXFWD_PLUGIN_DIR . 'templates/';
 		$this->placeholders   = array(
 			'{parcel_reference}' => '',
 		);
 
-		add_action( 'gcp_send_parcel_received_email', array( $this, 'trigger' ), 10, 2 );
+		add_action( 'pxfwd_send_parcel_received_email', array( $this, 'trigger' ), 10, 2 );
 
 		parent::__construct();
 	}
@@ -69,7 +69,7 @@ class GCP_Email_Parcel_Received extends WC_Email {
 	public function trigger( $parcel_id, $client ) {
 		$this->setup_locale();
 
-		$parcel = GCP_Parcels::get( $parcel_id );
+		$parcel = PXFWD_Parcels::get( $parcel_id );
 		$user   = $client ? get_userdata( (int) $client->user_id ) : null;
 
 		if ( $parcel && $user ) {

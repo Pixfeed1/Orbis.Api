@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Handles activation, deactivation and database schema.
  */
-class GCP_Install {
+class PXFWD_Install {
 
 	/**
 	 * Plugin activation callback.
@@ -20,12 +20,13 @@ class GCP_Install {
 	 * @return void
 	 */
 	public static function activate() {
+		self::migrate_legacy_prefix();
 		self::create_tables();
 		self::add_capabilities();
 		self::add_default_options();
-		update_option( 'gcp_db_version', GCP_VERSION );
+		update_option( 'pxfwd_db_version', PXFWD_VERSION );
 		// My Account endpoints are registered on init; flush on next load.
-		update_option( 'gcp_flush_rewrite_rules', 'yes' );
+		update_option( 'pxfwd_flush_rewrite_rules', 'yes' );
 	}
 
 	/**
@@ -43,16 +44,122 @@ class GCP_Install {
 	 * @return void
 	 */
 	public static function maybe_update() {
-		if ( get_option( 'gcp_db_version' ) !== GCP_VERSION ) {
+		if ( get_option( 'pxfwd_db_version' ) !== PXFWD_VERSION ) {
+			self::migrate_legacy_prefix();
 			self::create_tables();
 			self::add_capabilities();
-			update_option( 'gcp_db_version', GCP_VERSION );
+			update_option( 'pxfwd_db_version', PXFWD_VERSION );
 		}
 
-		if ( 'yes' === get_option( 'gcp_flush_rewrite_rules' ) ) {
+		if ( 'yes' === get_option( 'pxfwd_flush_rewrite_rules' ) ) {
 			flush_rewrite_rules();
-			delete_option( 'gcp_flush_rewrite_rules' );
+			delete_option( 'pxfwd_flush_rewrite_rules' );
 		}
+	}
+
+	/**
+	 * Migrates data stored under the plugin's former "gcp" prefix.
+	 *
+	 * The prefix was renamed to "pxfwd" to meet the four-character minimum
+	 * required for plugin prefixes. Sites installed before that rename keep
+	 * their clients, parcels, shipments, documents, history and private files.
+	 *
+	 * @return void
+	 */
+	public static function migrate_legacy_prefix() {
+		global $wpdb;
+
+		// Tables.
+		foreach ( array( 'clients', 'parcels', 'shipments', 'documents', 'history' ) as $entity ) {
+			$legacy  = $wpdb->prefix . 'gcp_' . $entity;
+			$current = $wpdb->prefix . 'pxfwd_' . $entity;
+
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			$has_legacy = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $legacy ) ) === $legacy;
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			$has_current = $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $current ) ) === $current;
+
+			if ( $has_legacy && ! $has_current ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$wpdb->query( "RENAME TABLE `{$legacy}` TO `{$current}`" );
+			}
+		}
+
+		// Options.
+		foreach ( array( 'settings', 'db_version', 'flush_rewrite_rules', 'remove_data_on_uninstall' ) as $option ) {
+			$legacy_value = get_option( 'gcp_' . $option, null );
+
+			if ( null !== $legacy_value && false === get_option( 'pxfwd_' . $option, false ) ) {
+				update_option( 'pxfwd_' . $option, $legacy_value );
+			}
+
+			delete_option( 'gcp_' . $option );
+		}
+
+		// Capability.
+		foreach ( array( 'administrator', 'shop_manager' ) as $role_name ) {
+			$role = get_role( $role_name );
+
+			if ( $role && ! empty( $role->capabilities['gcp_manage'] ) ) {
+				$role->add_cap( 'pxfwd_manage' );
+				$role->remove_cap( 'gcp_manage' );
+			}
+		}
+
+		// Private files directory.
+		$uploads = wp_upload_dir( null, false );
+		$legacy  = $uploads['basedir'] . '/gcp-private';
+		$current = $uploads['basedir'] . '/pxfwd-private';
+
+		if ( is_dir( $legacy ) && ! is_dir( $current ) ) {
+			global $wp_filesystem;
+
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+
+			if ( WP_Filesystem() && $wp_filesystem ) {
+				$wp_filesystem->move( $legacy, $current );
+			}
+		}
+	}
+
+	/**
+	 * Migrates the shipment meta stored on WooCommerce orders.
+	 *
+	 * Runs separately from migrate_legacy_prefix() because it needs the
+	 * WooCommerce order types to be registered, which only happens after
+	 * init; it is therefore hooked on admin_init. Runs once, then records a
+	 * flag. Orders not migrated yet are still resolved through the legacy
+	 * meta key by PXFWD_Orders.
+	 *
+	 * @return void
+	 */
+	public static function migrate_legacy_order_meta() {
+		if ( 'done' === get_option( 'pxfwd_order_meta_migrated' ) || ! function_exists( 'wc_get_orders' ) ) {
+			return;
+		}
+
+		$orders = wc_get_orders(
+			array(
+				'limit'        => -1,
+				'meta_key'     => '_gcp_shipment_id', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+				'meta_compare' => 'EXISTS',
+				'return'       => 'objects',
+			)
+		);
+
+		foreach ( (array) $orders as $order ) {
+			if ( ! is_a( $order, 'WC_Order' ) ) {
+				continue;
+			}
+
+			$order->update_meta_data( '_pxfwd_shipment_id', $order->get_meta( '_gcp_shipment_id' ) );
+			$order->update_meta_data( '_pxfwd_shipment_reference', $order->get_meta( '_gcp_shipment_reference' ) );
+			$order->delete_meta_data( '_gcp_shipment_id' );
+			$order->delete_meta_data( '_gcp_shipment_reference' );
+			$order->save();
+		}
+
+		update_option( 'pxfwd_order_meta_migrated', 'done' );
 	}
 
 	/**
@@ -68,7 +175,7 @@ class GCP_Install {
 		$collate = $wpdb->get_charset_collate();
 
 		$tables = "
-CREATE TABLE {$wpdb->prefix}gcp_clients (
+CREATE TABLE {$wpdb->prefix}pxfwd_clients (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	user_id BIGINT UNSIGNED NOT NULL,
 	reference VARCHAR(20) NOT NULL DEFAULT '',
@@ -80,7 +187,7 @@ CREATE TABLE {$wpdb->prefix}gcp_clients (
 	UNIQUE KEY user_id (user_id),
 	UNIQUE KEY reference (reference)
 ) $collate;
-CREATE TABLE {$wpdb->prefix}gcp_parcels (
+CREATE TABLE {$wpdb->prefix}pxfwd_parcels (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	reference VARCHAR(20) NOT NULL DEFAULT '',
 	client_id BIGINT UNSIGNED NOT NULL,
@@ -108,7 +215,7 @@ CREATE TABLE {$wpdb->prefix}gcp_parcels (
 	KEY status (status),
 	KEY shipment_id (shipment_id)
 ) $collate;
-CREATE TABLE {$wpdb->prefix}gcp_shipments (
+CREATE TABLE {$wpdb->prefix}pxfwd_shipments (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	reference VARCHAR(20) NOT NULL DEFAULT '',
 	client_id BIGINT UNSIGNED NOT NULL,
@@ -128,7 +235,7 @@ CREATE TABLE {$wpdb->prefix}gcp_shipments (
 	KEY client_id (client_id),
 	KEY status (status)
 ) $collate;
-CREATE TABLE {$wpdb->prefix}gcp_documents (
+CREATE TABLE {$wpdb->prefix}pxfwd_documents (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	client_id BIGINT UNSIGNED NOT NULL,
 	attachment_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
@@ -142,7 +249,7 @@ CREATE TABLE {$wpdb->prefix}gcp_documents (
 	PRIMARY KEY  (id),
 	KEY client_id (client_id)
 ) $collate;
-CREATE TABLE {$wpdb->prefix}gcp_history (
+CREATE TABLE {$wpdb->prefix}pxfwd_history (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	client_id BIGINT UNSIGNED NOT NULL,
 	parcel_id BIGINT UNSIGNED NULL,
@@ -170,7 +277,7 @@ CREATE TABLE {$wpdb->prefix}gcp_history (
 		foreach ( array( 'administrator', 'shop_manager' ) as $role_name ) {
 			$role = get_role( $role_name );
 			if ( $role ) {
-				$role->add_cap( 'gcp_manage' );
+				$role->add_cap( 'pxfwd_manage' );
 			}
 		}
 	}
@@ -184,7 +291,7 @@ CREATE TABLE {$wpdb->prefix}gcp_history (
 		foreach ( array( 'administrator', 'shop_manager' ) as $role_name ) {
 			$role = get_role( $role_name );
 			if ( $role ) {
-				$role->remove_cap( 'gcp_manage' );
+				$role->remove_cap( 'pxfwd_manage' );
 			}
 		}
 	}
@@ -195,10 +302,10 @@ CREATE TABLE {$wpdb->prefix}gcp_history (
 	 * @return void
 	 */
 	public static function add_default_options() {
-		if ( false !== get_option( 'gcp_settings', false ) ) {
+		if ( false !== get_option( 'pxfwd_settings', false ) ) {
 			return;
 		}
 
-		add_option( 'gcp_settings', GCP_Settings::defaults() );
+		add_option( 'pxfwd_settings', PXFWD_Settings::defaults() );
 	}
 }

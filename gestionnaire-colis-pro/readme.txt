@@ -4,7 +4,7 @@ Tags: woocommerce, parcels, shipping, logistics, clients
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.5.0
+Stable tag: 1.6.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Client and parcel management for a parcel receiving, storage, grouping and forwa
 
 == Description ==
 
-Gestionnaire Colis Pro provides a complete client and parcel management system for a parcel forwarding business: receiving, storage, grouping and shipping of parcels (for example towards the French overseas territories). The interface is in English and ships with a complete French translation.
+Gestionnaire Colis Pro provides a complete client and parcel management system for a parcel forwarding business: receiving, storage, grouping and shipping of parcels (for example towards the French overseas territories). The interface is in English and can be translated into any language through translate.wordpress.org.
 
 = Client management module =
 
@@ -49,7 +49,7 @@ Client documents and reception photos are stored in a protected directory (direc
 
 = Extensible =
 
-The architecture is built to grow: actions and filters (`gcp_parcel_created`, `gcp_shipment_requested`, `gcp_carriers`, `gcp_parcel_price`, `gcp_carrier_price`, …) allow adding import/export, statistics, loyalty programs, a REST API or multi-warehouse support without touching the core.
+The architecture is built to grow: actions and filters (`pxfwd_parcel_created`, `pxfwd_shipment_requested`, `pxfwd_carriers`, `pxfwd_parcel_price`, `pxfwd_carrier_price`, …) allow adding import/export, statistics, loyalty programs, a REST API or multi-warehouse support without touching the core.
 
 == Installation ==
 
@@ -78,7 +78,7 @@ Yes. It registers a personal data exporter and eraser with the native WordPress 
 
 = Is any data removed on uninstall? =
 
-Not by default: deleting the plugin keeps your clients, parcels and files safe. A site administrator can opt in to a full cleanup by setting the `gcp_remove_data_on_uninstall` option to `yes` before deleting the plugin, for example with WP-CLI: `wp option update gcp_remove_data_on_uninstall yes`.
+Not by default: deleting the plugin keeps your clients, parcels and files safe. A site administrator can opt in to a full cleanup by setting the `pxfwd_remove_data_on_uninstall` option to `yes` before deleting the plugin, for example with WP-CLI: `wp option update pxfwd_remove_data_on_uninstall yes`.
 
 == Screenshots ==
 
@@ -88,6 +88,11 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 4. Customer "My parcels" screen in the WooCommerce My Account area.
 
 == Changelog ==
+
+= 1.6.0 =
+* Internal prefix renamed from "gcp" to "pxfwd" to meet the four-character minimum required for plugin prefixes. Existing installations are migrated automatically: tables, options, capability, private files directory and WooCommerce order meta are all carried over.
+* Fixed URL escaping in the plain-text "shipment requested" e-mail (esc_url instead of esc_url_raw).
+* Translation files are no longer bundled: translations are delivered through translate.wordpress.org, and the load_plugin_textdomain() call has been removed (not needed since WordPress 4.6).
 
 = 1.5.0 =
 * Privacy (GDPR): the plugin now plugs into the native WordPress privacy tools. The personal data exporter includes the client record, parcels, shipments and documents; the eraser deletes documents and private files, blanks phone number, notes, tracking numbers and reception photos, and reports that parcel/shipment records are retained as accounting records. Deleting a WordPress user account removes all of their plugin data and private files.
@@ -123,5 +128,5 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 
 == Upgrade Notice ==
 
-= 1.5.0 =
-Adds GDPR integration with the native WordPress privacy tools.
+= 1.6.0 =
+Internal prefix renamed; existing data is migrated automatically on update.

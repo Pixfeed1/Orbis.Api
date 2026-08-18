@@ -23,7 +23,7 @@ echo esc_html__( 'Parcel number:', 'gestionnaire-colis-pro' ) . ' ' . esc_html( 
 echo esc_html__( 'Tracking number:', 'gestionnaire-colis-pro' ) . ' ' . esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ) . "\n";
 echo esc_html__( 'Weight:', 'gestionnaire-colis-pro' ) . ' ' . esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ) . " kg\n";
 /* translators: %d: number of free storage days. */
-echo esc_html( sprintf( __( 'Free storage: %d days', 'gestionnaire-colis-pro' ), (int) GCP_Settings::get( 'free_storage_days', 15 ) ) ) . "\n";
+echo esc_html( sprintf( __( 'Free storage: %d days', 'gestionnaire-colis-pro' ), (int) PXFWD_Settings::get( 'free_storage_days', 15 ) ) ) . "\n";
 
 if ( $additional_content ) {
 	echo "\n" . esc_html( wp_strip_all_tags( wptexturize( $additional_content ) ) ) . "\n";

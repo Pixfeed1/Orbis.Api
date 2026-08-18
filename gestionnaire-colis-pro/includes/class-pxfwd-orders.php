@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Creates WooCommerce orders for shipments and syncs their statuses.
  */
-class GCP_Orders {
+class PXFWD_Orders {
 
 	/**
 	 * Re-entrancy guard for the two-way status sync.
@@ -54,7 +54,14 @@ class GCP_Orders {
 	 * @return int
 	 */
 	private static function shipment_id_from_order( $order ) {
-		return (int) $order->get_meta( '_gcp_shipment_id' );
+		$shipment_id = (int) $order->get_meta( '_pxfwd_shipment_id' );
+
+		// Orders created before the prefix rename, not migrated yet.
+		if ( ! $shipment_id ) {
+			$shipment_id = (int) $order->get_meta( '_gcp_shipment_id' );
+		}
+
+		return $shipment_id;
 	}
 
 	/**
@@ -68,7 +75,7 @@ class GCP_Orders {
 		global $wpdb;
 
 		if ( ! self::available() ) {
-			return new WP_Error( 'gcp_wc_missing', __( 'WooCommerce is not available.', 'gestionnaire-colis-pro' ) );
+			return new WP_Error( 'pxfwd_wc_missing', __( 'WooCommerce is not available.', 'gestionnaire-colis-pro' ) );
 		}
 
 		$order = wc_create_order(
@@ -94,10 +101,10 @@ class GCP_Orders {
 		}
 
 		// Fees follow the shop tax setting chosen in the plugin settings.
-		$tax_status = GCP_Settings::get( 'orders_taxable', 0 ) ? 'taxable' : 'none';
+		$tax_status = PXFWD_Settings::get( 'orders_taxable', 0 ) ? 'taxable' : 'none';
 
 		// One fee line per parcel, priced at reception time.
-		foreach ( GCP_Shipments::parcels( (int) $shipment->id ) as $parcel ) {
+		foreach ( PXFWD_Shipments::parcels( (int) $shipment->id ) as $parcel ) {
 			$fee = new WC_Order_Item_Fee();
 			$fee->set_name(
 				sprintf(
@@ -124,13 +131,13 @@ class GCP_Orders {
 		// The chosen carrier appears as the native shipping line, priced from
 		// the carrier tariff (base + per-kg) configured in the settings.
 		$shipping_item = new WC_Order_Item_Shipping();
-		$shipping_item->set_method_title( GCP_Carriers::name( $shipment->carrier ) );
-		$shipping_item->set_method_id( 'gcp_carrier' );
+		$shipping_item->set_method_title( PXFWD_Carriers::name( $shipment->carrier ) );
+		$shipping_item->set_method_id( 'pxfwd_carrier' );
 		$shipping_item->set_total( (string) $shipment->carrier_price );
 		$order->add_item( $shipping_item );
 
-		$order->update_meta_data( '_gcp_shipment_id', (int) $shipment->id );
-		$order->update_meta_data( '_gcp_shipment_reference', $shipment->reference );
+		$order->update_meta_data( '_pxfwd_shipment_id', (int) $shipment->id );
+		$order->update_meta_data( '_pxfwd_shipment_reference', $shipment->reference );
 		$order->add_order_note(
 			sprintf(
 				/* translators: %s: shipment reference. */
@@ -138,14 +145,14 @@ class GCP_Orders {
 				$shipment->reference
 			)
 		);
-		$order->calculate_totals( (bool) GCP_Settings::get( 'orders_taxable', 0 ) );
+		$order->calculate_totals( (bool) PXFWD_Settings::get( 'orders_taxable', 0 ) );
 		$order->update_status( 'pending' );
 		$order->save();
 
 		$order_id = (int) $order->get_id();
 
 		$wpdb->update(
-			$wpdb->prefix . 'gcp_shipments',
+			$wpdb->prefix . 'pxfwd_shipments',
 			array(
 				'order_id'   => $order_id,
 				'updated_at' => current_time( 'mysql', true ),
@@ -155,7 +162,7 @@ class GCP_Orders {
 			array( '%d' )
 		);
 
-		GCP_History::log(
+		PXFWD_History::log(
 			(int) $shipment->client_id,
 			'order_created',
 			sprintf(
@@ -169,7 +176,7 @@ class GCP_Orders {
 		);
 
 		// Native WooCommerce "customer invoice" e-mail, with the payment link.
-		if ( GCP_Settings::get( 'send_invoice_on_request', 1 ) && function_exists( 'WC' ) && WC()->mailer() ) {
+		if ( PXFWD_Settings::get( 'send_invoice_on_request', 1 ) && function_exists( 'WC' ) && WC()->mailer() ) {
 			$emails = WC()->mailer()->get_emails();
 			if ( isset( $emails['WC_Email_Customer_Invoice'] ) ) {
 				$emails['WC_Email_Customer_Invoice']->trigger( $order_id );
@@ -182,7 +189,7 @@ class GCP_Orders {
 		 * @param int    $order_id Order ID.
 		 * @param object $shipment Shipment row.
 		 */
-		do_action( 'gcp_shipment_order_created', $order_id, $shipment );
+		do_action( 'pxfwd_shipment_order_created', $order_id, $shipment );
 
 		return $order_id;
 	}
@@ -208,13 +215,13 @@ class GCP_Orders {
 			return;
 		}
 
-		$shipment = GCP_Shipments::get( $shipment_id );
+		$shipment = PXFWD_Shipments::get( $shipment_id );
 		if ( ! $shipment || in_array( $shipment->status, array( 'paid', 'preparing', 'shipped' ), true ) ) {
 			return;
 		}
 
 		self::$syncing = true;
-		GCP_Shipments::set_status( $shipment_id, 'paid' );
+		PXFWD_Shipments::set_status( $shipment_id, 'paid' );
 		self::$syncing = false;
 	}
 
@@ -239,20 +246,20 @@ class GCP_Orders {
 			return;
 		}
 
-		$shipment = GCP_Shipments::get( $shipment_id );
+		$shipment = PXFWD_Shipments::get( $shipment_id );
 		if ( ! $shipment || 'shipped' === $shipment->status || 'cancelled' === $shipment->status ) {
 			return;
 		}
 
 		self::$syncing = true;
-		GCP_Shipments::set_status( $shipment_id, 'cancelled' );
+		PXFWD_Shipments::set_status( $shipment_id, 'cancelled' );
 		self::$syncing = false;
 	}
 
 	/**
 	 * Reflects a shipment status change onto its WooCommerce order.
 	 *
-	 * Called by GCP_Shipments::set_status(); shipping the parcels completes
+	 * Called by PXFWD_Shipments::set_status(); shipping the parcels completes
 	 * the order, cancelling the shipment cancels an unpaid order.
 	 *
 	 * @param object $shipment Shipment row (before update).

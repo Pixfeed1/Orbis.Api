@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Computes the price of a parcel from its weight.
  */
-class GCP_Pricing {
+class PXFWD_Pricing {
 
 	/**
 	 * Calculates the price of a parcel based on its weight.
@@ -25,7 +25,7 @@ class GCP_Pricing {
 	 */
 	public static function price_for_weight( $weight ) {
 		$weight = max( 0, (float) $weight );
-		$tiers  = GCP_Settings::get( 'pricing_tiers', array() );
+		$tiers  = PXFWD_Settings::get( 'pricing_tiers', array() );
 		$price  = null;
 
 		if ( is_array( $tiers ) && ! empty( $tiers ) ) {
@@ -45,8 +45,8 @@ class GCP_Pricing {
 		}
 
 		if ( null === $price ) {
-			$base  = (float) GCP_Settings::get( 'price_base', 0 );
-			$rate  = (float) GCP_Settings::get( 'price_per_kg', 0 );
+			$base  = (float) PXFWD_Settings::get( 'price_base', 0 );
+			$rate  = (float) PXFWD_Settings::get( 'price_per_kg', 0 );
 			$price = $base + ( $rate * $weight );
 		}
 
@@ -56,6 +56,6 @@ class GCP_Pricing {
 		 * @param float $price  Computed price.
 		 * @param float $weight Parcel weight in kg.
 		 */
-		return (float) apply_filters( 'gcp_parcel_price', round( $price, 2 ), $weight );
+		return (float) apply_filters( 'pxfwd_parcel_price', round( $price, 2 ), $weight );
 	}
 }
