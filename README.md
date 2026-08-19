@@ -33,7 +33,30 @@ Environnement Docker (WordPress + WooCommerce + MariaDB) :
 ./bin/test-env.sh
 ```
 
-Le script démarre les conteneurs, installe WordPress et WooCommerce, active le plugin et exécute la suite de tests de bout en bout (`tests/smoke-test.php`, 58 assertions).
+Le script démarre les conteneurs, installe WordPress et WooCommerce, active le plugin et exécute la suite de tests de bout en bout (`tests/smoke-test.php`, 116 assertions).
 
 - Site : http://localhost:8080 — admin : `admin` / `admin`
-- PHPCS : `cd colisly && phpcs` (standards WordPress, ruleset `phpcs.xml.dist`)
+- PHPCS : `phpcs` depuis la racine du dépôt (standards WordPress, ruleset `phpcs.xml.dist`)
+- Plugin Check : `wp plugin check colisly`
+
+## Publication sur WordPress.org
+
+L'extension est hébergée dans le répertoire officiel :
+
+- Page publique : https://wordpress.org/plugins/colisly
+- Dépôt SVN : https://plugins.svn.wordpress.org/colisly
+
+Les traductions françaises (`languages-fr/`) sont volontairement **hors** du paquet :
+le répertoire les distribue via [translate.wordpress.org](https://translate.wordpress.org/).
+
+Pour publier une version, mettre à jour `Version:` dans `colisly/colisly.php`
+**et** `Stable tag:` dans `colisly/readme.txt`, puis :
+
+```bash
+./bin/svn-release.sh 1.6.0
+```
+
+Le script vérifie la cohérence des deux numéros de version, synchronise `trunk/`,
+crée le tag `tags/<version>/` et commite. Il demande le mot de passe SVN
+WordPress.org (distinct du mot de passe du compte, à définir dans
+« Account & Security » du profil).
