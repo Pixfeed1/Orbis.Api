@@ -185,7 +185,7 @@ class COLISLY_Account {
 					<tr>
 						<th><?php esc_html_e( 'Parcel number', 'colisly' ); ?></th>
 						<th><?php esc_html_e( 'Reception date', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Tracking number', 'colisly' ); ?></th>
+						<th class="colisly-col-tracking"><?php esc_html_e( 'Tracking number', 'colisly' ); ?></th>
 						<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
 						<th><?php esc_html_e( 'Status', 'colisly' ); ?></th>
 						<th><?php esc_html_e( 'Grouping allowed', 'colisly' ); ?></th>
@@ -196,7 +196,7 @@ class COLISLY_Account {
 						<tr>
 							<td data-title="<?php esc_attr_e( 'Parcel number', 'colisly' ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></td>
 							<td data-title="<?php esc_attr_e( 'Reception date', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
-							<td data-title="<?php esc_attr_e( 'Tracking number', 'colisly' ); ?>"><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
+							<td class="colisly-col-tracking" data-title="<?php esc_attr_e( 'Tracking number', 'colisly' ); ?>"><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Weight (kg)', 'colisly' ); ?>"><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Status', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Parcels::status_label( $parcel->status ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Grouping allowed', 'colisly' ); ?>"><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No', 'colisly' ); ?></td>

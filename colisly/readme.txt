@@ -90,7 +90,7 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 == Changelog ==
 
 = 1.6.4 =
-* Fix: the pricing tier and carrier fields in the settings overflowed their cells, and the parcel list and customer tables were clipped instead of scrolling. Wide tables now scroll horizontally and every column stays reachable.
+* Fix: the pricing tier and carrier fields in the settings overflowed their cells, and the parcel list and the customer tables were clipped, hiding their last column. Long tracking numbers now wrap so the customer tables fit the account column, and wide admin tables scroll instead of being cut.
 
 = 1.6.3 =
 * Directory listing wording: the tags and the description now use the industry terms "package forwarding", "reshipping" and "consolidation", so operators searching for those find the plugin.

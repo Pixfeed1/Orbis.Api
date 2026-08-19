@@ -4,8 +4,15 @@
 	width: 100%;
 }
 
-/* Themes constrain the My Account column, and translated labels widen these
-   tables past it. Scrolling keeps every column reachable. */
+/* Tracking numbers are long unbreakable strings that set a minimum width the
+   table cannot go under, which pushed the last column out of the account
+   column. Only this one is allowed to break: applying it to every cell would
+   chop up dates and references too. */
+.colisly-front-table .colisly-col-tracking {
+	overflow-wrap: anywhere;
+}
+
+/* Whatever is left over stays reachable rather than being clipped. */
 .colisly-table-wrap {
 	overflow-x: auto;
 }

@@ -128,8 +128,8 @@ Le client doit voir ses colis, leurs dates de réception, leurs numéros de suiv
 [/pf_highlight]
 
 > 🖼️ **IMAGE 5** — Fichier : `images/espace-client.png`
-> **Alt :** espace client affichant le suivi de colis dans le compte WooCommerce
-> **Légende :** Le client suit ses colis depuis son compte WooCommerce, sans jamais voir vos notes internes.
+> **Alt :** suivi de colis sur mobile depuis le compte client WooCommerce
+> **Légende :** Sur mobile, chaque colis se lit champ par champ. Le client ne voit jamais vos notes internes.
 
 Un espace client bien fait produit un effet immédiat. Les questions « où en est mon colis » s'effondrent. Votre équipe récupère alors du temps pour l'entrepôt.
 
