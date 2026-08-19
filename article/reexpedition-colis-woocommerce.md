@@ -109,6 +109,8 @@ La règle saine consiste donc à offrir une période, puis à facturer au jour. 
 
 L'automatisation change tout ici. Le calcul se fait seul, sans que personne y pense. De cette façon, vous ne facturez ni trop tôt, ni jamais.
 
+[pf_cta type="filled" icon="download" title="L'outil des captures est libre et gratuit" text="Les écrans de cet article proviennent de Colisly, l'extension que nous avons développée et publiée sur le répertoire officiel WordPress.org. Elle gère les fiches clients, les colis, le groupage, les frais de stockage et la facturation WooCommerce. Vous pouvez l'installer et l'utiliser librement, sans nous demander quoi que ce soit." btn_text="Voir Colisly sur WordPress.org" btn_url="https://wordpress.org/plugins/colisly/"]
+
 ## Facturer la réexpédition de colis dans WooCommerce
 
 Beaucoup d'opérateurs gèrent la logistique d'un côté et l'encaissement de l'autre. Cette séparation crée de la double saisie. Elle crée aussi des erreurs de montant.
@@ -141,7 +143,7 @@ Ensuite, fixez votre politique de stockage et vos paliers de poids. Ces deux dé
 
 Enfin seulement, ouvrez l'espace client. Il n'a de sens qu'une fois les données fiables. Un suivi client alimenté par un tableur approximatif fait plus de dégâts que pas de suivi du tout.
 
-[pf_cta type="filled" icon="package" title="Votre activité de réexpédition mérite mieux qu'un tableur" text="Vous recevez, stockez et regroupez des colis pour vos clients ? Nous avons développé Colisly, une extension libre et gratuite publiée sur le répertoire officiel WordPress.org, qui gère les fiches clients, les colis, le groupage, les frais de stockage et la facturation WooCommerce. Nous l'installons, la paramétrons à vos tarifs et l'adaptons à vos transporteurs." btn_text="Parler de votre organisation" btn_url="/contact/"]
+[pf_cta type="filled" icon="package" title="Vous préférez que ce soit en place et paramétré ?" text="Installer l'extension prend cinq minutes. La régler à vos tarifs, vos paliers de poids, vos transporteurs et votre politique de stockage demande de connaître votre organisation. Nous nous en chargeons, nous reprenons vos données existantes, et nous adaptons l'outil à vos contraintes." btn_text="Parler de votre organisation" btn_url="/contact/"]
 
 ## Questions fréquentes
 
