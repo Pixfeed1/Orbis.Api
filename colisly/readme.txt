@@ -1,18 +1,18 @@
 === Colisly Parcel Forwarding ===
 Contributors: pixfeed
-Tags: woocommerce, parcels, shipping, logistics, clients
+Tags: woocommerce, package forwarding, parcel forwarding, logistics, warehouse
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.6.2
+Stable tag: 1.6.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Client and parcel management for a parcel receiving, storage, grouping and forwarding business, natively integrated with WooCommerce.
+Package and parcel forwarding for WooCommerce: client records, receiving, storage fees, consolidation and shipping.
 
 == Description ==
 
-Colisly Parcel Forwarding provides a complete client and parcel management system for a parcel forwarding business: receiving, storage, grouping and shipping of parcels (for example towards the French overseas territories). The interface is in English and can be translated into any language through translate.wordpress.org.
+Colisly Parcel Forwarding provides a complete client and parcel management system for a package forwarding business: receiving, storage, consolidation and reshipping of parcels (for example towards the French overseas territories). It suits forwarders, reshippers and virtual address services that already run their store on WooCommerce. The interface is in English and can be translated into any language through translate.wordpress.org.
 
 = Client management module =
 
@@ -89,6 +89,9 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 
 == Changelog ==
 
+= 1.6.3 =
+* Directory listing wording: the tags and the description now use the industry terms "package forwarding", "reshipping" and "consolidation", so operators searching for those find the plugin.
+
 = 1.6.2 =
 * The installation instructions referred to a "Colis Pro" admin menu, which no longer exists; the menu is "Colisly".
 
@@ -134,6 +137,9 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 * Initial release: client management (CL references), parcel creation (COL references), automatic weight-based pricing, automatic storage fees, grouping rules, carrier restrictions, shipment requests, documents, history and e-mail notifications.
 
 == Upgrade Notice ==
+
+= 1.6.3 =
+Directory listing wording only. No database or behaviour change.
 
 = 1.6.2 =
 Documentation fix only. No database or behaviour change.

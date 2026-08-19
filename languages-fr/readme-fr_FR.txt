@@ -11,8 +11,8 @@ section, pour que chaque chaîne de GlotPress se retrouve au même endroit.
 DESCRIPTION COURTE
 ================================================================================
 
-Gestion des clients et des colis pour une activité de réception, stockage,
-groupage et réexpédition, intégrée nativement à WooCommerce.
+Réexpédition de colis et de paquets pour WooCommerce : fiches clients,
+réception, frais de stockage, groupage et expédition.
 
 ================================================================================
 == Description ==
@@ -20,8 +20,10 @@ groupage et réexpédition, intégrée nativement à WooCommerce.
 
 Colisly Parcel Forwarding fournit un système complet de gestion des clients et
 des colis pour une activité de réexpédition : réception, stockage, groupage et
-expédition de colis (vers les DOM-TOM, par exemple). L'interface est en anglais
-et peut être traduite dans n'importe quelle langue via translate.wordpress.org.
+réacheminement de colis (vers les DOM-TOM, par exemple). Il convient aux
+réexpéditeurs et aux services d'adresse virtuelle dont la boutique tourne déjà
+sous WooCommerce. L'interface est en anglais et peut être traduite dans
+n'importe quelle langue via translate.wordpress.org.
 
 = Module de gestion des clients =
 
@@ -167,6 +169,12 @@ supprimer l'extension, par exemple avec WP-CLI :
 == Changelog ==
 ================================================================================
 
+= 1.6.3 =
+* Formulation de la fiche du répertoire : les étiquettes et la description
+  emploient désormais les termes du métier « package forwarding »,
+  « reshipping » et « consolidation », afin que les opérateurs qui les
+  recherchent trouvent l'extension.
+
 = 1.6.2 =
 * Les instructions d'installation mentionnaient un menu d'administration
   « Colis Pro », qui n'existe plus ; le menu s'appelle « Colisly ».
@@ -268,6 +276,10 @@ supprimer l'extension, par exemple avec WP-CLI :
 ================================================================================
 == Upgrade Notice ==
 ================================================================================
+
+= 1.6.3 =
+Formulation de la fiche du répertoire uniquement. Aucun changement de base de
+données ni de comportement.
 
 = 1.6.2 =
 Correction de documentation uniquement. Aucun changement de base de données ni
