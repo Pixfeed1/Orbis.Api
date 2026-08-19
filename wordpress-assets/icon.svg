@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img">
+  <title>Colisly</title>
+  <rect x="0" y="0" width="1024" height="1024" rx="226" fill="#7b55ad"/>
+  <path d="M512 268 L708 381 L512 494 L316 381 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="42" stroke-linejoin="round"/>
+  <path d="M280 444 L476 557 L476 736 L280 623 Z" fill="#FFFFFF" stroke="#FFFFFF" stroke-width="42" stroke-linejoin="round"/>
+  <path d="M744 444 L548 557 L548 736 L744 623 Z" fill="#FFC24B" stroke="#FFC24B" stroke-width="42" stroke-linejoin="round"/>
+</svg>
