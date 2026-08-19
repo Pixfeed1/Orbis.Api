@@ -15,46 +15,66 @@ $people = array(
 	array( 'Sophie', 'Bernard', 'fr', '+33 6 74 21 09 36' ),
 	array( 'Lucas', 'Moreau', 'fr', '+33 7 68 33 51 24' ),
 	array( 'Amelie', 'Rousseau', 'fr', '+33 6 09 87 14 62' ),
-	array( 'David', 'Chen', 'sg', '+65 8123 4477' ),
-	array( 'Priya', 'Sharma', 'in', '+91 98 2045 7731' ),
-	array( 'James', 'Wilson', 'uk', '+44 7700 903214' ),
+	array( 'Thomas', 'Weber', 'de', '+49 151 2340 7791' ),
+	array( 'Emma', 'Johansson', 'se', '+46 70 412 88 03' ),
+	array( 'James', 'Wilson', 'gb', '+44 7700 903214' ),
 	array( 'Ana', 'Silva', 'pt', '+351 912 447 083' ),
 	array( 'Marco', 'Rossi', 'it', '+39 340 118 9042' ),
-	array( 'Yuki', 'Tanaka', 'jp', '+81 90 3312 5580' ),
-	array( 'Emma', 'Johansson', 'se', '+46 70 412 88 03' ),
-	array( 'Carlos', 'Mendes', 'br', '+55 21 99841 2270' ),
-	array( 'Fatima', 'Zahra', 'ma', '+212 661 20 44 87' ),
-	array( 'Thomas', 'Weber', 'de', '+49 151 2340 7791' ),
-	array( 'Olivia', 'Brown', 'ca', '+1 604 555 0142' ),
-	array( 'Minh', 'Nguyen', 'vn', '+84 90 227 6614' ),
-	array( 'Sara', 'Lopez', 'es', '+34 655 30 18 27' ),
-	array( 'Kwame', 'Mensah', 'gh', '+233 24 776 3310' ),
-	array( 'Elena', 'Petrova', 'bg', '+359 88 412 7705' ),
-	array( 'Hassan', 'Ali', 'ae', '+971 50 663 2214' ),
 	array( 'Claire', 'Dubois', 'fr', '+33 6 51 30 22 78' ),
-	array( 'Ryan', 'OConnor', 'ie', '+353 86 774 2018' ),
-	array( 'Mei', 'Lin', 'tw', '+886 912 447 660' ),
-	array( 'Paulo', 'Costa', 'br', '+55 11 98220 4471' ),
-	array( 'Ingrid', 'Larsen', 'no', '+47 918 22 704' ),
-	array( 'Omar', 'Haddad', 'tn', '+216 22 481 097' ),
+	array( 'Olivia', 'Brown', 'ca', '+1 604 555 0142' ),
+	array( 'Sara', 'Lopez', 'es', '+34 655 30 18 27' ),
 	array( 'Julia', 'Novak', 'pl', '+48 601 337 220' ),
-	array( 'Ben', 'Cohen', 'il', '+972 54 802 3317' ),
-	array( 'Nadia', 'Belkacem', 'dz', '+213 550 21 74 39' ),
 	array( 'Peter', 'Novotny', 'cz', '+420 776 210 448' ),
-	array( 'Grace', 'Okafor', 'ng', '+234 803 447 2016' ),
-	array( 'Diego', 'Fernandez', 'ar', '+54 9 11 6023 7714' ),
-	array( 'Hanna', 'Virtanen', 'fi', '+358 40 552 8813' ),
-	array( 'Samuel', 'Adeyemi', 'ng', '+234 815 220 6647' ),
+	array( 'Ingrid', 'Larsen', 'no', '+47 918 22 704' ),
+	array( 'Paulo', 'Costa', 'pt', '+351 934 220 715' ),
 	array( 'Laura', 'Bianchi', 'it', '+39 366 507 2218' ),
-	array( 'Kenji', 'Sato', 'jp', '+81 80 4471 2260' ),
-	array( 'Zoe', 'Lefevre', 'fr', '+33 7 82 14 60 35' ),
+	array( 'Diego', 'Fernandez', 'es', '+34 622 47 90 15' ),
+	array( 'Hanna', 'Virtanen', 'fi', '+358 40 552 8813' ),
 	array( 'Adam', 'Kowalski', 'pl', '+48 502 118 774' ),
-	array( 'Rita', 'Gomes', 'pt', '+351 934 220 715' ),
-	array( 'Tariq', 'Rahman', 'bd', '+880 171 224 8830' ),
+	array( 'Rita', 'Gomes', 'pt', '+351 966 401 238' ),
 	array( 'Chloe', 'Baker', 'au', '+61 412 776 205' ),
+	array( 'Ryan', 'Callahan', 'ie', '+353 86 774 2018' ),
+	array( 'Nicolas', 'Girard', 'fr', '+33 6 44 71 08 52' ),
+	array( 'Isabelle', 'Fontaine', 'fr', '+33 7 55 12 84 60' ),
+	array( 'Daniel', 'Fischer', 'de', '+49 170 8842 3306' ),
+	array( 'Charlotte', 'Evans', 'gb', '+44 7911 224087' ),
+	array( 'Antoine', 'Lambert', 'be', '+32 476 21 88 40' ),
+	array( 'Martina', 'Keller', 'ch', '+41 79 412 66 08' ),
+	array( 'Victor', 'Andersen', 'dk', '+45 51 20 74 33' ),
+	array( 'Nathalie', 'Perrin', 'fr', '+33 6 88 30 27 41' ),
+	array( 'Stefan', 'Vogel', 'de', '+49 160 2277 8104' ),
+	array( 'Alice', 'Whitmore', 'gb', '+44 7802 447190' ),
+	array( 'Pierre', 'Caron', 'fr', '+33 7 12 60 45 88' ),
+	array( 'Elena', 'Marchetti', 'it', '+39 348 220 7715' ),
+	array( 'Michael', 'Doyle', 'us', '+1 312 555 0184' ),
+	array( 'Sandrine', 'Faure', 'fr', '+33 6 30 74 12 05' ),
+	array( 'Jorge', 'Ramirez', 'es', '+34 688 12 40 77' ),
+	array( 'Grace', 'Sullivan', 'ie', '+353 87 220 4416' ),
+	array( 'Benjamin', 'Roy', 'ca', '+1 438 555 0271' ),
+	array( 'Lise', 'Vandamme', 'be', '+32 495 70 22 18' ),
 );
 
 $clients = $wpdb->get_results( "SELECT id, user_id FROM {$wpdb->prefix}colisly_clients ORDER BY id ASC" );
+
+/*
+ * Pass 1: park every address on a unique placeholder. Without this, reusing an
+ * e-mail that another seeded user still holds makes wp_update_user() fail
+ * silently and that client keeps its previous identity.
+ */
+foreach ( $clients as $i => $client ) {
+	if ( ! isset( $people[ $i ] ) || ! $client->user_id || ! get_userdata( $client->user_id ) ) {
+		continue;
+	}
+
+	$wpdb->update(
+		$wpdb->users,
+		array( 'user_email' => 'colisly-seed-' . (int) $client->user_id . '@example.com' ),
+		array( 'ID' => (int) $client->user_id )
+	);
+	clean_user_cache( (int) $client->user_id );
+}
+
+// Pass 2: apply the final identities.
 $updated = 0;
 
 foreach ( $clients as $i => $client ) {
@@ -66,7 +86,7 @@ foreach ( $clients as $i => $client ) {
 	$email = strtolower( $first . '.' . $last ) . '@example.com';
 
 	if ( $client->user_id && get_userdata( $client->user_id ) ) {
-		wp_update_user(
+		$result = wp_update_user(
 			array(
 				'ID'           => $client->user_id,
 				'first_name'   => $first,
@@ -75,6 +95,12 @@ foreach ( $clients as $i => $client ) {
 				'user_email'   => $email,
 			)
 		);
+
+		if ( is_wp_error( $result ) ) {
+			echo "FAILED user {$client->user_id}: " . $result->get_error_message() . "\n";
+			continue;
+		}
+
 		update_user_meta( $client->user_id, 'billing_first_name', $first );
 		update_user_meta( $client->user_id, 'billing_last_name', $last );
 		update_user_meta( $client->user_id, 'billing_email', $email );
