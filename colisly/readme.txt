@@ -4,7 +4,7 @@ Tags: woocommerce, package forwarding, parcel forwarding, logistics, warehouse
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.6.4
+Stable tag: 1.6.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,9 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 
 == Changelog ==
 
+= 1.6.5 =
+* Fix: in the customer area, only the tracking number may now wrap mid-string. In 1.6.4 every cell could, which broke dates and references onto several lines.
+
 = 1.6.4 =
 * Fix: the pricing tier and carrier fields in the settings overflowed their cells, and the parcel list and the customer tables were clipped, hiding their last column. Long tracking numbers now wrap so the customer tables fit the account column, and wide admin tables scroll instead of being cut.
 
@@ -140,6 +143,9 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 * Initial release: client management (CL references), parcel creation (COL references), automatic weight-based pricing, automatic storage fees, grouping rules, carrier restrictions, shipment requests, documents, history and e-mail notifications.
 
 == Upgrade Notice ==
+
+= 1.6.5 =
+Layout fix in the customer tables. No database change.
 
 = 1.6.4 =
 Layout fixes on the settings screen and on wide tables. No database change.
