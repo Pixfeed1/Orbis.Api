@@ -11,7 +11,7 @@ msgstr ""
 "X-Generator: colisly build\n"
 
 
-msgid "Gestionnaire Colis Pro"
+msgid "Colisly Parcel Forwarding"
 msgstr ""
 
 msgid "https://github.com/pixfeed1/orbis.api"
@@ -350,8 +350,8 @@ msgstr "Colis %s enregistré. Le tarif a été calculé automatiquement."
 msgid "Parcel status updated."
 msgstr "Statut du colis mis à jour."
 
-msgid "Settings — Gestionnaire Colis Pro"
-msgstr "Réglages — Gestionnaire Colis Pro"
+msgid "Settings — Colisly Parcel Forwarding"
+msgstr "Réglages — Colisly Parcel Forwarding"
 
 msgid "Storage"
 msgstr "Stockage"
@@ -431,8 +431,8 @@ msgstr "Enregistrer les réglages"
 msgid "Settings saved."
 msgstr "Réglages enregistrés."
 
-msgid "Colis Pro"
-msgstr "Colis Pro"
+msgid "Colisly"
+msgstr "Colisly"
 
 msgid "Settings"
 msgstr "Réglages"
@@ -636,8 +636,8 @@ msgstr "Expédition introuvable."
 msgid "Shipment %1$s: status “%2$s” → “%3$s”."
 msgstr "Expédition %1$s : statut « %2$s » → « %3$s »."
 
-msgid "Parcel received (Gestionnaire Colis Pro)"
-msgstr "Colis réceptionné (Gestionnaire Colis Pro)"
+msgid "Parcel received (Colisly Parcel Forwarding)"
+msgstr "Colis réceptionné (Colisly Parcel Forwarding)"
 
 msgid "Sent to the client when one of their parcels is registered at the warehouse."
 msgstr "Envoyé au client lorsqu’un de ses colis est enregistré à l’entrepôt."
@@ -648,8 +648,8 @@ msgstr "[{site_title}] Votre colis {parcel_reference} a bien été réceptionné
 msgid "Parcel {parcel_reference} received"
 msgstr "Colis {parcel_reference} réceptionné"
 
-msgid "Shipment requested (Gestionnaire Colis Pro)"
-msgstr "Demande d’expédition (Gestionnaire Colis Pro)"
+msgid "Shipment requested (Colisly Parcel Forwarding)"
+msgstr "Demande d’expédition (Colisly Parcel Forwarding)"
 
 msgid "Sent to the staff when a client creates a shipment request."
 msgstr "Envoyé au gestionnaire lorsqu’un client crée une demande d’expédition."
@@ -810,17 +810,17 @@ msgstr "Total :"
 msgid "Client record:"
 msgstr "Fiche client :"
 
-msgid "Client record (Gestionnaire Colis Pro)"
-msgstr "Fiche client (Gestionnaire Colis Pro)"
+msgid "Client record (Colisly Parcel Forwarding)"
+msgstr "Fiche client (Colisly Parcel Forwarding)"
 
-msgid "Parcels (Gestionnaire Colis Pro)"
-msgstr "Colis (Gestionnaire Colis Pro)"
+msgid "Parcels (Colisly Parcel Forwarding)"
+msgstr "Colis (Colisly Parcel Forwarding)"
 
-msgid "Shipments (Gestionnaire Colis Pro)"
-msgstr "Expéditions (Gestionnaire Colis Pro)"
+msgid "Shipments (Colisly Parcel Forwarding)"
+msgstr "Expéditions (Colisly Parcel Forwarding)"
 
-msgid "Documents (Gestionnaire Colis Pro)"
-msgstr "Documents (Gestionnaire Colis Pro)"
+msgid "Documents (Colisly Parcel Forwarding)"
+msgstr "Documents (Colisly Parcel Forwarding)"
 
 msgid "Personal data erased following a privacy request."
 msgstr "Données personnelles effacées à la suite d’une demande de confidentialité."
