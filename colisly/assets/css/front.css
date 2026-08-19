@@ -9,6 +9,7 @@
    column. Only this one is allowed to break: applying it to every cell would
    chop up dates and references too. */
 .colisly-front-table .colisly-col-tracking {
+	min-width: 6em;
 	overflow-wrap: anywhere;
 }
 
