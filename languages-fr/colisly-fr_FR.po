@@ -14,7 +14,7 @@ msgstr ""
 msgid "Colisly Parcel Forwarding"
 msgstr ""
 
-msgid "https://github.com/pixfeed1/orbis.api"
+msgid "https://wordpress.org/plugins/colisly/"
 msgstr ""
 
 msgid "Client and parcel management for a parcel receiving, storage, grouping and forwarding business, natively integrated with WooCommerce."
@@ -23,7 +23,7 @@ msgstr "Gestion des clients et des colis pour une activité de réception, stock
 msgid "Pixfeed"
 msgstr ""
 
-msgid "https://github.com/pixfeed1"
+msgid "https://pixfeed.net/"
 msgstr ""
 
 msgid "Access denied."

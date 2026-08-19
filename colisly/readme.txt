@@ -4,7 +4,7 @@ Tags: woocommerce, parcels, shipping, logistics, clients
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.6.0
+Stable tag: 1.6.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,9 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 
 == Changelog ==
 
+= 1.6.1 =
+* The plugin and author URLs now point to the plugin directory page and to the author site, instead of a development repository.
+
 = 1.6.0 =
 * Plugin renamed to "Colisly Parcel Forwarding" (previously "Gestionnaire Colis Pro"), with a matching text domain, to follow the plugin directory naming requirements: a distinctive name rather than a purely descriptive one.
 * Internal prefix renamed from "gcp" to "colisly" to meet the four-character minimum required for plugin prefixes. Existing installations are migrated automatically: tables, options, capability, private files directory and WooCommerce order meta are all carried over.
@@ -128,6 +131,9 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 * Initial release: client management (CL references), parcel creation (COL references), automatic weight-based pricing, automatic storage fees, grouping rules, carrier restrictions, shipment requests, documents, history and e-mail notifications.
 
 == Upgrade Notice ==
+
+= 1.6.1 =
+Housekeeping release: plugin and author URLs updated. No database or behaviour change.
 
 = 1.6.0 =
 Plugin renamed and internal prefix updated; existing data is migrated automatically on update.
