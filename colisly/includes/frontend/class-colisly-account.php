@@ -179,30 +179,32 @@ class COLISLY_Account {
 			return;
 		}
 		?>
-		<table class="woocommerce-orders-table shop_table shop_table_responsive colisly-front-table">
-			<thead>
-				<tr>
-					<th><?php esc_html_e( 'Parcel number', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Reception date', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Tracking number', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Status', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Grouping allowed', 'colisly' ); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ( $parcels as $parcel ) : ?>
+		<div class="colisly-table-wrap">
+			<table class="woocommerce-orders-table shop_table shop_table_responsive colisly-front-table">
+				<thead>
 					<tr>
-						<td data-title="<?php esc_attr_e( 'Parcel number', 'colisly' ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></td>
-						<td data-title="<?php esc_attr_e( 'Reception date', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Tracking number', 'colisly' ); ?>"><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Weight (kg)', 'colisly' ); ?>"><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Status', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Parcels::status_label( $parcel->status ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Grouping allowed', 'colisly' ); ?>"><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No', 'colisly' ); ?></td>
+						<th><?php esc_html_e( 'Parcel number', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Reception date', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Tracking number', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Status', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Grouping allowed', 'colisly' ); ?></th>
 					</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					<?php foreach ( $parcels as $parcel ) : ?>
+						<tr>
+							<td data-title="<?php esc_attr_e( 'Parcel number', 'colisly' ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></td>
+							<td data-title="<?php esc_attr_e( 'Reception date', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
+							<td data-title="<?php esc_attr_e( 'Tracking number', 'colisly' ); ?>"><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
+							<td data-title="<?php esc_attr_e( 'Weight (kg)', 'colisly' ); ?>"><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
+							<td data-title="<?php esc_attr_e( 'Status', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Parcels::status_label( $parcel->status ) ); ?></td>
+							<td data-title="<?php esc_attr_e( 'Grouping allowed', 'colisly' ); ?>"><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No', 'colisly' ); ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</div>
 		<?php
 	}
 
@@ -228,54 +230,56 @@ class COLISLY_Account {
 			return;
 		}
 		?>
-		<table class="woocommerce-orders-table shop_table shop_table_responsive colisly-front-table">
-			<thead>
-				<tr>
-					<th><?php esc_html_e( 'Reference', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Requested on', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Carrier', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Parcels', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Total', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Status', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Payment', 'colisly' ); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach ( $shipments as $shipment ) : ?>
-					<?php
-					$refs  = wp_list_pluck( COLISLY_Shipments::parcels( (int) $shipment->id ), 'reference' );
-					$order = ! empty( $shipment->order_id ) && function_exists( 'wc_get_order' ) ? wc_get_order( (int) $shipment->order_id ) : null;
-					?>
+		<div class="colisly-table-wrap">
+			<table class="woocommerce-orders-table shop_table shop_table_responsive colisly-front-table">
+				<thead>
 					<tr>
-						<td data-title="<?php esc_attr_e( 'Reference', 'colisly' ); ?>"><strong><?php echo esc_html( $shipment->reference ); ?></strong></td>
-						<td data-title="<?php esc_attr_e( 'Requested on', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Format::date( $shipment->requested_at ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Carrier', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Carriers::name( $shipment->carrier ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Parcels', 'colisly' ); ?>"><?php echo esc_html( implode( ', ', $refs ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Weight (kg)', 'colisly' ); ?>"><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Total', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Format::price( (float) $shipment->total_price ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Status', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Shipments::status_label( $shipment->status ) ); ?></td>
-						<td data-title="<?php esc_attr_e( 'Payment', 'colisly' ); ?>">
-							<?php if ( $order && $order->needs_payment() ) : ?>
-								<a class="woocommerce-button button pay" href="<?php echo esc_url( $order->get_checkout_payment_url() ); ?>"><?php esc_html_e( 'Pay', 'colisly' ); ?></a>
-							<?php elseif ( $order ) : ?>
-								<a href="<?php echo esc_url( $order->get_view_order_url() ); ?>">
-									<?php
-									printf(
-										/* translators: %s: order number. */
-										esc_html__( 'Order #%s', 'colisly' ),
-										esc_html( $order->get_order_number() )
-									);
-									?>
-								</a>
-							<?php else : ?>
-								—
-							<?php endif; ?>
-						</td>
+						<th><?php esc_html_e( 'Reference', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Requested on', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Carrier', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Parcels', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Total', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Status', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Payment', 'colisly' ); ?></th>
 					</tr>
-				<?php endforeach; ?>
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+					<?php foreach ( $shipments as $shipment ) : ?>
+						<?php
+						$refs  = wp_list_pluck( COLISLY_Shipments::parcels( (int) $shipment->id ), 'reference' );
+						$order = ! empty( $shipment->order_id ) && function_exists( 'wc_get_order' ) ? wc_get_order( (int) $shipment->order_id ) : null;
+						?>
+						<tr>
+							<td data-title="<?php esc_attr_e( 'Reference', 'colisly' ); ?>"><strong><?php echo esc_html( $shipment->reference ); ?></strong></td>
+							<td data-title="<?php esc_attr_e( 'Requested on', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Format::date( $shipment->requested_at ) ); ?></td>
+							<td data-title="<?php esc_attr_e( 'Carrier', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Carriers::name( $shipment->carrier ) ); ?></td>
+							<td data-title="<?php esc_attr_e( 'Parcels', 'colisly' ); ?>"><?php echo esc_html( implode( ', ', $refs ) ); ?></td>
+							<td data-title="<?php esc_attr_e( 'Weight (kg)', 'colisly' ); ?>"><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
+							<td data-title="<?php esc_attr_e( 'Total', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Format::price( (float) $shipment->total_price ) ); ?></td>
+							<td data-title="<?php esc_attr_e( 'Status', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Shipments::status_label( $shipment->status ) ); ?></td>
+							<td data-title="<?php esc_attr_e( 'Payment', 'colisly' ); ?>">
+								<?php if ( $order && $order->needs_payment() ) : ?>
+									<a class="woocommerce-button button pay" href="<?php echo esc_url( $order->get_checkout_payment_url() ); ?>"><?php esc_html_e( 'Pay', 'colisly' ); ?></a>
+								<?php elseif ( $order ) : ?>
+									<a href="<?php echo esc_url( $order->get_view_order_url() ); ?>">
+										<?php
+										printf(
+											/* translators: %s: order number. */
+											esc_html__( 'Order #%s', 'colisly' ),
+											esc_html( $order->get_order_number() )
+										);
+										?>
+									</a>
+								<?php else : ?>
+									—
+								<?php endif; ?>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</div>
 		<?php
 	}
 
@@ -351,38 +355,40 @@ class COLISLY_Account {
 			<input type="hidden" name="colisly_action" value="request_shipment" />
 
 			<p><?php esc_html_e( 'Select the parcels to ship:', 'colisly' ); ?></p>
-			<table class="woocommerce-orders-table shop_table shop_table_responsive colisly-front-table">
-				<thead>
-					<tr>
-						<th></th>
-						<th><?php esc_html_e( 'Parcel number', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Grouping allowed', 'colisly' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php foreach ( $parcels as $parcel ) : ?>
+			<div class="colisly-table-wrap">
+				<table class="woocommerce-orders-table shop_table shop_table_responsive colisly-front-table">
+					<thead>
 						<tr>
-							<td>
-								<input
-									type="checkbox"
-									name="colisly_parcels[]"
-									value="<?php echo esc_attr( (string) $parcel->id ); ?>"
-									id="colisly-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"
-									data-grouping="<?php echo $parcel->allow_grouping ? '1' : '0'; ?>"
-									data-carriers="<?php echo esc_attr( implode( ',', COLISLY_Parcels::allowed_carrier_slugs( $parcel ) ) ); ?>"
-									data-weight="<?php echo esc_attr( (string) (float) $parcel->weight ); ?>"
-									data-price="<?php echo esc_attr( (string) (float) $parcel->price ); ?>"
-									data-storage="<?php echo esc_attr( (string) COLISLY_Storage::fees_for_parcel( $parcel ) ); ?>"
-								/>
-							</td>
-							<td><label for="colisly-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></label></td>
-							<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
-							<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No — this parcel must be shipped alone', 'colisly' ); ?></td>
+							<th></th>
+							<th><?php esc_html_e( 'Parcel number', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Grouping allowed', 'colisly' ); ?></th>
 						</tr>
-					<?php endforeach; ?>
-				</tbody>
-			</table>
+					</thead>
+					<tbody>
+						<?php foreach ( $parcels as $parcel ) : ?>
+							<tr>
+								<td>
+									<input
+										type="checkbox"
+										name="colisly_parcels[]"
+										value="<?php echo esc_attr( (string) $parcel->id ); ?>"
+										id="colisly-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"
+										data-grouping="<?php echo $parcel->allow_grouping ? '1' : '0'; ?>"
+										data-carriers="<?php echo esc_attr( implode( ',', COLISLY_Parcels::allowed_carrier_slugs( $parcel ) ) ); ?>"
+										data-weight="<?php echo esc_attr( (string) (float) $parcel->weight ); ?>"
+										data-price="<?php echo esc_attr( (string) (float) $parcel->price ); ?>"
+										data-storage="<?php echo esc_attr( (string) COLISLY_Storage::fees_for_parcel( $parcel ) ); ?>"
+									/>
+								</td>
+								<td><label for="colisly-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></label></td>
+								<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
+								<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No — this parcel must be shipped alone', 'colisly' ); ?></td>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			</div>
 
 			<p>
 				<label for="colisly-carrier"><?php esc_html_e( 'Preferred carrier:', 'colisly' ); ?></label>

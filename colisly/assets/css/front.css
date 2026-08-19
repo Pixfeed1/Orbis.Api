@@ -1,7 +1,13 @@
-/* Gestionnaire Colis Pro — front styles */
+/* Colisly Parcel Forwarding — front styles */
 
 .colisly-front-table {
 	width: 100%;
+}
+
+/* Themes constrain the My Account column, and translated labels widen these
+   tables past it. Scrolling keeps every column reachable. */
+.colisly-table-wrap {
+	overflow-x: auto;
 }
 
 .colisly-documents-list {

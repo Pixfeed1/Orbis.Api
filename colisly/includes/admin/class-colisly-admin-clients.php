@@ -82,43 +82,45 @@ class COLISLY_Admin_Clients {
 				<button type="submit" class="button button-primary"><?php esc_html_e( 'Create the client record', 'colisly' ); ?></button>
 			</form>
 
-			<table class="wp-list-table widefat fixed striped">
-				<thead>
-					<tr>
-						<th><?php esc_html_e( 'Reference', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Name', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'E-mail', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Phone', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Parcels in stock', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Created on', 'colisly' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php if ( empty( $clients ) ) : ?>
-						<tr><td colspan="6"><?php esc_html_e( 'No clients found.', 'colisly' ); ?></td></tr>
-					<?php else : ?>
-						<?php foreach ( $clients as $client ) : ?>
-							<?php
-							$url = add_query_arg(
-								array(
-									'page'   => 'colisly-clients',
-									'client' => (int) $client->id,
-								),
-								admin_url( 'admin.php' )
-							);
-							?>
-							<tr>
-								<td><a href="<?php echo esc_url( $url ); ?>"><strong><?php echo esc_html( $client->reference ); ?></strong></a></td>
-								<td><a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $client->display_name ); ?></a></td>
-								<td><?php echo esc_html( $client->user_email ); ?></td>
-								<td><?php echo esc_html( $client->phone ); ?></td>
-								<td><?php echo esc_html( number_format_i18n( count( COLISLY_Parcels::in_stock_for_client( (int) $client->id ) ) ) ); ?></td>
-								<td><?php echo esc_html( COLISLY_Format::date( $client->created_at ) ); ?></td>
-							</tr>
-						<?php endforeach; ?>
-					<?php endif; ?>
-				</tbody>
-			</table>
+			<div class="colisly-table-wrap">
+				<table class="wp-list-table widefat fixed striped">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Reference', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Name', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'E-mail', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Phone', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Parcels in stock', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Created on', 'colisly' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php if ( empty( $clients ) ) : ?>
+							<tr><td colspan="6"><?php esc_html_e( 'No clients found.', 'colisly' ); ?></td></tr>
+						<?php else : ?>
+							<?php foreach ( $clients as $client ) : ?>
+								<?php
+								$url = add_query_arg(
+									array(
+										'page'   => 'colisly-clients',
+										'client' => (int) $client->id,
+									),
+									admin_url( 'admin.php' )
+								);
+								?>
+								<tr>
+									<td><a href="<?php echo esc_url( $url ); ?>"><strong><?php echo esc_html( $client->reference ); ?></strong></a></td>
+									<td><a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $client->display_name ); ?></a></td>
+									<td><?php echo esc_html( $client->user_email ); ?></td>
+									<td><?php echo esc_html( $client->phone ); ?></td>
+									<td><?php echo esc_html( number_format_i18n( count( COLISLY_Parcels::in_stock_for_client( (int) $client->id ) ) ) ); ?></td>
+									<td><?php echo esc_html( COLISLY_Format::date( $client->created_at ) ); ?></td>
+								</tr>
+							<?php endforeach; ?>
+						<?php endif; ?>
+					</tbody>
+				</table>
+			</div>
 
 			<?php self::pagination( $total, $per_page, $paged, compact( 'term' ) ); ?>
 		</div>
@@ -282,52 +284,54 @@ class COLISLY_Admin_Clients {
 	 */
 	private static function parcels_table( $parcels, $with_action ) {
 		?>
-		<table class="wp-list-table widefat fixed striped">
-			<thead>
-				<tr>
-					<th><?php esc_html_e( 'Number', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Received on', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Tracking', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Price', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Grouping', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Storage fees', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Internal comment', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Photo', 'colisly' ); ?></th>
-					<?php if ( $with_action ) : ?>
-						<th><?php esc_html_e( 'Status', 'colisly' ); ?></th>
-					<?php endif; ?>
-				</tr>
-			</thead>
-			<tbody>
-				<?php if ( empty( $parcels ) ) : ?>
-					<tr><td colspan="10"><?php esc_html_e( 'No parcels.', 'colisly' ); ?></td></tr>
-				<?php else : ?>
-					<?php foreach ( $parcels as $parcel ) : ?>
-						<tr>
-							<td><strong><?php echo esc_html( $parcel->reference ); ?></strong></td>
-							<td><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
-							<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
-							<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
-							<td><?php echo esc_html( COLISLY_Format::price( (float) $parcel->price ) ); ?></td>
-							<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No', 'colisly' ); ?></td>
-							<td><?php echo esc_html( COLISLY_Format::price( COLISLY_Storage::fees_for_parcel( $parcel ) ) ); ?></td>
-							<td><?php echo esc_html( $parcel->internal_note ? $parcel->internal_note : '—' ); ?></td>
-							<td>
-								<?php if ( ! empty( $parcel->photo_path ) ) : ?>
-									<a href="<?php echo esc_url( COLISLY_Downloads::photo_url( $parcel ) ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'View', 'colisly' ); ?></a>
-								<?php else : ?>
-									—
+		<div class="colisly-table-wrap">
+			<table class="wp-list-table widefat fixed striped">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Number', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Received on', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Tracking', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Price', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Grouping', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Storage fees', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Internal comment', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Photo', 'colisly' ); ?></th>
+						<?php if ( $with_action ) : ?>
+							<th><?php esc_html_e( 'Status', 'colisly' ); ?></th>
+						<?php endif; ?>
+					</tr>
+				</thead>
+				<tbody>
+					<?php if ( empty( $parcels ) ) : ?>
+						<tr><td colspan="10"><?php esc_html_e( 'No parcels.', 'colisly' ); ?></td></tr>
+					<?php else : ?>
+						<?php foreach ( $parcels as $parcel ) : ?>
+							<tr>
+								<td><strong><?php echo esc_html( $parcel->reference ); ?></strong></td>
+								<td><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
+								<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
+								<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
+								<td><?php echo esc_html( COLISLY_Format::price( (float) $parcel->price ) ); ?></td>
+								<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No', 'colisly' ); ?></td>
+								<td><?php echo esc_html( COLISLY_Format::price( COLISLY_Storage::fees_for_parcel( $parcel ) ) ); ?></td>
+								<td><?php echo esc_html( $parcel->internal_note ? $parcel->internal_note : '—' ); ?></td>
+								<td>
+									<?php if ( ! empty( $parcel->photo_path ) ) : ?>
+										<a href="<?php echo esc_url( COLISLY_Downloads::photo_url( $parcel ) ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'View', 'colisly' ); ?></a>
+									<?php else : ?>
+										—
+									<?php endif; ?>
+								</td>
+								<?php if ( $with_action ) : ?>
+									<td><?php self::parcel_status_form( $parcel ); ?></td>
 								<?php endif; ?>
-							</td>
-							<?php if ( $with_action ) : ?>
-								<td><?php self::parcel_status_form( $parcel ); ?></td>
-							<?php endif; ?>
-						</tr>
-					<?php endforeach; ?>
-				<?php endif; ?>
-			</tbody>
-		</table>
+							</tr>
+						<?php endforeach; ?>
+					<?php endif; ?>
+				</tbody>
+			</table>
+		</div>
 		<?php
 	}
 
@@ -362,72 +366,74 @@ class COLISLY_Admin_Clients {
 	 */
 	private static function shipments_table( $shipments ) {
 		?>
-		<table class="wp-list-table widefat fixed striped">
-			<thead>
-				<tr>
-					<th><?php esc_html_e( 'Reference', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Requested on', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Carrier', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Storage fees', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Total', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Order', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Status', 'colisly' ); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php if ( empty( $shipments ) ) : ?>
-					<tr><td colspan="8"><?php esc_html_e( 'No shipments.', 'colisly' ); ?></td></tr>
-				<?php else : ?>
-					<?php foreach ( $shipments as $shipment ) : ?>
-						<tr>
-							<td><strong><?php echo esc_html( $shipment->reference ); ?></strong></td>
-							<td><?php echo esc_html( COLISLY_Format::date( $shipment->requested_at ) ); ?></td>
-							<td>
-								<?php echo esc_html( COLISLY_Carriers::name( $shipment->carrier ) ); ?>
-								<?php if ( isset( $shipment->carrier_price ) && (float) $shipment->carrier_price > 0 ) : ?>
-									(<?php echo esc_html( COLISLY_Format::price( (float) $shipment->carrier_price ) ); ?>)
-								<?php endif; ?>
-							</td>
-							<td><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
-							<td><?php echo esc_html( COLISLY_Format::price( (float) $shipment->storage_fees ) ); ?></td>
-							<td><?php echo esc_html( COLISLY_Format::price( (float) $shipment->total_price ) ); ?></td>
-							<td>
-								<?php $order = ! empty( $shipment->order_id ) && function_exists( 'wc_get_order' ) ? wc_get_order( (int) $shipment->order_id ) : null; ?>
-								<?php if ( $order ) : ?>
-									<a href="<?php echo esc_url( $order->get_edit_order_url() ); ?>">
-										<?php
-										printf(
-											/* translators: %s: order number. */
-											esc_html__( '#%s', 'colisly' ),
-											esc_html( $order->get_order_number() )
-										);
-										?>
-									</a>
-									(<?php echo esc_html( wc_get_order_status_name( $order->get_status() ) ); ?>)
-								<?php else : ?>
-									—
-								<?php endif; ?>
-							</td>
-							<td>
-								<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="colisly-status-form">
-									<?php wp_nonce_field( 'colisly_set_shipment_status_' . (int) $shipment->id ); ?>
-									<input type="hidden" name="action" value="colisly_set_shipment_status" />
-									<input type="hidden" name="shipment_id" value="<?php echo esc_attr( (string) $shipment->id ); ?>" />
-									<label class="screen-reader-text" for="colisly-ship-status-<?php echo esc_attr( (string) $shipment->id ); ?>"><?php esc_html_e( 'Status', 'colisly' ); ?></label>
-									<select name="status" id="colisly-ship-status-<?php echo esc_attr( (string) $shipment->id ); ?>">
-										<?php foreach ( COLISLY_Shipments::statuses() as $key => $label ) : ?>
-											<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $shipment->status, $key ); ?>><?php echo esc_html( $label ); ?></option>
-										<?php endforeach; ?>
-									</select>
-									<button type="submit" class="button button-small"><?php esc_html_e( 'OK', 'colisly' ); ?></button>
-								</form>
-							</td>
-						</tr>
-					<?php endforeach; ?>
-				<?php endif; ?>
-			</tbody>
-		</table>
+		<div class="colisly-table-wrap">
+			<table class="wp-list-table widefat fixed striped">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Reference', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Requested on', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Carrier', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Storage fees', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Total', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Order', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Status', 'colisly' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php if ( empty( $shipments ) ) : ?>
+						<tr><td colspan="8"><?php esc_html_e( 'No shipments.', 'colisly' ); ?></td></tr>
+					<?php else : ?>
+						<?php foreach ( $shipments as $shipment ) : ?>
+							<tr>
+								<td><strong><?php echo esc_html( $shipment->reference ); ?></strong></td>
+								<td><?php echo esc_html( COLISLY_Format::date( $shipment->requested_at ) ); ?></td>
+								<td>
+									<?php echo esc_html( COLISLY_Carriers::name( $shipment->carrier ) ); ?>
+									<?php if ( isset( $shipment->carrier_price ) && (float) $shipment->carrier_price > 0 ) : ?>
+										(<?php echo esc_html( COLISLY_Format::price( (float) $shipment->carrier_price ) ); ?>)
+									<?php endif; ?>
+								</td>
+								<td><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
+								<td><?php echo esc_html( COLISLY_Format::price( (float) $shipment->storage_fees ) ); ?></td>
+								<td><?php echo esc_html( COLISLY_Format::price( (float) $shipment->total_price ) ); ?></td>
+								<td>
+									<?php $order = ! empty( $shipment->order_id ) && function_exists( 'wc_get_order' ) ? wc_get_order( (int) $shipment->order_id ) : null; ?>
+									<?php if ( $order ) : ?>
+										<a href="<?php echo esc_url( $order->get_edit_order_url() ); ?>">
+											<?php
+											printf(
+												/* translators: %s: order number. */
+												esc_html__( '#%s', 'colisly' ),
+												esc_html( $order->get_order_number() )
+											);
+											?>
+										</a>
+										(<?php echo esc_html( wc_get_order_status_name( $order->get_status() ) ); ?>)
+									<?php else : ?>
+										—
+									<?php endif; ?>
+								</td>
+								<td>
+									<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="colisly-status-form">
+										<?php wp_nonce_field( 'colisly_set_shipment_status_' . (int) $shipment->id ); ?>
+										<input type="hidden" name="action" value="colisly_set_shipment_status" />
+										<input type="hidden" name="shipment_id" value="<?php echo esc_attr( (string) $shipment->id ); ?>" />
+										<label class="screen-reader-text" for="colisly-ship-status-<?php echo esc_attr( (string) $shipment->id ); ?>"><?php esc_html_e( 'Status', 'colisly' ); ?></label>
+										<select name="status" id="colisly-ship-status-<?php echo esc_attr( (string) $shipment->id ); ?>">
+											<?php foreach ( COLISLY_Shipments::statuses() as $key => $label ) : ?>
+												<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $shipment->status, $key ); ?>><?php echo esc_html( $label ); ?></option>
+											<?php endforeach; ?>
+										</select>
+										<button type="submit" class="button button-small"><?php esc_html_e( 'OK', 'colisly' ); ?></button>
+									</form>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+					<?php endif; ?>
+				</tbody>
+			</table>
+		</div>
 		<?php
 	}
 
@@ -439,36 +445,38 @@ class COLISLY_Admin_Clients {
 	 */
 	private static function documents_table( $documents ) {
 		?>
-		<table class="wp-list-table widefat fixed striped">
-			<thead>
-				<tr>
-					<th><?php esc_html_e( 'Title', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Added on', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Visibility', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'File', 'colisly' ); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php if ( empty( $documents ) ) : ?>
-					<tr><td colspan="4"><?php esc_html_e( 'No documents.', 'colisly' ); ?></td></tr>
-				<?php else : ?>
-					<?php foreach ( $documents as $document ) : ?>
-						<tr>
-							<td><?php echo esc_html( $document->title ); ?></td>
-							<td><?php echo esc_html( COLISLY_Format::date( $document->created_at ) ); ?></td>
-							<td><?php echo 'admin' === $document->visibility ? esc_html__( 'Internal', 'colisly' ) : esc_html__( 'Client', 'colisly' ); ?></td>
-							<td>
-								<?php if ( ! empty( $document->file_path ) ) : ?>
-									<a href="<?php echo esc_url( COLISLY_Downloads::document_url( $document ) ); ?>"><?php esc_html_e( 'Download', 'colisly' ); ?></a>
-								<?php else : ?>
-									—
-								<?php endif; ?>
-							</td>
-						</tr>
-					<?php endforeach; ?>
-				<?php endif; ?>
-			</tbody>
-		</table>
+		<div class="colisly-table-wrap">
+			<table class="wp-list-table widefat fixed striped">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Title', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Added on', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Visibility', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'File', 'colisly' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php if ( empty( $documents ) ) : ?>
+						<tr><td colspan="4"><?php esc_html_e( 'No documents.', 'colisly' ); ?></td></tr>
+					<?php else : ?>
+						<?php foreach ( $documents as $document ) : ?>
+							<tr>
+								<td><?php echo esc_html( $document->title ); ?></td>
+								<td><?php echo esc_html( COLISLY_Format::date( $document->created_at ) ); ?></td>
+								<td><?php echo 'admin' === $document->visibility ? esc_html__( 'Internal', 'colisly' ) : esc_html__( 'Client', 'colisly' ); ?></td>
+								<td>
+									<?php if ( ! empty( $document->file_path ) ) : ?>
+										<a href="<?php echo esc_url( COLISLY_Downloads::document_url( $document ) ); ?>"><?php esc_html_e( 'Download', 'colisly' ); ?></a>
+									<?php else : ?>
+										—
+									<?php endif; ?>
+								</td>
+							</tr>
+						<?php endforeach; ?>
+					<?php endif; ?>
+				</tbody>
+			</table>
+		</div>
 		<?php
 	}
 
@@ -480,31 +488,33 @@ class COLISLY_Admin_Clients {
 	 */
 	private static function history_table( $entries ) {
 		?>
-		<table class="wp-list-table widefat fixed striped">
-			<thead>
-				<tr>
-					<th><?php esc_html_e( 'Date', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Event', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'Details', 'colisly' ); ?></th>
-					<th><?php esc_html_e( 'By', 'colisly' ); ?></th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php if ( empty( $entries ) ) : ?>
-					<tr><td colspan="4"><?php esc_html_e( 'No operations recorded.', 'colisly' ); ?></td></tr>
-				<?php else : ?>
-					<?php foreach ( $entries as $entry ) : ?>
-						<?php $author = $entry->user_id ? get_userdata( (int) $entry->user_id ) : null; ?>
-						<tr>
-							<td><?php echo esc_html( COLISLY_Format::date( $entry->created_at, true ) ); ?></td>
-							<td><code><?php echo esc_html( $entry->event ); ?></code></td>
-							<td><?php echo esc_html( (string) $entry->message ); ?></td>
-							<td><?php echo esc_html( $author ? $author->display_name : '—' ); ?></td>
-						</tr>
-					<?php endforeach; ?>
-				<?php endif; ?>
-			</tbody>
-		</table>
+		<div class="colisly-table-wrap">
+			<table class="wp-list-table widefat fixed striped">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Date', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Event', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Details', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'By', 'colisly' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php if ( empty( $entries ) ) : ?>
+						<tr><td colspan="4"><?php esc_html_e( 'No operations recorded.', 'colisly' ); ?></td></tr>
+					<?php else : ?>
+						<?php foreach ( $entries as $entry ) : ?>
+							<?php $author = $entry->user_id ? get_userdata( (int) $entry->user_id ) : null; ?>
+							<tr>
+								<td><?php echo esc_html( COLISLY_Format::date( $entry->created_at, true ) ); ?></td>
+								<td><code><?php echo esc_html( $entry->event ); ?></code></td>
+								<td><?php echo esc_html( (string) $entry->message ); ?></td>
+								<td><?php echo esc_html( $author ? $author->display_name : '—' ); ?></td>
+							</tr>
+						<?php endforeach; ?>
+					<?php endif; ?>
+				</tbody>
+			</table>
+		</div>
 		<?php
 	}
 

@@ -1,4 +1,4 @@
-/* Gestionnaire Colis Pro — admin styles */
+/* Colisly Parcel Forwarding — admin styles */
 
 .colisly-indicators {
 	display: flex;
@@ -119,5 +119,33 @@
 
 .colisly-tiers-table,
 .colisly-carriers-table {
-	max-width: 500px;
+	max-width: 640px;
+}
+
+/* Without this the fields keep their intrinsic width and spill out of the
+   cells, because the tables above are narrower than the sum of those widths. */
+.colisly-tiers-table input,
+.colisly-carriers-table input[type="text"],
+.colisly-carriers-table input[type="number"] {
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.colisly-carriers-table input[type="checkbox"] {
+	width: auto;
+}
+
+/* Wide tables would otherwise be clipped: the parcel list and the client
+   record tabs hold more columns than the admin content area can show. */
+.colisly-table-wrap {
+	overflow-x: auto;
+}
+
+/* WordPress list tables are width:100% and table-layout:fixed, so inside a
+   scrolling wrapper they stay clamped and clip their own cells instead of
+   letting the wrapper scroll. Let them size to their content. */
+.colisly-table-wrap > .wp-list-table {
+	min-width: 100%;
+	table-layout: auto;
+	width: auto;
 }

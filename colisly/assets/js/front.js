@@ -1,5 +1,5 @@
 /**
- * Gestionnaire Colis Pro — front scripts.
+ * Colisly Parcel Forwarding — front scripts.
  *
  * Live estimate on the shipment request form: parcels + storage fees +
  * carrier tariff (base + per-kg). The server remains the authority; this is

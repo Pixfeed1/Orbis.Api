@@ -1,5 +1,5 @@
 /**
- * Gestionnaire Colis Pro — admin scripts.
+ * Colisly Parcel Forwarding — admin scripts.
  *
  * Handles the client record tabs, the live client search on the parcel
  * creation form and the carriers settings checkboxes.

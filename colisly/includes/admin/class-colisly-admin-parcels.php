@@ -61,51 +61,53 @@ class COLISLY_Admin_Parcels {
 				</p>
 			</form>
 
-			<table class="wp-list-table widefat fixed striped">
-				<thead>
-					<tr>
-						<th><?php esc_html_e( 'Number', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Client', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Received on', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Tracking', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Price', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Grouping', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Status', 'colisly' ); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php if ( empty( $result['items'] ) ) : ?>
-						<tr><td colspan="8"><?php esc_html_e( 'No parcels found.', 'colisly' ); ?></td></tr>
-					<?php else : ?>
-						<?php foreach ( $result['items'] as $parcel ) : ?>
-							<?php
-							$client_url = add_query_arg(
-								array(
-									'page'   => 'colisly-clients',
-									'client' => (int) $parcel->client_id,
-								),
-								admin_url( 'admin.php' )
-							);
-							?>
-							<tr>
-								<td><strong><?php echo esc_html( $parcel->reference ); ?></strong></td>
-								<td>
-									<a href="<?php echo esc_url( $client_url ); ?>">
-										<?php echo esc_html( $parcel->client_reference . ' — ' . $parcel->display_name ); ?>
-									</a>
-								</td>
-								<td><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
-								<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
-								<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
-								<td><?php echo esc_html( COLISLY_Format::price( (float) $parcel->price ) ); ?></td>
-								<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No', 'colisly' ); ?></td>
-								<td><?php COLISLY_Admin_Clients::parcel_status_form( $parcel ); ?></td>
-							</tr>
-						<?php endforeach; ?>
-					<?php endif; ?>
-				</tbody>
-			</table>
+			<div class="colisly-table-wrap">
+				<table class="wp-list-table widefat fixed striped">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Number', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Client', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Received on', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Tracking', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Price', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Grouping', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Status', 'colisly' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php if ( empty( $result['items'] ) ) : ?>
+							<tr><td colspan="8"><?php esc_html_e( 'No parcels found.', 'colisly' ); ?></td></tr>
+						<?php else : ?>
+							<?php foreach ( $result['items'] as $parcel ) : ?>
+								<?php
+								$client_url = add_query_arg(
+									array(
+										'page'   => 'colisly-clients',
+										'client' => (int) $parcel->client_id,
+									),
+									admin_url( 'admin.php' )
+								);
+								?>
+								<tr>
+									<td><strong><?php echo esc_html( $parcel->reference ); ?></strong></td>
+									<td>
+										<a href="<?php echo esc_url( $client_url ); ?>">
+											<?php echo esc_html( $parcel->client_reference . ' — ' . $parcel->display_name ); ?>
+										</a>
+									</td>
+									<td><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
+									<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
+									<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
+									<td><?php echo esc_html( COLISLY_Format::price( (float) $parcel->price ) ); ?></td>
+									<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No', 'colisly' ); ?></td>
+									<td><?php COLISLY_Admin_Clients::parcel_status_form( $parcel ); ?></td>
+								</tr>
+							<?php endforeach; ?>
+						<?php endif; ?>
+					</tbody>
+				</table>
+			</div>
 
 			<?php
 			$pages = (int) ceil( $result['total'] / 20 );
@@ -184,30 +186,32 @@ class COLISLY_Admin_Parcels {
 					<?php if ( $client ) : ?>
 						<h3><?php esc_html_e( 'Parcels of this client still in stock', 'colisly' ); ?></h3>
 						<?php $stock = COLISLY_Parcels::in_stock_for_client( (int) $client->id ); ?>
-						<table class="wp-list-table widefat fixed striped colisly-stock-table">
-							<thead>
-								<tr>
-									<th><?php esc_html_e( 'Parcel number', 'colisly' ); ?></th>
-									<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
-									<th><?php esc_html_e( 'Grouping allowed', 'colisly' ); ?></th>
-									<th><?php esc_html_e( 'Internal comment', 'colisly' ); ?></th>
-								</tr>
-							</thead>
-							<tbody>
-								<?php if ( empty( $stock ) ) : ?>
-									<tr><td colspan="4"><?php esc_html_e( 'No parcels in stock for this client.', 'colisly' ); ?></td></tr>
-								<?php else : ?>
-									<?php foreach ( $stock as $parcel ) : ?>
-										<tr>
-											<td><?php echo esc_html( $parcel->reference ); ?></td>
-											<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
-											<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No', 'colisly' ); ?></td>
-											<td><?php echo esc_html( $parcel->internal_note ? $parcel->internal_note : '—' ); ?></td>
-										</tr>
-									<?php endforeach; ?>
-								<?php endif; ?>
-							</tbody>
-						</table>
+						<div class="colisly-table-wrap">
+							<table class="wp-list-table widefat fixed striped colisly-stock-table">
+								<thead>
+									<tr>
+										<th><?php esc_html_e( 'Parcel number', 'colisly' ); ?></th>
+										<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
+										<th><?php esc_html_e( 'Grouping allowed', 'colisly' ); ?></th>
+										<th><?php esc_html_e( 'Internal comment', 'colisly' ); ?></th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php if ( empty( $stock ) ) : ?>
+										<tr><td colspan="4"><?php esc_html_e( 'No parcels in stock for this client.', 'colisly' ); ?></td></tr>
+									<?php else : ?>
+										<?php foreach ( $stock as $parcel ) : ?>
+											<tr>
+												<td><?php echo esc_html( $parcel->reference ); ?></td>
+												<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
+												<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No', 'colisly' ); ?></td>
+												<td><?php echo esc_html( $parcel->internal_note ? $parcel->internal_note : '—' ); ?></td>
+											</tr>
+										<?php endforeach; ?>
+									<?php endif; ?>
+								</tbody>
+							</table>
+						</div>
 					<?php endif; ?>
 				</div>
 

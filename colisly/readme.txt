@@ -4,7 +4,7 @@ Tags: woocommerce, package forwarding, parcel forwarding, logistics, warehouse
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.6.3
+Stable tag: 1.6.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,9 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 
 == Changelog ==
 
+= 1.6.4 =
+* Fix: the pricing tier and carrier fields in the settings overflowed their cells, and the parcel list and customer tables were clipped instead of scrolling. Wide tables now scroll horizontally and every column stays reachable.
+
 = 1.6.3 =
 * Directory listing wording: the tags and the description now use the industry terms "package forwarding", "reshipping" and "consolidation", so operators searching for those find the plugin.
 
@@ -137,6 +140,9 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 * Initial release: client management (CL references), parcel creation (COL references), automatic weight-based pricing, automatic storage fees, grouping rules, carrier restrictions, shipment requests, documents, history and e-mail notifications.
 
 == Upgrade Notice ==
+
+= 1.6.4 =
+Layout fixes on the settings screen and on wide tables. No database change.
 
 = 1.6.3 =
 Directory listing wording only. No database or behaviour change.
