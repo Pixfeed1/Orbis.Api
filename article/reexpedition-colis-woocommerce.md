@@ -109,7 +109,7 @@ La règle saine consiste donc à offrir une période, puis à facturer au jour. 
 
 L'automatisation change tout ici. Le calcul se fait seul, sans que personne y pense. De cette façon, vous ne facturez ni trop tôt, ni jamais.
 
-[pf_cta type="filled" icon="download" title="L'outil des captures est libre et gratuit" text="Les écrans de cet article proviennent de Colisly, l'extension que nous avons développée et publiée sur le répertoire officiel WordPress.org. Elle gère les fiches clients, les colis, le groupage, les frais de stockage et la facturation WooCommerce. Vous pouvez l'installer et l'utiliser librement, sans nous demander quoi que ce soit." btn_text="Voir Colisly sur WordPress.org" btn_url="https://wordpress.org/plugins/colisly/"]
+[pf_cta type="filled" icon="download" title="Colisly, l'extension qui gère tout ça, est gratuite" text="Fiches clients, références uniques, colis, groupage, frais de stockage automatiques et facturation WooCommerce : c'est l'outil que vous voyez sur les captures de cet article. Nous l'avons développé, et il est publié sur le répertoire officiel WordPress.org. Installez-le et utilisez-le librement, sans nous demander quoi que ce soit." btn_text="Voir Colisly sur WordPress.org" btn_url="https://wordpress.org/plugins/colisly/"]
 
 ## Facturer la réexpédition de colis dans WooCommerce
 
