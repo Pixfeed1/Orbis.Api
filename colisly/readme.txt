@@ -4,7 +4,7 @@ Tags: woocommerce, parcels, shipping, logistics, clients
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.6.1
+Stable tag: 1.6.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -55,8 +55,8 @@ The architecture is built to grow: actions and filters (`colisly_parcel_created`
 
 1. Upload the `colisly` folder to `/wp-content/plugins/`, or install it from the Plugins screen.
 2. Activate the plugin. WooCommerce must be installed and active.
-3. Go to "Colis Pro → Settings" to configure the pricing tiers, storage fees and carriers.
-4. Create a client record from "Colis Pro → Clients", then register parcels from "Colis Pro → New parcel".
+3. Go to "Colisly → Settings" to configure the pricing tiers, storage fees and carriers.
+4. Create a client record from "Colisly → Clients", then register parcels from "Colisly → New parcel".
 
 == Frequently Asked Questions ==
 
@@ -88,6 +88,9 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 4. Customer "My parcels" screen in the WooCommerce My Account area.
 
 == Changelog ==
+
+= 1.6.2 =
+* The installation instructions referred to a "Colis Pro" admin menu, which no longer exists; the menu is "Colisly".
 
 = 1.6.1 =
 * The plugin and author URLs now point to the plugin directory page and to the author site, instead of a development repository.
@@ -131,6 +134,9 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 * Initial release: client management (CL references), parcel creation (COL references), automatic weight-based pricing, automatic storage fees, grouping rules, carrier restrictions, shipment requests, documents, history and e-mail notifications.
 
 == Upgrade Notice ==
+
+= 1.6.2 =
+Documentation fix only. No database or behaviour change.
 
 = 1.6.1 =
 Housekeeping release: plugin and author URLs updated. No database or behaviour change.

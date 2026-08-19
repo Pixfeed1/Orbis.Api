@@ -11,3 +11,14 @@ officiel (installation par ZIP). Pour les activer sur un site :
 
 Le fichier modèle `languages/*.pot` reste dans le plugin pour permettre de
 régénérer ou compléter les traductions.
+
+## Traduction du readme
+
+`readme-fr_FR.txt` est la traduction française de `colisly/readme.txt`. Elle ne
+sert pas au plugin lui-même : elle alimente le sous-projet **Stable Readme** sur
+translate.wordpress.org, qui contrôle l'affichage de la page publique
+https://wordpress.org/plugins/colisly pour les visiteurs francophones.
+
+Sa structure suit section par section celle du readme anglais, afin que chaque
+chaîne de GlotPress se retrouve au même endroit. Les en-têtes (Contributors,
+Tags, Requires at least…) ne sont pas traduisibles et n'y figurent pas.
