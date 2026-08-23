@@ -169,6 +169,35 @@ supprimer l'extension, par exemple avec WP-CLI :
 == Changelog ==
 ================================================================================
 
+= 1.6.6 =
+* Nouveau : un raccourci Réglages sur l'écran des extensions.
+* Nouveau : un avertissement sur les écrans de l'extension lorsque la boutique
+  est en mode « bientôt disponible » ou qu'aucun moyen de paiement n'est actif.
+  Les demandes d'expédition se terminent sur la page de paiement WooCommerce et
+  échouaient jusqu'ici sans la moindre explication.
+* Correction : ajouter un client possédant déjà une fiche annonçait une création
+  qui n'avait pas eu lieu.
+* Correction : un palier tarifaire plafonné à zéro était accepté et décalait
+  silencieusement tous les colis au palier suivant. Il est désormais écarté
+  comme une ligne vide.
+* Correction : sur les écrans étroits, les dimensions du colis se coupaient
+  entre un libellé et son champ.
+* Le texte d'aide des transporteurs autorisés précise maintenant que n'en
+  cocher aucun ne pose aucune restriction.
+
+= 1.6.5 =
+* Correction : dans l'espace client, seul le numéro de suivi peut désormais se
+  couper en milieu de chaîne. En 1.6.4 toutes les cellules le pouvaient, ce qui
+  éclatait les dates et les références sur plusieurs lignes.
+
+= 1.6.4 =
+* Correction : dans les réglages, les champs des paliers tarifaires et des
+  transporteurs débordaient de leurs cellules ; la liste des colis et les
+  tableaux client étaient rognés, masquant leur dernière colonne. Les longs
+  numéros de suivi se coupent maintenant pour que les tableaux client tiennent
+  dans la colonne du compte, et les larges tableaux d'administration défilent
+  au lieu d'être tronqués.
+
 = 1.6.3 =
 * Formulation de la fiche du répertoire : les étiquettes et la description
   emploient désormais les termes du métier « package forwarding »,
@@ -276,6 +305,18 @@ supprimer l'extension, par exemple avec WP-CLI :
 ================================================================================
 == Upgrade Notice ==
 ================================================================================
+
+= 1.6.6 =
+Corrections d'ergonomie relevées lors d'un parcours complet. Aucun changement
+de base de données.
+
+= 1.6.5 =
+Correction de mise en page dans les tableaux client. Aucun changement de base
+de données.
+
+= 1.6.4 =
+Corrections de mise en page sur l'écran des réglages et sur les tableaux
+larges. Aucun changement de base de données.
 
 = 1.6.3 =
 Formulation de la fiche du répertoire uniquement. Aucun changement de base de
