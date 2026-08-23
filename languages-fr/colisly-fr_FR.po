@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.6.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.6.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -12,19 +12,19 @@ msgstr ""
 
 
 msgid "Colisly Parcel Forwarding"
-msgstr ""
+msgstr "Colisly Parcel Forwarding"
 
 msgid "https://wordpress.org/plugins/colisly/"
-msgstr ""
+msgstr "https://wordpress.org/plugins/colisly/"
 
 msgid "Client and parcel management for a parcel receiving, storage, grouping and forwarding business, natively integrated with WooCommerce."
 msgstr "Gestion des clients et des colis pour une activité de réception, stockage, regroupement et expédition de colis, intégrée nativement à WooCommerce."
 
 msgid "Pixfeed"
-msgstr ""
+msgstr "Pixfeed"
 
 msgid "https://pixfeed.net/"
-msgstr ""
+msgstr "https://pixfeed.net/"
 
 msgid "Access denied."
 msgstr "Accès refusé."
@@ -335,8 +335,8 @@ msgstr "Si décoché, ce colis devra obligatoirement être expédié seul. Cette
 msgid "Allowed carriers"
 msgstr "Transporteurs autorisés"
 
-msgid "Uncheck incompatible carriers (oversize, restrictions…). Only checked carriers will be offered to the client."
-msgstr "Décochez les transporteurs incompatibles (hors gabarit, restrictions…). Seuls les transporteurs cochés seront proposés au client."
+msgid "Uncheck incompatible carriers (oversize, restrictions…). Only checked carriers will be offered to the client. Leaving none checked places no restriction: every carrier stays available."
+msgstr "Décochez les transporteurs incompatibles (hors gabarit, restrictions…). Seuls les transporteurs cochés seront proposés au client. N’en cocher aucun n’applique aucune restriction : tous les transporteurs restent disponibles."
 
 msgid "The parcel price is computed automatically from its weight when saved, then used for the shipment request."
 msgstr "Le tarif du colis est calculé automatiquement à partir de son poids dès l’enregistrement, puis utilisé lors de la demande d’expédition."
@@ -369,7 +369,7 @@ msgid "Weight-based pricing"
 msgstr "Tarification au poids"
 
 msgid "A parcel price is given by the first tier whose maximum weight is greater than or equal to the parcel weight. Beyond the last tier: base price + price per kg."
-msgstr "Le tarif d’un colis est déterminé par le premier palier dont le poids maximal est supérieur ou égal au poids du colis. Au-delà du dernier palier : prix de base + prix par kg."
+msgstr "Le tarif d’un colis est déterminé par le premier palier dont le poids maximal est supérieur ou égal au poids du colis. Au-delà du dernier palier : prix de base + prix par kg."
 
 msgid "Maximum weight (kg)"
 msgstr "Poids maximal (kg)"
@@ -456,7 +456,7 @@ msgid "The document could not be saved."
 msgstr "Impossible d’enregistrer le document."
 
 msgid "Document “%s” added."
-msgstr "Document « %s » ajouté."
+msgstr "Document « %s » ajouté."
 
 msgid "Document not found."
 msgstr "Document introuvable."
@@ -478,9 +478,9 @@ msgid ""
 msgstr ""
 "Bonjour,\n"
 "\n"
-"Nous avons bien réceptionné votre colis %1$s (poids : %2$s kg, n° de suivi : %3$s).\n"
+"Nous avons bien réceptionné votre colis %1$s (poids : %2$s kg, n° de suivi : %3$s).\n"
 "\n"
-"Il est désormais disponible dans votre espace client, rubrique « Mes colis ». Vous bénéficiez de %4$d jours de stockage gratuit.\n"
+"Il est désormais disponible dans votre espace client, rubrique « Mes colis ». Vous bénéficiez de %4$d jours de stockage gratuit.\n"
 "\n"
 "Cordialement"
 
@@ -497,8 +497,8 @@ msgid ""
 msgstr ""
 "Une nouvelle demande d’expédition %1$s vient d’être créée par le client %2$s.\n"
 "\n"
-"Nombre de colis : %3$d\n"
-"Transporteur souhaité : %4$s\n"
+"Nombre de colis : %3$d\n"
+"Transporteur souhaité : %4$s\n"
 "\n"
 "Connectez-vous à l’administration pour la traiter."
 
@@ -577,7 +577,7 @@ msgid "The status could not be updated."
 msgstr "Impossible de mettre à jour le statut."
 
 msgid "Parcel %1$s: status “%2$s” → “%3$s”."
-msgstr "Colis %1$s : statut « %2$s » → « %3$s »."
+msgstr "Colis %1$s : statut « %2$s » → « %3$s »."
 
 msgctxt "shipment status"
 msgid "Requested"
@@ -634,7 +634,7 @@ msgid "Shipment not found."
 msgstr "Expédition introuvable."
 
 msgid "Shipment %1$s: status “%2$s” → “%3$s”."
-msgstr "Expédition %1$s : statut « %2$s » → « %3$s »."
+msgstr "Expédition %1$s : statut « %2$s » → « %3$s »."
 
 msgid "Parcel received (Colisly Parcel Forwarding)"
 msgstr "Colis réceptionné (Colisly Parcel Forwarding)"
@@ -658,7 +658,7 @@ msgid "Recipient(s)"
 msgstr "Destinataire(s)"
 
 msgid "Comma-separated addresses. Defaults to %s."
-msgstr "Adresses séparées par des virgules. Par défaut : %s."
+msgstr "Adresses séparées par des virgules. Par défaut : %s."
 
 msgid "[{site_title}] New shipment request {shipment_reference} (client {client_reference})"
 msgstr "[{site_title}] Nouvelle demande d’expédition {shipment_reference} (client {client_reference})"
@@ -698,7 +698,7 @@ msgid "No client record is linked to your account yet."
 msgstr "Aucune fiche client n’est associée à votre compte pour le moment."
 
 msgid "Your client reference:"
-msgstr "Votre référence client :"
+msgstr "Votre référence client :"
 
 msgid "No parcels yet."
 msgstr "Aucun colis pour le moment."
@@ -731,19 +731,19 @@ msgid "No parcels available for a shipment."
 msgstr "Aucun colis disponible pour une expédition."
 
 msgid "Select the parcels to ship:"
-msgstr "Sélectionnez les colis à expédier :"
+msgstr "Sélectionnez les colis à expédier :"
 
 msgid "No — this parcel must be shipped alone"
 msgstr "Non — ce colis doit être expédié seul"
 
 msgid "Preferred carrier:"
-msgstr "Transporteur souhaité :"
+msgstr "Transporteur souhaité :"
 
 msgid "%1$s — %2$s + %3$s/kg"
 msgstr "%1$s — %2$s + %3$s/kg"
 
 msgid "Estimated total:"
-msgstr "Total estimé :"
+msgstr "Total estimé :"
 
 msgid "(parcels + storage fees + transport — confirmed on the payment page)"
 msgstr "(colis + frais de stockage + transport — confirmé sur la page de paiement)"
@@ -758,7 +758,7 @@ msgid "Hello,"
 msgstr "Bonjour,"
 
 msgid "We have received your parcel %s at the warehouse. It is now visible in your account, under “My parcels”."
-msgstr "Nous avons bien réceptionné votre colis %s à l’entrepôt. Il est désormais visible dans votre espace client, rubrique « Mes colis »."
+msgstr "Nous avons bien réceptionné votre colis %s à l’entrepôt. Il est désormais visible dans votre espace client, rubrique « Mes colis »."
 
 msgid "Weight"
 msgstr "Poids"
@@ -784,31 +784,31 @@ msgid "Open the client record"
 msgstr "Ouvrir la fiche client"
 
 msgid "Parcel number:"
-msgstr "Numéro du colis :"
+msgstr "Numéro du colis :"
 
 msgid "Tracking number:"
-msgstr "Numéro de suivi :"
+msgstr "Numéro de suivi :"
 
 msgid "Weight:"
-msgstr "Poids :"
+msgstr "Poids :"
 
 msgid "Free storage: %d days"
-msgstr "Stockage gratuit : %d jours"
+msgstr "Stockage gratuit : %d jours"
 
 msgid "Carrier:"
-msgstr "Transporteur :"
+msgstr "Transporteur :"
 
 msgid "Parcels:"
-msgstr "Colis :"
+msgstr "Colis :"
 
 msgid "Total weight:"
-msgstr "Poids total :"
+msgstr "Poids total :"
 
 msgid "Total:"
-msgstr "Total :"
+msgstr "Total :"
 
 msgid "Client record:"
-msgstr "Fiche client :"
+msgstr "Fiche client :"
 
 msgid "Client record (Colisly Parcel Forwarding)"
 msgstr "Fiche client (Colisly Parcel Forwarding)"
@@ -826,4 +826,30 @@ msgid "Personal data erased following a privacy request."
 msgstr "Données personnelles effacées à la suite d’une demande de confidentialité."
 
 msgid "Parcel and shipment records are retained as business/accounting records; documents, phone number, notes, tracking numbers and photos have been removed."
-msgstr "Les enregistrements de colis et d’expéditions sont conservés à titre de justificatifs comptables ; les documents, le numéro de téléphone, les notes, les numéros de suivi et les photos ont été supprimés."
+msgstr "Les enregistrements de colis et d’expéditions sont conservés à titre de justificatifs comptables ; les documents, le numéro de téléphone, les notes, les numéros de suivi et les photos ont été supprimés."
+
+msgid "Shared with the client"
+msgstr "Partagé avec le client"
+
+msgid "Internal notes"
+msgstr "Notes internes"
+
+msgid "%s client"
+msgid_plural "%s clients"
+msgstr[0] "%s client"
+msgstr[1] "%s clients"
+
+msgid ", and "
+msgstr ", et "
+
+msgid "Colisly: shipment requests will not go through because %s."
+msgstr "Colisly : les demandes d’expédition n’aboutiront pas car %s."
+
+msgid "the store is in coming soon mode, so customers cannot reach the payment page"
+msgstr "la boutique est en mode « Bientôt disponible », les clients ne peuvent donc pas atteindre la page de paiement"
+
+msgid "no payment method is enabled, so shipment orders cannot be paid"
+msgstr "aucun moyen de paiement n’est activé, les commandes d’expédition ne peuvent donc pas être réglées"
+
+msgid "This user already has a client record. Here it is."
+msgstr "Cet utilisateur possède déjà une fiche client. La voici."

@@ -169,6 +169,25 @@ supprimer l'extension, par exemple avec WP-CLI :
 == Changelog ==
 ================================================================================
 
+= 1.6.7 =
+* Correction : un colis créé sans que la décision de groupage soit précisée
+  était enregistré en « doit être expédié seul », à rebours de la valeur par
+  défaut de la colonne comme du formulaire de réception, où le groupage est
+  autorisé. Le groupage est le fondement même du métier : l'omission vaut
+  désormais autorisation.
+* Confidentialité : l'export des données personnelles couvre maintenant tout ce
+  que l'effacement supprime. Les notes internes de la fiche client, le
+  commentaire interne de chaque colis et les documents non partagés avec le
+  client étaient effacés sur demande sans jamais être communiqués en cas de
+  demande d'accès.
+* Correction : le refus d'une action renvoyait un code HTTP 500, que les
+  hébergeurs et les outils de supervision interprètent comme une panne du
+  serveur. Le code renvoyé est désormais 403.
+* Correction : la liste des clients affichait tous les numéros de page. Les
+  longues séries sont maintenant repliées et le nombre de fiches est indiqué.
+* Correction : la désinstallation avec suppression des données laissait le droit
+  colisly_manage sur chaque rôle ainsi qu'une option résiduelle.
+
 = 1.6.6 =
 * Nouveau : un raccourci Réglages sur l'écran des extensions.
 * Nouveau : un avertissement sur les écrans de l'extension lorsque la boutique
@@ -305,6 +324,10 @@ supprimer l'extension, par exemple avec WP-CLI :
 ================================================================================
 == Upgrade Notice ==
 ================================================================================
+
+= 1.6.7 =
+Export de données personnelles complété et trois corrections relevées lors d'un
+second audit. Aucun changement de base de données.
 
 = 1.6.6 =
 Corrections d'ergonomie relevées lors d'un parcours complet. Aucun changement
