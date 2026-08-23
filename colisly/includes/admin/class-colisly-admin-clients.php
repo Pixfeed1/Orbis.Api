@@ -21,7 +21,7 @@ class COLISLY_Admin_Clients {
 	 */
 	public static function render() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
-			wp_die( esc_html__( 'Access denied.', 'colisly' ) );
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only routing.
@@ -525,7 +525,7 @@ class COLISLY_Admin_Clients {
 	 */
 	public static function handle_create() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
-			wp_die( esc_html__( 'Access denied.', 'colisly' ) );
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
 		}
 
 		check_admin_referer( 'colisly_create_client' );
@@ -560,7 +560,7 @@ class COLISLY_Admin_Clients {
 	 */
 	public static function handle_update() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
-			wp_die( esc_html__( 'Access denied.', 'colisly' ) );
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
 		}
 
 		$client_id = isset( $_POST['client_id'] ) ? absint( $_POST['client_id'] ) : 0;
@@ -585,7 +585,7 @@ class COLISLY_Admin_Clients {
 	 */
 	public static function handle_add_document() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
-			wp_die( esc_html__( 'Access denied.', 'colisly' ) );
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
 		}
 
 		$client_id = isset( $_POST['client_id'] ) ? absint( $_POST['client_id'] ) : 0;
@@ -615,7 +615,7 @@ class COLISLY_Admin_Clients {
 	 */
 	public static function handle_set_shipment_status() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
-			wp_die( esc_html__( 'Access denied.', 'colisly' ) );
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
 		}
 
 		$shipment_id = isset( $_POST['shipment_id'] ) ? absint( $_POST['shipment_id'] ) : 0;
@@ -661,18 +661,35 @@ class COLISLY_Admin_Clients {
 			admin_url( 'admin.php' )
 		);
 
-		echo '<div class="tablenav"><div class="tablenav-pages"><span class="pagination-links">';
-		for ( $i = 1; $i <= $pages; $i++ ) {
-			if ( $i === $paged ) {
-				printf( '<span class="paging-input current">%s</span> ', esc_html( number_format_i18n( $i ) ) );
-			} else {
-				printf(
-					'<a class="button" href="%1$s">%2$s</a> ',
-					esc_url( add_query_arg( 'paged', $i, $base ) ),
-					esc_html( number_format_i18n( $i ) )
-				);
-			}
-		}
-		echo '</span></div></div>';
+		// paginate_links() collapses long ranges behind an ellipsis. Printing
+		// every page number turns into a wall of links past a few hundred
+		// clients, and hides where you actually are.
+		$links = paginate_links(
+			array(
+				'base'      => add_query_arg( 'paged', '%#%', $base ),
+				'format'    => '',
+				'current'   => $paged,
+				'total'     => $pages,
+				'mid_size'  => 2,
+				'end_size'  => 1,
+				'prev_text' => '&laquo;',
+				'next_text' => '&raquo;',
+				'type'      => 'plain',
+			)
+		);
+
+		echo '<div class="tablenav"><div class="tablenav-pages">';
+		printf(
+			'<span class="displaying-num">%s</span> ',
+			esc_html(
+				sprintf(
+					/* translators: %s: number of client records. */
+					_n( '%s client', '%s clients', $total, 'colisly' ),
+					number_format_i18n( $total )
+				)
+			)
+		);
+		echo '<span class="pagination-links">' . wp_kses_post( (string) $links ) . '</span>';
+		echo '</div></div>';
 	}
 }

@@ -82,7 +82,7 @@ class COLISLY_Parcels {
 	 *     @type float  $height           Height in cm (admin only).
 	 *     @type string $photo_path       Private-directory path of the reception photo.
 	 *     @type string $internal_note    Internal admin-only comment.
-	 *     @type int    $allow_grouping   Whether grouping is allowed (1/0).
+	 *     @type int    $allow_grouping   Whether grouping is allowed (1/0). Defaults to 1 when omitted.
 	 *     @type array  $allowed_carriers Carrier slugs allowed for this parcel (empty = all).
 	 * }
 	 * @return int|WP_Error Parcel ID on success.
@@ -125,7 +125,13 @@ class COLISLY_Parcels {
 				'height'           => isset( $data['height'] ) && '' !== $data['height'] ? self::to_float( $data['height'] ) : null,
 				'photo_path'       => ! empty( $data['photo_path'] ) ? sanitize_file_name( $data['photo_path'] ) : '',
 				'internal_note'    => isset( $data['internal_note'] ) ? sanitize_textarea_field( $data['internal_note'] ) : '',
-				'allow_grouping'   => empty( $data['allow_grouping'] ) ? 0 : 1,
+				// Absent means "not decided", and the decision that matches the
+				// column default and the reception form is to allow grouping.
+				// Reading absence as a refusal made every parcel created
+				// through the API shippable only on its own.
+				'allow_grouping'   => array_key_exists( 'allow_grouping', $data )
+					? ( empty( $data['allow_grouping'] ) ? 0 : 1 )
+					: 1,
 				'allowed_carriers' => wp_json_encode( $carriers ),
 				'price'            => $price,
 				'status'           => 'available',

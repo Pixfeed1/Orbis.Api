@@ -21,7 +21,7 @@ class COLISLY_Admin_Parcels {
 	 */
 	public static function render_list() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
-			wp_die( esc_html__( 'Access denied.', 'colisly' ) );
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
 		}
 
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only filters.
@@ -146,7 +146,7 @@ class COLISLY_Admin_Parcels {
 	 */
 	public static function render_new() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
-			wp_die( esc_html__( 'Access denied.', 'colisly' ) );
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only prefill.
@@ -295,7 +295,7 @@ class COLISLY_Admin_Parcels {
 	 */
 	public static function handle_create() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
-			wp_die( esc_html__( 'Access denied.', 'colisly' ) );
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
 		}
 
 		check_admin_referer( 'colisly_create_parcel' );
@@ -356,7 +356,7 @@ class COLISLY_Admin_Parcels {
 	 */
 	public static function handle_set_status() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
-			wp_die( esc_html__( 'Access denied.', 'colisly' ) );
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
 		}
 
 		$parcel_id = isset( $_POST['parcel_id'] ) ? absint( $_POST['parcel_id'] ) : 0;

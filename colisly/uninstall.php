@@ -39,4 +39,14 @@ if ( is_dir( $colisly_private ) ) {
 delete_option( 'colisly_settings' );
 delete_option( 'colisly_db_version' );
 delete_option( 'colisly_flush_rewrite_rules' );
+delete_option( 'colisly_order_meta_migrated' );
 delete_option( 'colisly_remove_data_on_uninstall' );
+
+// The capability was added to roles on activation, so take it back out.
+// Left behind it would linger in the database long after the plugin is gone.
+foreach ( array_keys( wp_roles()->roles ) as $colisly_role_name ) {
+	$colisly_role = get_role( $colisly_role_name );
+	if ( $colisly_role && $colisly_role->has_cap( 'colisly_manage' ) ) {
+		$colisly_role->remove_cap( 'colisly_manage' );
+	}
+}

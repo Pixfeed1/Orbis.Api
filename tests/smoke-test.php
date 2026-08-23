@@ -90,10 +90,19 @@ colisly_check( 'Tarif hors palier (10 kg = 5 + 2x10 = 25.00)', 25.0 === COLISLY_
 // ---------------------------------------------------------------------------
 // Parcel creation.
 // ---------------------------------------------------------------------------
-// Carriers are site settings and can be renamed or removed, so take two from
-// the current configuration instead of assuming the shipped defaults.
-$colisly_two_carriers = array_slice( wp_list_pluck( COLISLY_Carriers::all(), 'slug' ), 0, 2 );
-colisly_check( 'Au moins deux transporteurs configures', 2 === count( $colisly_two_carriers ) );
+// Carriers are site settings, so the suite pins its own set instead of
+// depending on whatever the site happens to hold. Reading the existing
+// configuration made the scenarios below depend on install order.
+$settings             = COLISLY_Settings::all();
+$settings['carriers'] = array(
+	array( 'slug' => 'colissimo', 'name' => 'Colissimo', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
+	array( 'slug' => 'chronopost', 'name' => 'Chronopost', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
+	array( 'slug' => 'ups', 'name' => 'UPS', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
+);
+COLISLY_Settings::update( $settings );
+
+$colisly_two_carriers = array( 'colissimo', 'chronopost' );
+colisly_check( 'Transporteurs de test en place', 3 === count( COLISLY_Carriers::all() ) );
 
 $parcel_id = COLISLY_Parcels::create(
 	array(
@@ -175,12 +184,11 @@ colisly_check( 'Indicateur frais de stockage = 10.00', 10.0 === $indicators['sto
 // Carrier tariffs are zeroed here so the totals below only cover parcels and
 // storage fees; the carrier tariff section further down tests the transport
 // pricing explicitly.
-$settings             = COLISLY_Settings::all();
-$settings['carriers'] = array(
-	array( 'slug' => 'colissimo', 'name' => 'Colissimo', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
-	array( 'slug' => 'chronopost', 'name' => 'Chronopost', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
-	array( 'slug' => 'ups', 'name' => 'UPS', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
-);
+$settings = COLISLY_Settings::all();
+foreach ( $settings['carriers'] as $colisly_i => $colisly_carrier ) {
+	$settings['carriers'][ $colisly_i ]['price_base']   = 0;
+	$settings['carriers'][ $colisly_i ]['price_per_kg'] = 0;
+}
 COLISLY_Settings::update( $settings );
 
 $err = COLISLY_Shipments::request( $client_id, array( $parcel_id, $parcel2_id ), 'colissimo' );

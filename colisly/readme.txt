@@ -4,7 +4,7 @@ Tags: woocommerce, package forwarding, parcel forwarding, logistics, warehouse
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.6.6
+Stable tag: 1.6.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,13 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 
 == Changelog ==
 
+= 1.6.7 =
+* Fix: a parcel created without stating a grouping decision was stored as "must be shipped alone", against both the column default and the reception form, where grouping is allowed. Grouping is what the whole trade rests on, so the omission now means allowed.
+* Privacy: the personal data export now covers what the eraser deletes. Internal notes on the client record, the internal comment on each parcel and the documents that are not shared with the client were being erased on request but never disclosed on access.
+* Fix: refusing an action returned HTTP 500, which reads as a server failure to hosts and monitoring. It now returns 403.
+* Fix: the client list printed every page number. It now collapses long ranges and shows the number of records.
+* Fix: uninstalling with data removal enabled left the colisly_manage capability on every role and one option behind.
+
 = 1.6.6 =
 * New: a Settings shortcut on the plugins screen.
 * New: a warning on the plugin screens when the store is in coming soon mode or has no payment method enabled, since shipment requests end on the WooCommerce payment page and would otherwise fail with no explanation.
@@ -151,6 +158,9 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 * Initial release: client management (CL references), parcel creation (COL references), automatic weight-based pricing, automatic storage fees, grouping rules, carrier restrictions, shipment requests, documents, history and e-mail notifications.
 
 == Upgrade Notice ==
+
+= 1.6.7 =
+Privacy export completeness and three fixes found in a second audit. No database change.
 
 = 1.6.6 =
 Usability fixes found during a full walkthrough. No database change.

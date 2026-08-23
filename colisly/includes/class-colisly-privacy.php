@@ -106,6 +106,12 @@ class COLISLY_Privacy {
 					'name'  => __( 'Created on', 'colisly' ),
 					'value' => $client->created_at,
 				),
+				// The eraser blanks this field, so the right of access has to
+				// cover it too: it is data held about this person.
+				array(
+					'name'  => __( 'Internal notes', 'colisly' ),
+					'value' => (string) $client->admin_notes,
+				),
 			),
 		);
 
@@ -122,6 +128,10 @@ class COLISLY_Privacy {
 					array(
 						'name'  => __( 'Tracking number', 'colisly' ),
 						'value' => $parcel->tracking_number,
+					),
+					array(
+						'name'  => __( 'Internal comment', 'colisly' ),
+						'value' => (string) $parcel->internal_note,
 					),
 					array(
 						'name'  => __( 'Weight (kg)', 'colisly' ),
@@ -169,7 +179,10 @@ class COLISLY_Privacy {
 			);
 		}
 
-		foreach ( COLISLY_Documents::for_client( (int) $client->id, true ) as $document ) {
+		// Every document, not only the ones the client can see in their
+		// account: the eraser deletes them all, so the export must list them
+		// all. Their visibility is reported rather than used as a filter.
+		foreach ( COLISLY_Documents::for_client( (int) $client->id ) as $document ) {
 			$items[] = array(
 				'group_id'    => 'colisly_documents',
 				'group_label' => __( 'Documents (Colisly Parcel Forwarding)', 'colisly' ),
@@ -182,6 +195,10 @@ class COLISLY_Privacy {
 					array(
 						'name'  => __( 'Added on', 'colisly' ),
 						'value' => $document->created_at,
+					),
+					array(
+						'name'  => __( 'Shared with the client', 'colisly' ),
+						'value' => 'client' === $document->visibility ? __( 'Yes', 'colisly' ) : __( 'No', 'colisly' ),
 					),
 				),
 			);

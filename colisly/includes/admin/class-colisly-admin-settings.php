@@ -21,7 +21,7 @@ class COLISLY_Admin_Settings {
 	 */
 	public static function render() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
-			wp_die( esc_html__( 'Access denied.', 'colisly' ) );
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
 		}
 
 		$settings = COLISLY_Settings::all();
@@ -191,7 +191,7 @@ class COLISLY_Admin_Settings {
 	 */
 	public static function handle_save() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
-			wp_die( esc_html__( 'Access denied.', 'colisly' ) );
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
 		}
 
 		check_admin_referer( 'colisly_save_settings' );
