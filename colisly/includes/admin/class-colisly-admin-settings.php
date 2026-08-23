@@ -211,6 +211,11 @@ class COLISLY_Admin_Settings {
 			if ( '' === $weight || ! isset( $prices[ $i ] ) || '' === $prices[ $i ] ) {
 				continue;
 			}
+			// A tier capped at zero can never match a parcel, and silently
+			// shifts every parcel to the next tier. Drop it like an empty row.
+			if ( (float) $weight <= 0 ) {
+				continue;
+			}
 			$tiers[] = array(
 				'max_weight' => max( 0, (float) $weight ),
 				'price'      => max( 0, (float) $prices[ $i ] ),

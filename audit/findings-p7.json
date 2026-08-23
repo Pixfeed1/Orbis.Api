@@ -1,0 +1,8 @@
+[
+ {
+  "sev": "LOGIQUE",
+  "screen": "demande d expedition",
+  "what": "un colis sans transporteur autorise en propose quand meme",
+  "detail": "[\"dhl\",\"ups\",\"fedex\",\"colissimo\"]"
+ }
+]

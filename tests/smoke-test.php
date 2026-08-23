@@ -90,6 +90,11 @@ colisly_check( 'Tarif hors palier (10 kg = 5 + 2x10 = 25.00)', 25.0 === COLISLY_
 // ---------------------------------------------------------------------------
 // Parcel creation.
 // ---------------------------------------------------------------------------
+// Carriers are site settings and can be renamed or removed, so take two from
+// the current configuration instead of assuming the shipped defaults.
+$colisly_two_carriers = array_slice( wp_list_pluck( COLISLY_Carriers::all(), 'slug' ), 0, 2 );
+colisly_check( 'Au moins deux transporteurs configures', 2 === count( $colisly_two_carriers ) );
+
 $parcel_id = COLISLY_Parcels::create(
 	array(
 		'client_id'        => $client_id,
@@ -100,7 +105,7 @@ $parcel_id = COLISLY_Parcels::create(
 		'height'           => 20,
 		'internal_note'    => 'Emballage endommage a la reception',
 		'allow_grouping'   => 1,
-		'allowed_carriers' => array( 'colissimo', 'chronopost' ),
+		'allowed_carriers' => $colisly_two_carriers,
 	)
 );
 colisly_check( 'Colis cree', is_int( $parcel_id ) );
@@ -110,7 +115,7 @@ colisly_check( 'Reference colis au format COL000000', 1 === preg_match( '/^COL\d
 colisly_check( 'Statut initial disponible', 'available' === $parcel->status );
 colisly_check( 'Tarif calcule automatiquement (3.2 kg = 15.00)', 15.0 === (float) $parcel->price );
 colisly_check( 'Date de reception enregistree', ! empty( $parcel->received_at ) );
-colisly_check( 'Transporteurs autorises enregistres', array( 'colissimo', 'chronopost' ) === COLISLY_Parcels::allowed_carrier_slugs( $parcel ) );
+colisly_check( 'Transporteurs autorises enregistres', $colisly_two_carriers === COLISLY_Parcels::allowed_carrier_slugs( $parcel ) );
 
 $invalid = COLISLY_Parcels::create( array( 'client_id' => $client_id, 'weight' => 0 ) );
 colisly_check( 'Poids nul refuse', is_wp_error( $invalid ) );

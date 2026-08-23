@@ -228,12 +228,18 @@ class COLISLY_Admin_Parcels {
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Dimensions (cm, visible to administrators only)', 'colisly' ); ?></th>
 						<td class="colisly-dimensions">
-							<label for="colisly-length"><?php esc_html_e( 'Length', 'colisly' ); ?></label>
-							<input type="number" id="colisly-length" name="length" step="0.01" min="0" />
-							<label for="colisly-width"><?php esc_html_e( 'Width', 'colisly' ); ?></label>
-							<input type="number" id="colisly-width" name="width" step="0.01" min="0" />
-							<label for="colisly-height"><?php esc_html_e( 'Height', 'colisly' ); ?></label>
-							<input type="number" id="colisly-height" name="height" step="0.01" min="0" />
+							<span class="colisly-dimension">
+								<label for="colisly-length"><?php esc_html_e( 'Length', 'colisly' ); ?></label>
+								<input type="number" id="colisly-length" name="length" step="0.01" min="0" />
+							</span>
+							<span class="colisly-dimension">
+								<label for="colisly-width"><?php esc_html_e( 'Width', 'colisly' ); ?></label>
+								<input type="number" id="colisly-width" name="width" step="0.01" min="0" />
+							</span>
+							<span class="colisly-dimension">
+								<label for="colisly-height"><?php esc_html_e( 'Height', 'colisly' ); ?></label>
+								<input type="number" id="colisly-height" name="height" step="0.01" min="0" />
+							</span>
 						</td>
 					</tr>
 					<tr>
@@ -267,7 +273,7 @@ class COLISLY_Admin_Parcels {
 									<?php echo esc_html( $carrier['name'] ); ?>
 								</label>
 							<?php endforeach; ?>
-							<p class="description"><?php esc_html_e( 'Uncheck incompatible carriers (oversize, restrictions…). Only checked carriers will be offered to the client.', 'colisly' ); ?></p>
+							<p class="description"><?php esc_html_e( 'Uncheck incompatible carriers (oversize, restrictions…). Only checked carriers will be offered to the client. Leaving none checked places no restriction: every carrier stays available.', 'colisly' ); ?></p>
 						</td>
 					</tr>
 				</table>

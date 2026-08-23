@@ -45,6 +45,8 @@ final class COLISLY_Plugin {
 		// are registered by then, and front-end requests stay untouched.
 		add_action( 'admin_init', array( 'COLISLY_Install', 'migrate_legacy_order_meta' ) );
 		add_action( 'before_woocommerce_init', array( $this, 'declare_wc_compatibility' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( COLISLY_PLUGIN_FILE ), array( $this, 'action_links' ) );
+		add_action( 'admin_notices', array( $this, 'store_readiness_notice' ) );
 
 		COLISLY_Emails::init();
 		COLISLY_Ajax::init();
@@ -59,6 +61,74 @@ final class COLISLY_Plugin {
 
 		require_once COLISLY_PLUGIN_DIR . 'includes/frontend/class-colisly-account.php';
 		COLISLY_Account::init();
+	}
+
+	/**
+	 * Adds a Settings shortcut on the plugins screen.
+	 *
+	 * @param string[] $links Existing action links.
+	 * @return string[]
+	 */
+	public function action_links( $links ) {
+		array_unshift(
+			$links,
+			sprintf(
+				'<a href="%s">%s</a>',
+				esc_url( admin_url( 'admin.php?page=colisly-settings' ) ),
+				esc_html__( 'Settings', 'colisly' )
+			)
+		);
+
+		return $links;
+	}
+
+	/**
+	 * Warns when the shop cannot take a payment.
+	 *
+	 * Shipment requests end on the WooCommerce payment page. A store left in
+	 * coming soon mode, or with no payment method enabled, sends every customer
+	 * into a dead end with nothing to explain it, so say it here.
+	 *
+	 * @return void
+	 */
+	public function store_readiness_notice() {
+		if ( ! current_user_can( 'colisly_manage' ) ) {
+			return;
+		}
+
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		if ( ! $screen || false === strpos( (string) $screen->id, 'colisly' ) ) {
+			return;
+		}
+
+		if ( ! function_exists( 'WC' ) || ! WC()->payment_gateways ) {
+			return;
+		}
+
+		$problems = array();
+
+		if ( 'yes' === get_option( 'woocommerce_coming_soon' ) ) {
+			$problems[] = __( 'the store is in coming soon mode, so customers cannot reach the payment page', 'colisly' );
+		}
+
+		if ( ! WC()->payment_gateways->get_available_payment_gateways() ) {
+			$problems[] = __( 'no payment method is enabled, so shipment orders cannot be paid', 'colisly' );
+		}
+
+		if ( ! $problems ) {
+			return;
+		}
+
+		printf(
+			'<div class="notice notice-warning"><p>%s</p></div>',
+			esc_html(
+				sprintf(
+					/* translators: %s: list of blocking WooCommerce settings. */
+					__( 'Colisly: shipment requests will not go through because %s.', 'colisly' ),
+					implode( __( ', and ', 'colisly' ), $problems )
+				)
+			)
+		);
 	}
 
 	/**

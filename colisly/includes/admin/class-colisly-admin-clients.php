@@ -531,10 +531,23 @@ class COLISLY_Admin_Clients {
 		check_admin_referer( 'colisly_create_client' );
 
 		$user_id = isset( $_POST['user_id'] ) ? absint( $_POST['user_id'] ) : 0;
-		$result  = COLISLY_Clients::create( $user_id );
+
+		// A user can only hold one record, so say so instead of announcing a
+		// creation that did not happen.
+		$existing = COLISLY_Clients::get_by_user( $user_id );
+		$result   = COLISLY_Clients::create( $user_id );
 
 		if ( is_wp_error( $result ) ) {
 			COLISLY_Admin::redirect( 'colisly-clients', array(), $result->get_error_message(), 'error' );
+		}
+
+		if ( $existing ) {
+			COLISLY_Admin::redirect(
+				'colisly-clients',
+				array( 'client' => (int) $result ),
+				__( 'This user already has a client record. Here it is.', 'colisly' ),
+				'info'
+			);
 		}
 
 		COLISLY_Admin::redirect( 'colisly-clients', array( 'client' => (int) $result ), __( 'Client record created.', 'colisly' ) );

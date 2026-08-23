@@ -1,0 +1,8 @@
+[
+ {
+  "sev": "UX",
+  "screen": "A2-settings",
+  "what": "debordement mobile 5px",
+  "detail": "INPUT.colisly-carrier-enabled"
+ }
+]

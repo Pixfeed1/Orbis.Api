@@ -1,0 +1,20 @@
+[
+ {
+  "sev": "UX",
+  "screen": "B1-settings",
+  "what": "debordement mobile 5px",
+  "detail": "INPUT.colisly-carrier-enabled"
+ },
+ {
+  "sev": "LOGIQUE",
+  "screen": "reglages",
+  "what": "palier a poids nul enregistre",
+  "detail": "[\"0\",\"5\",\"\"]"
+ },
+ {
+  "sev": "UX",
+  "screen": "B2-settings-invalide",
+  "what": "debordement mobile 5px",
+  "detail": "INPUT.colisly-carrier-enabled"
+ }
+]
