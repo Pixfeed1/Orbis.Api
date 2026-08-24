@@ -4,7 +4,7 @@ Tags: woocommerce, package forwarding, parcel forwarding, logistics, warehouse
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.6.7
+Stable tag: 1.6.8
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -86,8 +86,13 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 2. Client record: indicators and tabs (parcels, shipments, documents, history).
 3. Parcel creation form with live client search and the client's current stock.
 4. Customer "My parcels" screen in the WooCommerce My Account area.
+5. Settings: free storage days, storage fee, weight-based pricing tiers and carrier tariffs.
 
 == Changelog ==
+
+= 1.6.8 =
+* Fix: in the customer account, the parcels and shipments tables were wider than the account column of most themes, so the last column sat off-screen behind a horizontal scrollbar nobody thinks to look for. WooCommerce only stacks these tables under a 768px viewport, but what constrains them is the column, not the window: at a 1600px viewport the six parcel columns still had to fit in 680px. They now stack on the container's own width.
+* New screenshot of the settings screen in the plugin directory listing.
 
 = 1.6.7 =
 * Fix: a parcel created without stating a grouping decision was stored as "must be shipped alone", against both the column default and the reception form, where grouping is allowed. Grouping is what the whole trade rests on, so the omission now means allowed.
@@ -158,6 +163,10 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 * Initial release: client management (CL references), parcel creation (COL references), automatic weight-based pricing, automatic storage fees, grouping rules, carrier restrictions, shipment requests, documents, history and e-mail notifications.
 
 == Upgrade Notice ==
+
+= 1.6.8 =
+Fixes a column left off-screen in the customer account on themes with a narrow
+content column. No database change.
 
 = 1.6.7 =
 Privacy export completeness and three fixes found in a second audit. No database change.

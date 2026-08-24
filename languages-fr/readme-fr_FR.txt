@@ -169,6 +169,17 @@ supprimer l'extension, par exemple avec WP-CLI :
 == Changelog ==
 ================================================================================
 
+= 1.6.8 =
+* Correction : dans l'espace client, les tableaux des colis et des expéditions
+  étaient plus larges que la colonne de contenu de la plupart des thèmes, si
+  bien que la dernière colonne se retrouvait hors écran, derrière une barre de
+  défilement horizontale que personne ne pense à chercher. WooCommerce
+  n'empile ces tableaux que sous 768 px de fenêtre, or ce qui les contraint
+  c'est la colonne, pas la fenêtre : avec une fenêtre de 1600 px, les six
+  colonnes devaient encore tenir dans 680 px. L'empilement se déclenche
+  désormais sur la largeur du conteneur lui-même.
+* Nouvelle capture de l'écran des réglages sur la fiche du répertoire.
+
 = 1.6.7 =
 * Correction : un colis créé sans que la décision de groupage soit précisée
   était enregistré en « doit être expédié seul », à rebours de la valeur par
@@ -324,6 +335,10 @@ supprimer l'extension, par exemple avec WP-CLI :
 ================================================================================
 == Upgrade Notice ==
 ================================================================================
+
+= 1.6.8 =
+Corrige une colonne hors écran dans l'espace client sur les thèmes à colonne
+de contenu étroite. Aucun changement de base de données.
 
 = 1.6.7 =
 Export de données personnelles complété et trois corrections relevées lors d'un

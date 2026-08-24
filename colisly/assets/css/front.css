@@ -15,7 +15,52 @@
 
 /* Whatever is left over stays reachable rather than being clipped. */
 .colisly-table-wrap {
+	container-type: inline-size;
 	overflow-x: auto;
+}
+
+/* WooCommerce stacks .shop_table_responsive only under a 768px viewport, but
+   what constrains these tables is the account column, not the window: at a
+   1600px viewport the six parcel columns still had to fit in 680px, so the
+   last one sat off-screen behind a scrollbar nobody thinks to look for. The
+   same stacking is applied here on the container's own width, reusing the
+   data-title attributes the markup already carries. Guarded above 768px so it
+   never fights WooCommerce's own rule. */
+@media (min-width: 769px) {
+	@container (max-width: 860px) {
+		.colisly-front-table thead {
+			display: none;
+		}
+
+		.colisly-front-table tr {
+			display: block;
+		}
+
+		/* Stacked, each parcel is a block of its own and needs to read as
+		   one, otherwise six labelled lines per parcel run into the next. */
+		.colisly-front-table tbody tr {
+			margin-bottom: 1.75em;
+		}
+
+		.colisly-front-table tbody tr:last-child {
+			margin-bottom: 0;
+		}
+
+		.colisly-front-table td {
+			display: flex;
+			gap: 1em;
+			justify-content: space-between;
+			text-align: right;
+			width: auto;
+		}
+
+		.colisly-front-table td::before {
+			content: attr(data-title);
+			flex: 0 0 auto;
+			font-weight: 600;
+			text-align: left;
+		}
+	}
 }
 
 .colisly-documents-list {
