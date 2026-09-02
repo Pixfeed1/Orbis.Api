@@ -80,6 +80,7 @@ class COLISLY_Settings {
 					'tiers'        => array(),
 				),
 			),
+			'zones'                   => array(),
 			'insurance_options'       => array(),
 			'notify_client_on_parcel' => 1,
 			'notify_admin_on_request' => 1,

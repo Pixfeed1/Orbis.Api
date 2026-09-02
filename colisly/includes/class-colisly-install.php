@@ -226,6 +226,7 @@ CREATE TABLE {$wpdb->prefix}colisly_shipments (
 	total_price DECIMAL(12,2) NOT NULL DEFAULT 0,
 	storage_fees DECIMAL(12,2) NOT NULL DEFAULT 0,
 	carrier_price DECIMAL(12,2) NOT NULL DEFAULT 0,
+	destination_country VARCHAR(2) NOT NULL DEFAULT '',
 	insured_value DECIMAL(12,2) NOT NULL DEFAULT 0,
 	insurance_price DECIMAL(12,2) NOT NULL DEFAULT 0,
 	requested_at DATETIME NOT NULL,

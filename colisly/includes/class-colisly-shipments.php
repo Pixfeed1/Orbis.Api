@@ -53,9 +53,12 @@ class COLISLY_Shipments {
 	 * @param string       $carrier         Carrier slug.
 	 * @param float|string $insurance_cover Cover amount chosen by the client,
 	 *                                      0 or unknown for no insurance.
+	 * @param string       $country         Destination ISO country code. Empty
+	 *                                      falls back to the client's shipping
+	 *                                      address.
 	 * @return int|WP_Error Shipment ID on success.
 	 */
-	public static function request( $client_id, $parcel_ids, $carrier, $insurance_cover = 0 ) {
+	public static function request( $client_id, $parcel_ids, $carrier, $insurance_cover = 0, $country = '' ) {
 		global $wpdb;
 
 		$client = COLISLY_Clients::get( $client_id );
@@ -106,8 +109,16 @@ class COLISLY_Shipments {
 			$total_price  += (float) $parcel->price;
 		}
 
+		// What the transport costs depends on where it goes. The client picks
+		// the destination on the form; when nothing is posted, the shipping
+		// address on his account is what the order would have used anyway.
+		$country = strtoupper( substr( preg_replace( '/[^A-Za-z]/', '', (string) $country ), 0, 2 ) );
+		if ( '' === $country ) {
+			$country = self::client_country( $client );
+		}
+
 		$storage_fees  = COLISLY_Storage::fees_for_parcels( $parcels );
-		$carrier_price = COLISLY_Carriers::price_for( $carrier, $total_weight );
+		$carrier_price = COLISLY_Carriers::price_for( $carrier, $total_weight, $country );
 
 		// The cover amount comes from the form, its price never does: it is
 		// read back from the settings, so a posted figure cannot decide what
@@ -121,19 +132,20 @@ class COLISLY_Shipments {
 		$inserted = $wpdb->insert(
 			$wpdb->prefix . 'colisly_shipments',
 			array(
-				'reference'       => '',
-				'client_id'       => (int) $client->id,
-				'carrier'         => $carrier,
-				'status'          => 'requested',
-				'total_weight'    => round( $total_weight, 3 ),
-				'total_price'     => round( $total_price + $storage_fees + $carrier_price + $insurance_price, 2 ),
-				'storage_fees'    => $storage_fees,
-				'carrier_price'   => $carrier_price,
-				'insured_value'   => $insured_value,
-				'insurance_price' => $insurance_price,
-				'requested_at'    => $now,
-				'created_at'      => $now,
-				'updated_at'      => $now,
+				'reference'           => '',
+				'client_id'           => (int) $client->id,
+				'carrier'             => $carrier,
+				'destination_country' => $country,
+				'status'              => 'requested',
+				'total_weight'        => round( $total_weight, 3 ),
+				'total_price'         => round( $total_price + $storage_fees + $carrier_price + $insurance_price, 2 ),
+				'storage_fees'        => $storage_fees,
+				'carrier_price'       => $carrier_price,
+				'insured_value'       => $insured_value,
+				'insurance_price'     => $insurance_price,
+				'requested_at'        => $now,
+				'created_at'          => $now,
+				'updated_at'          => $now,
 			)
 		);
 
@@ -188,6 +200,27 @@ class COLISLY_Shipments {
 		do_action( 'colisly_shipment_requested', $shipment_id, $client, $parcel_ids );
 
 		return $shipment_id;
+	}
+
+	/**
+	 * Returns the destination country stored on a client's account.
+	 *
+	 * The shipping address is what the order will be delivered to, so it is
+	 * also what the transport should be priced on. Billing is the fallback for
+	 * accounts that never filled a separate shipping address.
+	 *
+	 * @param object $client Client row.
+	 * @return string ISO country code, empty when unknown.
+	 */
+	public static function client_country( $client ) {
+		$user_id = (int) $client->user_id;
+
+		$country = get_user_meta( $user_id, 'shipping_country', true );
+		if ( ! $country ) {
+			$country = get_user_meta( $user_id, 'billing_country', true );
+		}
+
+		return strtoupper( substr( (string) $country, 0, 2 ) );
 	}
 
 	/**

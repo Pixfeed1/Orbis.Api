@@ -92,6 +92,40 @@ class COLISLY_Admin_Settings {
 					</tr>
 				</table>
 
+				<h2><?php esc_html_e( 'Destination zones', 'colisly' ); ?></h2>
+				<p class="description"><?php esc_html_e( 'A carrier does not charge the same to reship next door and to the other side of the world. Group your destinations here, then price each carrier per zone below. Countries are two-letter codes, separated by commas: FR, RE, YT, GP. A country you do not list keeps the carrier default grid.', 'colisly' ); ?></p>
+				<table class="widefat fixed striped colisly-zones-table">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Zone name', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Countries', 'colisly' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php
+						$zones   = COLISLY_Zones::all();
+						$zones[] = array(
+							'slug'      => '',
+							'name'      => '',
+							'countries' => array(),
+						); // Extra empty row to add a zone.
+						foreach ( $zones as $z => $zone ) :
+							?>
+							<tr>
+								<td>
+									<label class="screen-reader-text" for="colisly-zone-n-<?php echo esc_attr( (string) $z ); ?>"><?php esc_html_e( 'Zone name', 'colisly' ); ?></label>
+									<input type="text" id="colisly-zone-n-<?php echo esc_attr( (string) $z ); ?>" name="zone_name[]" value="<?php echo esc_attr( $zone['name'] ); ?>" />
+								</td>
+								<td>
+									<label class="screen-reader-text" for="colisly-zone-c-<?php echo esc_attr( (string) $z ); ?>"><?php esc_html_e( 'Countries', 'colisly' ); ?></label>
+									<input type="text" id="colisly-zone-c-<?php echo esc_attr( (string) $z ); ?>" name="zone_countries[]" value="<?php echo esc_attr( implode( ', ', $zone['countries'] ) ); ?>" placeholder="FR, RE, YT" />
+								</td>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+				<p><button type="button" class="button colisly-add-row"><?php esc_html_e( 'Add a zone', 'colisly' ); ?></button></p>
+
 				<h2><?php esc_html_e( 'Carriers', 'colisly' ); ?></h2>
 				<p class="description"><?php esc_html_e( 'A disabled carrier is no longer offered, neither at parcel reception nor to clients.', 'colisly' ); ?></p>
 				<p class="description"><?php esc_html_e( 'Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are the fallback: they apply to a carrier with no grid, and beyond the last bracket of a carrier that has one.', 'colisly' ); ?></p>
@@ -190,6 +224,52 @@ class COLISLY_Admin_Settings {
 						</tbody>
 					</table>
 					<p><button type="button" class="button colisly-add-row"><?php esc_html_e( 'Add a bracket', 'colisly' ); ?></button></p>
+					<?php
+					// One extra grid per zone, so a carrier can be priced
+					// differently for each destination group.
+					foreach ( COLISLY_Zones::all() as $zone ) :
+						$z_tiers   = isset( $carrier['zone_tiers'][ $zone['slug'] ] ) && is_array( $carrier['zone_tiers'][ $zone['slug'] ] ) ? $carrier['zone_tiers'][ $zone['slug'] ] : array();
+						$z_tiers[] = array(
+							'max_weight' => '',
+							'price'      => '',
+						);
+						?>
+						<h4>
+							<?php
+							printf(
+								/* translators: 1: carrier name, 2: zone name. */
+								esc_html__( '%1$s — zone %2$s', 'colisly' ),
+								esc_html( $carrier['name'] ),
+								esc_html( $zone['name'] )
+							);
+							?>
+						</h4>
+						<table class="widefat fixed striped colisly-tiers-table colisly-carrier-tiers-table">
+							<thead>
+								<tr>
+									<th><?php esc_html_e( 'Maximum weight (kg)', 'colisly' ); ?></th>
+									<th><?php esc_html_e( 'Price', 'colisly' ); ?></th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php foreach ( $z_tiers as $zt => $z_tier ) : ?>
+									<tr>
+										<td>
+											<label class="screen-reader-text" for="colisly-zt-w-<?php echo esc_attr( $slug . '-' . $zone['slug'] . '-' . $zt ); ?>"><?php esc_html_e( 'Maximum weight (kg)', 'colisly' ); ?></label>
+											<input type="number" id="colisly-zt-w-<?php echo esc_attr( $slug . '-' . $zone['slug'] . '-' . $zt ); ?>" name="carrier_zone_max_weight[<?php echo esc_attr( $slug ); ?>][<?php echo esc_attr( $zone['slug'] ); ?>][]" step="0.001" min="0" value="<?php echo esc_attr( (string) $z_tier['max_weight'] ); ?>" />
+										</td>
+										<td>
+											<label class="screen-reader-text" for="colisly-zt-p-<?php echo esc_attr( $slug . '-' . $zone['slug'] . '-' . $zt ); ?>"><?php esc_html_e( 'Price', 'colisly' ); ?></label>
+											<input type="number" id="colisly-zt-p-<?php echo esc_attr( $slug . '-' . $zone['slug'] . '-' . $zt ); ?>" name="carrier_zone_price[<?php echo esc_attr( $slug ); ?>][<?php echo esc_attr( $zone['slug'] ); ?>][]" step="0.01" min="0" value="<?php echo esc_attr( (string) $z_tier['price'] ); ?>" />
+										</td>
+									</tr>
+								<?php endforeach; ?>
+							</tbody>
+						</table>
+						<p><button type="button" class="button colisly-add-row"><?php esc_html_e( 'Add a bracket', 'colisly' ); ?></button></p>
+						<?php
+					endforeach;
+					?>
 					<?php
 				endforeach;
 				?>
@@ -313,6 +393,41 @@ class COLISLY_Admin_Settings {
 		return $tiers;
 	}
 
+	/**
+	 * Validates the per-zone grids posted for one carrier.
+	 *
+	 * A zone that no longer exists is dropped rather than kept as an orphan
+	 * grid nobody can see or edit again.
+	 *
+	 * @param array $weights Maximum weights, keyed by zone slug.
+	 * @param array $prices  Prices, keyed by zone slug.
+	 * @param array $zones   Zones being saved.
+	 * @return array Grids keyed by zone slug, empty grids omitted.
+	 */
+	private static function sanitize_zone_tiers( $weights, $prices, $zones ) {
+		$known = wp_list_pluck( $zones, 'slug' );
+		$grids = array();
+
+		foreach ( $weights as $zone_slug => $zone_weights ) {
+			$zone_slug = sanitize_key( $zone_slug );
+
+			if ( ! in_array( $zone_slug, $known, true ) ) {
+				continue;
+			}
+
+			$grid = self::sanitize_tiers(
+				(array) $zone_weights,
+				isset( $prices[ $zone_slug ] ) ? (array) $prices[ $zone_slug ] : array()
+			);
+
+			if ( $grid ) {
+				$grids[ $zone_slug ] = $grid;
+			}
+		}
+
+		return $grids;
+	}
+
 	public static function handle_save() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
 			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
@@ -332,6 +447,24 @@ class COLISLY_Admin_Settings {
 			isset( $_POST['tier_price'] ) ? (array) wp_unslash( $_POST['tier_price'] ) : array() // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
 		);
 
+		// Zones first: the carrier grids below are keyed by zone slug, and a
+		// slug only exists once its zone has been saved.
+		$zone_names     = isset( $_POST['zone_name'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['zone_name'] ) ) : array();
+		$zone_countries = isset( $_POST['zone_countries'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['zone_countries'] ) ) : array();
+		$zones          = array();
+
+		foreach ( $zone_names as $i => $zone_name ) {
+			if ( '' === trim( $zone_name ) ) {
+				continue;
+			}
+			$zones[] = array(
+				'slug'      => sanitize_key( sanitize_title( $zone_name ) ),
+				'name'      => $zone_name,
+				'countries' => COLISLY_Zones::parse_countries( isset( $zone_countries[ $i ] ) ? $zone_countries[ $i ] : '' ),
+			);
+		}
+		$settings['zones'] = $zones;
+
 		$carriers = array();
 		$names    = isset( $_POST['carrier_name'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['carrier_name'] ) ) : array();
 		$slugs    = isset( $_POST['carrier_slug'] ) ? array_map( 'sanitize_key', wp_unslash( (array) $_POST['carrier_slug'] ) ) : array();
@@ -341,6 +474,9 @@ class COLISLY_Admin_Settings {
 
 		// Brackets are posted per carrier slug, since a carrier can be renamed
 		// or reordered in the same save without its grid following the wrong row.
+		$zone_weights = isset( $_POST['carrier_zone_max_weight'] ) ? (array) wp_unslash( $_POST['carrier_zone_max_weight'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
+		$zone_prices  = isset( $_POST['carrier_zone_price'] ) ? (array) wp_unslash( $_POST['carrier_zone_price'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
+
 		$tier_weights = isset( $_POST['carrier_tier_max_weight'] ) ? (array) wp_unslash( $_POST['carrier_tier_max_weight'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
 		$tier_prices  = isset( $_POST['carrier_tier_price'] ) ? (array) wp_unslash( $_POST['carrier_tier_price'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
 
@@ -364,6 +500,11 @@ class COLISLY_Admin_Settings {
 				'tiers'        => self::sanitize_tiers(
 					isset( $tier_weights[ $slug ] ) ? (array) $tier_weights[ $slug ] : array(),
 					isset( $tier_prices[ $slug ] ) ? (array) $tier_prices[ $slug ] : array()
+				),
+				'zone_tiers'   => self::sanitize_zone_tiers(
+					isset( $zone_weights[ $slug ] ) ? (array) $zone_weights[ $slug ] : array(),
+					isset( $zone_prices[ $slug ] ) ? (array) $zone_prices[ $slug ] : array(),
+					$zones
 				),
 			);
 		}

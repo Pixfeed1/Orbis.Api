@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.7.0
+Stable tag: 1.8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.8.0 =
+* New: destination zones. A forwarder does not charge the same to reship to mainland France, to the overseas departments and to Madagascar, and a single grid per carrier could never hold real tariffs. Zones group destination countries, and each carrier gets a weight bracket grid per zone. The client picks the destination when requesting a shipment, starting from the shipping address on his account, and the live estimate follows it. A country in no zone, or a zone a carrier was never priced for, keeps that carrier's default grid, so nothing changes for a site that does not use zones.
+
 = 1.7.0 =
 * New: optional shipment insurance. Cover levels are set in the settings, a cover amount and what it costs, and the client picks one when requesting a shipment. It appears as its own line on the WooCommerce order and in the client's shipment list. The price is always read back from the settings rather than taken from the form, so a posted amount can never decide what is billed. No cover level configured means no insurance is offered at all, which is how every existing site starts.
 * New: a parcel already in stock can be corrected. Reception happens at the counter, often in a hurry, and until now a wrong weight or a mistyped tracking number had no way back: only the status could be changed. Since the weight sets the price, a typo was billed as it stood. Tracking number, weight, dimensions, photo, internal comment, grouping and allowed carriers are all editable, and correcting the weight recomputes the price.
@@ -153,6 +156,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.8.0 =
+Carriers can now be priced per destination zone. Existing grids keep applying
+everywhere. One column is added to the shipments table on update.
 
 = 1.7.0 =
 Parcels in stock can now be corrected after reception, and shipments can be

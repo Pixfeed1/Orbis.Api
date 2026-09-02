@@ -77,13 +77,24 @@ class COLISLY_Carriers {
 	}
 
 	/**
-	 * Returns the weight brackets configured for a carrier, sorted.
+	 * Returns the weight brackets a carrier applies to a destination, sorted.
+	 *
+	 * A destination falling in a zone the carrier has a grid for uses that
+	 * grid. Everything else, including a country in no zone and a zone the
+	 * carrier was never priced for, uses the carrier's default grid, which is
+	 * the only one that existed before zones.
 	 *
 	 * @param array|null $carrier Carrier row.
+	 * @param string     $country Destination ISO country code, empty for none.
 	 * @return array[] Brackets: max_weight, price.
 	 */
-	private static function tiers( $carrier ) {
+	private static function tiers( $carrier, $country = '' ) {
 		$tiers = $carrier && isset( $carrier['tiers'] ) && is_array( $carrier['tiers'] ) ? $carrier['tiers'] : array();
+
+		$zone = '' !== (string) $country ? COLISLY_Zones::for_country( $country ) : null;
+		if ( $zone && ! empty( $carrier['zone_tiers'][ $zone['slug'] ] ) && is_array( $carrier['zone_tiers'][ $zone['slug'] ] ) ) {
+			$tiers = $carrier['zone_tiers'][ $zone['slug'] ];
+		}
 
 		usort(
 			$tiers,
@@ -106,16 +117,18 @@ class COLISLY_Carriers {
 	 * no brackets at all, the price falls back to base price + price per kg,
 	 * which is what every carrier configured before brackets existed still uses.
 	 *
-	 * @param string $slug   Carrier slug.
-	 * @param float  $weight Total weight in kg.
+	 * @param string $slug    Carrier slug.
+	 * @param float  $weight  Total weight in kg.
+	 * @param string $country Destination ISO country code, empty to use the
+	 *                        carrier's default grid.
 	 * @return float
 	 */
-	public static function price_for( $slug, $weight ) {
+	public static function price_for( $slug, $weight, $country = '' ) {
 		$carrier = self::get( $slug );
 		$weight  = max( 0, (float) $weight );
 		$price   = null;
 
-		foreach ( self::tiers( $carrier ) as $tier ) {
+		foreach ( self::tiers( $carrier, $country ) as $tier ) {
 			if ( $weight <= (float) $tier['max_weight'] ) {
 				$price = (float) $tier['price'];
 				break;
@@ -130,7 +143,7 @@ class COLISLY_Carriers {
 			// A grid stopping at 15 kg with a modest price per kg would have
 			// made a 16 kg shipment cheaper than a 15 kg one. Past the last
 			// bracket the formula may only ever charge more, never less.
-			$tiers = self::tiers( $carrier );
+			$tiers = self::tiers( $carrier, $country );
 			if ( $tiers ) {
 				$last  = end( $tiers );
 				$price = max( $price, (float) $last['price'] );
@@ -140,11 +153,12 @@ class COLISLY_Carriers {
 		/**
 		 * Filters the transport price of a carrier.
 		 *
-		 * @param float  $price  Computed price.
-		 * @param string $slug   Carrier slug.
-		 * @param float  $weight Total weight in kg.
+		 * @param float  $price   Computed price.
+		 * @param string $slug    Carrier slug.
+		 * @param float  $weight  Total weight in kg.
+		 * @param string $country Destination ISO country code.
 		 */
-		return (float) apply_filters( 'colisly_carrier_price', round( $price, 2 ), $slug, (float) $weight );
+		return (float) apply_filters( 'colisly_carrier_price', round( $price, 2 ), $slug, (float) $weight, (string) $country );
 	}
 
 	/**

@@ -392,6 +392,21 @@ class COLISLY_Account {
 				</table>
 			</div>
 
+			<?php
+			$client_country = COLISLY_Shipments::client_country( $client );
+			$countries      = function_exists( 'WC' ) && WC()->countries ? WC()->countries->get_shipping_countries() : array();
+			?>
+			<?php if ( $countries ) : ?>
+				<p>
+					<label for="colisly-country"><?php esc_html_e( 'Delivered to:', 'colisly' ); ?></label>
+					<select name="colisly_country" id="colisly-country">
+						<?php foreach ( $countries as $code => $label ) : ?>
+							<option value="<?php echo esc_attr( $code ); ?>" <?php selected( $code, $client_country ); ?>><?php echo esc_html( $label ); ?></option>
+						<?php endforeach; ?>
+					</select>
+				</p>
+				<p class="colisly-note"><?php esc_html_e( 'Transport is priced on the destination. It starts on the address of your account.', 'colisly' ); ?></p>
+			<?php endif; ?>
 			<p>
 				<label for="colisly-carrier"><?php esc_html_e( 'Preferred carrier:', 'colisly' ); ?></label>
 				<select name="colisly_carrier" id="colisly-carrier" required>
@@ -405,20 +420,37 @@ class COLISLY_Account {
 						// Passing only base and rate made a carrier priced by
 						// bracket show one figure here and charge another at
 						// checkout, so the grid travels with the option.
-						$tiers = array();
-						if ( ! empty( $carrier['tiers'] ) && is_array( $carrier['tiers'] ) ) {
-							foreach ( $carrier['tiers'] as $tier ) {
-								$tiers[] = array(
-									'w' => (float) $tier['max_weight'],
-									'p' => (float) $tier['price'],
+						$grid = static function ( $rows ) {
+							$out = array();
+							foreach ( (array) $rows as $row ) {
+								$out[] = array(
+									'w' => (float) $row['max_weight'],
+									'p' => (float) $row['price'],
 								);
 							}
 							usort(
-								$tiers,
+								$out,
 								static function ( $a, $b ) {
 									return $a['w'] <=> $b['w'];
 								}
 							);
+							return $out;
+						};
+
+						$tiers = ! empty( $carrier['tiers'] ) && is_array( $carrier['tiers'] ) ? $grid( $carrier['tiers'] ) : array();
+
+						// The estimate has to know every destination the client
+						// could pick, so each zone grid is keyed by the countries
+						// it covers rather than resolved server side.
+						$by_country = array();
+						foreach ( COLISLY_Zones::all() as $zone ) {
+							if ( empty( $carrier['zone_tiers'][ $zone['slug'] ] ) ) {
+								continue;
+							}
+							$zone_grid = $grid( $carrier['zone_tiers'][ $zone['slug'] ] );
+							foreach ( $zone['countries'] as $code ) {
+								$by_country[ $code ] = $zone_grid;
+							}
 						}
 						?>
 						<option
@@ -426,6 +458,7 @@ class COLISLY_Account {
 							data-base="<?php echo esc_attr( (string) $base ); ?>"
 							data-rate="<?php echo esc_attr( (string) $rate ); ?>"
 							data-tiers="<?php echo esc_attr( wp_json_encode( $tiers ) ); ?>"
+							data-zone-tiers="<?php echo esc_attr( wp_json_encode( $by_country ) ); ?>"
 						>
 							<?php
 							if ( $tiers ) {
@@ -501,7 +534,9 @@ class COLISLY_Account {
 
 		$insurance = isset( $_POST['colisly_insurance'] ) ? sanitize_text_field( wp_unslash( $_POST['colisly_insurance'] ) ) : 0;
 
-		$result = COLISLY_Shipments::request( (int) $client->id, $parcel_ids, $carrier, $insurance );
+		$country = isset( $_POST['colisly_country'] ) ? sanitize_text_field( wp_unslash( $_POST['colisly_country'] ) ) : '';
+
+		$result = COLISLY_Shipments::request( (int) $client->id, $parcel_ids, $carrier, $insurance, $country );
 
 		$url = wc_get_account_endpoint_url( self::endpoint( 'request' ) );
 

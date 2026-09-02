@@ -746,6 +746,105 @@ if ( COLISLY_Orders::available() && $colisly_ins_taken->order_id ) {
 $colisly_ins_settings['insurance_options'] = $colisly_ins_saved;
 COLISLY_Settings::update( $colisly_ins_settings );
 
+/*
+ * Zones de destination.
+ *
+ * Un reexpediteur ne facture pas le meme transport vers la metropole, vers
+ * l'outre-mer et vers Madagascar. Une grille unique par transporteur ne pouvait
+ * donc pas porter de vrais tarifs. Un pays sans zone, ou une zone pour laquelle
+ * le transporteur n'a pas ete tarife, retombe sur la grille par defaut.
+ */
+$colisly_zone_settings = COLISLY_Settings::all();
+$colisly_zone_saved    = array( $colisly_zone_settings['zones'], $colisly_zone_settings['carriers'] );
+
+$colisly_zone_settings['zones'] = array(
+	array(
+		'slug'      => 'metropole',
+		'name'      => 'Metropole',
+		'countries' => 'FR',
+	),
+	array(
+		'slug'      => 'outremer',
+		'name'      => 'Outre-mer',
+		'countries' => 'RE, YT; GP',
+	),
+);
+$colisly_zone_settings['carriers'] = array(
+	array(
+		'slug'         => 'zone-test',
+		'name'         => 'Zone test',
+		'enabled'      => 1,
+		'price_base'   => 5.0,
+		'price_per_kg' => 1.0,
+		'tiers'        => array(
+			array(
+				'max_weight' => 10,
+				'price'      => 25.0,
+			),
+		),
+		'zone_tiers'   => array(
+			'outremer' => array(
+				array(
+					'max_weight' => 10,
+					'price'      => 80.0,
+				),
+			),
+		),
+	),
+);
+COLISLY_Settings::update( $colisly_zone_settings );
+
+colisly_check( 'Zone : pays reconnu', 'outremer' === COLISLY_Zones::for_country( 'GP' )['slug'] );
+colisly_check( 'Zone : casse ignoree', 'outremer' === COLISLY_Zones::for_country( 'gp' )['slug'] );
+colisly_check( 'Zone : separateurs melanges acceptes', 3 === count( COLISLY_Zones::for_country( 'YT' )['countries'] ) );
+colisly_check( 'Zone : pays hors zone', null === COLISLY_Zones::for_country( 'US' ) );
+colisly_check( 'Zone : pays vide', null === COLISLY_Zones::for_country( '' ) );
+
+colisly_check( 'Zone : grille de la zone appliquee', 80.0 === COLISLY_Carriers::price_for( 'zone-test', 2, 'GP' ) );
+colisly_check( 'Zone : pays hors zone garde la grille par defaut', 25.0 === COLISLY_Carriers::price_for( 'zone-test', 2, 'US' ) );
+colisly_check( 'Zone : zone sans grille garde la grille par defaut', 25.0 === COLISLY_Carriers::price_for( 'zone-test', 2, 'FR' ) );
+colisly_check( 'Zone : sans destination, grille par defaut', 25.0 === COLISLY_Carriers::price_for( 'zone-test', 2 ) );
+// 5 + 1 x 12 = 17, sous la derniere tranche de la zone : le plancher tient.
+colisly_check( 'Zone : plancher de la derniere tranche respecte', 80.0 === COLISLY_Carriers::price_for( 'zone-test', 12, 'GP' ) );
+
+$colisly_zone_client = COLISLY_Clients::create(
+	wp_insert_user(
+		array(
+			'user_login' => 'zone-' . wp_generate_password( 6, false ),
+			'user_email' => 'zone-' . wp_generate_password( 6, false ) . '@example.com',
+			'user_pass'  => wp_generate_password(),
+			'role'       => 'customer',
+		)
+	)
+);
+$colisly_zone_row = COLISLY_Clients::get( $colisly_zone_client );
+update_user_meta( (int) $colisly_zone_row->user_id, 'shipping_country', 'GP' );
+
+colisly_check( 'Zone : destination lue sur l adresse du compte', 'GP' === COLISLY_Shipments::client_country( $colisly_zone_row ) );
+
+$colisly_zone_parcel = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_zone_client,
+		'weight'    => 2,
+	)
+);
+$colisly_zone_ship = COLISLY_Shipments::get( COLISLY_Shipments::request( $colisly_zone_client, array( $colisly_zone_parcel ), 'zone-test' ) );
+colisly_check( 'Zone : destination enregistree sur l expedition', 'GP' === $colisly_zone_ship->destination_country );
+colisly_check( 'Zone : transport facture sur la grille de la zone', 80.0 === (float) $colisly_zone_ship->carrier_price );
+
+$colisly_zone_parcel2 = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_zone_client,
+		'weight'    => 2,
+	)
+);
+$colisly_zone_ship2 = COLISLY_Shipments::get( COLISLY_Shipments::request( $colisly_zone_client, array( $colisly_zone_parcel2 ), 'zone-test', 0, 'US' ) );
+colisly_check( 'Zone : destination choisie prime sur l adresse', 'US' === $colisly_zone_ship2->destination_country );
+colisly_check( 'Zone : tarif suit la destination choisie', 25.0 === (float) $colisly_zone_ship2->carrier_price );
+
+list( $colisly_zone_settings['zones'], $colisly_zone_settings['carriers'] ) = $colisly_zone_saved;
+COLISLY_Settings::update( $colisly_zone_settings );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.7.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.8.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -952,3 +952,27 @@ msgstr "Assurance (couverture %s)"
 
 msgid "Cover levels offered to the client when requesting a shipment: how much the parcel is covered for, and what that costs. Leave the table empty and no insurance is offered at all."
 msgstr "Niveaux de couverture proposés au client lors d’une demande d’expédition : à hauteur de quel montant le colis est couvert, et ce que cela coûte. Laissez le tableau vide et aucune assurance n’est proposée."
+
+msgid "Destination zones"
+msgstr "Zones de destination"
+
+msgid "Zone name"
+msgstr "Nom de la zone"
+
+msgid "Countries"
+msgstr "Pays"
+
+msgid "Add a zone"
+msgstr "Ajouter une zone"
+
+msgid "Delivered to:"
+msgstr "Livré vers :"
+
+msgid "%1$s — zone %2$s"
+msgstr "%1$s — zone %2$s"
+
+msgid "A carrier does not charge the same to reship next door and to the other side of the world. Group your destinations here, then price each carrier per zone below. Countries are two-letter codes, separated by commas: FR, RE, YT, GP. A country you do not list keeps the carrier default grid."
+msgstr "Un transporteur ne facture pas la même chose pour réexpédier à côté et à l’autre bout du monde. Regroupez vos destinations ici, puis tarifez chaque transporteur par zone ci-dessous. Les pays s’écrivent en deux lettres, séparés par des virgules : FR, RE, YT, GP. Un pays que vous ne listez pas conserve la grille par défaut du transporteur."
+
+msgid "Transport is priced on the destination. It starts on the address of your account."
+msgstr "Le transport est tarifé selon la destination. Elle part de l’adresse de votre compte."

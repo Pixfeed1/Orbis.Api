@@ -76,6 +76,18 @@
 			tiers = [];
 		}
 
+		// A destination the carrier was priced for overrides its default grid,
+		// the same way the server resolves the zone.
+		var country = document.getElementById( 'colisly-country' );
+		if ( country && country.value ) {
+			try {
+				var byCountry = JSON.parse( option.getAttribute( 'data-zone-tiers' ) || '{}' ) || {};
+				if ( byCountry[ country.value ] ) {
+					tiers = byCountry[ country.value ];
+				}
+			} catch ( e2 ) {}
+		}
+
 		for ( var i = 0; i < tiers.length; i++ ) {
 			if ( weight <= tiers[ i ].w ) {
 				return tiers[ i ].p;
@@ -120,6 +132,11 @@
 
 		amount.textContent = formatPrice( total );
 		estimate.hidden = false;
+	}
+
+	var countrySelect = document.getElementById( 'colisly-country' );
+	if ( countrySelect ) {
+		countrySelect.addEventListener( 'change', updateEstimate );
 	}
 
 	var insuranceSelect = document.getElementById( 'colisly-insurance' );

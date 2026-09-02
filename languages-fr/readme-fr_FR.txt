@@ -193,6 +193,17 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.8.0 =
+* Nouveau : zones de destination. Un réexpéditeur ne facture pas le même
+  transport vers la métropole, vers l'outre-mer et vers Madagascar, et une
+  grille unique par transporteur ne pouvait donc pas porter de vrais tarifs.
+  Les zones regroupent les pays de destination, et chaque transporteur reçoit
+  une grille de tranches de poids par zone. Le client choisit la destination au
+  moment de sa demande, à partir de l'adresse de livraison de son compte, et
+  l'estimation en direct la suit. Un pays sans zone, ou une zone pour laquelle
+  un transporteur n'a pas été tarifé, conserve la grille par défaut de ce
+  transporteur : rien ne change pour un site qui n'utilise pas les zones.
+
 = 1.7.0 =
 * Nouveau : assurance facultative des expéditions. Les niveaux de couverture se
   définissent dans les réglages (un montant couvert et son prix), et le client
@@ -300,6 +311,11 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.8.0 =
+Les transporteurs peuvent désormais être tarifés par zone de destination. Les
+grilles existantes continuent de s'appliquer partout. Une colonne est ajoutée à
+la table des expéditions lors de la mise à jour.
 
 = 1.7.0 =
 Les colis en stock peuvent désormais être corrigés après réception, et les
