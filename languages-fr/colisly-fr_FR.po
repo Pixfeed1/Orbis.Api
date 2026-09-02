@@ -993,8 +993,6 @@ msgstr "Déclaration douanière"
 msgid "Customs form"
 msgstr "Formulaire de douane"
 
-msgid "Description"
-msgstr "Désignation"
 
 msgid "Quantity"
 msgstr "Quantité"
@@ -1002,8 +1000,6 @@ msgstr "Quantité"
 msgid "Unit weight (kg)"
 msgstr "Poids unitaire (kg)"
 
-msgid "Unit value"
-msgstr "Valeur unitaire"
 
 msgid "Country of origin"
 msgstr "Pays d’origine"
@@ -1079,3 +1075,30 @@ msgid "Customs declaration of parcel %1$s updated: %2$d line."
 msgid_plural "Customs declaration of parcel %1$s updated: %2$d lines."
 msgstr[0] "Déclaration douanière du colis %1$s mise à jour : %2$d ligne."
 msgstr[1] "Déclaration douanière du colis %1$s mise à jour : %2$d lignes."
+
+msgid "Contents"
+msgstr "Contenu"
+
+msgid "Content categories"
+msgstr "Catégories de contenu"
+
+msgid "Maximum lines per parcel"
+msgstr "Nombre maximal de lignes par colis"
+
+msgid "Clothing&#10;Shoes&#10;Books"
+msgstr "Vêtements&#10;Chaussures&#10;Livres"
+
+msgid "Total declared: %s"
+msgstr "Total déclaré : %s"
+
+msgid "%1$s x%2$d — %3$s — origin %4$s"
+msgstr "%1$s x%2$d — %3$s — origine %4$s"
+
+msgid "0 for no limit. Set it to the number of lines your carrier forms hold."
+msgstr "0 pour aucune limite. Réglez-le sur le nombre de lignes que comportent les formulaires de vos transporteurs."
+
+msgid "One category per line. Leave empty and clients describe the contents in their own words, which is what a customs form asks for. Fill it and the field becomes a menu of your categories, quicker to fill and consistent across clients."
+msgstr "Une catégorie par ligne. Laissez vide et les clients décrivent le contenu avec leurs propres mots, ce qu’un formulaire douanier réclame. Remplissez-la et le champ devient un menu de vos catégories, plus rapide à remplir et homogène d’un client à l’autre."
+
+msgid "Required for some destinations. Declare the contents of the parcels you are sending; a parcel left undeclared will be refused if its destination asks for one."
+msgstr "Exigée pour certaines destinations. Déclarez le contenu des colis que vous envoyez ; un colis laissé sans déclaration sera refusé si sa destination en exige une."

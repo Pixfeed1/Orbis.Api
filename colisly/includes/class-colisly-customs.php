@@ -46,6 +46,39 @@ class COLISLY_Customs {
 	}
 
 	/**
+	 * Returns the content categories offered to the client, if any.
+	 *
+	 * A forwarder of clothes and a forwarder of farm machinery do not describe
+	 * their parcels with the same words, so no list ships with the plugin. An
+	 * empty setting leaves the field a plain text box, which is what a customs
+	 * form wants anyway; filling it turns the field into a menu.
+	 *
+	 * @return string[]
+	 */
+	public static function categories() {
+		$raw  = (string) COLISLY_Settings::get( 'customs_categories', '' );
+		$list = array();
+
+		foreach ( preg_split( '/[\r\n]+/', $raw ) as $line ) {
+			$line = trim( sanitize_text_field( $line ) );
+			if ( '' !== $line && ! in_array( $line, $list, true ) ) {
+				$list[] = $line;
+			}
+		}
+
+		return $list;
+	}
+
+	/**
+	 * Returns how many lines a declaration may hold, 0 for no limit.
+	 *
+	 * @return int
+	 */
+	public static function max_lines() {
+		return max( 0, (int) COLISLY_Settings::get( 'customs_max_lines', 0 ) );
+	}
+
+	/**
 	 * Returns the declared items of a parcel, in the order they were entered.
 	 *
 	 * @param int $parcel_id Parcel ID.
@@ -140,6 +173,14 @@ class COLISLY_Customs {
 				'origin_country' => isset( $line['origin_country'] ) ? strtoupper( substr( preg_replace( '/[^A-Za-z]/', '', (string) $line['origin_country'] ), 0, 2 ) ) : '',
 				'hs_code'        => isset( $line['hs_code'] ) ? sanitize_text_field( $line['hs_code'] ) : '',
 			);
+		}
+
+		// A forwarder whose carrier forms only hold three lines can cap the
+		// declaration; the extra lines are dropped rather than refused, since
+		// the client cannot know the limit before filling the form.
+		$max = self::max_lines();
+		if ( $max > 0 && count( $clean ) > $max ) {
+			$clean = array_slice( $clean, 0, $max );
 		}
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching

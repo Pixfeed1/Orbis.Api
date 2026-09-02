@@ -194,6 +194,19 @@ l'extension ainsi que ses options.
 ================================================================================
 
 = 1.9.0 =
+* La déclaration se remplit là où elle a sa place, sur la demande d'expédition,
+  pour les colis qui partent. L'onglet séparé demeure pour les clients qui
+  préfèrent déclarer chaque colis à son arrivée ; les deux écrivent la même
+  chose.
+* Le champ « contenu » peut devenir un menu : renseignez une liste de
+  catégories dans les réglages et les clients y choisissent au lieu de saisir.
+  Vide par défaut, donc rien n'est imposé, et le vocabulaire d'aucun métier
+  n'est livré avec l'extension. Le nombre de lignes qu'un colis peut déclarer
+  se plafonne à ce que vos formulaires transporteurs acceptent, sans limite par
+  défaut.
+* L'opérateur lit la déclaration entière sur l'expédition elle-même, regroupée
+  sur tous ses colis avec la valeur totale déclarée : c'est la feuille à
+  recopier sur le formulaire du transporteur.
 * Nouveau : les déclarations douanières. Réexpédier hors du territoire douanier
   impose de déclarer le contenu de chaque colis, article par article, et le
   réexpéditeur devait jusqu'ici le collecter par e-mail. Le client déclare

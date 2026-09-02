@@ -395,8 +395,54 @@ class COLISLY_Admin_Clients {
 						<tr><td colspan="8"><?php esc_html_e( 'No shipments.', 'colisly' ); ?></td></tr>
 					<?php else : ?>
 						<?php foreach ( $shipments as $shipment ) : ?>
+							<?php
+							// What the whole shipment declares, gathered from its
+							// parcels: this is the sheet the operator copies onto
+							// the carrier's own customs form.
+							$colisly_declared = array();
+							$colisly_declared_value = 0.0;
+							foreach ( COLISLY_Shipments::parcels( (int) $shipment->id ) as $colisly_sp ) {
+								foreach ( COLISLY_Customs::items( (int) $colisly_sp->id ) as $colisly_ci ) {
+									$colisly_declared[]      = $colisly_ci;
+									$colisly_declared_value += (int) $colisly_ci->quantity * (float) $colisly_ci->unit_value;
+								}
+							}
+							?>
 							<tr>
-								<td><strong><?php echo esc_html( $shipment->reference ); ?></strong></td>
+								<td>
+									<strong><?php echo esc_html( $shipment->reference ); ?></strong>
+									<?php if ( $colisly_declared ) : ?>
+										<div class="colisly-declared">
+											<?php
+											foreach ( $colisly_declared as $colisly_ci ) {
+												printf(
+													'<span>%s</span>',
+													esc_html(
+														sprintf(
+															/* translators: 1: contents, 2: quantity, 3: total value of the line, 4: country of origin. */
+															__( '%1$s x%2$d — %3$s — origin %4$s', 'colisly' ),
+															$colisly_ci->description,
+															(int) $colisly_ci->quantity,
+															COLISLY_Format::price( (int) $colisly_ci->quantity * (float) $colisly_ci->unit_value ),
+															$colisly_ci->origin_country ? $colisly_ci->origin_country : '—'
+														)
+													)
+												);
+											}
+											printf(
+												'<span class="colisly-declared-total">%s</span>',
+												esc_html(
+													sprintf(
+														/* translators: %s: total declared value. */
+														__( 'Total declared: %s', 'colisly' ),
+														COLISLY_Format::price( $colisly_declared_value )
+													)
+												)
+											);
+											?>
+										</div>
+									<?php endif; ?>
+								</td>
 								<td><?php echo esc_html( COLISLY_Format::date( $shipment->requested_at ) ); ?></td>
 								<td>
 									<?php echo esc_html( COLISLY_Carriers::name( $shipment->carrier ) ); ?>

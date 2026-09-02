@@ -292,6 +292,24 @@ class COLISLY_Admin_Settings {
 				endforeach;
 				?>
 
+				<h2><?php esc_html_e( 'Customs declaration', 'colisly' ); ?></h2>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><label for="colisly-customs-categories"><?php esc_html_e( 'Content categories', 'colisly' ); ?></label></th>
+						<td>
+							<textarea id="colisly-customs-categories" name="customs_categories" rows="6" class="large-text" placeholder="<?php esc_attr_e( "Clothing&#10;Shoes&#10;Books", 'colisly' ); ?>"><?php echo esc_textarea( (string) $settings['customs_categories'] ); ?></textarea>
+							<p class="description"><?php esc_html_e( 'One category per line. Leave empty and clients describe the contents in their own words, which is what a customs form asks for. Fill it and the field becomes a menu of your categories, quicker to fill and consistent across clients.', 'colisly' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="colisly-customs-max"><?php esc_html_e( 'Maximum lines per parcel', 'colisly' ); ?></label></th>
+						<td>
+							<input type="number" id="colisly-customs-max" name="customs_max_lines" min="0" step="1" value="<?php echo esc_attr( (string) (int) $settings['customs_max_lines'] ); ?>" />
+							<p class="description"><?php esc_html_e( '0 for no limit. Set it to the number of lines your carrier forms hold.', 'colisly' ); ?></p>
+						</td>
+					</tr>
+				</table>
+
 				<h2><?php esc_html_e( 'Insurance', 'colisly' ); ?></h2>
 				<p class="description"><?php esc_html_e( 'Cover levels offered to the client when requesting a shipment: how much the parcel is covered for, and what that costs. Leave the table empty and no insurance is offered at all.', 'colisly' ); ?></p>
 				<table class="widefat fixed striped colisly-tiers-table colisly-insurance-table">
@@ -548,6 +566,9 @@ class COLISLY_Admin_Settings {
 			);
 		}
 		$settings['insurance_options'] = $insurance;
+
+		$settings['customs_categories'] = isset( $_POST['customs_categories'] ) ? sanitize_textarea_field( wp_unslash( $_POST['customs_categories'] ) ) : '';
+		$settings['customs_max_lines']  = isset( $_POST['customs_max_lines'] ) ? absint( $_POST['customs_max_lines'] ) : 0;
 
 		$settings['orders_taxable']          = empty( $_POST['orders_taxable'] ) ? 0 : 1;
 		$settings['notify_client_on_parcel'] = empty( $_POST['notify_client_on_parcel'] ) ? 0 : 1;

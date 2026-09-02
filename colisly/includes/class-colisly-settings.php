@@ -85,6 +85,11 @@ class COLISLY_Settings {
 				),
 			),
 			'zones'                   => array(),
+			// Empty on purpose: the contents field stays a free text box until
+			// a forwarder fills a list of his own, and no trade's categories
+			// are imposed on the others.
+			'customs_categories'      => '',
+			'customs_max_lines'       => 0,
 			'insurance_options'       => array(),
 			'notify_client_on_parcel' => 1,
 			'notify_admin_on_request' => 1,

@@ -159,3 +159,21 @@
 	table-layout: auto;
 	width: auto;
 }
+
+/* Declaration gathered on a shipment row: a compact sheet to copy from,
+   not a table, since it sits inside one cell. */
+.colisly-declared {
+	color: #50575e;
+	font-size: 12px;
+	font-weight: normal;
+	margin-top: 4px;
+}
+
+.colisly-declared span {
+	display: block;
+}
+
+.colisly-declared-total {
+	font-weight: 600;
+	margin-top: 2px;
+}

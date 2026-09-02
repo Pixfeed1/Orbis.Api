@@ -519,6 +519,35 @@ class COLISLY_Account {
 				<span id="colisly-estimate-amount"></span>
 				<span class="colisly-note"><?php esc_html_e( '(parcels + storage fees + transport — confirmed on the payment page)', 'colisly' ); ?></span>
 			</p>
+			<?php
+			// Declaring at the moment of the request is where it belongs: this
+			// is when the client knows the parcel is leaving, and what for.
+			$needs_customs = false;
+			foreach ( COLISLY_Zones::all() as $colisly_zone ) {
+				if ( ! empty( $colisly_zone['customs'] ) ) {
+					$needs_customs = true;
+					break;
+				}
+			}
+			?>
+			<?php if ( $needs_customs ) : ?>
+				<h3><?php esc_html_e( 'Customs declaration', 'colisly' ); ?></h3>
+				<p class="colisly-note"><?php esc_html_e( 'Required for some destinations. Declare the contents of the parcels you are sending; a parcel left undeclared will be refused if its destination asks for one.', 'colisly' ); ?></p>
+				<?php foreach ( $parcels as $parcel ) : ?>
+					<h4>
+						<?php
+						printf(
+							/* translators: 1: parcel reference, 2: weight in kg. */
+							esc_html__( 'Parcel %1$s (%2$s kg)', 'colisly' ),
+							esc_html( $parcel->reference ),
+							esc_html( number_format_i18n( (float) $parcel->weight, 3 ) )
+						);
+						?>
+					</h4>
+					<?php self::customs_lines_table( $parcel, 'colisly_customs[' . (int) $parcel->id . ']' ); ?>
+				<?php endforeach; ?>
+			<?php endif; ?>
+
 			<p class="colisly-note"><?php esc_html_e( 'Only carriers compatible with every selected parcel can be accepted.', 'colisly' ); ?></p>
 
 			<button type="submit" class="woocommerce-button button"><?php esc_html_e( 'Send the request', 'colisly' ); ?></button>
@@ -531,6 +560,84 @@ class COLISLY_Account {
 	 *
 	 * @return void
 	 */
+	/**
+	 * Renders the declaration lines of one parcel as an editable table.
+	 *
+	 * Shared by the dedicated tab and by the shipment request, so a client
+	 * meets the same fields wherever he declares.
+	 *
+	 * @param object $parcel Parcel row.
+	 * @param string $prefix Field name prefix, so several parcels can be
+	 *                       posted from the same form.
+	 * @return void
+	 */
+	private static function customs_lines_table( $parcel, $prefix ) {
+		$categories = COLISLY_Customs::categories();
+		$max        = COLISLY_Customs::max_lines();
+		$items      = COLISLY_Customs::items( (int) $parcel->id );
+
+		// Room for one more line, within the limit the forwarder set.
+		$rows = $items;
+		if ( 0 === $max || count( $rows ) < $max ) {
+			$rows[] = (object) array(
+				'description'    => '',
+				'quantity'       => 1,
+				'unit_weight'    => '',
+				'unit_value'     => '',
+				'origin_country' => '',
+			);
+		}
+		?>
+		<div class="colisly-table-wrap">
+			<table class="woocommerce-orders-table shop_table shop_table_responsive colisly-front-table">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Contents', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Quantity', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Unit weight (kg)', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Value', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Country of origin', 'colisly' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $rows as $k => $item ) : ?>
+						<?php $name = $prefix . '[' . $k . ']'; ?>
+						<tr>
+							<td data-title="<?php esc_attr_e( 'Contents', 'colisly' ); ?>">
+								<?php if ( $categories ) : ?>
+									<select name="<?php echo esc_attr( $name ); ?>[description]" aria-label="<?php esc_attr_e( 'Contents', 'colisly' ); ?>">
+										<option value=""><?php esc_html_e( '— Select —', 'colisly' ); ?></option>
+										<?php foreach ( $categories as $category ) : ?>
+											<option value="<?php echo esc_attr( $category ); ?>" <?php selected( $category, $item->description ); ?>><?php echo esc_html( $category ); ?></option>
+										<?php endforeach; ?>
+										<?php if ( '' !== $item->description && ! in_array( $item->description, $categories, true ) ) : ?>
+											<option value="<?php echo esc_attr( $item->description ); ?>" selected><?php echo esc_html( $item->description ); ?></option>
+										<?php endif; ?>
+									</select>
+								<?php else : ?>
+									<input type="text" name="<?php echo esc_attr( $name ); ?>[description]" value="<?php echo esc_attr( $item->description ); ?>" placeholder="<?php esc_attr_e( 'Cotton t-shirts', 'colisly' ); ?>" aria-label="<?php esc_attr_e( 'Contents', 'colisly' ); ?>" />
+								<?php endif; ?>
+							</td>
+							<td data-title="<?php esc_attr_e( 'Quantity', 'colisly' ); ?>">
+								<input type="number" min="1" step="1" name="<?php echo esc_attr( $name ); ?>[quantity]" value="<?php echo esc_attr( (string) $item->quantity ); ?>" aria-label="<?php esc_attr_e( 'Quantity', 'colisly' ); ?>" />
+							</td>
+							<td data-title="<?php esc_attr_e( 'Unit weight (kg)', 'colisly' ); ?>">
+								<input type="text" name="<?php echo esc_attr( $name ); ?>[unit_weight]" value="<?php echo esc_attr( (string) $item->unit_weight ); ?>" aria-label="<?php esc_attr_e( 'Unit weight (kg)', 'colisly' ); ?>" />
+							</td>
+							<td data-title="<?php esc_attr_e( 'Value', 'colisly' ); ?>">
+								<input type="text" name="<?php echo esc_attr( $name ); ?>[unit_value]" value="<?php echo esc_attr( (string) $item->unit_value ); ?>" aria-label="<?php esc_attr_e( 'Value', 'colisly' ); ?>" />
+							</td>
+							<td data-title="<?php esc_attr_e( 'Country of origin', 'colisly' ); ?>">
+								<input type="text" maxlength="2" size="2" name="<?php echo esc_attr( $name ); ?>[origin_country]" value="<?php echo esc_attr( $item->origin_country ); ?>" placeholder="FR" aria-label="<?php esc_attr_e( 'Country of origin', 'colisly' ); ?>" />
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		</div>
+		<?php
+	}
+
 	/**
 	 * Renders the customs declaration screen.
 	 *
@@ -556,15 +663,6 @@ class COLISLY_Account {
 		echo '<p>' . esc_html__( 'Some destinations require the contents of a parcel to be declared before it can be shipped. Describe what each parcel holds, item by item, with the quantity, the unit weight and the unit value.', 'colisly' ) . '</p>';
 
 		foreach ( $parcels as $parcel ) :
-			$items   = COLISLY_Customs::items( (int) $parcel->id );
-			$items[] = (object) array(
-				'description'    => '',
-				'quantity'       => 1,
-				'unit_weight'    => '',
-				'unit_value'     => '',
-				'origin_country' => '',
-				'hs_code'        => '',
-			); // Extra blank line to add an item.
 			?>
 			<form method="post" class="colisly-customs-form">
 				<?php wp_nonce_field( 'colisly_save_customs_' . $parcel->id ); ?>
@@ -582,40 +680,7 @@ class COLISLY_Account {
 					?>
 				</h3>
 
-				<div class="colisly-table-wrap">
-					<table class="woocommerce-orders-table shop_table shop_table_responsive colisly-front-table">
-						<thead>
-							<tr>
-								<th><?php esc_html_e( 'Description', 'colisly' ); ?></th>
-								<th><?php esc_html_e( 'Quantity', 'colisly' ); ?></th>
-								<th><?php esc_html_e( 'Unit weight (kg)', 'colisly' ); ?></th>
-								<th><?php esc_html_e( 'Unit value', 'colisly' ); ?></th>
-								<th><?php esc_html_e( 'Country of origin', 'colisly' ); ?></th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php foreach ( $items as $k => $item ) : ?>
-								<tr>
-									<td data-title="<?php esc_attr_e( 'Description', 'colisly' ); ?>">
-										<input type="text" name="customs[<?php echo esc_attr( (string) $k ); ?>][description]" value="<?php echo esc_attr( $item->description ); ?>" placeholder="<?php esc_attr_e( 'Cotton t-shirts', 'colisly' ); ?>" aria-label="<?php esc_attr_e( 'Description', 'colisly' ); ?>" />
-									</td>
-									<td data-title="<?php esc_attr_e( 'Quantity', 'colisly' ); ?>">
-										<input type="number" min="1" step="1" name="customs[<?php echo esc_attr( (string) $k ); ?>][quantity]" value="<?php echo esc_attr( (string) $item->quantity ); ?>" aria-label="<?php esc_attr_e( 'Quantity', 'colisly' ); ?>" />
-									</td>
-									<td data-title="<?php esc_attr_e( 'Unit weight (kg)', 'colisly' ); ?>">
-										<input type="text" name="customs[<?php echo esc_attr( (string) $k ); ?>][unit_weight]" value="<?php echo esc_attr( (string) $item->unit_weight ); ?>" aria-label="<?php esc_attr_e( 'Unit weight (kg)', 'colisly' ); ?>" />
-									</td>
-									<td data-title="<?php esc_attr_e( 'Unit value', 'colisly' ); ?>">
-										<input type="text" name="customs[<?php echo esc_attr( (string) $k ); ?>][unit_value]" value="<?php echo esc_attr( (string) $item->unit_value ); ?>" aria-label="<?php esc_attr_e( 'Unit value', 'colisly' ); ?>" />
-									</td>
-									<td data-title="<?php esc_attr_e( 'Country of origin', 'colisly' ); ?>">
-										<input type="text" maxlength="2" size="2" name="customs[<?php echo esc_attr( (string) $k ); ?>][origin_country]" value="<?php echo esc_attr( $item->origin_country ); ?>" placeholder="FR" aria-label="<?php esc_attr_e( 'Country of origin', 'colisly' ); ?>" />
-									</td>
-								</tr>
-							<?php endforeach; ?>
-						</tbody>
-					</table>
-				</div>
+				<?php self::customs_lines_table( $parcel, 'customs' ); ?>
 
 				<p><button type="submit" class="woocommerce-button button"><?php esc_html_e( 'Save the declaration', 'colisly' ); ?></button></p>
 			</form>
@@ -687,6 +752,23 @@ class COLISLY_Account {
 		$insurance = isset( $_POST['colisly_insurance'] ) ? sanitize_text_field( wp_unslash( $_POST['colisly_insurance'] ) ) : 0;
 
 		$country = isset( $_POST['colisly_country'] ) ? sanitize_text_field( wp_unslash( $_POST['colisly_country'] ) ) : '';
+
+		// Declarations are saved before the request is built, so the request
+		// sees them and a parcel declared in the same submission is not
+		// refused as undeclared.
+		if ( isset( $_POST['colisly_customs'] ) && is_array( $_POST['colisly_customs'] ) ) {
+			foreach ( wp_unslash( $_POST['colisly_customs'] ) as $colisly_pid => $colisly_lines ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in COLISLY_Customs::save().
+				$colisly_pid    = absint( $colisly_pid );
+				$colisly_parcel = COLISLY_Parcels::get( $colisly_pid );
+
+				// Only the parcels of the client posting the form.
+				if ( ! $colisly_parcel || (int) $colisly_parcel->client_id !== (int) $client->id ) {
+					continue;
+				}
+
+				COLISLY_Customs::save( $colisly_pid, is_array( $colisly_lines ) ? $colisly_lines : array() );
+			}
+		}
 
 		$result = COLISLY_Shipments::request( (int) $client->id, $parcel_ids, $carrier, $insurance, $country );
 

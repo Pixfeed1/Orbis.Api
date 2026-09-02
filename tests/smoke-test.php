@@ -1102,6 +1102,112 @@ colisly_check(
 	array() === array_diff( $colisly_created[1], $colisly_dropped[1] )
 );
 
+/*
+ * Categories de contenu et plafond de lignes.
+ *
+ * Les categories sont celles du reexpediteur, pas de l'extension : un
+ * reexpediteur de vetements et un de materiel agricole ne decrivent pas leurs
+ * colis avec les memes mots. Reglage vide, le champ reste un texte libre.
+ */
+$colisly_cat_settings = COLISLY_Settings::all();
+$colisly_cat_saved    = array( $colisly_cat_settings['customs_categories'], $colisly_cat_settings['customs_max_lines'] );
+
+$colisly_cat_settings['customs_categories'] = '';
+$colisly_cat_settings['customs_max_lines']  = 0;
+COLISLY_Settings::update( $colisly_cat_settings );
+colisly_check( 'Categories : aucune par defaut', array() === COLISLY_Customs::categories() );
+colisly_check( 'Categories : aucun plafond par defaut', 0 === COLISLY_Customs::max_lines() );
+
+$colisly_cat_settings['customs_categories'] = "Vetements\nChaussures\n\n  Livres  \nVetements";
+$colisly_cat_settings['customs_max_lines']  = 3;
+COLISLY_Settings::update( $colisly_cat_settings );
+
+$colisly_cat_list = COLISLY_Customs::categories();
+colisly_check( 'Categories : lignes vides et doublons ecartes', 3 === count( $colisly_cat_list ) );
+colisly_check( 'Categories : espaces superflus retires', 'Livres' === $colisly_cat_list[2] );
+
+$colisly_cat_client = COLISLY_Clients::create(
+	wp_insert_user(
+		array(
+			'user_login' => 'cat-' . wp_generate_password( 6, false ),
+			'user_email' => 'cat-' . wp_generate_password( 6, false ) . '@example.com',
+			'user_pass'  => wp_generate_password(),
+			'role'       => 'customer',
+		)
+	)
+);
+$colisly_cat_parcel = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_cat_client,
+		'weight'    => 2,
+	)
+);
+
+$colisly_cat_n = COLISLY_Customs::save(
+	$colisly_cat_parcel,
+	array(
+		array(
+			'description' => 'Vetements',
+			'unit_value'  => 50,
+		),
+		array(
+			'description' => 'Chaussures',
+			'unit_value'  => 80,
+		),
+		array(
+			'description' => 'Livres',
+			'unit_value'  => 20,
+		),
+		array(
+			'description' => 'Jouets',
+			'unit_value'  => 10,
+		),
+		array(
+			'description' => 'Montres',
+			'unit_value'  => 200,
+		),
+	)
+);
+colisly_check( 'Plafond : 5 lignes envoyees, 3 retenues', 3 === $colisly_cat_n );
+colisly_check( 'Plafond : les premieres lignes sont gardees', 'Vetements' === COLISLY_Customs::items( $colisly_cat_parcel )[0]->description );
+
+$colisly_cat_settings['customs_max_lines'] = 0;
+COLISLY_Settings::update( $colisly_cat_settings );
+colisly_check(
+	'Plafond : sans limite, tout est garde',
+	5 === COLISLY_Customs::save(
+		$colisly_cat_parcel,
+		array(
+			array( 'description' => 'A' ),
+			array( 'description' => 'B' ),
+			array( 'description' => 'C' ),
+			array( 'description' => 'D' ),
+			array( 'description' => 'E' ),
+		)
+	)
+);
+
+// Une valeur par ligne, et le total qui suit : le choix A.
+COLISLY_Customs::save(
+	$colisly_cat_parcel,
+	array(
+		array(
+			'description' => 'Vetements',
+			'quantity'    => 2,
+			'unit_value'  => 45,
+		),
+		array(
+			'description' => 'Livres',
+			'quantity'    => 3,
+			'unit_value'  => 10,
+		),
+	)
+);
+colisly_check( 'Valeur : total = somme des lignes', 120.0 === COLISLY_Customs::totals( $colisly_cat_parcel )['value'] );
+
+list( $colisly_cat_settings['customs_categories'], $colisly_cat_settings['customs_max_lines'] ) = $colisly_cat_saved;
+COLISLY_Settings::update( $colisly_cat_settings );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------
