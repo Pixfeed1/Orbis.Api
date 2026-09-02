@@ -94,13 +94,14 @@ class COLISLY_Admin_Settings {
 
 				<h2><?php esc_html_e( 'Carriers', 'colisly' ); ?></h2>
 				<p class="description"><?php esc_html_e( 'A disabled carrier is no longer offered, neither at parcel reception nor to clients.', 'colisly' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are the fallback: they apply to a carrier with no grid, and beyond the last bracket of a carrier that has one.', 'colisly' ); ?></p>
 				<table class="widefat fixed striped colisly-carriers-table">
 					<thead>
 						<tr>
 							<th><?php esc_html_e( 'Name', 'colisly' ); ?></th>
 							<th><?php esc_html_e( 'Slug', 'colisly' ); ?></th>
-							<th><?php esc_html_e( 'Base price', 'colisly' ); ?></th>
-							<th><?php esc_html_e( 'Price per kg', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Base price (beyond brackets)', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Price per kg (beyond brackets)', 'colisly' ); ?></th>
 							<th><?php esc_html_e( 'Enabled', 'colisly' ); ?></th>
 						</tr>
 					</thead>

@@ -9,7 +9,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Domain: colisly\n"
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:24, colisly/includes/admin/class-colisly-admin-clientsphp:535, colisly/includes/admin/class-colisly-admin-clientsphp:570, colisly/includes/admin/class-colisly-admin-clientsphp:595, colisly/includes/admin/class-colisly-admin-clientsphp:625, colisly/includes/admin/class-colisly-admin-parcelsphp:24, colisly/includes/admin/class-colisly-admin-parcelsphp:156, colisly/includes/admin/class-colisly-admin-parcelsphp:348, colisly/includes/admin/class-colisly-admin-parcelsphp:406, colisly/includes/admin/class-colisly-admin-parcelsphp:467, colisly/includes/admin/class-colisly-admin-settingsphp:24, colisly/includes/admin/class-colisly-admin-settingsphp:284, colisly/includes/class-colisly-ajaxphp:35, colisly/includes/class-colisly-downloadsphp:120, colisly/includes/class-colisly-downloadsphp:137
+#: colisly/includes/admin/class-colisly-admin-clientsphp:24, colisly/includes/admin/class-colisly-admin-clientsphp:535, colisly/includes/admin/class-colisly-admin-clientsphp:570, colisly/includes/admin/class-colisly-admin-clientsphp:595, colisly/includes/admin/class-colisly-admin-clientsphp:625, colisly/includes/admin/class-colisly-admin-parcelsphp:24, colisly/includes/admin/class-colisly-admin-parcelsphp:156, colisly/includes/admin/class-colisly-admin-parcelsphp:348, colisly/includes/admin/class-colisly-admin-parcelsphp:406, colisly/includes/admin/class-colisly-admin-parcelsphp:467, colisly/includes/admin/class-colisly-admin-settingsphp:24, colisly/includes/admin/class-colisly-admin-settingsphp:285, colisly/includes/class-colisly-ajaxphp:35, colisly/includes/class-colisly-downloadsphp:120, colisly/includes/class-colisly-downloadsphp:137
 msgid "Access denied."
 msgstr ""
 
@@ -49,7 +49,7 @@ msgstr ""
 msgid "Reference"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:90, colisly/includes/admin/class-colisly-admin-settingsphp:100, colisly/includes/admin/class-colisly-admin-settingsphp:121
+#: colisly/includes/admin/class-colisly-admin-clientsphp:90, colisly/includes/admin/class-colisly-admin-settingsphp:101, colisly/includes/admin/class-colisly-admin-settingsphp:122
 msgid "Name"
 msgstr ""
 
@@ -171,7 +171,7 @@ msgstr ""
 msgid "Weight (kg)"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:295, colisly/includes/admin/class-colisly-admin-parcelsphp:73, colisly/includes/admin/class-colisly-admin-settingsphp:58, colisly/includes/admin/class-colisly-admin-settingsphp:76, colisly/includes/admin/class-colisly-admin-settingsphp:173, colisly/includes/admin/class-colisly-admin-settingsphp:184
+#: colisly/includes/admin/class-colisly-admin-clientsphp:295, colisly/includes/admin/class-colisly-admin-parcelsphp:73, colisly/includes/admin/class-colisly-admin-settingsphp:58, colisly/includes/admin/class-colisly-admin-settingsphp:76, colisly/includes/admin/class-colisly-admin-settingsphp:174, colisly/includes/admin/class-colisly-admin-settingsphp:185
 msgid "Price"
 msgstr ""
 
@@ -510,7 +510,7 @@ msgstr ""
 msgid "A parcel price is given by the first tier whose maximum weight is greater than or equal to the parcel weight. Beyond the last tier: base price + price per kg."
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:57, colisly/includes/admin/class-colisly-admin-settingsphp:72, colisly/includes/admin/class-colisly-admin-settingsphp:172, colisly/includes/admin/class-colisly-admin-settingsphp:180
+#: colisly/includes/admin/class-colisly-admin-settingsphp:57, colisly/includes/admin/class-colisly-admin-settingsphp:72, colisly/includes/admin/class-colisly-admin-settingsphp:173, colisly/includes/admin/class-colisly-admin-settingsphp:181
 msgid "Maximum weight (kg)"
 msgstr ""
 
@@ -534,83 +534,95 @@ msgstr ""
 msgid "A disabled carrier is no longer offered, neither at parcel reception nor to clients."
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:101, colisly/includes/admin/class-colisly-admin-settingsphp:125
+#: colisly/includes/admin/class-colisly-admin-settingsphp:97
+msgid "Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are the fallback: they apply to a carrier with no grid, and beyond the last bracket of a carrier that has one."
+msgstr ""
+
+#: colisly/includes/admin/class-colisly-admin-settingsphp:102, colisly/includes/admin/class-colisly-admin-settingsphp:126
 msgid "Slug"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:102, colisly/includes/admin/class-colisly-admin-settingsphp:129
-msgid "Base price"
+#: colisly/includes/admin/class-colisly-admin-settingsphp:103
+msgid "Base price (beyond brackets)"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:103, colisly/includes/admin/class-colisly-admin-settingsphp:133
-msgid "Price per kg"
+#: colisly/includes/admin/class-colisly-admin-settingsphp:104
+msgid "Price per kg (beyond brackets)"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:104, colisly/includes/admin/class-colisly-admin-settingsphp:138
+#: colisly/includes/admin/class-colisly-admin-settingsphp:105, colisly/includes/admin/class-colisly-admin-settingsphp:139
 msgid "Enabled"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:144
+#: colisly/includes/admin/class-colisly-admin-settingsphp:130
+msgid "Base price"
+msgstr ""
+
+#: colisly/includes/admin/class-colisly-admin-settingsphp:134
+msgid "Price per kg"
+msgstr ""
+
+#: colisly/includes/admin/class-colisly-admin-settingsphp:145
 msgid "Add a carrier"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:146
+#: colisly/includes/admin/class-colisly-admin-settingsphp:147
 msgid "Carrier weight brackets"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:148
+#: colisly/includes/admin/class-colisly-admin-settingsphp:149
 msgid "Carriers usually publish a grid of weight brackets rather than a price per kilo. Fill one in here and it replaces the base price and the price per kg for that carrier: the first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. Leave a carrier empty and it keeps billing base price + price per kg. Beyond the last bracket that formula applies again, but it can only ever charge more than the last bracket, never less."
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:154
+#: colisly/includes/admin/class-colisly-admin-settingsphp:155
 msgid "Add a carrier and save to configure its brackets."
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:191
+#: colisly/includes/admin/class-colisly-admin-settingsphp:192
 msgid "Add a bracket"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:196
+#: colisly/includes/admin/class-colisly-admin-settingsphp:197
 msgid "Orders"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:199
+#: colisly/includes/admin/class-colisly-admin-settingsphp:200
 msgid "Taxes"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:203
+#: colisly/includes/admin/class-colisly-admin-settingsphp:204
 msgid "Apply the shop taxes to shipment orders (parcels, storage and transport lines)"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:205
+#: colisly/includes/admin/class-colisly-admin-settingsphp:206
 msgid "When unchecked, shipment orders are created tax-free."
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:210
+#: colisly/includes/admin/class-colisly-admin-settingsphp:211
 msgid "Notifications"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:213
+#: colisly/includes/admin/class-colisly-admin-settingsphp:214
 msgid "E-mails"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:217
+#: colisly/includes/admin/class-colisly-admin-settingsphp:218
 msgid "Notify the client when a parcel is received"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:222
+#: colisly/includes/admin/class-colisly-admin-settingsphp:223
 msgid "Notify the administrator when a shipment is requested"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:227
+#: colisly/includes/admin/class-colisly-admin-settingsphp:228
 msgid "Send the WooCommerce invoice (with payment link) when a shipment is requested"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:233
+#: colisly/includes/admin/class-colisly-admin-settingsphp:234
 msgid "Save settings"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:345
+#: colisly/includes/admin/class-colisly-admin-settingsphp:346
 msgid "Settings saved."
 msgstr ""
 

@@ -205,6 +205,11 @@ l'extension ainsi que ses options.
   que retarifé en silence, et son client ne peut plus changer après la
   réception. Chaque correction est inscrite dans l'historique du client, en
   nommant ce qui a changé.
+* Le tableau des transporteurs indique désormais quand ses deux prix
+  s'appliquent : ils sont libellés « au-delà des tranches », et une ligne sous
+  le titre précise qu'un transporteur se tarife normalement avec une grille et
+  que ces deux prix ne sont qu'un recours. Lus seuls, ils passaient pour la
+  seule tarification transporteur existante.
 
 = 1.6.10 =
 * Correction : sur l'écran de demande d'expédition, le tableau des colis avait

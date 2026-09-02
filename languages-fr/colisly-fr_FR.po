@@ -916,3 +916,12 @@ msgstr "groupage refusé"
 
 msgid "allowed carriers"
 msgstr "transporteurs autorisés"
+
+msgid "Base price (beyond brackets)"
+msgstr "Prix de base (au-delà des tranches)"
+
+msgid "Price per kg (beyond brackets)"
+msgstr "Tarif au kilo (au-delà des tranches)"
+
+msgid "Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are the fallback: they apply to a carrier with no grid, and beyond the last bracket of a carrier that has one."
+msgstr "La plupart des transporteurs se tarifent avec une grille de tranches de poids, à renseigner dans « Tranches de poids par transporteur » ci-dessous. Les deux prix de ce tableau sont le recours : ils s’appliquent à un transporteur sans grille, et au-delà de la dernière tranche d’un transporteur qui en a une."
