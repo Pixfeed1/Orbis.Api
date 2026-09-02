@@ -77,6 +77,14 @@ class COLISLY_Shipments {
 			return new WP_Error( 'colisly_invalid_carrier', __( 'Invalid carrier.', 'colisly' ) );
 		}
 
+		// What the transport costs depends on where it goes. The client picks
+		// the destination on the form; when nothing is posted, the shipping
+		// address on his account is what the order would have used anyway.
+		$country = strtoupper( substr( preg_replace( '/[^A-Za-z]/', '', (string) $country ), 0, 2 ) );
+		if ( '' === $country ) {
+			$country = self::client_country( $client );
+		}
+
 		$parcels      = array();
 		$total_weight = 0.0;
 		$total_price  = 0.0;
@@ -98,6 +106,20 @@ class COLISLY_Shipments {
 				return new WP_Error( 'colisly_grouping_forbidden', sprintf( __( 'Parcel %s must be shipped alone (grouping forbidden).', 'colisly' ), $parcel->reference ) );
 			}
 
+			// A destination that asks for a declaration will not let an
+			// undeclared parcel through, so the request stops here rather than
+			// at the counter.
+			if ( COLISLY_Customs::required_for( $country ) && ! COLISLY_Customs::declared( (int) $parcel->id ) ) {
+				return new WP_Error(
+					'colisly_customs_missing',
+					sprintf(
+						/* translators: %s: parcel reference. */
+						__( 'Parcel %s is going to a destination that requires a customs declaration. Declare its contents before requesting the shipment.', 'colisly' ),
+						$parcel->reference
+					)
+				);
+			}
+
 			$allowed = COLISLY_Parcels::allowed_carrier_slugs( $parcel );
 			if ( ! empty( $allowed ) && ! in_array( $carrier, $allowed, true ) ) {
 				/* translators: %s: parcel reference. */
@@ -107,14 +129,6 @@ class COLISLY_Shipments {
 			$parcels[]     = $parcel;
 			$total_weight += (float) $parcel->weight;
 			$total_price  += (float) $parcel->price;
-		}
-
-		// What the transport costs depends on where it goes. The client picks
-		// the destination on the form; when nothing is posted, the shipping
-		// address on his account is what the order would have used anyway.
-		$country = strtoupper( substr( preg_replace( '/[^A-Za-z]/', '', (string) $country ), 0, 2 ) );
-		if ( '' === $country ) {
-			$country = self::client_country( $client );
 		}
 
 		$storage_fees  = COLISLY_Storage::fees_for_parcels( $parcels );

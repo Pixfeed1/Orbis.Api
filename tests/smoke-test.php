@@ -950,6 +950,158 @@ colisly_check( 'Volumetrique : le poids reel reste enregistre sur l expedition',
 $colisly_vol_settings['carriers'] = $colisly_vol_saved;
 COLISLY_Settings::update( $colisly_vol_settings );
 
+/*
+ * Declaration douaniere.
+ *
+ * Le plugin ne devine pas quelles destinations en exigent une : reexpedier de
+ * metropole vers la Guadeloupe en demande une, vers la Belgique non, alors que
+ * les deux sont dans l'UE. Le reexpediteur marque donc les zones concernees.
+ */
+$colisly_cu_settings = COLISLY_Settings::all();
+$colisly_cu_saved    = $colisly_cu_settings['zones'];
+
+$colisly_cu_settings['zones'] = array(
+	array(
+		'slug'      => 'metropole',
+		'name'      => 'Metropole',
+		'countries' => 'FR',
+		'customs'   => 0,
+	),
+	array(
+		'slug'      => 'outremer',
+		'name'      => 'Outre-mer',
+		'countries' => 'GP, MQ, RE',
+		'customs'   => 1,
+	),
+);
+COLISLY_Settings::update( $colisly_cu_settings );
+
+colisly_check( 'Douane : exigee sur une zone marquee', COLISLY_Customs::required_for( 'GP' ) );
+colisly_check( 'Douane : non exigee sur une zone non marquee', ! COLISLY_Customs::required_for( 'FR' ) );
+colisly_check( 'Douane : non exigee hors de toute zone', ! COLISLY_Customs::required_for( 'BE' ) );
+
+$colisly_cu_client = COLISLY_Clients::create(
+	wp_insert_user(
+		array(
+			'user_login' => 'cu-' . wp_generate_password( 6, false ),
+			'user_email' => 'cu-' . wp_generate_password( 6, false ) . '@example.com',
+			'user_pass'  => wp_generate_password(),
+			'role'       => 'customer',
+		)
+	)
+);
+$colisly_cu_parcel = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_cu_client,
+		'weight'    => 4,
+	)
+);
+
+colisly_check( 'Douane : colis non declare au depart', ! COLISLY_Customs::declared( $colisly_cu_parcel ) );
+
+$colisly_cu_saved_lines = COLISLY_Customs::save(
+	$colisly_cu_parcel,
+	array(
+		array(
+			'description'    => 'T-shirts',
+			'quantity'       => 3,
+			'unit_weight'    => '0,2',
+			'unit_value'     => '15',
+			'origin_country' => 'fr',
+		),
+		array(
+			'description' => '   ',
+			'quantity'    => 9,
+		),
+		array(
+			'description' => 'Baskets',
+			'quantity'    => 2,
+			'unit_weight' => '0,9',
+			'unit_value'  => '40',
+		),
+	)
+);
+colisly_check( 'Douane : lignes vides ecartees', 2 === $colisly_cu_saved_lines );
+colisly_check( 'Douane : colis declare', COLISLY_Customs::declared( $colisly_cu_parcel ) );
+
+$colisly_cu_items = COLISLY_Customs::items( $colisly_cu_parcel );
+colisly_check( 'Douane : virgule decimale acceptee', 0.2 === (float) $colisly_cu_items[0]->unit_weight );
+colisly_check( 'Douane : code pays normalise', 'FR' === $colisly_cu_items[0]->origin_country );
+
+$colisly_cu_totals = COLISLY_Customs::totals( $colisly_cu_parcel );
+colisly_check( 'Douane : quantite totale', 5 === $colisly_cu_totals['quantity'] );
+colisly_check( 'Douane : poids net total', 2.4 === $colisly_cu_totals['weight'] );
+colisly_check( 'Douane : valeur totale', 125.0 === $colisly_cu_totals['value'] );
+
+COLISLY_Customs::save( $colisly_cu_parcel, array( array( 'description' => 'Livres' ) ) );
+colisly_check( 'Douane : declaration remplacee et non cumulee', 1 === count( COLISLY_Customs::items( $colisly_cu_parcel ) ) );
+
+// Le blocage a l'expedition.
+$colisly_cu_p2 = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_cu_client,
+		'weight'    => 2,
+	)
+);
+colisly_check(
+	'Douane : expedition refusee vers une zone exigeante sans declaration',
+	is_wp_error( COLISLY_Shipments::request( $colisly_cu_client, array( $colisly_cu_p2 ), 'colissimo', 0, 'GP' ) )
+);
+colisly_check(
+	'Douane : expedition acceptee vers une zone sans exigence',
+	! is_wp_error( COLISLY_Shipments::request( $colisly_cu_client, array( $colisly_cu_p2 ), 'colissimo', 0, 'FR' ) )
+);
+
+$colisly_cu_p3 = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_cu_client,
+		'weight'    => 2,
+	)
+);
+COLISLY_Customs::save( $colisly_cu_p3, array( array( 'description' => 'Vetements' ) ) );
+colisly_check(
+	'Douane : expedition acceptee une fois le colis declare',
+	! is_wp_error( COLISLY_Shipments::request( $colisly_cu_client, array( $colisly_cu_p3 ), 'colissimo', 0, 'GP' ) )
+);
+
+// RGPD : ce que l'effacement supprime, l'export doit le montrer.
+$colisly_cu_p4 = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_cu_client,
+		'weight'    => 1,
+	)
+);
+COLISLY_Customs::save( $colisly_cu_p4, array( array( 'description' => 'Objet declare' ) ) );
+$colisly_cu_user  = get_userdata( (int) COLISLY_Clients::get( $colisly_cu_client )->user_id );
+$colisly_cu_export = COLISLY_Privacy::export( $colisly_cu_user->user_email, 1 );
+$colisly_cu_found  = false;
+foreach ( $colisly_cu_export['data'] as $colisly_cu_group ) {
+	foreach ( $colisly_cu_group['data'] as $colisly_cu_field ) {
+		if ( false !== strpos( (string) $colisly_cu_field['value'], 'Objet declare' ) ) {
+			$colisly_cu_found = true;
+		}
+	}
+}
+colisly_check( 'Douane : declaration presente dans l export RGPD', $colisly_cu_found );
+
+COLISLY_Privacy::erase( $colisly_cu_user->user_email, 1 );
+colisly_check( 'Douane : declaration effacee par l effaceur RGPD', ! COLISLY_Customs::declared( $colisly_cu_p4 ) );
+
+$colisly_cu_settings['zones'] = $colisly_cu_saved;
+COLISLY_Settings::update( $colisly_cu_settings );
+
+/*
+ * Toute table creee doit etre supprimee a la desinstallation, sinon une table
+ * de donnees personnelles survit a la suppression de l'extension.
+ */
+$colisly_created = array();
+preg_match_all( '/CREATE TABLE \{\$wpdb->prefix\}(\w+)/', file_get_contents( COLISLY_PLUGIN_DIR . 'includes/class-colisly-install.php' ), $colisly_created );
+preg_match_all( "/'(colisly_\w+)'/", file_get_contents( COLISLY_PLUGIN_DIR . 'uninstall.php' ), $colisly_dropped );
+colisly_check(
+	'Desinstallation : aucune table creee n est oubliee',
+	array() === array_diff( $colisly_created[1], $colisly_dropped[1] )
+);
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

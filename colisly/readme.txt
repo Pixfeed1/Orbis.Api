@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.8.0
+Stable tag: 1.9.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,12 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.9.0 =
+* New: customs declarations. Reshipping outside the customs territory needs the contents of each parcel declared, item by item, and until now the forwarder had to collect that by e-mail. The client now declares his parcels from a Customs declaration tab in his account: description, quantity, unit weight, unit value and country of origin per line. A shipment to a destination that requires one is refused while a selected parcel is still undeclared, with the parcel named.
+* Which destinations require a declaration is set on the zones, not guessed. Reshipping from mainland France to Guadeloupe needs one, since the overseas departments sit outside the EU VAT territory, while reshipping to Belgium needs none; a country code cannot tell those apart. Tick the customs column on the zones concerned and nothing changes for anyone who does not.
+* The operator prints the declaration from the parcel list or the client record: sender, recipient, one line per item with its tariff number and origin, the totals a customs form asks for, and the certification to sign. It warns when the declared contents weigh more than the parcel itself, which customs would stop on.
+* The declaration is personal data: it is disclosed in the privacy export and removed by the eraser, like everything else the plugin holds.
+
 = 1.8.0 =
 * New: carriers can be billed on volumetric weight. Express carriers price bulk rather than mass, so a carrier can now be marked volumetric with its own divisor, 5000 by default. The transport is then billed on whichever is greater, the real weight or length x width x height divided by the divisor, parcel by parcel. That is how the carriers themselves compute it: billing the volumetric weight instead of the real one would charge a dense 20 kg box in a small carton as 1.6 kg. A parcel whose dimensions were never entered is billed on its real weight rather than on a volume of nothing.
 * New: destination zones. A forwarder does not charge the same to reship to mainland France, to the overseas departments and to Madagascar, and a single grid per carrier could never hold real tariffs. Zones group destination countries, and each carrier gets a weight bracket grid per zone. The client picks the destination when requesting a shipment, starting from the shipping address on his account, and the live estimate follows it. A country in no zone, or a zone a carrier was never priced for, keeps that carrier's default grid, so nothing changes for a site that does not use zones.
@@ -157,6 +163,11 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.9.0 =
+Clients can now declare the contents of their parcels for customs, and the
+declaration prints as a form. One table is added on update. Nothing changes
+until a zone is marked as requiring a declaration.
 
 = 1.8.0 =
 Carriers can now be priced per destination zone. Existing grids keep applying

@@ -37,6 +37,7 @@ class COLISLY_Account {
 			'shipments' => apply_filters( 'colisly_endpoint_shipments', sanitize_title( _x( 'my-shipments', 'My Account endpoint slug', 'colisly' ) ) ),
 			'documents' => apply_filters( 'colisly_endpoint_documents', sanitize_title( _x( 'my-documents', 'My Account endpoint slug', 'colisly' ) ) ),
 			'request'   => apply_filters( 'colisly_endpoint_request', sanitize_title( _x( 'shipment-request', 'My Account endpoint slug', 'colisly' ) ) ),
+			'customs'   => apply_filters( 'colisly_endpoint_customs', sanitize_title( _x( 'customs-declaration', 'My Account endpoint slug', 'colisly' ) ) ),
 		);
 	}
 
@@ -65,6 +66,7 @@ class COLISLY_Account {
 		add_filter( 'woocommerce_account_menu_items', array( __CLASS__, 'menu_items' ) );
 
 		add_action( 'template_redirect', array( __CLASS__, 'handle_request_submit' ) );
+		add_action( 'template_redirect', array( __CLASS__, 'handle_customs_submit' ) );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
 	}
 
@@ -84,6 +86,7 @@ class COLISLY_Account {
 		add_action( 'woocommerce_account_' . $endpoints['shipments'] . '_endpoint', array( __CLASS__, 'render_shipments' ) );
 		add_action( 'woocommerce_account_' . $endpoints['documents'] . '_endpoint', array( __CLASS__, 'render_documents' ) );
 		add_action( 'woocommerce_account_' . $endpoints['request'] . '_endpoint', array( __CLASS__, 'render_request' ) );
+		add_action( 'woocommerce_account_' . $endpoints['customs'] . '_endpoint', array( __CLASS__, 'render_customs' ) );
 	}
 
 	/**
@@ -112,6 +115,15 @@ class COLISLY_Account {
 		$items[ $endpoints['shipments'] ] = __( 'My shipments', 'colisly' );
 		$items[ $endpoints['documents'] ] = __( 'My documents', 'colisly' );
 		$items[ $endpoints['request'] ]   = __( 'Shipment request', 'colisly' );
+
+		// The tab only appears when it is of any use, that is when at least one
+		// destination the shop serves asks for a declaration.
+		foreach ( COLISLY_Zones::all() as $colisly_zone ) {
+			if ( ! empty( $colisly_zone['customs'] ) ) {
+				$items[ $endpoints['customs'] ] = __( 'Customs declaration', 'colisly' );
+				break;
+			}
+		}
 
 		return array_merge( $items, $logout );
 	}
@@ -519,6 +531,143 @@ class COLISLY_Account {
 	 *
 	 * @return void
 	 */
+	/**
+	 * Renders the customs declaration screen.
+	 *
+	 * @return void
+	 */
+	public static function render_customs() {
+		$client = self::current_client();
+
+		echo '<h2>' . esc_html__( 'Customs declaration', 'colisly' ) . '</h2>';
+
+		if ( ! $client ) {
+			echo '<p>' . esc_html__( 'No client record is linked to your account yet.', 'colisly' ) . '</p>';
+			return;
+		}
+
+		$parcels = COLISLY_Parcels::in_stock_for_client( (int) $client->id );
+
+		if ( ! $parcels ) {
+			echo '<p>' . esc_html__( 'You have no parcel in stock to declare.', 'colisly' ) . '</p>';
+			return;
+		}
+
+		echo '<p>' . esc_html__( 'Some destinations require the contents of a parcel to be declared before it can be shipped. Describe what each parcel holds, item by item, with the quantity, the unit weight and the unit value.', 'colisly' ) . '</p>';
+
+		foreach ( $parcels as $parcel ) :
+			$items   = COLISLY_Customs::items( (int) $parcel->id );
+			$items[] = (object) array(
+				'description'    => '',
+				'quantity'       => 1,
+				'unit_weight'    => '',
+				'unit_value'     => '',
+				'origin_country' => '',
+				'hs_code'        => '',
+			); // Extra blank line to add an item.
+			?>
+			<form method="post" class="colisly-customs-form">
+				<?php wp_nonce_field( 'colisly_save_customs_' . $parcel->id ); ?>
+				<input type="hidden" name="colisly_action" value="save_customs" />
+				<input type="hidden" name="parcel_id" value="<?php echo esc_attr( (string) $parcel->id ); ?>" />
+
+				<h3>
+					<?php
+					printf(
+						/* translators: 1: parcel reference, 2: weight in kg. */
+						esc_html__( 'Parcel %1$s (%2$s kg)', 'colisly' ),
+						esc_html( $parcel->reference ),
+						esc_html( number_format_i18n( (float) $parcel->weight, 3 ) )
+					);
+					?>
+				</h3>
+
+				<div class="colisly-table-wrap">
+					<table class="woocommerce-orders-table shop_table shop_table_responsive colisly-front-table">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'Description', 'colisly' ); ?></th>
+								<th><?php esc_html_e( 'Quantity', 'colisly' ); ?></th>
+								<th><?php esc_html_e( 'Unit weight (kg)', 'colisly' ); ?></th>
+								<th><?php esc_html_e( 'Unit value', 'colisly' ); ?></th>
+								<th><?php esc_html_e( 'Country of origin', 'colisly' ); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach ( $items as $k => $item ) : ?>
+								<tr>
+									<td data-title="<?php esc_attr_e( 'Description', 'colisly' ); ?>">
+										<input type="text" name="customs[<?php echo esc_attr( (string) $k ); ?>][description]" value="<?php echo esc_attr( $item->description ); ?>" placeholder="<?php esc_attr_e( 'Cotton t-shirts', 'colisly' ); ?>" aria-label="<?php esc_attr_e( 'Description', 'colisly' ); ?>" />
+									</td>
+									<td data-title="<?php esc_attr_e( 'Quantity', 'colisly' ); ?>">
+										<input type="number" min="1" step="1" name="customs[<?php echo esc_attr( (string) $k ); ?>][quantity]" value="<?php echo esc_attr( (string) $item->quantity ); ?>" aria-label="<?php esc_attr_e( 'Quantity', 'colisly' ); ?>" />
+									</td>
+									<td data-title="<?php esc_attr_e( 'Unit weight (kg)', 'colisly' ); ?>">
+										<input type="text" name="customs[<?php echo esc_attr( (string) $k ); ?>][unit_weight]" value="<?php echo esc_attr( (string) $item->unit_weight ); ?>" aria-label="<?php esc_attr_e( 'Unit weight (kg)', 'colisly' ); ?>" />
+									</td>
+									<td data-title="<?php esc_attr_e( 'Unit value', 'colisly' ); ?>">
+										<input type="text" name="customs[<?php echo esc_attr( (string) $k ); ?>][unit_value]" value="<?php echo esc_attr( (string) $item->unit_value ); ?>" aria-label="<?php esc_attr_e( 'Unit value', 'colisly' ); ?>" />
+									</td>
+									<td data-title="<?php esc_attr_e( 'Country of origin', 'colisly' ); ?>">
+										<input type="text" maxlength="2" size="2" name="customs[<?php echo esc_attr( (string) $k ); ?>][origin_country]" value="<?php echo esc_attr( $item->origin_country ); ?>" placeholder="FR" aria-label="<?php esc_attr_e( 'Country of origin', 'colisly' ); ?>" />
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+
+				<p><button type="submit" class="woocommerce-button button"><?php esc_html_e( 'Save the declaration', 'colisly' ); ?></button></p>
+			</form>
+			<?php
+		endforeach;
+	}
+
+	/**
+	 * Saves a customs declaration posted from the account area.
+	 *
+	 * @return void
+	 */
+	public static function handle_customs_submit() {
+		if ( empty( $_POST['colisly_action'] ) || 'save_customs' !== $_POST['colisly_action'] ) {
+			return;
+		}
+
+		$parcel_id = isset( $_POST['parcel_id'] ) ? absint( $_POST['parcel_id'] ) : 0;
+
+		check_admin_referer( 'colisly_save_customs_' . $parcel_id );
+
+		$client = self::current_client();
+		$parcel = COLISLY_Parcels::get( $parcel_id );
+
+		// A declaration may only be written by the client the parcel belongs to.
+		if ( ! $client || ! $parcel || (int) $parcel->client_id !== (int) $client->id ) {
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
+		}
+
+		$lines = array();
+		if ( isset( $_POST['customs'] ) && is_array( $_POST['customs'] ) ) {
+			foreach ( wp_unslash( $_POST['customs'] ) as $line ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in COLISLY_Customs::save().
+				if ( is_array( $line ) ) {
+					$lines[] = $line;
+				}
+			}
+		}
+
+		$saved = COLISLY_Customs::save( $parcel_id, $lines );
+
+		$url = wc_get_account_endpoint_url( self::endpoint( 'customs' ) );
+
+		wp_safe_redirect(
+			add_query_arg(
+				'colisly_customs',
+				is_wp_error( $saved ) ? 'error' : 'saved',
+				$url
+			)
+		);
+		exit;
+	}
+
 	public static function handle_request_submit() {
 		if ( empty( $_POST['colisly_action'] ) || 'request_shipment' !== $_POST['colisly_action'] ) {
 			return;

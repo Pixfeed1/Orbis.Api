@@ -94,11 +94,13 @@ class COLISLY_Admin_Settings {
 
 				<h2><?php esc_html_e( 'Destination zones', 'colisly' ); ?></h2>
 				<p class="description"><?php esc_html_e( 'A carrier does not charge the same to reship next door and to the other side of the world. Group your destinations here, then price each carrier per zone below. Countries are two-letter codes, separated by commas: FR, RE, YT, GP. A country you do not list keeps the carrier default grid.', 'colisly' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Tick the customs column for the zones that need a declaration of the contents. The plugin cannot work this out on its own: reshipping from mainland France to Guadeloupe needs one, since the overseas departments sit outside the EU VAT territory, while reshipping to Belgium needs none. The client then declares what each parcel holds before it can leave.', 'colisly' ); ?></p>
 				<table class="widefat fixed striped colisly-zones-table">
 					<thead>
 						<tr>
 							<th><?php esc_html_e( 'Zone name', 'colisly' ); ?></th>
 							<th><?php esc_html_e( 'Countries', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Customs declaration', 'colisly' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -119,6 +121,10 @@ class COLISLY_Admin_Settings {
 								<td>
 									<label class="screen-reader-text" for="colisly-zone-c-<?php echo esc_attr( (string) $z ); ?>"><?php esc_html_e( 'Countries', 'colisly' ); ?></label>
 									<input type="text" id="colisly-zone-c-<?php echo esc_attr( (string) $z ); ?>" name="zone_countries[]" value="<?php echo esc_attr( implode( ', ', $zone['countries'] ) ); ?>" placeholder="FR, RE, YT" />
+								</td>
+								<td>
+									<input type="hidden" name="zone_customs[]" value="<?php echo empty( $zone['customs'] ) ? '0' : '1'; ?>" class="colisly-toggle-value" />
+									<input type="checkbox" class="colisly-toggle" <?php checked( ! empty( $zone['customs'] ) ); ?> aria-label="<?php esc_attr_e( 'Customs declaration', 'colisly' ); ?>" />
 								</td>
 							</tr>
 						<?php endforeach; ?>
@@ -463,6 +469,7 @@ class COLISLY_Admin_Settings {
 		// slug only exists once its zone has been saved.
 		$zone_names     = isset( $_POST['zone_name'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['zone_name'] ) ) : array();
 		$zone_countries = isset( $_POST['zone_countries'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['zone_countries'] ) ) : array();
+		$zone_customs   = isset( $_POST['zone_customs'] ) ? array_map( 'absint', wp_unslash( (array) $_POST['zone_customs'] ) ) : array();
 		$zones          = array();
 
 		foreach ( $zone_names as $i => $zone_name ) {
@@ -473,6 +480,7 @@ class COLISLY_Admin_Settings {
 				'slug'      => sanitize_key( sanitize_title( $zone_name ) ),
 				'name'      => $zone_name,
 				'countries' => COLISLY_Zones::parse_countries( isset( $zone_countries[ $i ] ) ? $zone_countries[ $i ] : '' ),
+				'customs'   => empty( $zone_customs[ $i ] ) ? 0 : 1,
 			);
 		}
 		$settings['zones'] = $zones;

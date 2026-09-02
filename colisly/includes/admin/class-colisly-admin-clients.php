@@ -315,6 +315,9 @@ class COLISLY_Admin_Clients {
 												<span class="edit"><a href="<?php echo esc_url( admin_url( 'admin.php?page=colisly-new-parcel&parcel=' . (int) $parcel->id ) ); ?>"><?php esc_html_e( 'Edit', 'colisly' ); ?></a></span>
 											</div>
 										<?php endif; ?>
+										<?php if ( COLISLY_Customs::declared( (int) $parcel->id ) ) : ?>
+											<div class="row-actions"><span class="customs"><a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=colisly_customs_form&parcel=' . (int) $parcel->id ), 'colisly_customs_form_' . (int) $parcel->id ) ); ?>" target="_blank"><?php esc_html_e( 'Customs form', 'colisly' ); ?></a></span></div>
+										<?php endif; ?>
 									</td>
 								<td><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
 								<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>

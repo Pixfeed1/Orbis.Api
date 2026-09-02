@@ -18,7 +18,7 @@ if ( 'yes' !== get_option( 'colisly_remove_data_on_uninstall', 'no' ) ) {
 
 global $wpdb;
 
-foreach ( array( 'colisly_history', 'colisly_documents', 'colisly_parcels', 'colisly_shipments', 'colisly_clients' ) as $colisly_table ) {
+foreach ( array( 'colisly_history', 'colisly_documents', 'colisly_customs_items', 'colisly_parcels', 'colisly_shipments', 'colisly_clients' ) as $colisly_table ) {
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.SchemaChange
 	$wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}{$colisly_table}" ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 }

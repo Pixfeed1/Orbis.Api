@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.8.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.9.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -986,3 +986,96 @@ msgstr "Ajoutez un transporteur et enregistrez pour configurer ses tranches. Une
 
 msgid "Volumetric: express carriers price bulk rather than mass. Tick the box and the transport is billed on whichever is greater, the real weight or length x width x height divided by the divisor, parcel by parcel. A parcel whose dimensions were not entered is billed on its real weight."
 msgstr "Volumétrique : les transporteurs express facturent l’encombrement plutôt que la masse. Cochez la case et le transport est facturé sur le plus grand des deux, le poids réel ou longueur x largeur x hauteur divisé par le diviseur, colis par colis. Un colis dont les dimensions n’ont pas été saisies est facturé sur son poids réel."
+
+msgid "Customs declaration"
+msgstr "Déclaration douanière"
+
+msgid "Customs form"
+msgstr "Formulaire de douane"
+
+msgid "Description"
+msgstr "Désignation"
+
+msgid "Quantity"
+msgstr "Quantité"
+
+msgid "Unit weight (kg)"
+msgstr "Poids unitaire (kg)"
+
+msgid "Unit value"
+msgstr "Valeur unitaire"
+
+msgid "Country of origin"
+msgstr "Pays d’origine"
+
+msgid "Cotton t-shirts"
+msgstr "T-shirts en coton"
+
+msgid "Save the declaration"
+msgstr "Enregistrer la déclaration"
+
+msgid "You have no parcel in stock to declare."
+msgstr "Vous n’avez aucun colis en stock à déclarer."
+
+msgid "Nothing declared for this parcel."
+msgstr "Rien n’est déclaré pour ce colis."
+
+msgid "Detailed description of contents"
+msgstr "Désignation détaillée du contenu"
+
+msgid "Net weight (kg)"
+msgstr "Poids net (kg)"
+
+msgid "Value"
+msgstr "Valeur"
+
+msgid "HS tariff number"
+msgstr "Position tarifaire SH"
+
+msgid "Gross weight of the parcel (kg)"
+msgstr "Poids brut du colis (kg)"
+
+msgid "Sender"
+msgstr "Expéditeur"
+
+msgid "Recipient"
+msgstr "Destinataire"
+
+msgid "Date and signature"
+msgstr "Date et signature"
+
+msgid "Print"
+msgstr "Imprimer"
+
+msgid "Customs declaration %s"
+msgstr "Déclaration douanière %s"
+
+msgid "Parcel %1$s — tracking %2$s"
+msgstr "Colis %1$s — suivi %2$s"
+
+msgid "%1$s (x%2$d, %3$s kg each, %4$s each)"
+msgstr "%1$s (x%2$d, %3$s kg pièce, %4$s pièce)"
+
+msgid "Some destinations require the contents of a parcel to be declared before it can be shipped. Describe what each parcel holds, item by item, with the quantity, the unit weight and the unit value."
+msgstr "Certaines destinations exigent que le contenu d’un colis soit déclaré avant son expédition. Décrivez ce que contient chaque colis, article par article, avec la quantité, le poids unitaire et la valeur unitaire."
+
+msgid "Parcel %s is going to a destination that requires a customs declaration. Declare its contents before requesting the shipment."
+msgstr "Le colis %s part vers une destination qui exige une déclaration douanière. Déclarez son contenu avant de demander l’expédition."
+
+msgid "Tick the customs column for the zones that need a declaration of the contents. The plugin cannot work this out on its own: reshipping from mainland France to Guadeloupe needs one, since the overseas departments sit outside the EU VAT territory, while reshipping to Belgium needs none. The client then declares what each parcel holds before it can leave."
+msgstr "Cochez la colonne douane pour les zones qui exigent une déclaration du contenu. L’extension ne peut pas le deviner seule : réexpédier de métropole vers la Guadeloupe en exige une, les départements d’outre-mer étant hors du territoire de TVA de l’UE, alors que réexpédier vers la Belgique n’en exige aucune. Le client déclare alors le contenu de chaque colis avant qu’il puisse partir."
+
+msgid "I certify that the particulars given in this declaration are correct and that this item does not contain any dangerous article or article prohibited by legislation or by postal or customs regulations."
+msgstr "Je certifie que les renseignements donnés dans la présente déclaration sont exacts et que cet envoi ne contient aucun objet dangereux ou interdit par la législation ou la réglementation postale ou douanière."
+
+msgid "Warning: the declared contents weigh %1$s kg, more than the parcel itself (%2$s kg). Check the declaration before shipping."
+msgstr "Attention : le contenu déclaré pèse %1$s kg, soit plus que le colis lui-même (%2$s kg). Vérifiez la déclaration avant expédition."
+
+msgctxt "My Account endpoint slug"
+msgid "customs-declaration"
+msgstr "declaration-douaniere"
+
+msgid "Customs declaration of parcel %1$s updated: %2$d line."
+msgid_plural "Customs declaration of parcel %1$s updated: %2$d lines."
+msgstr[0] "Déclaration douanière du colis %1$s mise à jour : %2$d ligne."
+msgstr[1] "Déclaration douanière du colis %1$s mise à jour : %2$d lignes."

@@ -193,6 +193,28 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.9.0 =
+* Nouveau : les déclarations douanières. Réexpédier hors du territoire douanier
+  impose de déclarer le contenu de chaque colis, article par article, et le
+  réexpéditeur devait jusqu'ici le collecter par e-mail. Le client déclare
+  désormais ses colis depuis un onglet « Déclaration douanière » de son compte :
+  désignation, quantité, poids unitaire, valeur unitaire et pays d'origine par
+  ligne. Une expédition vers une destination qui l'exige est refusée tant qu'un
+  colis sélectionné n'est pas déclaré, en le nommant.
+* Les destinations concernées se marquent sur les zones, elles ne sont pas
+  devinées. Réexpédier de métropole vers la Guadeloupe en exige une, les
+  départements d'outre-mer étant hors du territoire de TVA de l'UE, alors que
+  réexpédier vers la Belgique n'en exige aucune : un code pays ne permet pas de
+  les distinguer. Cochez la colonne douane sur les zones concernées, et rien ne
+  change pour qui ne le fait pas.
+* L'opérateur imprime la déclaration depuis la liste des colis ou la fiche
+  client : expéditeur, destinataire, une ligne par article avec sa position
+  tarifaire et son origine, les totaux qu'un formulaire douanier réclame, et la
+  certification à signer. Elle avertit lorsque le contenu déclaré pèse plus que
+  le colis lui-même, ce sur quoi la douane s'arrêterait.
+* La déclaration est une donnée personnelle : elle figure dans l'export de
+  confidentialité et l'effaceur la supprime, comme tout le reste.
+
 = 1.8.0 =
 * Nouveau : les transporteurs peuvent être facturés au poids volumétrique. Les
   transporteurs express facturent l'encombrement plutôt que la masse : un
@@ -321,6 +343,12 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.9.0 =
+Les clients peuvent désormais déclarer le contenu de leurs colis pour la douane,
+et la déclaration s'imprime sous forme de formulaire. Une table est ajoutée lors
+de la mise à jour. Rien ne change tant qu'aucune zone n'est marquée comme
+exigeant une déclaration.
 
 = 1.8.0 =
 Les transporteurs peuvent désormais être tarifés par zone de destination. Les

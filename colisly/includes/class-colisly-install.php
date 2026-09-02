@@ -238,6 +238,21 @@ CREATE TABLE {$wpdb->prefix}colisly_shipments (
 	KEY client_id (client_id),
 	KEY status (status)
 ) $collate;
+CREATE TABLE {$wpdb->prefix}colisly_customs_items (
+	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	parcel_id BIGINT UNSIGNED NOT NULL,
+	description VARCHAR(255) NOT NULL DEFAULT '',
+	quantity INT UNSIGNED NOT NULL DEFAULT 1,
+	unit_weight DECIMAL(10,3) NOT NULL DEFAULT 0,
+	unit_value DECIMAL(12,2) NOT NULL DEFAULT 0,
+	origin_country VARCHAR(2) NOT NULL DEFAULT '',
+	hs_code VARCHAR(20) NOT NULL DEFAULT '',
+	position INT UNSIGNED NOT NULL DEFAULT 0,
+	created_at DATETIME NOT NULL,
+	updated_at DATETIME NOT NULL,
+	PRIMARY KEY  (id),
+	KEY parcel_id (parcel_id)
+) $collate;
 CREATE TABLE {$wpdb->prefix}colisly_documents (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
 	client_id BIGINT UNSIGNED NOT NULL,

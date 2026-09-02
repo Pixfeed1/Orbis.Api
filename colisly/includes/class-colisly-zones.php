@@ -52,6 +52,7 @@ class COLISLY_Zones {
 				'slug'      => $slug,
 				'name'      => $name,
 				'countries' => self::parse_countries( isset( $zone['countries'] ) ? $zone['countries'] : '' ),
+				'customs'   => empty( $zone['customs'] ) ? 0 : 1,
 			);
 		}
 

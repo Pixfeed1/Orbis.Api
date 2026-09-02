@@ -97,6 +97,9 @@ class COLISLY_Admin_Parcels {
 												<span class="edit"><a href="<?php echo esc_url( admin_url( 'admin.php?page=colisly-new-parcel&parcel=' . (int) $parcel->id ) ); ?>"><?php esc_html_e( 'Edit', 'colisly' ); ?></a></span>
 											</div>
 										<?php endif; ?>
+										<?php if ( COLISLY_Customs::declared( (int) $parcel->id ) ) : ?>
+											<div class="row-actions"><span class="customs"><a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=colisly_customs_form&parcel=' . (int) $parcel->id ), 'colisly_customs_form_' . (int) $parcel->id ) ); ?>" target="_blank"><?php esc_html_e( 'Customs form', 'colisly' ); ?></a></span></div>
+										<?php endif; ?>
 									</td>
 									<td>
 										<a href="<?php echo esc_url( $client_url ); ?>">
@@ -343,6 +346,30 @@ class COLISLY_Admin_Parcels {
 	 *
 	 * @return void
 	 */
+	/**
+	 * Serves the printable customs declaration of a parcel.
+	 *
+	 * @return void
+	 */
+	public static function handle_customs_form() {
+		if ( ! current_user_can( 'colisly_manage' ) ) {
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
+		}
+
+		$parcel_id = isset( $_GET['parcel'] ) ? absint( $_GET['parcel'] ) : 0;
+
+		check_admin_referer( 'colisly_customs_form_' . $parcel_id );
+
+		$parcel = COLISLY_Parcels::get( $parcel_id );
+
+		if ( ! $parcel ) {
+			wp_die( esc_html__( 'Parcel not found.', 'colisly' ), '', array( 'response' => 404 ) );
+		}
+
+		COLISLY_Customs::render_form( $parcel );
+		exit;
+	}
+
 	public static function handle_update() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
 			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
