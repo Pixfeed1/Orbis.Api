@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.6.7\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.6.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -853,3 +853,21 @@ msgstr "aucun moyen de paiement n’est activé, les commandes d’expédition n
 
 msgid "This user already has a client record. Here it is."
 msgstr "Cet utilisateur possède déjà une fiche client. La voici."
+
+msgid "Add a tier"
+msgstr "Ajouter un palier"
+
+msgid "Add a carrier"
+msgstr "Ajouter un transporteur"
+
+msgid "Add a bracket"
+msgstr "Ajouter une tranche"
+
+msgid "Carrier weight brackets"
+msgstr "Tranches de poids par transporteur"
+
+msgid "Carriers usually publish a grid of weight brackets rather than a price per kilo. Fill one in here and it replaces the base price and the price per kg for that carrier: the first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. Leave a carrier empty and it keeps billing base price + price per kg. Beyond the last bracket that formula applies again, but it can only ever charge more than the last bracket, never less."
+msgstr "Les transporteurs publient en général une grille de tranches de poids plutôt qu’un tarif au kilo. Renseignez-la ici et elle remplace le prix de base et le tarif au kilo pour ce transporteur : la première tranche dont le poids maximal est supérieur ou égal au poids de l’expédition fixe le prix. Laissez un transporteur vide et il continue d’être facturé au prix de base + tarif au kilo. Au-delà de la dernière tranche, cette formule s’applique de nouveau, sans jamais descendre sous la dernière tranche."
+
+msgid "Add a carrier and save to configure its brackets."
+msgstr "Ajoutez un transporteur et enregistrez pour configurer ses tranches."

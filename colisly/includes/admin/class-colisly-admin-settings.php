@@ -80,6 +80,7 @@ class COLISLY_Admin_Settings {
 						<?php endforeach; ?>
 					</tbody>
 				</table>
+				<p><button type="button" class="button colisly-add-row"><?php esc_html_e( 'Add a tier', 'colisly' ); ?></button></p>
 				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row"><label for="colisly-price-base"><?php esc_html_e( 'Base price (beyond tiers)', 'colisly' ); ?></label></th>
@@ -133,13 +134,64 @@ class COLISLY_Admin_Settings {
 									<input type="number" step="0.01" min="0" id="colisly-carrier-k-<?php echo esc_attr( (string) $i ); ?>" name="carrier_price_per_kg[]" value="<?php echo esc_attr( isset( $carrier['price_per_kg'] ) ? (string) $carrier['price_per_kg'] : '' ); ?>" />
 								</td>
 								<td>
-									<input type="hidden" name="carrier_enabled[<?php echo esc_attr( (string) $i ); ?>]" value="<?php echo empty( $carrier['enabled'] ) ? '0' : '1'; ?>" class="colisly-carrier-enabled-value" />
+									<input type="hidden" name="carrier_enabled[]" value="<?php echo empty( $carrier['enabled'] ) ? '0' : '1'; ?>" class="colisly-carrier-enabled-value" />
 									<input type="checkbox" class="colisly-carrier-enabled" <?php checked( ! empty( $carrier['enabled'] ) ); ?> aria-label="<?php esc_attr_e( 'Enabled', 'colisly' ); ?>" />
 								</td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
 				</table>
+				<p><button type="button" class="button colisly-add-row"><?php esc_html_e( 'Add a carrier', 'colisly' ); ?></button></p>
+
+				<h2><?php esc_html_e( 'Carrier weight brackets', 'colisly' ); ?></h2>
+				<p class="description">
+					<?php esc_html_e( 'Carriers usually publish a grid of weight brackets rather than a price per kilo. Fill one in here and it replaces the base price and the price per kg for that carrier: the first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. Leave a carrier empty and it keeps billing base price + price per kg. Beyond the last bracket that formula applies again, but it can only ever charge more than the last bracket, never less.', 'colisly' ); ?>
+				</p>
+				<?php
+				$saved_carriers = is_array( $settings['carriers'] ) ? $settings['carriers'] : array();
+				if ( ! $saved_carriers ) :
+					?>
+					<p><?php esc_html_e( 'Add a carrier and save to configure its brackets.', 'colisly' ); ?></p>
+					<?php
+				endif;
+				foreach ( $saved_carriers as $carrier ) :
+					if ( empty( $carrier['slug'] ) ) {
+						continue;
+					}
+					$slug        = $carrier['slug'];
+					$c_tiers     = isset( $carrier['tiers'] ) && is_array( $carrier['tiers'] ) ? $carrier['tiers'] : array();
+					$c_tiers[]   = array(
+						'max_weight' => '',
+						'price'      => '',
+					); // Extra empty row to add a bracket.
+					?>
+					<h3><?php echo esc_html( $carrier['name'] ); ?></h3>
+					<table class="widefat fixed striped colisly-tiers-table colisly-carrier-tiers-table">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'Maximum weight (kg)', 'colisly' ); ?></th>
+								<th><?php esc_html_e( 'Price', 'colisly' ); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach ( $c_tiers as $j => $c_tier ) : ?>
+								<tr>
+									<td>
+										<label class="screen-reader-text" for="colisly-ct-w-<?php echo esc_attr( $slug . '-' . $j ); ?>"><?php esc_html_e( 'Maximum weight (kg)', 'colisly' ); ?></label>
+										<input type="number" id="colisly-ct-w-<?php echo esc_attr( $slug . '-' . $j ); ?>" name="carrier_tier_max_weight[<?php echo esc_attr( $slug ); ?>][]" step="0.001" min="0" value="<?php echo esc_attr( (string) $c_tier['max_weight'] ); ?>" />
+									</td>
+									<td>
+										<label class="screen-reader-text" for="colisly-ct-p-<?php echo esc_attr( $slug . '-' . $j ); ?>"><?php esc_html_e( 'Price', 'colisly' ); ?></label>
+										<input type="number" id="colisly-ct-p-<?php echo esc_attr( $slug . '-' . $j ); ?>" name="carrier_tier_price[<?php echo esc_attr( $slug ); ?>][]" step="0.01" min="0" value="<?php echo esc_attr( (string) $c_tier['price'] ); ?>" />
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+					<p><button type="button" class="button colisly-add-row"><?php esc_html_e( 'Add a bracket', 'colisly' ); ?></button></p>
+					<?php
+				endforeach;
+				?>
 
 				<h2><?php esc_html_e( 'Orders', 'colisly' ); ?></h2>
 				<table class="form-table" role="presentation">
@@ -189,6 +241,44 @@ class COLISLY_Admin_Settings {
 	 *
 	 * @return void
 	 */
+	/**
+	 * Validates a grid of weight brackets posted as two parallel arrays.
+	 *
+	 * Shared by the parcel pricing tiers and by each carrier's own brackets,
+	 * which follow exactly the same rules.
+	 *
+	 * @param array $weights Maximum weights, as posted.
+	 * @param array $prices  Prices, as posted.
+	 * @return array[] Brackets: max_weight, price.
+	 */
+	private static function sanitize_tiers( $weights, $prices ) {
+		$tiers   = array();
+		$weights = array_values( $weights );
+		$prices  = array_values( $prices );
+
+		foreach ( $weights as $i => $weight ) {
+			$weight = is_scalar( $weight ) ? sanitize_text_field( (string) $weight ) : '';
+			$price  = isset( $prices[ $i ] ) && is_scalar( $prices[ $i ] ) ? sanitize_text_field( (string) $prices[ $i ] ) : '';
+
+			if ( '' === $weight || '' === $price ) {
+				continue;
+			}
+
+			// A bracket capped at zero can never match a shipment, and silently
+			// shifts everything to the next bracket. Drop it like an empty row.
+			if ( (float) $weight <= 0 ) {
+				continue;
+			}
+
+			$tiers[] = array(
+				'max_weight' => max( 0, (float) $weight ),
+				'price'      => max( 0, (float) $price ),
+			);
+		}
+
+		return $tiers;
+	}
+
 	public static function handle_save() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
 			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
@@ -203,25 +293,10 @@ class COLISLY_Admin_Settings {
 		$settings['price_base']          = isset( $_POST['price_base'] ) ? max( 0, (float) $_POST['price_base'] ) : 0;
 		$settings['price_per_kg']        = isset( $_POST['price_per_kg'] ) ? max( 0, (float) $_POST['price_per_kg'] ) : 0;
 
-		$tiers   = array();
-		$weights = isset( $_POST['tier_max_weight'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['tier_max_weight'] ) ) : array();
-		$prices  = isset( $_POST['tier_price'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['tier_price'] ) ) : array();
-
-		foreach ( $weights as $i => $weight ) {
-			if ( '' === $weight || ! isset( $prices[ $i ] ) || '' === $prices[ $i ] ) {
-				continue;
-			}
-			// A tier capped at zero can never match a parcel, and silently
-			// shifts every parcel to the next tier. Drop it like an empty row.
-			if ( (float) $weight <= 0 ) {
-				continue;
-			}
-			$tiers[] = array(
-				'max_weight' => max( 0, (float) $weight ),
-				'price'      => max( 0, (float) $prices[ $i ] ),
-			);
-		}
-		$settings['pricing_tiers'] = $tiers;
+		$settings['pricing_tiers'] = self::sanitize_tiers(
+			isset( $_POST['tier_max_weight'] ) ? (array) wp_unslash( $_POST['tier_max_weight'] ) : array(), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
+			isset( $_POST['tier_price'] ) ? (array) wp_unslash( $_POST['tier_price'] ) : array() // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
+		);
 
 		$carriers = array();
 		$names    = isset( $_POST['carrier_name'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['carrier_name'] ) ) : array();
@@ -229,6 +304,11 @@ class COLISLY_Admin_Settings {
 		$enabled  = isset( $_POST['carrier_enabled'] ) ? array_map( 'absint', wp_unslash( (array) $_POST['carrier_enabled'] ) ) : array();
 		$bases    = isset( $_POST['carrier_price_base'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['carrier_price_base'] ) ) : array();
 		$rates    = isset( $_POST['carrier_price_per_kg'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['carrier_price_per_kg'] ) ) : array();
+
+		// Brackets are posted per carrier slug, since a carrier can be renamed
+		// or reordered in the same save without its grid following the wrong row.
+		$tier_weights = isset( $_POST['carrier_tier_max_weight'] ) ? (array) wp_unslash( $_POST['carrier_tier_max_weight'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
+		$tier_prices  = isset( $_POST['carrier_tier_price'] ) ? (array) wp_unslash( $_POST['carrier_tier_price'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
 
 		foreach ( $names as $i => $name ) {
 			$slug = isset( $slugs[ $i ] ) ? $slugs[ $i ] : '';
@@ -247,6 +327,10 @@ class COLISLY_Admin_Settings {
 				'enabled'      => empty( $enabled[ $i ] ) ? 0 : 1,
 				'price_base'   => isset( $bases[ $i ] ) ? max( 0, COLISLY_Parcels::to_float( $bases[ $i ] ) ) : 0,
 				'price_per_kg' => isset( $rates[ $i ] ) ? max( 0, COLISLY_Parcels::to_float( $rates[ $i ] ) ) : 0,
+				'tiers'        => self::sanitize_tiers(
+					isset( $tier_weights[ $slug ] ) ? (array) $tier_weights[ $slug ] : array(),
+					isset( $tier_prices[ $slug ] ) ? (array) $tier_prices[ $slug ] : array()
+				),
 			);
 		}
 		$settings['carriers'] = $carriers;

@@ -22,6 +22,41 @@
 
 	// Carrier enabled checkboxes mirror their value into a hidden field so
 	// unchecked rows still submit an explicit 0.
+	/*
+	 * The settings tables used to grow by exactly one blank row per save, so
+	 * filling in six weight brackets meant saving six times, and nothing on
+	 * screen said a seventh row was even possible. Cloning the last row keeps
+	 * the whole grid enterable in one pass.
+	 */
+	$( document ).on( 'click', '.colisly-add-row', function () {
+		var $table = $( this ).closest( 'p' ).prev( 'table' );
+		var $last = $table.find( 'tbody tr' ).last();
+
+		if ( ! $last.length ) {
+			return;
+		}
+
+		var $row = $last.clone();
+
+		$row.find( 'input' ).each( function () {
+			var $input = $( this );
+
+			if ( $input.is( ':checkbox' ) ) {
+				$input.prop( 'checked', true );
+			} else {
+				$input.val( '' );
+			}
+
+			// Ids only serve the screen-reader labels; duplicating them would
+			// point every label at the first row.
+			$input.removeAttr( 'id' );
+		} );
+		$row.find( 'label' ).removeAttr( 'for' );
+
+		$table.find( 'tbody' ).append( $row );
+		$row.find( 'input' ).first().trigger( 'focus' );
+	} );
+
 	$( document ).on( 'change', '.colisly-carrier-enabled', function () {
 		$( this )
 			.closest( 'td' )

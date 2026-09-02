@@ -4,7 +4,7 @@ Tags: woocommerce, package forwarding, parcel forwarding, logistics, warehouse
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.6.8
+Stable tag: 1.6.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,8 +87,14 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 3. Parcel creation form with live client search and the client's current stock.
 4. Customer "My parcels" screen in the WooCommerce My Account area.
 5. Settings: free storage days, storage fee, weight-based pricing tiers and carrier tariffs.
+6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.6.9 =
+* New: each carrier can be given its own grid of weight brackets. Carriers rarely bill per kilo, they publish a grid, and a 6 kg parcel at 45 EUR next to a 15 kg one at 150 EUR fits on no straight line. The first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. A carrier left without a grid keeps billing base price + price per kg exactly as before, so nothing changes on existing sites.
+* Beyond the last bracket the price falls back to base price + price per kg, but it can now only ever charge more than the last bracket, never less. A grid stopping at 15 kg used to make a 16 kg shipment cheaper than a 15 kg one.
+* Fix: the settings tables grew by exactly one blank row per save, so filling in six weight brackets meant saving six times, and nothing on screen said a seventh row was possible at all. Both tables, and every carrier grid, now have an Add a row button.
 
 = 1.6.8 =
 * Fix: in the customer account, the parcels and shipments tables were wider than the account column of most themes, so the last column sat off-screen behind a horizontal scrollbar nobody thinks to look for. WooCommerce only stacks these tables under a 768px viewport, but what constrains them is the column, not the window: at a 1600px viewport the six parcel columns still had to fit in 680px. They now stack on the container's own width.
@@ -163,6 +169,10 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 * Initial release: client management (CL references), parcel creation (COL references), automatic weight-based pricing, automatic storage fees, grouping rules, carrier restrictions, shipment requests, documents, history and e-mail notifications.
 
 == Upgrade Notice ==
+
+= 1.6.9 =
+Carriers can now be priced by weight bracket rather than per kilo. Existing
+carriers are untouched. No database change.
 
 = 1.6.8 =
 Fixes a column left off-screen in the customer account on themes with a narrow

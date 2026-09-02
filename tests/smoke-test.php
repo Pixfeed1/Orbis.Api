@@ -457,6 +457,65 @@ colisly_check( 'Migration : les donnees clients ont survecu', COLISLY_Clients::c
 // Statuses map.
 // ---------------------------------------------------------------------------
 $expected_statuses = array( 'available', 'ordered', 'awaiting_payment', 'paid', 'preparing', 'shipped', 'destroyed', 'cancelled' );
+/*
+ * Tranches de poids par transporteur.
+ *
+ * Les transporteurs ne facturent pas au kilo mais par tranche : un colis de
+ * 6 kg a 45 EUR et un de 15 kg a 150 EUR ne tiennent sur aucune droite. On
+ * verifie les bornes, la retombee sur base + tarif/kg au-dela de la grille,
+ * et qu'un transporteur sans grille garde exactement l'ancien comportement.
+ */
+$colisly_saved_carriers = COLISLY_Settings::get( 'carriers', array() );
+$colisly_grid_settings  = COLISLY_Settings::all();
+
+$colisly_grid_settings['carriers'] = array(
+	array(
+		'slug'         => 'grille',
+		'name'         => 'Grille',
+		'enabled'      => 1,
+		'price_base'   => 8.0,
+		'price_per_kg' => 1.5,
+		'tiers'        => array(
+			array(
+				'max_weight' => 6,
+				'price'      => 45.0,
+			),
+			array(
+				'max_weight' => 1,
+				'price'      => 8.5,
+			), // volontairement desordonne : le tri doit s'en charger.
+			array(
+				'max_weight' => 15,
+				'price'      => 150.0,
+			),
+		),
+	),
+	array(
+		'slug'         => 'lineaire',
+		'name'         => 'Lineaire',
+		'enabled'      => 1,
+		'price_base'   => 12.0,
+		'price_per_kg' => 2.0,
+	),
+);
+COLISLY_Settings::update( $colisly_grid_settings );
+
+colisly_check( 'Tranche : 1 kg sur la premiere borne', 8.5 === COLISLY_Carriers::price_for( 'grille', 1 ) );
+colisly_check( 'Tranche : 0,5 kg dans la premiere tranche', 8.5 === COLISLY_Carriers::price_for( 'grille', 0.5 ) );
+colisly_check( 'Tranche : 1,001 kg bascule dans la suivante', 45.0 === COLISLY_Carriers::price_for( 'grille', 1.001 ) );
+colisly_check( 'Tranche : 6 kg sur la borne = 45', 45.0 === COLISLY_Carriers::price_for( 'grille', 6 ) );
+colisly_check( 'Tranche : 6,01 kg = 150', 150.0 === COLISLY_Carriers::price_for( 'grille', 6.01 ) );
+colisly_check( 'Tranche : 15 kg sur la derniere borne = 150', 150.0 === COLISLY_Carriers::price_for( 'grille', 15 ) );
+colisly_check( 'Tranche : grille desordonnee triee correctement', 45.0 === COLISLY_Carriers::price_for( 'grille', 5 ) );
+// 8 + 1,5 x 16 = 32, sous la derniere tranche : le plancher doit tenir.
+colisly_check( 'Tranche : au-dela de la grille, jamais moins que la derniere', 150.0 === COLISLY_Carriers::price_for( 'grille', 16 ) );
+// 8 + 1,5 x 100 = 158, au-dessus : la formule reprend la main.
+colisly_check( 'Tranche : au-dela, la formule reprend quand elle depasse', 158.0 === COLISLY_Carriers::price_for( 'grille', 100 ) );
+colisly_check( 'Sans grille : base + tarif/kg inchange', 22.0 === COLISLY_Carriers::price_for( 'lineaire', 5 ) );
+
+$colisly_grid_settings['carriers'] = $colisly_saved_carriers;
+COLISLY_Settings::update( $colisly_grid_settings );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

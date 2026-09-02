@@ -169,6 +169,24 @@ supprimer l'extension, par exemple avec WP-CLI :
 == Changelog ==
 ================================================================================
 
+= 1.6.9 =
+* Nouveau : chaque transporteur peut recevoir sa propre grille de tranches de
+  poids. Les transporteurs facturent rarement au kilo, ils publient une grille,
+  et un colis de 6 kg à 45 € à côté d'un de 15 kg à 150 € ne tient sur aucune
+  droite. La première tranche dont le poids maximal est supérieur ou égal au
+  poids de l'expédition fixe le prix. Un transporteur laissé sans grille
+  continue d'être facturé au prix de base + tarif au kilo exactement comme
+  avant : rien ne change sur les sites existants.
+* Au-delà de la dernière tranche, le tarif retombe sur prix de base + tarif au
+  kilo, mais il ne peut désormais que dépasser la dernière tranche, jamais
+  descendre en dessous. Une grille s'arrêtant à 15 kg rendait auparavant une
+  expédition de 16 kg moins chère qu'une de 15 kg.
+* Correction : les tableaux de réglages ne gagnaient qu'une seule ligne vide par
+  enregistrement. Renseigner six tranches imposait donc six enregistrements, et
+  rien à l'écran n'indiquait qu'une septième ligne était seulement possible. Les
+  deux tableaux, ainsi que chaque grille de transporteur, disposent maintenant
+  d'un bouton « Ajouter une ligne ».
+
 = 1.6.8 =
 * Correction : dans l'espace client, les tableaux des colis et des expéditions
   étaient plus larges que la colonne de contenu de la plupart des thèmes, si
@@ -335,6 +353,11 @@ supprimer l'extension, par exemple avec WP-CLI :
 ================================================================================
 == Upgrade Notice ==
 ================================================================================
+
+= 1.6.9 =
+Les transporteurs peuvent désormais être tarifés par tranche de poids plutôt
+qu'au kilo. Les transporteurs existants ne sont pas modifiés. Aucun changement
+de base de données.
 
 = 1.6.8 =
 Corrige une colonne hors écran dans l'espace client sur les thèmes à colonne

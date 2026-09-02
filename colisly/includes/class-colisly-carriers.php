@@ -77,9 +77,34 @@ class COLISLY_Carriers {
 	}
 
 	/**
+	 * Returns the weight brackets configured for a carrier, sorted.
+	 *
+	 * @param array|null $carrier Carrier row.
+	 * @return array[] Brackets: max_weight, price.
+	 */
+	private static function tiers( $carrier ) {
+		$tiers = $carrier && isset( $carrier['tiers'] ) && is_array( $carrier['tiers'] ) ? $carrier['tiers'] : array();
+
+		usort(
+			$tiers,
+			static function ( $a, $b ) {
+				return (float) $a['max_weight'] <=> (float) $b['max_weight'];
+			}
+		);
+
+		return $tiers;
+	}
+
+	/**
 	 * Computes the transport price of a carrier for a total weight.
 	 *
-	 * Price = base price + (price per kg x weight).
+	 * Carriers rarely bill per kilo: they publish a grid of weight brackets,
+	 * where a 6 kg parcel and a 15 kg one can be priced far apart without any
+	 * straight line joining them. So the brackets are used first, exactly like
+	 * parcel pricing: the first bracket whose maximum weight is greater than or
+	 * equal to the weight wins. Beyond the last bracket, or when a carrier has
+	 * no brackets at all, the price falls back to base price + price per kg,
+	 * which is what every carrier configured before brackets existed still uses.
 	 *
 	 * @param string $slug   Carrier slug.
 	 * @param float  $weight Total weight in kg.
@@ -87,11 +112,30 @@ class COLISLY_Carriers {
 	 */
 	public static function price_for( $slug, $weight ) {
 		$carrier = self::get( $slug );
+		$weight  = max( 0, (float) $weight );
+		$price   = null;
 
-		$base = $carrier && isset( $carrier['price_base'] ) ? (float) $carrier['price_base'] : 0.0;
-		$rate = $carrier && isset( $carrier['price_per_kg'] ) ? (float) $carrier['price_per_kg'] : 0.0;
+		foreach ( self::tiers( $carrier ) as $tier ) {
+			if ( $weight <= (float) $tier['max_weight'] ) {
+				$price = (float) $tier['price'];
+				break;
+			}
+		}
 
-		$price = $base + ( $rate * max( 0, (float) $weight ) );
+		if ( null === $price ) {
+			$base  = $carrier && isset( $carrier['price_base'] ) ? (float) $carrier['price_base'] : 0.0;
+			$rate  = $carrier && isset( $carrier['price_per_kg'] ) ? (float) $carrier['price_per_kg'] : 0.0;
+			$price = $base + ( $rate * $weight );
+
+			// A grid stopping at 15 kg with a modest price per kg would have
+			// made a 16 kg shipment cheaper than a 15 kg one. Past the last
+			// bracket the formula may only ever charge more, never less.
+			$tiers = self::tiers( $carrier );
+			if ( $tiers ) {
+				$last  = end( $tiers );
+				$price = max( $price, (float) $last['price'] );
+			}
+		}
 
 		/**
 		 * Filters the transport price of a carrier.
