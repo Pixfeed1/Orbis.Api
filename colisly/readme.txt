@@ -1,55 +1,54 @@
-=== Colisly Parcel Forwarding ===
+=== Parcel Forwarding & Package Consolidation for WooCommerce - Colisly ===
 Contributors: pixfeed
-Tags: woocommerce, package forwarding, parcel forwarding, logistics, warehouse
+Tags: package forwarding, parcel forwarding, mail forwarding, reshipping, freight forwarder
 Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
+Requires Plugins: woocommerce
 Stable tag: 1.6.9
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Package and parcel forwarding for WooCommerce: client records, receiving, storage fees, consolidation and shipping.
+Run a package forwarding business on WooCommerce: parcel intake, storage fees, consolidation, reshipping and a client portal.
 
 == Description ==
 
-Colisly Parcel Forwarding provides a complete client and parcel management system for a package forwarding business: receiving, storage, consolidation and reshipping of parcels (for example towards the French overseas territories). It suits forwarders, reshippers and virtual address services that already run their store on WooCommerce. The interface is in English and can be translated into any language through translate.wordpress.org.
+Colisly turns a WooCommerce store into a working package forwarding platform. Each client gets a reference and an address to shop with. Parcels arriving at your warehouse are logged, held, charged for storage past the free period, grouped on request and reshipped as a single shipment, paid through your own checkout.
 
-= Client management module =
+It runs on your hosting, with your carrier contracts and your prices. Nothing leaves your database.
 
-* Every client is linked to a WordPress/WooCommerce user and gets an internal record with a short unique reference (CL000001).
-* Search clients by reference, first name, last name, e-mail address or phone number.
-* The client record centralizes everything: client information, reference, parcels in stock, shipped parcels, shipments, transmitted documents and the full operation history.
-* Automatically computed indicators: parcels currently in stock, total stored weight, shipments done, storage fees due, last parcel reception, last shipment.
-* Free storage period per parcel (15 days by default, configurable), then automatic storage fees per day.
-* From the client record: create a parcel, browse parcels, prepare a shipment, check documents and read the history.
+= Who it is for =
 
-= Parcel creation module =
+* Anyone starting a package forwarding or reshipping service and looking for the software side of it
+* Existing forwarders still running the warehouse on a spreadsheet and an inbox
+* Freight forwarders and consolidators who need a customer-facing portal rather than an ERP
+* Shops that receive, hold and reship parcels for customers living abroad
 
-* Search the client by internal reference, name or e-mail, with an immediate view of their parcels still in stock.
-* Complete form: carrier tracking number, real weight, dimensions (visible to administrators only), optional reception photo, internal comment reserved for the staff, grouping allowed or forbidden, allowed carriers per parcel.
-* Unique parcel number generated automatically (COL000001), reception date, creator and initial "available" status.
-* Life cycle: available, ordered, awaiting payment, paid, preparing, shipped, destroyed, cancelled.
-* The parcel price is computed automatically from its weight (configurable tiers) and stored at reception time.
+Commercial package forwarding software in this category is sold as one-time licences running into four figures, or as monthly SaaS holding your client data. Colisly is free and GPL.
 
-= Customer side =
+= Operations =
 
-Customers only see the information meant for them (parcel number, reception date, tracking number, weight, status, grouping allowed) in their WooCommerce My Account area: "My parcels", "My shipments", "My documents" and "Shipment request" (mes-colis, mes-expeditions, mes-documents and demande-expedition on French sites). Internal comments and dimensions are never displayed to customers.
+* Client records with unique references (CL000001), multi-criteria search, and a free storage period set per your policy (15 days by default)
+* Parcel intake with generated numbers (COL000001), weight, dimensions, photos, internal notes and per-parcel carrier restrictions
+* Storage fees calculated automatically once the free period ends
+* Consolidation: several parcels held in stock grouped into one outgoing shipment, which is what the trade rests on
+* Weight-based pricing tiers and carrier tariffs you define yourself, so any carrier or negotiated contract can be used
 
-= Native WooCommerce payments =
+= Client side =
 
-Each shipment request creates a detailed WooCommerce order: one fee line per parcel, a storage fee line and the chosen carrier as a native shipping line priced from its configurable tariff (base price + price per kg). The customer is redirected to the standard WooCommerce payment page and pays with any payment gateway enabled in the shop. Statuses stay synchronized both ways: order paid → shipment "paid"; shipment "shipped" → order completed; order cancelled → parcels returned to stock. The shipment request form shows each carrier tariff, disables carriers that are not allowed for the selection, and displays a live total estimate (parcels + storage + transport).
+* A dedicated area in the WooCommerce My Account page listing parcels, shipments and documents
+* Internal fields stay internal: your notes, your dimensions and your cost prices are never exposed
+* A shipment request becomes a native WooCommerce order with itemised handling, storage and carrier lines, paid at your usual checkout with your usual gateways
+* Private document storage with authenticated downloads, for customs declarations, commercial invoices and proof of delivery
 
-= Native WooCommerce e-mails =
+= Practical points =
 
-Two real WooCommerce e-mails are registered under WooCommerce → Settings → Emails: "Parcel received" (sent to the customer) and "Shipment requested" (sent to the staff, with configurable recipients). They use the shop e-mail template and can be overridden from the theme. Without WooCommerce, a plain-text fallback keeps notifications working.
+* Complete French translation included
+* Personal data export and erasure through the native WordPress privacy tools
+* Hooks and filters throughout, so the workflow can be extended
+* Automatic data migration between versions, and optional data removal on uninstall
 
-= Private documents =
-
-Client documents and reception photos are stored in a protected directory (direct access denied, randomized file names) and served only through an authenticated download endpoint: a customer can only download their own documents marked as visible; reception photos are restricted to the staff.
-
-= Extensible =
-
-The architecture is built to grow: actions and filters (`colisly_parcel_created`, `colisly_shipment_requested`, `colisly_carriers`, `colisly_parcel_price`, `colisly_carrier_price`, …) allow adding import/export, statistics, loyalty programs, a REST API or multi-warehouse support without touching the core.
+A typical use is a service reshipping from mainland France towards the French overseas territories, but nothing in the plugin is tied to a country, a currency or a carrier.
 
 == Installation ==
 
@@ -60,25 +59,53 @@ The architecture is built to grow: actions and filters (`colisly_parcel_created`
 
 == Frequently Asked Questions ==
 
+= Can I start a package forwarding business with WordPress? =
+
+Yes, and that is what Colisly is built for. The plugin covers the operational side: client accounts and references, parcel intake, storage fees, consolidation, shipment requests and billing. You supply the warehouse address, the carrier contracts and your pricing.
+
+= How is this different from paid package forwarding software? =
+
+Proprietary platforms in this category are sold as one-time licences running into four figures, or as a monthly subscription where your client records live on someone else's server. Colisly is free, GPL, and runs on your own hosting next to your existing WooCommerce store.
+
+= I run my forwarding service on a spreadsheet. What changes? =
+
+That is where most users come from. The spreadsheet becomes searchable client records, parcel numbers that generate themselves, storage fees that calculate themselves, and a client area that answers "where is my parcel" without an email.
+
+= Which carriers are supported? =
+
+Any of them. Carrier tariffs and weight tiers are defined by you rather than pulled from a fixed integration, which matters in this trade because the margin usually sits in a negotiated or regional contract, not in a public API.
+
+= Can several parcels be consolidated into one shipment? =
+
+Yes, and it is the core of the workflow. The client picks the parcels held in stock, requests one shipment, and the plugin builds a single WooCommerce order combining handling, storage and carrier charges. A parcel can also be flagged as one that must travel alone.
+
+= How do clients pay? =
+
+Through your existing checkout. A shipment request creates a native WooCommerce order, so your payment gateways, taxes and order emails apply with nothing new to configure.
+
+= Do I need WooCommerce? =
+
+Yes. WooCommerce provides the account, order and payment layer that Colisly builds on.
+
 = Can the customer change the grouping permission? =
 
-No. This decision is made by the staff only, when the parcel is received, and can never be changed by the customer. A parcel whose grouping is forbidden must be shipped alone.
+No. Whether a parcel may be grouped is decided at reception by the operator, since it depends on the contents and the carrier. Grouping is allowed by default. The client chooses which of the groupable parcels to include in a shipment request.
 
 = How are storage fees computed? =
 
-Every parcel gets a free storage period (15 days by default). Beyond it, fees are computed automatically per day and per parcel using the amount defined in the settings.
+Each parcel is stored free for a configurable period, 15 days by default. Past that, the fee set in the settings applies and is added automatically to the shipment order.
 
 = Are documents private? =
 
-Yes. Files never go through the public media library: they live in a protected directory and are only served after login, with ownership checks. A customer can only download their own documents; reception photos are restricted to the staff.
+Yes. Documents are stored outside the public uploads flow and downloaded through an authenticated request, so only the client they belong to can retrieve them. Documents not shared with the client stay internal.
 
 = Is the plugin GDPR-ready? =
 
-Yes. It registers a personal data exporter and eraser with the native WordPress privacy tools (Tools → Export/Erase Personal Data), and deleting a user account removes all of their plugin data, including private files.
+Yes. Colisly plugs into the native WordPress personal data tools, and the export covers everything the eraser deletes, including internal notes and unshared documents.
 
 = Is any data removed on uninstall? =
 
-Not by default: deleting the plugin keeps your clients, parcels and files safe. A site administrator can opt in to a full cleanup by setting the `colisly_remove_data_on_uninstall` option to `yes` before deleting the plugin, for example with WP-CLI: `wp option update colisly_remove_data_on_uninstall yes`.
+Only if you ask for it. Data removal on uninstall is opt-in from the settings, and it also clears the plugin capability and its options.
 
 == Screenshots ==
 
@@ -115,59 +142,6 @@ Not by default: deleting the plugin keeps your clients, parcels and files safe. 
 * Fix: on narrow screens the parcel dimensions wrapped between a label and its field.
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
-= 1.6.5 =
-* Fix: in the customer area, only the tracking number may now wrap mid-string. In 1.6.4 every cell could, which broke dates and references onto several lines.
-
-= 1.6.4 =
-* Fix: the pricing tier and carrier fields in the settings overflowed their cells, and the parcel list and the customer tables were clipped, hiding their last column. Long tracking numbers now wrap so the customer tables fit the account column, and wide admin tables scroll instead of being cut.
-
-= 1.6.3 =
-* Directory listing wording: the tags and the description now use the industry terms "package forwarding", "reshipping" and "consolidation", so operators searching for those find the plugin.
-
-= 1.6.2 =
-* The installation instructions referred to a "Colis Pro" admin menu, which no longer exists; the menu is "Colisly".
-
-= 1.6.1 =
-* The plugin and author URLs now point to the plugin directory page and to the author site, instead of a development repository.
-
-= 1.6.0 =
-* Plugin renamed to "Colisly Parcel Forwarding" (previously "Gestionnaire Colis Pro"), with a matching text domain, to follow the plugin directory naming requirements: a distinctive name rather than a purely descriptive one.
-* Internal prefix renamed from "gcp" to "colisly" to meet the four-character minimum required for plugin prefixes. Existing installations are migrated automatically: tables, options, capability, private files directory and WooCommerce order meta are all carried over.
-* Fixed URL escaping in the plain-text "shipment requested" e-mail (esc_url instead of esc_url_raw).
-* Translation files are no longer bundled: translations are delivered through translate.wordpress.org, and the load_plugin_textdomain() call has been removed (not needed since WordPress 4.6).
-
-= 1.5.0 =
-* Privacy (GDPR): the plugin now plugs into the native WordPress privacy tools. The personal data exporter includes the client record, parcels, shipments and documents; the eraser deletes documents and private files, blanks phone number, notes, tracking numbers and reception photos, and reports that parcel/shipment records are retained as accounting records. Deleting a WordPress user account removes all of their plugin data and private files.
-
-= 1.4.0 =
-* Internationalization: all source strings are now in English; the full French translation ships with the plugin (fr_FR .po/.mo), so French sites keep the exact same interface. Translation contexts preserve French grammatical agreement on statuses.
-* The My Account endpoint slugs are now translatable and filterable (French sites keep mes-colis, mes-expeditions, mes-documents, demande-expedition; other languages get my-parcels, my-shipments, my-documents, shipment-request by default).
-* International default carriers (DHL, UPS, FedEx, Colissimo) on fresh installs.
-* New setting to apply the shop taxes to shipment orders (tax-free by default).
-* Client search pagination now runs in SQL (COUNT + LIMIT/OFFSET) and scales to large client bases.
-* The live estimate on the shipment request form follows the browser locale for number formatting.
-
-= 1.3.1 =
-* The readme is now written in English, as required by the WordPress.org plugin directory.
-* Development files are no longer shipped inside the plugin folder.
-
-= 1.3.0 =
-* Carrier tariffs (base price + price per kg) configurable in the settings; transport is billed on the native shipping line of the WooCommerce order and included in the shipment total.
-* Shipment request: each carrier shows its tariff, incompatible carriers are disabled, and a live total estimate (parcels + storage + transport) is displayed during selection.
-* Native WooCommerce e-mails: "Parcel received" (customer) and "Shipment requested" (staff, configurable recipients) registered under WooCommerce → Settings → Emails, with HTML/plain templates that can be overridden from the theme; wp_mail fallback without WooCommerce.
-
-= 1.2.0 =
-* Native WooCommerce payments: each shipment request creates a WooCommerce order (one fee line per parcel, storage fees, carrier as shipping line); the customer is redirected to the standard payment page and a WooCommerce customer invoice e-mail (with payment link) can be sent automatically.
-* Two-way status synchronization: order paid → shipment paid; shipment shipped → order completed; order cancelled → shipment cancelled and parcels returned to stock.
-* Client record: the "Order" column links each shipment to its WooCommerce order; the customer area shows a "Pay" button while the order awaits payment.
-
-= 1.1.0 =
-* Security: client documents and reception photos are now stored in a private directory (.htaccess + random names) and served through an authenticated download endpoint with ownership checks (nonce + capability). Restricted file types (images, PDF, Office).
-* Fix: weights and dimensions typed with a decimal comma ("2,5") are now interpreted correctly.
-
-= 1.0.0 =
-* Initial release: client management (CL references), parcel creation (COL references), automatic weight-based pricing, automatic storage fees, grouping rules, carrier restrictions, shipment requests, documents, history and e-mail notifications.
-
 == Upgrade Notice ==
 
 = 1.6.9 =
@@ -183,21 +157,3 @@ Privacy export completeness and three fixes found in a second audit. No database
 
 = 1.6.6 =
 Usability fixes found during a full walkthrough. No database change.
-
-= 1.6.5 =
-Layout fix in the customer tables. No database change.
-
-= 1.6.4 =
-Layout fixes on the settings screen and on wide tables. No database change.
-
-= 1.6.3 =
-Directory listing wording only. No database or behaviour change.
-
-= 1.6.2 =
-Documentation fix only. No database or behaviour change.
-
-= 1.6.1 =
-Housekeeping release: plugin and author URLs updated. No database or behaviour change.
-
-= 1.6.0 =
-Plugin renamed and internal prefix updated; existing data is migrated automatically on update.
