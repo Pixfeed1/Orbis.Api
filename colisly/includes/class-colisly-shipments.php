@@ -48,12 +48,14 @@ class COLISLY_Shipments {
 	 * Enforces the grouping rules: a parcel whose grouping is forbidden must be
 	 * shipped alone, and the chosen carrier must be allowed for every parcel.
 	 *
-	 * @param int    $client_id  Client ID.
-	 * @param int[]  $parcel_ids Parcel IDs to ship.
-	 * @param string $carrier    Carrier slug.
+	 * @param int          $client_id       Client ID.
+	 * @param int[]        $parcel_ids      Parcel IDs to ship.
+	 * @param string       $carrier         Carrier slug.
+	 * @param float|string $insurance_cover Cover amount chosen by the client,
+	 *                                      0 or unknown for no insurance.
 	 * @return int|WP_Error Shipment ID on success.
 	 */
-	public static function request( $client_id, $parcel_ids, $carrier ) {
+	public static function request( $client_id, $parcel_ids, $carrier, $insurance_cover = 0 ) {
 		global $wpdb;
 
 		$client = COLISLY_Clients::get( $client_id );
@@ -106,22 +108,32 @@ class COLISLY_Shipments {
 
 		$storage_fees  = COLISLY_Storage::fees_for_parcels( $parcels );
 		$carrier_price = COLISLY_Carriers::price_for( $carrier, $total_weight );
-		$now           = current_time( 'mysql', true );
+
+		// The cover amount comes from the form, its price never does: it is
+		// read back from the settings, so a posted figure cannot decide what
+		// the client is billed. An unknown amount simply means no insurance.
+		$insurance       = COLISLY_Insurance::find( $insurance_cover );
+		$insured_value   = $insurance ? $insurance['cover'] : 0.0;
+		$insurance_price = $insurance ? $insurance['price'] : 0.0;
+
+		$now = current_time( 'mysql', true );
 
 		$inserted = $wpdb->insert(
 			$wpdb->prefix . 'colisly_shipments',
 			array(
-				'reference'     => '',
-				'client_id'     => (int) $client->id,
-				'carrier'       => $carrier,
-				'status'        => 'requested',
-				'total_weight'  => round( $total_weight, 3 ),
-				'total_price'   => round( $total_price + $storage_fees + $carrier_price, 2 ),
-				'storage_fees'  => $storage_fees,
-				'carrier_price' => $carrier_price,
-				'requested_at'  => $now,
-				'created_at'    => $now,
-				'updated_at'    => $now,
+				'reference'       => '',
+				'client_id'       => (int) $client->id,
+				'carrier'         => $carrier,
+				'status'          => 'requested',
+				'total_weight'    => round( $total_weight, 3 ),
+				'total_price'     => round( $total_price + $storage_fees + $carrier_price + $insurance_price, 2 ),
+				'storage_fees'    => $storage_fees,
+				'carrier_price'   => $carrier_price,
+				'insured_value'   => $insured_value,
+				'insurance_price' => $insurance_price,
+				'requested_at'    => $now,
+				'created_at'      => $now,
+				'updated_at'      => $now,
 			)
 		);
 

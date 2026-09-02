@@ -119,6 +119,7 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 == Changelog ==
 
 = 1.7.0 =
+* New: optional shipment insurance. Cover levels are set in the settings, a cover amount and what it costs, and the client picks one when requesting a shipment. It appears as its own line on the WooCommerce order and in the client's shipment list. The price is always read back from the settings rather than taken from the form, so a posted amount can never decide what is billed. No cover level configured means no insurance is offered at all, which is how every existing site starts.
 * New: a parcel already in stock can be corrected. Reception happens at the counter, often in a hurry, and until now a wrong weight or a mistyped tracking number had no way back: only the status could be changed. Since the weight sets the price, a typo was billed as it stood. Tracking number, weight, dimensions, photo, internal comment, grouping and allowed carriers are all editable, and correcting the weight recomputes the price.
 * Editing stops the moment the parcel leaves stock. A parcel sitting in a shipment the client may already have paid is refused rather than silently repriced, and its client can never be changed after reception. Every correction is written to the client history, naming what changed.
 * The carrier table now says when its two prices apply: they are labelled beyond brackets, and a line under the heading states that a carrier is normally priced with a bracket grid and that these two are the fallback. Read on their own they looked like the only carrier pricing there was.
@@ -154,7 +155,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 == Upgrade Notice ==
 
 = 1.7.0 =
-Parcels in stock can now be corrected after reception. No database change.
+Parcels in stock can now be corrected after reception, and shipments can be
+insured. Two columns are added to the shipments table on update; existing
+shipments keep their data and show no insurance.
 
 = 1.6.10 =
 Restores the labels on the shipment request table, lost in 1.6.8 on themes with

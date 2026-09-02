@@ -925,3 +925,30 @@ msgstr "Tarif au kilo (au-delà des tranches)"
 
 msgid "Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are the fallback: they apply to a carrier with no grid, and beyond the last bracket of a carrier that has one."
 msgstr "La plupart des transporteurs se tarifent avec une grille de tranches de poids, à renseigner dans « Tranches de poids par transporteur » ci-dessous. Les deux prix de ce tableau sont le recours : ils s’appliquent à un transporteur sans grille, et au-delà de la dernière tranche d’un transporteur qui en a une."
+
+msgid "Insurance"
+msgstr "Assurance"
+
+msgid "Insurance:"
+msgstr "Assurance :"
+
+msgid "Insured for"
+msgstr "Assuré pour"
+
+msgid "No insurance"
+msgstr "Sans assurance"
+
+msgid "Covered up to"
+msgstr "Couverture jusqu’à"
+
+msgid "Add a cover level"
+msgstr "Ajouter un niveau de couverture"
+
+msgid "Covered up to %1$s — %2$s"
+msgstr "Couverture jusqu’à %1$s — %2$s"
+
+msgid "Insurance (cover %s)"
+msgstr "Assurance (couverture %s)"
+
+msgid "Cover levels offered to the client when requesting a shipment: how much the parcel is covered for, and what that costs. Leave the table empty and no insurance is offered at all."
+msgstr "Niveaux de couverture proposés au client lors d’une demande d’expédition : à hauteur de quel montant le colis est couvert, et ce que cela coûte. Laissez le tableau vide et aucune assurance n’est proposée."

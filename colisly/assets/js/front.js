@@ -111,8 +111,20 @@
 
 		total += carrierPrice( option, weight );
 
+		// The cover level the client picked, when insurance is offered.
+		var insurance = document.getElementById( 'colisly-insurance' );
+		if ( insurance ) {
+			var level = insurance.options[ insurance.selectedIndex ];
+			total += parseFloat( ( level && level.getAttribute( 'data-price' ) ) || '0' );
+		}
+
 		amount.textContent = formatPrice( total );
 		estimate.hidden = false;
+	}
+
+	var insuranceSelect = document.getElementById( 'colisly-insurance' );
+	if ( insuranceSelect ) {
+		insuranceSelect.addEventListener( 'change', updateEstimate );
 	}
 
 	boxes.forEach( function ( box ) {

@@ -34,6 +34,7 @@ require_once COLISLY_PLUGIN_DIR . 'includes/class-colisly-downloads.php';
 require_once COLISLY_PLUGIN_DIR . 'includes/class-colisly-carriers.php';
 require_once COLISLY_PLUGIN_DIR . 'includes/class-colisly-pricing.php';
 require_once COLISLY_PLUGIN_DIR . 'includes/class-colisly-storage.php';
+require_once COLISLY_PLUGIN_DIR . 'includes/class-colisly-insurance.php';
 require_once COLISLY_PLUGIN_DIR . 'includes/class-colisly-history.php';
 require_once COLISLY_PLUGIN_DIR . 'includes/class-colisly-clients.php';
 require_once COLISLY_PLUGIN_DIR . 'includes/class-colisly-parcels.php';

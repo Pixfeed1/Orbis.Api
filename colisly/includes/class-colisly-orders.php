@@ -128,6 +128,21 @@ class COLISLY_Orders {
 			$order->add_item( $fee );
 		}
 
+		// Insurance, when the client took a cover level.
+		if ( (float) $shipment->insurance_price > 0 ) {
+			$fee = new WC_Order_Item_Fee();
+			$fee->set_name(
+				sprintf(
+					/* translators: %s: insured value. */
+					__( 'Insurance (cover %s)', 'colisly' ),
+					COLISLY_Format::price( (float) $shipment->insured_value )
+				)
+			);
+			$fee->set_tax_status( $tax_status );
+			$fee->set_total( (string) $shipment->insurance_price );
+			$order->add_item( $fee );
+		}
+
 		// The chosen carrier appears as the native shipping line, priced from
 		// the carrier tariff (base + per-kg) configured in the settings.
 		$shipping_item = new WC_Order_Item_Shipping();

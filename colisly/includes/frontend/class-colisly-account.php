@@ -239,6 +239,7 @@ class COLISLY_Account {
 						<th><?php esc_html_e( 'Carrier', 'colisly' ); ?></th>
 						<th><?php esc_html_e( 'Parcels', 'colisly' ); ?></th>
 						<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Insured for', 'colisly' ); ?></th>
 						<th><?php esc_html_e( 'Total', 'colisly' ); ?></th>
 						<th><?php esc_html_e( 'Status', 'colisly' ); ?></th>
 						<th><?php esc_html_e( 'Payment', 'colisly' ); ?></th>
@@ -256,6 +257,7 @@ class COLISLY_Account {
 							<td data-title="<?php esc_attr_e( 'Carrier', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Carriers::name( $shipment->carrier ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Parcels', 'colisly' ); ?>"><?php echo esc_html( implode( ', ', $refs ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Weight (kg)', 'colisly' ); ?>"><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
+							<td data-title="<?php esc_attr_e( 'Insured for', 'colisly' ); ?>"><?php echo (float) $shipment->insured_value > 0 ? esc_html( COLISLY_Format::price( (float) $shipment->insured_value ) ) : '—'; ?></td>
 							<td data-title="<?php esc_attr_e( 'Total', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Format::price( (float) $shipment->total_price ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Status', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Shipments::status_label( $shipment->status ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Payment', 'colisly' ); ?>">
@@ -444,6 +446,26 @@ class COLISLY_Account {
 					<?php endforeach; ?>
 				</select>
 			</p>
+			<?php if ( COLISLY_Insurance::offered() ) : ?>
+				<p>
+					<label for="colisly-insurance"><?php esc_html_e( 'Insurance:', 'colisly' ); ?></label>
+					<select name="colisly_insurance" id="colisly-insurance">
+						<option value="0" data-price="0"><?php esc_html_e( 'No insurance', 'colisly' ); ?></option>
+						<?php foreach ( COLISLY_Insurance::options() as $level ) : ?>
+							<option value="<?php echo esc_attr( (string) $level['cover'] ); ?>" data-price="<?php echo esc_attr( (string) $level['price'] ); ?>">
+								<?php
+								printf(
+									/* translators: 1: covered amount, 2: price of the cover. */
+									esc_html__( 'Covered up to %1$s — %2$s', 'colisly' ),
+									esc_html( COLISLY_Format::price( $level['cover'] ) ),
+									esc_html( COLISLY_Format::price( $level['price'] ) )
+								);
+								?>
+							</option>
+						<?php endforeach; ?>
+					</select>
+				</p>
+			<?php endif; ?>
 			<p id="colisly-estimate" class="colisly-estimate" hidden>
 				<strong><?php esc_html_e( 'Estimated total:', 'colisly' ); ?></strong>
 				<span id="colisly-estimate-amount"></span>
@@ -477,7 +499,9 @@ class COLISLY_Account {
 		$parcel_ids = isset( $_POST['colisly_parcels'] ) ? array_map( 'absint', wp_unslash( (array) $_POST['colisly_parcels'] ) ) : array();
 		$carrier    = isset( $_POST['colisly_carrier'] ) ? sanitize_key( wp_unslash( $_POST['colisly_carrier'] ) ) : '';
 
-		$result = COLISLY_Shipments::request( (int) $client->id, $parcel_ids, $carrier );
+		$insurance = isset( $_POST['colisly_insurance'] ) ? sanitize_text_field( wp_unslash( $_POST['colisly_insurance'] ) ) : 0;
+
+		$result = COLISLY_Shipments::request( (int) $client->id, $parcel_ids, $carrier, $insurance );
 
 		$url = wc_get_account_endpoint_url( self::endpoint( 'request' ) );
 

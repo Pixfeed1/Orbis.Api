@@ -194,6 +194,14 @@ l'extension ainsi que ses options.
 ================================================================================
 
 = 1.7.0 =
+* Nouveau : assurance facultative des expéditions. Les niveaux de couverture se
+  définissent dans les réglages (un montant couvert et son prix), et le client
+  en choisit un au moment de sa demande d'expédition. L'assurance apparaît sur
+  une ligne dédiée de la commande WooCommerce ainsi que dans la liste des
+  expéditions du client. Le prix est toujours relu dans les réglages et jamais
+  pris dans le formulaire : un montant posté ne peut donc pas décider de ce qui
+  est facturé. Aucun niveau configuré signifie aucune assurance proposée, ce
+  qui est l'état de départ de tous les sites existants.
 * Nouveau : un colis déjà en stock peut être corrigé. La réception se fait au
   comptoir, souvent vite, et jusqu'ici un poids faux ou un numéro de suivi mal
   tapé n'avait aucun retour en arrière : seul le statut était modifiable. Le
@@ -294,8 +302,10 @@ l'extension ainsi que ses options.
 ================================================================================
 
 = 1.7.0 =
-Les colis en stock peuvent désormais être corrigés après réception. Aucun
-changement de base de données.
+Les colis en stock peuvent désormais être corrigés après réception, et les
+expéditions peuvent être assurées. Deux colonnes sont ajoutées à la table des
+expéditions lors de la mise à jour ; les expéditions existantes conservent
+leurs données et s'affichent sans assurance.
 
 = 1.6.10 =
 Rétablit les libellés du tableau de demande d'expédition, perdus en 1.6.8 sur

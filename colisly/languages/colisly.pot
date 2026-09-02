@@ -9,7 +9,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Domain: colisly\n"
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:24, colisly/includes/admin/class-colisly-admin-clientsphp:535, colisly/includes/admin/class-colisly-admin-clientsphp:570, colisly/includes/admin/class-colisly-admin-clientsphp:595, colisly/includes/admin/class-colisly-admin-clientsphp:625, colisly/includes/admin/class-colisly-admin-parcelsphp:24, colisly/includes/admin/class-colisly-admin-parcelsphp:156, colisly/includes/admin/class-colisly-admin-parcelsphp:348, colisly/includes/admin/class-colisly-admin-parcelsphp:406, colisly/includes/admin/class-colisly-admin-parcelsphp:467, colisly/includes/admin/class-colisly-admin-settingsphp:24, colisly/includes/admin/class-colisly-admin-settingsphp:285, colisly/includes/class-colisly-ajaxphp:35, colisly/includes/class-colisly-downloadsphp:120, colisly/includes/class-colisly-downloadsphp:137
+#: colisly/includes/admin/class-colisly-admin-clientsphp:24, colisly/includes/admin/class-colisly-admin-clientsphp:535, colisly/includes/admin/class-colisly-admin-clientsphp:570, colisly/includes/admin/class-colisly-admin-clientsphp:595, colisly/includes/admin/class-colisly-admin-clientsphp:625, colisly/includes/admin/class-colisly-admin-parcelsphp:24, colisly/includes/admin/class-colisly-admin-parcelsphp:156, colisly/includes/admin/class-colisly-admin-parcelsphp:348, colisly/includes/admin/class-colisly-admin-parcelsphp:406, colisly/includes/admin/class-colisly-admin-parcelsphp:467, colisly/includes/admin/class-colisly-admin-settingsphp:24, colisly/includes/admin/class-colisly-admin-settingsphp:318, colisly/includes/class-colisly-ajaxphp:35, colisly/includes/class-colisly-downloadsphp:120, colisly/includes/class-colisly-downloadsphp:137
 msgid "Access denied."
 msgstr ""
 
@@ -37,7 +37,7 @@ msgstr ""
 msgid "WordPress user"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:78, colisly/includes/frontend/class-colisly-accountphp:396
+#: colisly/includes/admin/class-colisly-admin-clientsphp:78, colisly/includes/frontend/class-colisly-accountphp:398
 msgid "— Select —"
 msgstr ""
 
@@ -45,7 +45,7 @@ msgstr ""
 msgid "Create the client record"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:89, colisly/includes/admin/class-colisly-admin-clientsphp:380, colisly/includes/class-colisly-privacyphp:159, colisly/includes/frontend/class-colisly-accountphp:237, colisly/includes/frontend/class-colisly-accountphp:254
+#: colisly/includes/admin/class-colisly-admin-clientsphp:89, colisly/includes/admin/class-colisly-admin-clientsphp:380, colisly/includes/class-colisly-privacyphp:159, colisly/includes/frontend/class-colisly-accountphp:237, colisly/includes/frontend/class-colisly-accountphp:255
 msgid "Reference"
 msgstr ""
 
@@ -73,7 +73,7 @@ msgstr ""
 msgid "No clients found."
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:140, colisly/includes/class-colisly-documentsphp:32, colisly/includes/class-colisly-parcelsphp:95, colisly/includes/class-colisly-shipmentsphp:61
+#: colisly/includes/admin/class-colisly-admin-clientsphp:140, colisly/includes/class-colisly-documentsphp:32, colisly/includes/class-colisly-parcelsphp:95, colisly/includes/class-colisly-shipmentsphp:63
 msgid "Client not found."
 msgstr ""
 
@@ -167,11 +167,11 @@ msgstr ""
 msgid "Tracking"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:294, colisly/includes/admin/class-colisly-admin-clientsphp:383, colisly/includes/admin/class-colisly-admin-parcelsphp:72, colisly/includes/admin/class-colisly-admin-parcelsphp:239, colisly/includes/admin/class-colisly-adminphp:131, colisly/includes/class-colisly-privacyphp:137, colisly/includes/frontend/class-colisly-accountphp:189, colisly/includes/frontend/class-colisly-accountphp:200, colisly/includes/frontend/class-colisly-accountphp:241, colisly/includes/frontend/class-colisly-accountphp:258, colisly/includes/frontend/class-colisly-accountphp:364, colisly/includes/frontend/class-colisly-accountphp:385
+#: colisly/includes/admin/class-colisly-admin-clientsphp:294, colisly/includes/admin/class-colisly-admin-clientsphp:383, colisly/includes/admin/class-colisly-admin-parcelsphp:72, colisly/includes/admin/class-colisly-admin-parcelsphp:239, colisly/includes/admin/class-colisly-adminphp:131, colisly/includes/class-colisly-privacyphp:137, colisly/includes/frontend/class-colisly-accountphp:189, colisly/includes/frontend/class-colisly-accountphp:200, colisly/includes/frontend/class-colisly-accountphp:241, colisly/includes/frontend/class-colisly-accountphp:259, colisly/includes/frontend/class-colisly-accountphp:366, colisly/includes/frontend/class-colisly-accountphp:387
 msgid "Weight (kg)"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:295, colisly/includes/admin/class-colisly-admin-parcelsphp:73, colisly/includes/admin/class-colisly-admin-settingsphp:58, colisly/includes/admin/class-colisly-admin-settingsphp:76, colisly/includes/admin/class-colisly-admin-settingsphp:174, colisly/includes/admin/class-colisly-admin-settingsphp:185
+#: colisly/includes/admin/class-colisly-admin-clientsphp:295, colisly/includes/admin/class-colisly-admin-parcelsphp:73, colisly/includes/admin/class-colisly-admin-settingsphp:58, colisly/includes/admin/class-colisly-admin-settingsphp:76, colisly/includes/admin/class-colisly-admin-settingsphp:174, colisly/includes/admin/class-colisly-admin-settingsphp:185, colisly/includes/admin/class-colisly-admin-settingsphp:203, colisly/includes/admin/class-colisly-admin-settingsphp:221
 msgid "Price"
 msgstr ""
 
@@ -191,7 +191,7 @@ msgstr ""
 msgid "Photo"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:301, colisly/includes/admin/class-colisly-admin-clientsphp:357, colisly/includes/admin/class-colisly-admin-clientsphp:387, colisly/includes/admin/class-colisly-admin-clientsphp:429, colisly/includes/admin/class-colisly-admin-parcelsphp:53, colisly/includes/admin/class-colisly-admin-parcelsphp:75, colisly/includes/class-colisly-privacyphp:141, colisly/includes/class-colisly-privacyphp:167, colisly/includes/frontend/class-colisly-accountphp:190, colisly/includes/frontend/class-colisly-accountphp:201, colisly/includes/frontend/class-colisly-accountphp:243, colisly/includes/frontend/class-colisly-accountphp:260
+#: colisly/includes/admin/class-colisly-admin-clientsphp:301, colisly/includes/admin/class-colisly-admin-clientsphp:357, colisly/includes/admin/class-colisly-admin-clientsphp:387, colisly/includes/admin/class-colisly-admin-clientsphp:429, colisly/includes/admin/class-colisly-admin-parcelsphp:53, colisly/includes/admin/class-colisly-admin-parcelsphp:75, colisly/includes/class-colisly-privacyphp:141, colisly/includes/class-colisly-privacyphp:167, colisly/includes/frontend/class-colisly-accountphp:190, colisly/includes/frontend/class-colisly-accountphp:201, colisly/includes/frontend/class-colisly-accountphp:244, colisly/includes/frontend/class-colisly-accountphp:262
 msgid "Status"
 msgstr ""
 
@@ -203,7 +203,7 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:323, colisly/includes/admin/class-colisly-admin-parcelsphp:110, colisly/includes/admin/class-colisly-admin-parcelsphp:252, colisly/includes/admin/class-colisly-adminphp:128, colisly/includes/class-colisly-privacyphp:201, colisly/includes/frontend/class-colisly-accountphp:202, colisly/includes/frontend/class-colisly-accountphp:386
+#: colisly/includes/admin/class-colisly-admin-clientsphp:323, colisly/includes/admin/class-colisly-admin-parcelsphp:110, colisly/includes/admin/class-colisly-admin-parcelsphp:252, colisly/includes/admin/class-colisly-adminphp:128, colisly/includes/class-colisly-privacyphp:201, colisly/includes/frontend/class-colisly-accountphp:202, colisly/includes/frontend/class-colisly-accountphp:388
 msgid "Yes"
 msgstr ""
 
@@ -219,15 +219,15 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:381, colisly/includes/class-colisly-privacyphp:171, colisly/includes/frontend/class-colisly-accountphp:238, colisly/includes/frontend/class-colisly-accountphp:255
+#: colisly/includes/admin/class-colisly-admin-clientsphp:381, colisly/includes/class-colisly-privacyphp:171, colisly/includes/frontend/class-colisly-accountphp:238, colisly/includes/frontend/class-colisly-accountphp:256
 msgid "Requested on"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:382, colisly/includes/class-colisly-privacyphp:163, colisly/includes/frontend/class-colisly-accountphp:239, colisly/includes/frontend/class-colisly-accountphp:256, colisly/templates/emails/colisly-shipment-requestedphp:40
+#: colisly/includes/admin/class-colisly-admin-clientsphp:382, colisly/includes/class-colisly-privacyphp:163, colisly/includes/frontend/class-colisly-accountphp:239, colisly/includes/frontend/class-colisly-accountphp:257, colisly/templates/emails/colisly-shipment-requestedphp:40
 msgid "Carrier"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:385, colisly/includes/class-colisly-privacyphp:175, colisly/includes/frontend/class-colisly-accountphp:242, colisly/includes/frontend/class-colisly-accountphp:259
+#: colisly/includes/admin/class-colisly-admin-clientsphp:385, colisly/includes/class-colisly-privacyphp:175, colisly/includes/frontend/class-colisly-accountphp:243, colisly/includes/frontend/class-colisly-accountphp:261
 msgid "Total"
 msgstr ""
 
@@ -323,7 +323,7 @@ msgid_plural "%s clients"
 msgstr[0] ""
 msgstr[1] ""
 
-#: colisly/includes/admin/class-colisly-admin-parcelsphp:43, colisly/includes/admin/class-colisly-adminphp:67, colisly/includes/admin/class-colisly-adminphp:68, colisly/includes/frontend/class-colisly-accountphp:240, colisly/includes/frontend/class-colisly-accountphp:257, colisly/templates/emails/colisly-shipment-requestedphp:44
+#: colisly/includes/admin/class-colisly-admin-parcelsphp:43, colisly/includes/admin/class-colisly-adminphp:67, colisly/includes/admin/class-colisly-adminphp:68, colisly/includes/frontend/class-colisly-accountphp:240, colisly/includes/frontend/class-colisly-accountphp:258, colisly/templates/emails/colisly-shipment-requestedphp:44
 msgid "Parcels"
 msgstr ""
 
@@ -380,11 +380,11 @@ msgstr ""
 msgid "Parcels of this client still in stock"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-parcelsphp:238, colisly/includes/admin/class-colisly-adminphp:130, colisly/includes/class-colisly-privacyphp:125, colisly/includes/frontend/class-colisly-accountphp:186, colisly/includes/frontend/class-colisly-accountphp:197, colisly/includes/frontend/class-colisly-accountphp:363, colisly/includes/frontend/class-colisly-accountphp:384, colisly/templates/emails/colisly-parcel-receivedphp:35
+#: colisly/includes/admin/class-colisly-admin-parcelsphp:238, colisly/includes/admin/class-colisly-adminphp:130, colisly/includes/class-colisly-privacyphp:125, colisly/includes/frontend/class-colisly-accountphp:186, colisly/includes/frontend/class-colisly-accountphp:197, colisly/includes/frontend/class-colisly-accountphp:365, colisly/includes/frontend/class-colisly-accountphp:386, colisly/templates/emails/colisly-parcel-receivedphp:35
 msgid "Parcel number"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-parcelsphp:240, colisly/includes/admin/class-colisly-adminphp:132, colisly/includes/frontend/class-colisly-accountphp:191, colisly/includes/frontend/class-colisly-accountphp:202, colisly/includes/frontend/class-colisly-accountphp:365, colisly/includes/frontend/class-colisly-accountphp:386
+#: colisly/includes/admin/class-colisly-admin-parcelsphp:240, colisly/includes/admin/class-colisly-adminphp:132, colisly/includes/frontend/class-colisly-accountphp:191, colisly/includes/frontend/class-colisly-accountphp:202, colisly/includes/frontend/class-colisly-accountphp:367, colisly/includes/frontend/class-colisly-accountphp:388
 msgid "Grouping allowed"
 msgstr ""
 
@@ -583,46 +583,62 @@ msgid "Add a bracket"
 msgstr ""
 
 #: colisly/includes/admin/class-colisly-admin-settingsphp:197
-msgid "Orders"
+msgid "Insurance"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:200
-msgid "Taxes"
+#: colisly/includes/admin/class-colisly-admin-settingsphp:198
+msgid "Cover levels offered to the client when requesting a shipment: how much the parcel is covered for, and what that costs. Leave the table empty and no insurance is offered at all."
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:204
-msgid "Apply the shop taxes to shipment orders (parcels, storage and transport lines)"
-msgstr ""
-
-#: colisly/includes/admin/class-colisly-admin-settingsphp:206
-msgid "When unchecked, shipment orders are created tax-free."
-msgstr ""
-
-#: colisly/includes/admin/class-colisly-admin-settingsphp:211
-msgid "Notifications"
-msgstr ""
-
-#: colisly/includes/admin/class-colisly-admin-settingsphp:214
-msgid "E-mails"
-msgstr ""
-
-#: colisly/includes/admin/class-colisly-admin-settingsphp:218
-msgid "Notify the client when a parcel is received"
-msgstr ""
-
-#: colisly/includes/admin/class-colisly-admin-settingsphp:223
-msgid "Notify the administrator when a shipment is requested"
+#: colisly/includes/admin/class-colisly-admin-settingsphp:202, colisly/includes/admin/class-colisly-admin-settingsphp:217
+msgid "Covered up to"
 msgstr ""
 
 #: colisly/includes/admin/class-colisly-admin-settingsphp:228
+msgid "Add a cover level"
+msgstr ""
+
+#: colisly/includes/admin/class-colisly-admin-settingsphp:230
+msgid "Orders"
+msgstr ""
+
+#: colisly/includes/admin/class-colisly-admin-settingsphp:233
+msgid "Taxes"
+msgstr ""
+
+#: colisly/includes/admin/class-colisly-admin-settingsphp:237
+msgid "Apply the shop taxes to shipment orders (parcels, storage and transport lines)"
+msgstr ""
+
+#: colisly/includes/admin/class-colisly-admin-settingsphp:239
+msgid "When unchecked, shipment orders are created tax-free."
+msgstr ""
+
+#: colisly/includes/admin/class-colisly-admin-settingsphp:244
+msgid "Notifications"
+msgstr ""
+
+#: colisly/includes/admin/class-colisly-admin-settingsphp:247
+msgid "E-mails"
+msgstr ""
+
+#: colisly/includes/admin/class-colisly-admin-settingsphp:251
+msgid "Notify the client when a parcel is received"
+msgstr ""
+
+#: colisly/includes/admin/class-colisly-admin-settingsphp:256
+msgid "Notify the administrator when a shipment is requested"
+msgstr ""
+
+#: colisly/includes/admin/class-colisly-admin-settingsphp:261
 msgid "Send the WooCommerce invoice (with payment link) when a shipment is requested"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:234
+#: colisly/includes/admin/class-colisly-admin-settingsphp:267
 msgid "Save settings"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-settingsphp:346
+#: colisly/includes/admin/class-colisly-admin-settingsphp:394
 msgid "Settings saved."
 msgstr ""
 
@@ -714,23 +730,28 @@ msgstr ""
 msgid "Parcel %1$s (%2$s kg)"
 msgstr ""
 
+#. translators: %s: insured value.
+#: colisly/includes/class-colisly-ordersphp:137
+msgid "Insurance (cover %s)"
+msgstr ""
+
 #. translators: %s: shipment reference.
-#: colisly/includes/class-colisly-ordersphp:144
+#: colisly/includes/class-colisly-ordersphp:159
 msgid "Order created for shipment request %s."
 msgstr ""
 
 #. translators: 1: order number, 2: shipment reference.
-#: colisly/includes/class-colisly-ordersphp:170
+#: colisly/includes/class-colisly-ordersphp:185
 msgid "WooCommerce order #%1$s created for shipment %2$s."
 msgstr ""
 
 #. translators: %s: shipment reference.
-#: colisly/includes/class-colisly-ordersphp:282
+#: colisly/includes/class-colisly-ordersphp:297
 msgid "Shipment %s shipped."
 msgstr ""
 
 #. translators: %s: shipment reference.
-#: colisly/includes/class-colisly-ordersphp:284
+#: colisly/includes/class-colisly-ordersphp:299
 msgid "Shipment %s cancelled."
 msgstr ""
 
@@ -922,52 +943,52 @@ msgctxt "shipment status"
 msgid "Cancelled"
 msgstr ""
 
-#: colisly/includes/class-colisly-shipmentsphp:66
+#: colisly/includes/class-colisly-shipmentsphp:68
 msgid "Select at least one parcel."
 msgstr ""
 
-#: colisly/includes/class-colisly-shipmentsphp:72
+#: colisly/includes/class-colisly-shipmentsphp:74
 msgid "Invalid carrier."
 msgstr ""
 
-#: colisly/includes/class-colisly-shipmentsphp:83
+#: colisly/includes/class-colisly-shipmentsphp:85
 msgid "Parcel not found for this client."
 msgstr ""
 
 #. translators: %s: parcel reference.
-#: colisly/includes/class-colisly-shipmentsphp:88
+#: colisly/includes/class-colisly-shipmentsphp:90
 msgid "Parcel %s is no longer available."
 msgstr ""
 
 #. translators: %s: parcel reference.
-#: colisly/includes/class-colisly-shipmentsphp:93
+#: colisly/includes/class-colisly-shipmentsphp:95
 msgid "Parcel %s must be shipped alone (grouping forbidden)."
 msgstr ""
 
 #. translators: %s: parcel reference.
-#: colisly/includes/class-colisly-shipmentsphp:99
+#: colisly/includes/class-colisly-shipmentsphp:101
 msgid "The chosen carrier is not allowed for parcel %s."
 msgstr ""
 
-#: colisly/includes/class-colisly-shipmentsphp:129
+#: colisly/includes/class-colisly-shipmentsphp:141
 msgid "The shipment request could not be created."
 msgstr ""
 
 #. translators: 1: shipment reference, 2: number of parcels, 3: carrier name.
-#: colisly/includes/class-colisly-shipmentsphp:160
+#: colisly/includes/class-colisly-shipmentsphp:172
 msgid "Shipment request %1$s created (%2$d parcels, carrier %3$s)."
 msgstr ""
 
-#: colisly/includes/class-colisly-shipmentsphp:259
+#: colisly/includes/class-colisly-shipmentsphp:271
 msgid "Invalid shipment status."
 msgstr ""
 
-#: colisly/includes/class-colisly-shipmentsphp:264
+#: colisly/includes/class-colisly-shipmentsphp:276
 msgid "Shipment not found."
 msgstr ""
 
 #. translators: 1: shipment reference, 2: old status, 3: new status.
-#: colisly/includes/class-colisly-shipmentsphp:308
+#: colisly/includes/class-colisly-shipmentsphp:320
 msgid "Shipment %1$s: status “%2$s” → “%3$s”."
 msgstr ""
 
@@ -1040,15 +1061,15 @@ msgstr ""
 msgid "My shipments"
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:113, colisly/includes/frontend/class-colisly-accountphp:294
+#: colisly/includes/frontend/class-colisly-accountphp:113, colisly/includes/frontend/class-colisly-accountphp:296
 msgid "My documents"
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:114, colisly/includes/frontend/class-colisly-accountphp:331
+#: colisly/includes/frontend/class-colisly-accountphp:114, colisly/includes/frontend/class-colisly-accountphp:333
 msgid "Shipment request"
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:165, colisly/includes/frontend/class-colisly-accountphp:222, colisly/includes/frontend/class-colisly-accountphp:297, colisly/includes/frontend/class-colisly-accountphp:334
+#: colisly/includes/frontend/class-colisly-accountphp:165, colisly/includes/frontend/class-colisly-accountphp:222, colisly/includes/frontend/class-colisly-accountphp:299, colisly/includes/frontend/class-colisly-accountphp:336
 msgid "No client record is linked to your account yet."
 msgstr ""
 
@@ -1068,65 +1089,82 @@ msgstr ""
 msgid "No shipments yet."
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:244, colisly/includes/frontend/class-colisly-accountphp:261
+#: colisly/includes/frontend/class-colisly-accountphp:242, colisly/includes/frontend/class-colisly-accountphp:260
+msgid "Insured for"
+msgstr ""
+
+#: colisly/includes/frontend/class-colisly-accountphp:245, colisly/includes/frontend/class-colisly-accountphp:263
 msgid "Payment"
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:263
+#: colisly/includes/frontend/class-colisly-accountphp:265
 msgid "Pay"
 msgstr ""
 
 #. translators: %s: order number.
-#: colisly/includes/frontend/class-colisly-accountphp:269
+#: colisly/includes/frontend/class-colisly-accountphp:271
 msgid "Order #%s"
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:304
+#: colisly/includes/frontend/class-colisly-accountphp:306
 msgid "No documents yet."
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:339
+#: colisly/includes/frontend/class-colisly-accountphp:341
 msgid "Your shipment request has been recorded. We will get back to you shortly."
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:349
+#: colisly/includes/frontend/class-colisly-accountphp:351
 msgid "No parcels available for a shipment."
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:357
+#: colisly/includes/frontend/class-colisly-accountphp:359
 msgid "Select the parcels to ship:"
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:362, colisly/includes/frontend/class-colisly-accountphp:371
+#: colisly/includes/frontend/class-colisly-accountphp:364, colisly/includes/frontend/class-colisly-accountphp:373
 msgid "Include in the shipment"
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:386
+#: colisly/includes/frontend/class-colisly-accountphp:388
 msgid "No — this parcel must be shipped alone"
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:394
+#: colisly/includes/frontend/class-colisly-accountphp:396
 msgid "Preferred carrier:"
 msgstr ""
 
 #. translators: 1: carrier name, 2: base price, 3: price per kg.
-#: colisly/includes/frontend/class-colisly-accountphp:436
+#: colisly/includes/frontend/class-colisly-accountphp:438
 msgid "%1$s — %2$s + %3$s/kg"
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:448
+#: colisly/includes/frontend/class-colisly-accountphp:451
+msgid "Insurance:"
+msgstr ""
+
+#: colisly/includes/frontend/class-colisly-accountphp:453
+msgid "No insurance"
+msgstr ""
+
+#. translators: 1: covered amount, 2: price of the cover.
+#: colisly/includes/frontend/class-colisly-accountphp:459
+msgid "Covered up to %1$s — %2$s"
+msgstr ""
+
+#: colisly/includes/frontend/class-colisly-accountphp:470
 msgid "Estimated total:"
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:450
+#: colisly/includes/frontend/class-colisly-accountphp:472
 msgid "(parcels + storage fees + transport — confirmed on the payment page)"
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:452
+#: colisly/includes/frontend/class-colisly-accountphp:474
 msgid "Only carriers compatible with every selected parcel can be accepted."
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:454
+#: colisly/includes/frontend/class-colisly-accountphp:476
 msgid "Send the request"
 msgstr ""
 

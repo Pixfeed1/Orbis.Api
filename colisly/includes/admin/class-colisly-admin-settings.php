@@ -194,6 +194,39 @@ class COLISLY_Admin_Settings {
 				endforeach;
 				?>
 
+				<h2><?php esc_html_e( 'Insurance', 'colisly' ); ?></h2>
+				<p class="description"><?php esc_html_e( 'Cover levels offered to the client when requesting a shipment: how much the parcel is covered for, and what that costs. Leave the table empty and no insurance is offered at all.', 'colisly' ); ?></p>
+				<table class="widefat fixed striped colisly-tiers-table colisly-insurance-table">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Covered up to', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Price', 'colisly' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php
+						$insurance   = COLISLY_Insurance::options();
+						$insurance[] = array(
+							'cover' => '',
+							'price' => '',
+						); // Extra empty row to add a level.
+						foreach ( $insurance as $k => $level ) :
+							?>
+							<tr>
+								<td>
+									<label class="screen-reader-text" for="colisly-ins-c-<?php echo esc_attr( (string) $k ); ?>"><?php esc_html_e( 'Covered up to', 'colisly' ); ?></label>
+									<input type="number" id="colisly-ins-c-<?php echo esc_attr( (string) $k ); ?>" name="insurance_cover[]" step="0.01" min="0" value="<?php echo esc_attr( (string) $level['cover'] ); ?>" />
+								</td>
+								<td>
+									<label class="screen-reader-text" for="colisly-ins-p-<?php echo esc_attr( (string) $k ); ?>"><?php esc_html_e( 'Price', 'colisly' ); ?></label>
+									<input type="number" id="colisly-ins-p-<?php echo esc_attr( (string) $k ); ?>" name="insurance_price[]" step="0.01" min="0" value="<?php echo esc_attr( (string) $level['price'] ); ?>" />
+								</td>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+				<p><button type="button" class="button colisly-add-row"><?php esc_html_e( 'Add a cover level', 'colisly' ); ?></button></p>
+
 				<h2><?php esc_html_e( 'Orders', 'colisly' ); ?></h2>
 				<table class="form-table" role="presentation">
 					<tr>
@@ -335,6 +368,21 @@ class COLISLY_Admin_Settings {
 			);
 		}
 		$settings['carriers'] = $carriers;
+
+		// Same shape and same validation as the weight brackets: a level
+		// covering nothing can never be chosen, so it is dropped like an
+		// empty row.
+		$insurance = array();
+		foreach ( self::sanitize_tiers(
+			isset( $_POST['insurance_cover'] ) ? (array) wp_unslash( $_POST['insurance_cover'] ) : array(), // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
+			isset( $_POST['insurance_price'] ) ? (array) wp_unslash( $_POST['insurance_price'] ) : array() // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
+		) as $level ) {
+			$insurance[] = array(
+				'cover' => $level['max_weight'],
+				'price' => $level['price'],
+			);
+		}
+		$settings['insurance_options'] = $insurance;
 
 		$settings['orders_taxable']          = empty( $_POST['orders_taxable'] ) ? 0 : 1;
 		$settings['notify_client_on_parcel'] = empty( $_POST['notify_client_on_parcel'] ) ? 0 : 1;

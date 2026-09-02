@@ -648,6 +648,104 @@ colisly_check(
 	false !== strpos( $colisly_front_js, 'carrierPrice' ) && false !== strpos( $colisly_front_js, "data-tiers" )
 );
 
+/*
+ * Assurance facultative.
+ *
+ * Le client choisit un niveau de couverture ; son prix n'est jamais lu dans le
+ * formulaire mais relu dans les reglages, sinon un montant poste deciderait de
+ * ce qui est facture. Une liste vide signifie simplement pas d'assurance.
+ */
+$colisly_ins_settings = COLISLY_Settings::all();
+$colisly_ins_saved    = $colisly_ins_settings['insurance_options'];
+
+$colisly_ins_settings['insurance_options'] = array();
+COLISLY_Settings::update( $colisly_ins_settings );
+colisly_check( 'Assurance : liste vide, non proposee', ! COLISLY_Insurance::offered() );
+
+$colisly_ins_settings['insurance_options'] = array(
+	array(
+		'cover' => 100,
+		'price' => 4,
+	),
+	array(
+		'cover' => 50,
+		'price' => 2,
+	),
+	array(
+		'cover' => 0,
+		'price' => 99,
+	), // couverture nulle : doit disparaitre.
+);
+COLISLY_Settings::update( $colisly_ins_settings );
+
+$colisly_ins_options = COLISLY_Insurance::options();
+colisly_check( 'Assurance : proposee des qu un niveau existe', COLISLY_Insurance::offered() );
+colisly_check( 'Assurance : niveau a couverture nulle ecarte', 2 === count( $colisly_ins_options ) );
+colisly_check( 'Assurance : niveaux tries par couverture', 50.0 === $colisly_ins_options[0]['cover'] );
+colisly_check( 'Assurance : montant inconnu refuse', null === COLISLY_Insurance::find( 999 ) );
+colisly_check( 'Assurance : prix relu dans les reglages', 4.0 === COLISLY_Insurance::find( 100 )['price'] );
+
+$colisly_ins_client = COLISLY_Clients::create(
+	wp_insert_user(
+		array(
+			'user_login' => 'ins-' . wp_generate_password( 6, false ),
+			'user_email' => 'ins-' . wp_generate_password( 6, false ) . '@example.com',
+			'user_pass'  => wp_generate_password(),
+			'role'       => 'customer',
+		)
+	)
+);
+
+$colisly_ins_p1 = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_ins_client,
+		'weight'    => 2,
+	)
+);
+$colisly_ins_p2 = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_ins_client,
+		'weight'    => 2,
+	)
+);
+$colisly_ins_p3 = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_ins_client,
+		'weight'    => 2,
+	)
+);
+
+$colisly_ins_nothing = COLISLY_Shipments::get( COLISLY_Shipments::request( $colisly_ins_client, array( $colisly_ins_p1 ), 'colissimo' ) );
+$colisly_ins_taken   = COLISLY_Shipments::get( COLISLY_Shipments::request( $colisly_ins_client, array( $colisly_ins_p2 ), 'colissimo', 100 ) );
+$colisly_ins_forged  = COLISLY_Shipments::get( COLISLY_Shipments::request( $colisly_ins_client, array( $colisly_ins_p3 ), 'colissimo', 99999 ) );
+
+colisly_check( 'Assurance : sans choix, rien n est facture', 0.0 === (float) $colisly_ins_nothing->insurance_price && 0.0 === (float) $colisly_ins_nothing->insured_value );
+colisly_check( 'Assurance : couverture retenue enregistree', 100.0 === (float) $colisly_ins_taken->insured_value );
+colisly_check( 'Assurance : prix issu des reglages, pas du formulaire', 4.0 === (float) $colisly_ins_taken->insurance_price );
+colisly_check(
+	'Assurance : ajoutee au total de l expedition',
+	abs( (float) $colisly_ins_taken->total_price - ( (float) $colisly_ins_nothing->total_price + 4.0 ) ) < 0.001
+);
+colisly_check( 'Assurance : montant fantaisiste ignore, rien facture', 0.0 === (float) $colisly_ins_forged->insurance_price );
+
+if ( COLISLY_Orders::available() && $colisly_ins_taken->order_id ) {
+	$colisly_ins_order = wc_get_order( (int) $colisly_ins_taken->order_id );
+	colisly_check(
+		'Assurance : total de la commande = total de l expedition',
+		abs( (float) $colisly_ins_order->get_total() - (float) $colisly_ins_taken->total_price ) < 0.001
+	);
+	$colisly_ins_line = false;
+	foreach ( $colisly_ins_order->get_items( 'fee' ) as $colisly_ins_item ) {
+		if ( false !== strpos( $colisly_ins_item->get_name(), 'Insurance' ) ) {
+			$colisly_ins_line = (float) $colisly_ins_item->get_total();
+		}
+	}
+	colisly_check( 'Assurance : ligne dediee sur la commande', 4.0 === $colisly_ins_line );
+}
+
+$colisly_ins_settings['insurance_options'] = $colisly_ins_saved;
+COLISLY_Settings::update( $colisly_ins_settings );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------
