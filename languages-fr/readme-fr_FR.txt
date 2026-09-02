@@ -193,6 +193,19 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.7.0 =
+* Nouveau : un colis déjà en stock peut être corrigé. La réception se fait au
+  comptoir, souvent vite, et jusqu'ici un poids faux ou un numéro de suivi mal
+  tapé n'avait aucun retour en arrière : seul le statut était modifiable. Le
+  poids fixant le tarif, la faute se facturait telle quelle. Numéro de suivi,
+  poids, dimensions, photo, commentaire interne, groupage et transporteurs
+  autorisés sont désormais modifiables, et corriger le poids recalcule le tarif.
+* La modification s'arrête dès que le colis quitte le stock. Un colis engagé
+  dans une expédition que le client a peut-être déjà réglée est refusé plutôt
+  que retarifé en silence, et son client ne peut plus changer après la
+  réception. Chaque correction est inscrite dans l'historique du client, en
+  nommant ce qui a changé.
+
 = 1.6.10 =
 * Correction : sur l'écran de demande d'expédition, le tableau des colis avait
   perdu ses libellés. L'empilement ajouté en 1.6.8 masque l'en-tête du tableau,
@@ -268,6 +281,10 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.7.0 =
+Les colis en stock peuvent désormais être corrigés après réception. Aucun
+changement de base de données.
 
 = 1.6.10 =
 Rétablit les libellés du tableau de demande d'expédition, perdus en 1.6.8 sur

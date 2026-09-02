@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.6.10
+Stable tag: 1.7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.7.0 =
+* New: a parcel already in stock can be corrected. Reception happens at the counter, often in a hurry, and until now a wrong weight or a mistyped tracking number had no way back: only the status could be changed. Since the weight sets the price, a typo was billed as it stood. Tracking number, weight, dimensions, photo, internal comment, grouping and allowed carriers are all editable, and correcting the weight recomputes the price.
+* Editing stops the moment the parcel leaves stock. A parcel sitting in a shipment the client may already have paid is refused rather than silently repriced, and its client can never be changed after reception. Every correction is written to the client history, naming what changed.
+
 = 1.6.10 =
 * Fix: on the shipment request screen the parcel table lost its labels. The stacking added in 1.6.8 hides the table header, and each cell is meant to carry its own label instead; this table was the one that did not. Clients saw a bare checkbox followed by three unexplained values. The two other account tables were already correct, which is why it was missed.
 
@@ -146,6 +150,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.7.0 =
+Parcels in stock can now be corrected after reception. No database change.
 
 = 1.6.10 =
 Restores the labels on the shipment request table, lost in 1.6.8 on themes with

@@ -90,7 +90,14 @@ class COLISLY_Admin_Parcels {
 								);
 								?>
 								<tr>
-									<td><strong><?php echo esc_html( $parcel->reference ); ?></strong></td>
+									<td>
+										<strong><?php echo esc_html( $parcel->reference ); ?></strong>
+										<?php if ( 'available' === $parcel->status ) : ?>
+											<div class="row-actions">
+												<span class="edit"><a href="<?php echo esc_url( admin_url( 'admin.php?page=colisly-new-parcel&parcel=' . (int) $parcel->id ) ); ?>"><?php esc_html_e( 'Edit', 'colisly' ); ?></a></span>
+											</div>
+										<?php endif; ?>
+									</td>
 									<td>
 										<a href="<?php echo esc_url( $client_url ); ?>">
 											<?php echo esc_html( $parcel->client_reference . ' — ' . $parcel->display_name ); ?>
@@ -150,17 +157,45 @@ class COLISLY_Admin_Parcels {
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only prefill.
-		$preselected = isset( $_GET['client'] ) ? absint( $_GET['client'] ) : 0;
+		$editing = isset( $_GET['parcel'] ) ? absint( $_GET['parcel'] ) : 0;
+		$editing_parcel  = $editing ? COLISLY_Parcels::get( $editing ) : null;
+
+		// A parcel that has left stock sits in an order the client may already
+		// have paid, so the form is not offered for it at all.
+		if ( $editing_parcel && 'available' !== $editing_parcel->status ) {
+			$editing_parcel  = null;
+			$editing = 0;
+			echo '<div class="notice notice-error"><p>' . esc_html__( 'This parcel is already engaged in a shipment and can no longer be edited. Only its status can be changed.', 'colisly' ) . '</p></div>';
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only prefill.
+		$preselected = $editing_parcel ? (int) $editing_parcel->client_id : ( isset( $_GET['client'] ) ? absint( $_GET['client'] ) : 0 );
 		$client      = $preselected ? COLISLY_Clients::get( $preselected ) : null;
 		$client_user = $client ? get_userdata( (int) $client->user_id ) : null;
+
+		$dimensions = array(
+			'length' => $editing_parcel && null !== $editing_parcel->length ? (string) (float) $editing_parcel->length : '',
+			'width'  => $editing_parcel && null !== $editing_parcel->width ? (string) (float) $editing_parcel->width : '',
+			'height' => $editing_parcel && null !== $editing_parcel->height ? (string) (float) $editing_parcel->height : '',
+		);
+		$parcel_carriers = $editing_parcel ? COLISLY_Parcels::allowed_carrier_slugs( $editing_parcel ) : array();
 		?>
 		<div class="wrap colisly-wrap">
-			<h1><?php esc_html_e( 'New parcel', 'colisly' ); ?></h1>
+			<h1>
+				<?php
+				echo $editing_parcel
+					? esc_html( sprintf( /* translators: %s: parcel reference. */ __( 'Edit parcel %s', 'colisly' ), $editing_parcel->reference ) )
+					: esc_html__( 'New parcel', 'colisly' );
+				?>
+			</h1>
 			<?php COLISLY_Admin::maybe_notice(); ?>
 
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data" id="colisly-new-parcel-form">
-				<?php wp_nonce_field( 'colisly_create_parcel' ); ?>
-				<input type="hidden" name="action" value="colisly_create_parcel" />
+				<?php wp_nonce_field( $editing_parcel ? 'colisly_update_parcel_' . $editing_parcel->id : 'colisly_create_parcel' ); ?>
+				<input type="hidden" name="action" value="<?php echo $editing_parcel ? 'colisly_update_parcel' : 'colisly_create_parcel'; ?>" />
+				<?php if ( $editing_parcel ) : ?>
+					<input type="hidden" name="parcel_id" value="<?php echo esc_attr( (string) $editing_parcel->id ); ?>" />
+				<?php endif; ?>
 
 				<h2><?php esc_html_e( '1. Client', 'colisly' ); ?></h2>
 				<table class="form-table" role="presentation">
@@ -174,10 +209,20 @@ class COLISLY_Admin_Parcels {
 								placeholder="<?php esc_attr_e( 'Reference (CL000001), name or e-mail…', 'colisly' ); ?>"
 								autocomplete="off"
 								value="<?php echo esc_attr( $client ? $client->reference . ' — ' . ( $client_user ? $client_user->display_name : '' ) : '' ); ?>"
+								<?php echo $editing_parcel ? 'readonly' : ''; ?>
 							/>
 							<input type="hidden" name="client_id" id="colisly-client-id" value="<?php echo esc_attr( $client ? (string) $client->id : '' ); ?>" required />
 							<div id="colisly-client-results" class="colisly-client-results" role="listbox"></div>
-							<p class="description"><?php esc_html_e( 'Search by internal reference, name or e-mail address.', 'colisly' ); ?></p>
+							<p class="description">
+								<?php
+								// Moving a parcel to another client would take its
+								// history and its storage clock with it, so the
+								// owner is fixed once reception is recorded.
+								echo $editing_parcel
+									? esc_html__( 'The client of a parcel cannot be changed after reception.', 'colisly' )
+									: esc_html__( 'Search by internal reference, name or e-mail address.', 'colisly' );
+								?>
+							</p>
 						</td>
 					</tr>
 				</table>
@@ -219,26 +264,26 @@ class COLISLY_Admin_Parcels {
 				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row"><label for="colisly-tracking"><?php esc_html_e( 'Carrier tracking number', 'colisly' ); ?></label></th>
-						<td><input type="text" id="colisly-tracking" name="tracking_number" class="regular-text" /></td>
+						<td><input type="text" id="colisly-tracking" name="tracking_number" class="regular-text" value="<?php echo esc_attr( $editing_parcel ? $editing_parcel->tracking_number : '' ); ?>" /></td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="colisly-weight"><?php esc_html_e( 'Real weight (kg)', 'colisly' ); ?> <span class="description">(<?php esc_html_e( 'required', 'colisly' ); ?>)</span></label></th>
-						<td><input type="number" id="colisly-weight" name="weight" step="0.001" min="0.001" required /></td>
+						<td><input type="number" id="colisly-weight" name="weight" step="0.001" min="0.001" required value="<?php echo esc_attr( $editing_parcel ? (string) (float) $editing_parcel->weight : '' ); ?>" /></td>
 					</tr>
 					<tr>
 						<th scope="row"><?php esc_html_e( 'Dimensions (cm, visible to administrators only)', 'colisly' ); ?></th>
 						<td class="colisly-dimensions">
 							<span class="colisly-dimension">
 								<label for="colisly-length"><?php esc_html_e( 'Length', 'colisly' ); ?></label>
-								<input type="number" id="colisly-length" name="length" step="0.01" min="0" />
+								<input type="number" id="colisly-length" name="length" step="0.01" min="0" value="<?php echo esc_attr( $dimensions['length'] ); ?>" />
 							</span>
 							<span class="colisly-dimension">
 								<label for="colisly-width"><?php esc_html_e( 'Width', 'colisly' ); ?></label>
-								<input type="number" id="colisly-width" name="width" step="0.01" min="0" />
+								<input type="number" id="colisly-width" name="width" step="0.01" min="0" value="<?php echo esc_attr( $dimensions['width'] ); ?>" />
 							</span>
 							<span class="colisly-dimension">
 								<label for="colisly-height"><?php esc_html_e( 'Height', 'colisly' ); ?></label>
-								<input type="number" id="colisly-height" name="height" step="0.01" min="0" />
+								<input type="number" id="colisly-height" name="height" step="0.01" min="0" value="<?php echo esc_attr( $dimensions['height'] ); ?>" />
 							</span>
 						</td>
 					</tr>
@@ -248,7 +293,7 @@ class COLISLY_Admin_Parcels {
 					</tr>
 					<tr>
 						<th scope="row"><label for="colisly-note"><?php esc_html_e( 'Internal comment (never visible to the client)', 'colisly' ); ?></label></th>
-						<td><textarea id="colisly-note" name="internal_note" rows="3" class="large-text" placeholder="<?php esc_attr_e( 'Damaged packaging, fragile parcel, anomaly…', 'colisly' ); ?>"></textarea></td>
+						<td><textarea id="colisly-note" name="internal_note" rows="3" class="large-text" placeholder="<?php esc_attr_e( 'Damaged packaging, fragile parcel, anomaly…', 'colisly' ); ?>"><?php echo esc_textarea( $editing_parcel ? $editing_parcel->internal_note : '' ); ?></textarea></td>
 					</tr>
 				</table>
 
@@ -258,7 +303,7 @@ class COLISLY_Admin_Parcels {
 						<th scope="row"><?php esc_html_e( 'Grouping', 'colisly' ); ?></th>
 						<td>
 							<label>
-								<input type="checkbox" name="allow_grouping" value="1" checked />
+								<input type="checkbox" name="allow_grouping" value="1" <?php checked( $editing_parcel ? ! empty( $editing_parcel->allow_grouping ) : true ); ?> />
 								<?php esc_html_e( 'Allow this parcel to be grouped with other parcels', 'colisly' ); ?>
 							</label>
 							<p class="description"><?php esc_html_e( 'If unchecked, this parcel will have to be shipped alone. This decision can never be changed by the client.', 'colisly' ); ?></p>
@@ -269,7 +314,7 @@ class COLISLY_Admin_Parcels {
 						<td>
 							<?php foreach ( COLISLY_Carriers::all( true ) as $carrier ) : ?>
 								<label class="colisly-carrier-choice">
-									<input type="checkbox" name="allowed_carriers[]" value="<?php echo esc_attr( $carrier['slug'] ); ?>" checked />
+									<input type="checkbox" name="allowed_carriers[]" value="<?php echo esc_attr( $carrier['slug'] ); ?>" <?php checked( $editing_parcel ? in_array( $carrier['slug'], $parcel_carriers, true ) : true ); ?> />
 									<?php echo esc_html( $carrier['name'] ); ?>
 								</label>
 							<?php endforeach; ?>
@@ -282,7 +327,7 @@ class COLISLY_Admin_Parcels {
 					<?php esc_html_e( 'The parcel price is computed automatically from its weight when saved, then used for the shipment request.', 'colisly' ); ?>
 				</p>
 
-				<?php submit_button( __( 'Save the parcel', 'colisly' ) ); ?>
+				<?php submit_button( $editing_parcel ? __( 'Save the changes', 'colisly' ) : __( 'Save the parcel', 'colisly' ) ); ?>
 			</form>
 		</div>
 		<?php
@@ -293,6 +338,69 @@ class COLISLY_Admin_Parcels {
 	 *
 	 * @return void
 	 */
+	/**
+	 * Handles the parcel correction form.
+	 *
+	 * @return void
+	 */
+	public static function handle_update() {
+		if ( ! current_user_can( 'colisly_manage' ) ) {
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
+		}
+
+		$parcel_id = isset( $_POST['parcel_id'] ) ? absint( $_POST['parcel_id'] ) : 0;
+
+		check_admin_referer( 'colisly_update_parcel_' . $parcel_id );
+
+		$photo_path = '';
+
+		if ( ! empty( $_FILES['colisly_photo']['name'] ) ) {
+			$photo = COLISLY_Files::upload( 'colisly_photo', COLISLY_Files::photo_mimes() );
+
+			if ( is_wp_error( $photo ) ) {
+				COLISLY_Admin::redirect( 'colisly-new-parcel', array( 'parcel' => $parcel_id ), $photo->get_error_message(), 'error' );
+			}
+
+			$photo_path = $photo['path'];
+		}
+
+		$carriers = array();
+		if ( isset( $_POST['allowed_carriers'] ) && is_array( $_POST['allowed_carriers'] ) ) {
+			$carriers = array_map( 'sanitize_key', wp_unslash( $_POST['allowed_carriers'] ) );
+		}
+
+		$result = COLISLY_Parcels::update(
+			$parcel_id,
+			array(
+				'tracking_number'  => isset( $_POST['tracking_number'] ) ? sanitize_text_field( wp_unslash( $_POST['tracking_number'] ) ) : '',
+				'weight'           => isset( $_POST['weight'] ) ? sanitize_text_field( wp_unslash( $_POST['weight'] ) ) : '',
+				'length'           => isset( $_POST['length'] ) ? sanitize_text_field( wp_unslash( $_POST['length'] ) ) : '',
+				'width'            => isset( $_POST['width'] ) ? sanitize_text_field( wp_unslash( $_POST['width'] ) ) : '',
+				'height'           => isset( $_POST['height'] ) ? sanitize_text_field( wp_unslash( $_POST['height'] ) ) : '',
+				'photo_path'       => $photo_path,
+				'internal_note'    => isset( $_POST['internal_note'] ) ? sanitize_textarea_field( wp_unslash( $_POST['internal_note'] ) ) : '',
+				'allow_grouping'   => ! empty( $_POST['allow_grouping'] ),
+				'allowed_carriers' => $carriers,
+			)
+		);
+
+		if ( is_wp_error( $result ) ) {
+			COLISLY_Admin::redirect( 'colisly-new-parcel', array( 'parcel' => $parcel_id ), $result->get_error_message(), 'error' );
+		}
+
+		$parcel = COLISLY_Parcels::get( $parcel_id );
+
+		COLISLY_Admin::redirect(
+			'colisly-clients',
+			array( 'client' => (int) $parcel->client_id ),
+			sprintf(
+				/* translators: %s: parcel reference. */
+				__( 'Parcel %s updated. Its price has been recomputed from the weight.', 'colisly' ),
+				$parcel->reference
+			)
+		);
+	}
+
 	public static function handle_create() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
 			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );

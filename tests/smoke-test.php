@@ -554,6 +554,80 @@ foreach ( $colisly_lines as $colisly_i => $colisly_line ) {
 
 colisly_check( 'Espace client : chaque cellule de tableau porte son libelle', $colisly_tables_ok );
 
+/*
+ * Correction d'un colis deja recu.
+ *
+ * La reception se fait au comptoir, souvent vite : un poids faux ou un numero
+ * de suivi mal tape n'avait aucun retour en arriere. Le poids fixant le prix,
+ * la faute se facturait telle quelle. La correction s'arrete des que le colis
+ * quitte le stock, sinon on changerait le prix d'une commande deja reglee.
+ */
+$colisly_edit_client = COLISLY_Clients::create(
+	wp_insert_user(
+		array(
+			'user_login' => 'edit-test-' . wp_generate_password( 6, false ),
+			'user_email' => 'edit-test-' . wp_generate_password( 6, false ) . '@example.com',
+			'user_pass'  => wp_generate_password(),
+			'role'       => 'customer',
+		)
+	)
+);
+
+$colisly_edit_parcel = COLISLY_Parcels::create(
+	array(
+		'client_id'       => $colisly_edit_client,
+		'tracking_number' => 'AVANT123',
+		'weight'          => 0.5,
+		'allow_grouping'  => 1,
+	)
+);
+
+$colisly_before = COLISLY_Parcels::get( $colisly_edit_parcel );
+colisly_check( 'Correction : tarif initial sur 0,5 kg', 7.5 === (float) $colisly_before->price );
+
+$colisly_edit_result = COLISLY_Parcels::update(
+	$colisly_edit_parcel,
+	array(
+		'tracking_number' => 'APRES456',
+		'weight'          => '12,5',
+		'internal_note'   => 'Repese au comptoir.',
+		'allow_grouping'  => 0,
+	)
+);
+colisly_check( 'Correction : modification acceptee', true === $colisly_edit_result );
+
+$colisly_after = COLISLY_Parcels::get( $colisly_edit_parcel );
+colisly_check( 'Correction : numero de suivi remplace', 'APRES456' === $colisly_after->tracking_number );
+colisly_check( 'Correction : virgule decimale acceptee', 12.5 === (float) $colisly_after->weight );
+colisly_check( 'Correction : prix recalcule sur le nouveau poids', COLISLY_Pricing::price_for_weight( 12.5 ) === (float) $colisly_after->price );
+colisly_check( 'Correction : note interne enregistree', 'Repese au comptoir.' === $colisly_after->internal_note );
+colisly_check( 'Correction : groupage refuse enregistre', 0 === (int) $colisly_after->allow_grouping );
+
+$colisly_edit_history = COLISLY_History::for_client( $colisly_edit_client );
+colisly_check(
+	'Correction : tracee dans l historique',
+	! empty( $colisly_edit_history ) && false !== strpos( $colisly_edit_history[0]->message, 'COL' )
+		&& 'parcel_updated' === $colisly_edit_history[0]->event
+);
+
+colisly_check(
+	'Correction : poids nul refuse',
+	is_wp_error( COLISLY_Parcels::update( $colisly_edit_parcel, array( 'weight' => '0' ) ) )
+);
+colisly_check(
+	'Correction : colis inexistant refuse',
+	is_wp_error( COLISLY_Parcels::update( 999999, array( 'weight' => '2' ) ) )
+);
+
+// Le colis quitte le stock : la correction doit etre refusee.
+COLISLY_Parcels::set_status( $colisly_edit_parcel, 'awaiting_payment' );
+$colisly_locked = COLISLY_Parcels::update( $colisly_edit_parcel, array( 'weight' => '3' ) );
+colisly_check( 'Correction : refusee des que le colis est engage', is_wp_error( $colisly_locked ) );
+colisly_check(
+	'Correction : le poids n a pas bouge apres refus',
+	12.5 === (float) COLISLY_Parcels::get( $colisly_edit_parcel )->weight
+);
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

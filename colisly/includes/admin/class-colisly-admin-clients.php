@@ -308,7 +308,14 @@ class COLISLY_Admin_Clients {
 					<?php else : ?>
 						<?php foreach ( $parcels as $parcel ) : ?>
 							<tr>
-								<td><strong><?php echo esc_html( $parcel->reference ); ?></strong></td>
+								<td>
+										<strong><?php echo esc_html( $parcel->reference ); ?></strong>
+										<?php if ( 'available' === $parcel->status ) : ?>
+											<div class="row-actions">
+												<span class="edit"><a href="<?php echo esc_url( admin_url( 'admin.php?page=colisly-new-parcel&parcel=' . (int) $parcel->id ) ); ?>"><?php esc_html_e( 'Edit', 'colisly' ); ?></a></span>
+											</div>
+										<?php endif; ?>
+									</td>
 								<td><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
 								<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
 								<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>

@@ -182,6 +182,161 @@ class COLISLY_Parcels {
 	}
 
 	/**
+	 * Corrects a parcel already in stock.
+	 *
+	 * Reception is done at the counter, often in a hurry, and a wrong weight
+	 * or a mistyped tracking number had no way back: only the status could be
+	 * changed afterwards. The weight sets the price, so a typo used to be
+	 * billed as it stood.
+	 *
+	 * Editing stops the moment the parcel leaves stock. Once it sits in a
+	 * shipment the client has paid, changing its weight would silently change
+	 * the price of a settled order, so a parcel in any other status is
+	 * refused rather than quietly ignored.
+	 *
+	 * @param int   $parcel_id Parcel ID.
+	 * @param array $data      Fields: tracking_number, weight, length, width,
+	 *                         height, internal_note, allow_grouping,
+	 *                         allowed_carriers, photo_path.
+	 * @return true|WP_Error
+	 */
+	public static function update( $parcel_id, $data ) {
+		global $wpdb;
+
+		$parcel = self::get( $parcel_id );
+		if ( ! $parcel ) {
+			return new WP_Error( 'colisly_parcel_not_found', __( 'Parcel not found.', 'colisly' ) );
+		}
+
+		if ( 'available' !== $parcel->status ) {
+			return new WP_Error(
+				'colisly_parcel_locked',
+				__( 'This parcel is already engaged in a shipment and can no longer be edited. Only its status can be changed.', 'colisly' )
+			);
+		}
+
+		$fields  = array( 'updated_at' => current_time( 'mysql', true ) );
+		$formats = array( '%s' );
+		$changes = array();
+
+		if ( isset( $data['weight'] ) ) {
+			$weight = self::to_float( $data['weight'] );
+			if ( $weight <= 0 ) {
+				return new WP_Error( 'colisly_invalid_weight', __( 'The parcel weight must be greater than zero.', 'colisly' ) );
+			}
+
+			if ( abs( $weight - (float) $parcel->weight ) > 0.0001 ) {
+				// The price follows the weight, otherwise correcting a typo
+				// would leave the wrong amount on the parcel.
+				$price             = COLISLY_Pricing::price_for_weight( $weight );
+				$fields['weight']  = $weight;
+				$formats[]         = '%f';
+				$fields['price']   = $price;
+				$formats[]         = '%f';
+				$changes[]         = sprintf(
+					/* translators: 1: former weight, 2: new weight, 3: former price, 4: new price. */
+					__( 'weight %1$s kg to %2$s kg, price %3$s to %4$s', 'colisly' ),
+					number_format_i18n( (float) $parcel->weight, 3 ),
+					number_format_i18n( $weight, 3 ),
+					number_format_i18n( (float) $parcel->price, 2 ),
+					number_format_i18n( $price, 2 )
+				);
+			}
+		}
+
+		if ( isset( $data['tracking_number'] ) ) {
+			$tracking = sanitize_text_field( $data['tracking_number'] );
+			if ( $tracking !== $parcel->tracking_number ) {
+				$fields['tracking_number'] = $tracking;
+				$formats[]                 = '%s';
+				$changes[]                 = __( 'tracking number', 'colisly' );
+			}
+		}
+
+		foreach ( array( 'length', 'width', 'height' ) as $dimension ) {
+			if ( ! isset( $data[ $dimension ] ) ) {
+				continue;
+			}
+			$value                 = '' === $data[ $dimension ] ? null : self::to_float( $data[ $dimension ] );
+			$fields[ $dimension ]  = $value;
+			$formats[]             = null === $value ? '%s' : '%f';
+		}
+
+		if ( isset( $data['internal_note'] ) ) {
+			$note = sanitize_textarea_field( $data['internal_note'] );
+			if ( $note !== $parcel->internal_note ) {
+				$fields['internal_note'] = $note;
+				$formats[]               = '%s';
+				$changes[]               = __( 'internal comment', 'colisly' );
+			}
+		}
+
+		if ( ! empty( $data['photo_path'] ) ) {
+			$fields['photo_path'] = sanitize_file_name( $data['photo_path'] );
+			$formats[]            = '%s';
+			$changes[]            = __( 'photo', 'colisly' );
+		}
+
+		if ( array_key_exists( 'allow_grouping', $data ) ) {
+			$grouping = empty( $data['allow_grouping'] ) ? 0 : 1;
+			if ( (int) $parcel->allow_grouping !== $grouping ) {
+				$fields['allow_grouping'] = $grouping;
+				$formats[]                = '%d';
+				$changes[]                = $grouping
+					? __( 'grouping allowed', 'colisly' )
+					: __( 'grouping refused', 'colisly' );
+			}
+		}
+
+		if ( array_key_exists( 'allowed_carriers', $data ) ) {
+			$known    = wp_list_pluck( COLISLY_Carriers::all(), 'slug' );
+			$carriers = array();
+			foreach ( (array) $data['allowed_carriers'] as $slug ) {
+				$slug = sanitize_key( $slug );
+				if ( in_array( $slug, $known, true ) ) {
+					$carriers[] = $slug;
+				}
+			}
+			if ( $carriers !== self::allowed_carrier_slugs( $parcel ) ) {
+				$fields['allowed_carriers'] = wp_json_encode( $carriers );
+				$formats[]                  = '%s';
+				$changes[]                  = __( 'allowed carriers', 'colisly' );
+			}
+		}
+
+		$updated = $wpdb->update( self::table(), $fields, array( 'id' => (int) $parcel->id ), $formats, array( '%d' ) );
+
+		if ( false === $updated ) {
+			return new WP_Error( 'colisly_db_error', __( 'The parcel could not be saved.', 'colisly' ) );
+		}
+
+		if ( $changes ) {
+			COLISLY_History::log(
+				(int) $parcel->client_id,
+				'parcel_updated',
+				sprintf(
+					/* translators: 1: parcel reference, 2: list of changes. */
+					__( 'Parcel %1$s corrected: %2$s.', 'colisly' ),
+					$parcel->reference,
+					implode( ', ', $changes )
+				),
+				(int) $parcel->id
+			);
+		}
+
+		/**
+		 * Fires after a parcel has been corrected.
+		 *
+		 * @param int    $parcel_id Parcel ID.
+		 * @param object $parcel    Parcel row as it was before the change.
+		 * @param array  $fields    Columns actually written.
+		 */
+		do_action( 'colisly_parcel_updated', (int) $parcel->id, $parcel, $fields );
+
+		return true;
+	}
+
+	/**
 	 * Formats a parcel reference from its numeric ID (e.g. COL000001).
 	 *
 	 * @param int $id Parcel ID.
