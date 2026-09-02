@@ -58,6 +58,39 @@
 		} );
 	}
 
+	/*
+	 * Same rule as COLISLY_Carriers::price_for on the server: the first bracket
+	 * whose maximum weight covers the shipment sets the price, and past the last
+	 * bracket the base + per-kg formula applies without ever charging less than
+	 * that last bracket. Computing base + per-kg here regardless showed 17 for a
+	 * 6 kg shipment the checkout then billed 45.
+	 */
+	function carrierPrice( option, weight ) {
+		var base = parseFloat( option.getAttribute( 'data-base' ) || '0' );
+		var rate = parseFloat( option.getAttribute( 'data-rate' ) || '0' );
+		var tiers = [];
+
+		try {
+			tiers = JSON.parse( option.getAttribute( 'data-tiers' ) || '[]' ) || [];
+		} catch ( e ) {
+			tiers = [];
+		}
+
+		for ( var i = 0; i < tiers.length; i++ ) {
+			if ( weight <= tiers[ i ].w ) {
+				return tiers[ i ].p;
+			}
+		}
+
+		var price = base + rate * weight;
+
+		if ( tiers.length ) {
+			price = Math.max( price, tiers[ tiers.length - 1 ].p );
+		}
+
+		return price;
+	}
+
 	function updateEstimate() {
 		var selected = selectedBoxes();
 		var option = select.options[ select.selectedIndex ];
@@ -76,8 +109,7 @@
 			total += parseFloat( box.getAttribute( 'data-storage' ) || '0' );
 		} );
 
-		total += parseFloat( option.getAttribute( 'data-base' ) || '0' );
-		total += parseFloat( option.getAttribute( 'data-rate' ) || '0' ) * weight;
+		total += carrierPrice( option, weight );
 
 		amount.textContent = formatPrice( total );
 		estimate.hidden = false;

@@ -1110,23 +1110,23 @@ msgid "Preferred carrier:"
 msgstr ""
 
 #. translators: 1: carrier name, 2: base price, 3: price per kg.
-#: colisly/includes/frontend/class-colisly-accountphp:410
+#: colisly/includes/frontend/class-colisly-accountphp:436
 msgid "%1$s — %2$s + %3$s/kg"
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:421
+#: colisly/includes/frontend/class-colisly-accountphp:448
 msgid "Estimated total:"
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:423
+#: colisly/includes/frontend/class-colisly-accountphp:450
 msgid "(parcels + storage fees + transport — confirmed on the payment page)"
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:425
+#: colisly/includes/frontend/class-colisly-accountphp:452
 msgid "Only carriers compatible with every selected parcel can be accepted."
 msgstr ""
 
-#: colisly/includes/frontend/class-colisly-accountphp:427
+#: colisly/includes/frontend/class-colisly-accountphp:454
 msgid "Send the request"
 msgstr ""
 

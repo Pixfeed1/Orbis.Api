@@ -398,20 +398,47 @@ class COLISLY_Account {
 						<?php
 						$base = isset( $carrier['price_base'] ) ? (float) $carrier['price_base'] : 0;
 						$rate = isset( $carrier['price_per_kg'] ) ? (float) $carrier['price_per_kg'] : 0;
+
+						// The estimate has to apply the same rule as the server.
+						// Passing only base and rate made a carrier priced by
+						// bracket show one figure here and charge another at
+						// checkout, so the grid travels with the option.
+						$tiers = array();
+						if ( ! empty( $carrier['tiers'] ) && is_array( $carrier['tiers'] ) ) {
+							foreach ( $carrier['tiers'] as $tier ) {
+								$tiers[] = array(
+									'w' => (float) $tier['max_weight'],
+									'p' => (float) $tier['price'],
+								);
+							}
+							usort(
+								$tiers,
+								static function ( $a, $b ) {
+									return $a['w'] <=> $b['w'];
+								}
+							);
+						}
 						?>
 						<option
 							value="<?php echo esc_attr( $carrier['slug'] ); ?>"
 							data-base="<?php echo esc_attr( (string) $base ); ?>"
 							data-rate="<?php echo esc_attr( (string) $rate ); ?>"
+							data-tiers="<?php echo esc_attr( wp_json_encode( $tiers ) ); ?>"
 						>
 							<?php
-							printf(
-								/* translators: 1: carrier name, 2: base price, 3: price per kg. */
-								esc_html__( '%1$s — %2$s + %3$s/kg', 'colisly' ),
-								esc_html( $carrier['name'] ),
-								esc_html( COLISLY_Format::price( $base ) ),
-								esc_html( COLISLY_Format::price( $rate ) )
-							);
+							if ( $tiers ) {
+								// Announcing "base + per kg" for a carrier billed
+								// by bracket would state a price it never charges.
+								echo esc_html( $carrier['name'] );
+							} else {
+								printf(
+									/* translators: 1: carrier name, 2: base price, 3: price per kg. */
+									esc_html__( '%1$s — %2$s + %3$s/kg', 'colisly' ),
+									esc_html( $carrier['name'] ),
+									esc_html( COLISLY_Format::price( $base ) ),
+									esc_html( COLISLY_Format::price( $rate ) )
+								);
+							}
 							?>
 						</option>
 					<?php endforeach; ?>

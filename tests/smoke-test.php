@@ -628,6 +628,26 @@ colisly_check(
 	12.5 === (float) COLISLY_Parcels::get( $colisly_edit_parcel )->weight
 );
 
+/*
+ * L'estimation affichee au client est calculee en JavaScript. Elle ne peut
+ * suivre la regle du serveur que si la grille de tranches accompagne l'option
+ * du transporteur : sans elle, le JS retombe sur base + tarif/kg et annonce un
+ * montant que le tunnel de paiement dementira. C'est arrive en 1.6.9, 17 EUR
+ * affiches pour 6 kg factures 45. Le test verifie que l'attribut est bien emis
+ * et que le calcul JS existe toujours.
+ */
+$colisly_account_markup = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/frontend/class-colisly-account.php' );
+$colisly_front_js       = file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/front.js' );
+
+colisly_check(
+	'Estimation : la grille accompagne l option transporteur',
+	false !== strpos( $colisly_account_markup, 'data-tiers=' )
+);
+colisly_check(
+	'Estimation : le calcul JS lit la grille',
+	false !== strpos( $colisly_front_js, 'carrierPrice' ) && false !== strpos( $colisly_front_js, "data-tiers" )
+);
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

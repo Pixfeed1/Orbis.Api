@@ -210,6 +210,12 @@ l'extension ainsi que ses options.
   le titre précise qu'un transporteur se tarife normalement avec une grille et
   que ces deux prix ne sont qu'un recours. Lus seuls, ils passaient pour la
   seule tarification transporteur existante.
+* Correction : l'estimation affichée au client sur la demande d'expédition
+  ignorait les tranches de poids ajoutées en 1.6.9 et retombait sur prix de
+  base + tarif au kilo. Une expédition facturée 45 € au tunnel de paiement
+  était annoncée à 17 €. L'estimation applique désormais la même règle que le
+  serveur, et un transporteur tarifé par tranche n'affiche plus un tarif au
+  kilo qu'il n'applique jamais.
 
 = 1.6.10 =
 * Correction : sur l'écran de demande d'expédition, le tableau des colis avait
