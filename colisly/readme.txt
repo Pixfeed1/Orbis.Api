@@ -1,4 +1,4 @@
-=== Parcel Forwarding & Package Consolidation for WooCommerce - Colisly ===
+=== Parcel Forwarding & Package Consolidation for WooCommerce ===
 Contributors: pixfeed
 Tags: package forwarding, parcel forwarding, mail forwarding, reshipping, freight forwarder
 Requires at least: 6.2
