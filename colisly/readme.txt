@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.6.9
+Stable tag: 1.6.10
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.6.10 =
+* Fix: on the shipment request screen the parcel table lost its labels. The stacking added in 1.6.8 hides the table header, and each cell is meant to carry its own label instead; this table was the one that did not. Clients saw a bare checkbox followed by three unexplained values. The two other account tables were already correct, which is why it was missed.
+
 = 1.6.9 =
 * New: each carrier can be given its own grid of weight brackets. Carriers rarely bill per kilo, they publish a grid, and a 6 kg parcel at 45 EUR next to a 15 kg one at 150 EUR fits on no straight line. The first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. A carrier left without a grid keeps billing base price + price per kg exactly as before, so nothing changes on existing sites.
 * Beyond the last bracket the price falls back to base price + price per kg, but it can now only ever charge more than the last bracket, never less. A grid stopping at 15 kg used to make a 16 kg shipment cheaper than a 15 kg one.
@@ -143,6 +146,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.6.10 =
+Restores the labels on the shipment request table, lost in 1.6.8 on themes with
+a narrow content column. No database change.
 
 = 1.6.9 =
 Carriers can now be priced by weight bracket rather than per kilo. Existing

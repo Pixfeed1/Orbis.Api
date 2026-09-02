@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Colisly Parcel Forwarding plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.6.9\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.6.10\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -166,7 +166,7 @@ msgstr ""
 msgid "Tracking"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-clientsphp:294, colisly/includes/admin/class-colisly-admin-clientsphp:376, colisly/includes/admin/class-colisly-admin-parcelsphp:72, colisly/includes/admin/class-colisly-admin-parcelsphp:194, colisly/includes/admin/class-colisly-adminphp:130, colisly/includes/class-colisly-privacyphp:137, colisly/includes/frontend/class-colisly-accountphp:189, colisly/includes/frontend/class-colisly-accountphp:200, colisly/includes/frontend/class-colisly-accountphp:241, colisly/includes/frontend/class-colisly-accountphp:258, colisly/includes/frontend/class-colisly-accountphp:364
+#: colisly/includes/admin/class-colisly-admin-clientsphp:294, colisly/includes/admin/class-colisly-admin-clientsphp:376, colisly/includes/admin/class-colisly-admin-parcelsphp:72, colisly/includes/admin/class-colisly-admin-parcelsphp:194, colisly/includes/admin/class-colisly-adminphp:130, colisly/includes/class-colisly-privacyphp:137, colisly/includes/frontend/class-colisly-accountphp:189, colisly/includes/frontend/class-colisly-accountphp:200, colisly/includes/frontend/class-colisly-accountphp:241, colisly/includes/frontend/class-colisly-accountphp:258, colisly/includes/frontend/class-colisly-accountphp:364, colisly/includes/frontend/class-colisly-accountphp:385
 msgid "Weight (kg)"
 msgstr ""
 
@@ -362,11 +362,11 @@ msgstr ""
 msgid "Parcels of this client still in stock"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-parcelsphp:193, colisly/includes/admin/class-colisly-adminphp:129, colisly/includes/class-colisly-privacyphp:125, colisly/includes/frontend/class-colisly-accountphp:186, colisly/includes/frontend/class-colisly-accountphp:197, colisly/includes/frontend/class-colisly-accountphp:363, colisly/templates/emails/colisly-parcel-receivedphp:35
+#: colisly/includes/admin/class-colisly-admin-parcelsphp:193, colisly/includes/admin/class-colisly-adminphp:129, colisly/includes/class-colisly-privacyphp:125, colisly/includes/frontend/class-colisly-accountphp:186, colisly/includes/frontend/class-colisly-accountphp:197, colisly/includes/frontend/class-colisly-accountphp:363, colisly/includes/frontend/class-colisly-accountphp:384, colisly/templates/emails/colisly-parcel-receivedphp:35
 msgid "Parcel number"
 msgstr ""
 
-#: colisly/includes/admin/class-colisly-admin-parcelsphp:195, colisly/includes/admin/class-colisly-adminphp:131, colisly/includes/frontend/class-colisly-accountphp:191, colisly/includes/frontend/class-colisly-accountphp:202, colisly/includes/frontend/class-colisly-accountphp:365
+#: colisly/includes/admin/class-colisly-admin-parcelsphp:195, colisly/includes/admin/class-colisly-adminphp:131, colisly/includes/frontend/class-colisly-accountphp:191, colisly/includes/frontend/class-colisly-accountphp:202, colisly/includes/frontend/class-colisly-accountphp:365, colisly/includes/frontend/class-colisly-accountphp:386
 msgid "Grouping allowed"
 msgstr ""
 
@@ -1022,6 +1022,10 @@ msgstr ""
 
 #: colisly/includes/frontend/class-colisly-accountphp:357
 msgid "Select the parcels to ship:"
+msgstr ""
+
+#: colisly/includes/frontend/class-colisly-accountphp:362, colisly/includes/frontend/class-colisly-accountphp:371
+msgid "Include in the shipment"
 msgstr ""
 
 #: colisly/includes/frontend/class-colisly-accountphp:386

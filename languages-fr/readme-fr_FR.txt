@@ -193,6 +193,14 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.6.10 =
+* Correction : sur l'écran de demande d'expédition, le tableau des colis avait
+  perdu ses libellés. L'empilement ajouté en 1.6.8 masque l'en-tête du tableau,
+  chaque cellule devant alors porter son propre libellé ; ce tableau était le
+  seul à ne pas le faire. Les clients voyaient une case à cocher nue suivie de
+  trois valeurs sans explication. Les deux autres tableaux de l'espace client
+  étaient déjà corrects, ce qui explique l'oubli.
+
 = 1.6.9 =
 * Nouveau : chaque transporteur peut recevoir sa propre grille de tranches de
   poids. Les transporteurs facturent rarement au kilo, ils publient une grille,
@@ -260,6 +268,10 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.6.10 =
+Rétablit les libellés du tableau de demande d'expédition, perdus en 1.6.8 sur
+les thèmes à colonne de contenu étroite. Aucun changement de base de données.
 
 = 1.6.9 =
 Les transporteurs peuvent désormais être tarifés par tranche de poids plutôt

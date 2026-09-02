@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.6.9\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.6.10\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -871,3 +871,6 @@ msgstr "Les transporteurs publient en général une grille de tranches de poids 
 
 msgid "Add a carrier and save to configure its brackets."
 msgstr "Ajoutez un transporteur et enregistrez pour configurer ses tranches."
+
+msgid "Include in the shipment"
+msgstr "Inclure dans l’expédition"

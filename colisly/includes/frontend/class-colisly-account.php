@@ -359,7 +359,7 @@ class COLISLY_Account {
 				<table class="woocommerce-orders-table shop_table shop_table_responsive colisly-front-table">
 					<thead>
 						<tr>
-							<th></th>
+							<th><span class="screen-reader-text"><?php esc_html_e( 'Include in the shipment', 'colisly' ); ?></span></th>
 							<th><?php esc_html_e( 'Parcel number', 'colisly' ); ?></th>
 							<th><?php esc_html_e( 'Weight (kg)', 'colisly' ); ?></th>
 							<th><?php esc_html_e( 'Grouping allowed', 'colisly' ); ?></th>
@@ -368,7 +368,7 @@ class COLISLY_Account {
 					<tbody>
 						<?php foreach ( $parcels as $parcel ) : ?>
 							<tr>
-								<td>
+								<td data-title="<?php esc_attr_e( 'Include in the shipment', 'colisly' ); ?>">
 									<input
 										type="checkbox"
 										name="colisly_parcels[]"
@@ -381,9 +381,9 @@ class COLISLY_Account {
 										data-storage="<?php echo esc_attr( (string) COLISLY_Storage::fees_for_parcel( $parcel ) ); ?>"
 									/>
 								</td>
-								<td><label for="colisly-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></label></td>
-								<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
-								<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No — this parcel must be shipped alone', 'colisly' ); ?></td>
+								<td data-title="<?php esc_attr_e( 'Parcel number', 'colisly' ); ?>"><label for="colisly-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></label></td>
+								<td data-title="<?php esc_attr_e( 'Weight (kg)', 'colisly' ); ?>"><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
+								<td data-title="<?php esc_attr_e( 'Grouping allowed', 'colisly' ); ?>"><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No — this parcel must be shipped alone', 'colisly' ); ?></td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>

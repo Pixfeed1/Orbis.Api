@@ -516,6 +516,44 @@ colisly_check( 'Sans grille : base + tarif/kg inchange', 22.0 === COLISLY_Carrie
 $colisly_grid_settings['carriers'] = $colisly_saved_carriers;
 COLISLY_Settings::update( $colisly_grid_settings );
 
+/*
+ * Libelles des tableaux de l'espace client.
+ *
+ * Depuis la 1.6.8 ces tableaux s'empilent quand la colonne du theme est trop
+ * etroite, et l'en-tete disparait alors : chaque cellule doit porter son propre
+ * data-title, sinon il ne reste que des valeurs nues. C'est exactement ce qui
+ * est arrive au tableau de la demande d'expedition, oublie parce que les deux
+ * autres etaient corrects. Le test lit le source plutot que le rendu, faute de
+ * navigateur ici, mais il suffit a empecher la recidive.
+ */
+$colisly_account_src = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/frontend/class-colisly-account.php' );
+$colisly_tables_ok   = true;
+$colisly_lines       = explode( "\n", $colisly_account_src );
+
+foreach ( $colisly_lines as $colisly_i => $colisly_line ) {
+	if ( false === strpos( $colisly_line, 'colisly-front-table' ) ) {
+		continue;
+	}
+
+	$colisly_block = '';
+	for ( $colisly_j = $colisly_i; $colisly_j < count( $colisly_lines ); $colisly_j++ ) {
+		$colisly_block .= $colisly_lines[ $colisly_j ] . "\n";
+		if ( false !== strpos( $colisly_lines[ $colisly_j ], '</table>' ) ) {
+			break;
+		}
+	}
+
+	$colisly_cells  = preg_match_all( '/<td[ >]/', $colisly_block );
+	$colisly_titles = preg_match_all( '/data-title=/', $colisly_block );
+
+	if ( $colisly_cells !== $colisly_titles ) {
+		$colisly_tables_ok = false;
+		echo "  tableau ligne " . ( $colisly_i + 1 ) . " : {$colisly_cells} cellules, {$colisly_titles} data-title\n";
+	}
+}
+
+colisly_check( 'Espace client : chaque cellule de tableau porte son libelle', $colisly_tables_ok );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------
