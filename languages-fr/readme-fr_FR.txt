@@ -193,7 +193,7 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
-= 1.9.0 =
+= 1.9.1 =
 * La déclaration se remplit là où elle a sa place, sur la demande d'expédition,
   pour les colis qui partent. L'onglet séparé demeure pour les clients qui
   préfèrent déclarer chaque colis à son arrivée ; les deux écrivent la même
@@ -207,6 +207,8 @@ l'extension ainsi que ses options.
 * L'opérateur lit la déclaration entière sur l'expédition elle-même, regroupée
   sur tous ses colis avec la valeur totale déclarée : c'est la feuille à
   recopier sur le formulaire du transporteur.
+
+= 1.9.0 =
 * Nouveau : les déclarations douanières. Réexpédier hors du territoire douanier
   impose de déclarer le contenu de chaque colis, article par article, et le
   réexpéditeur devait jusqu'ici le collecter par e-mail. Le client déclare
@@ -356,6 +358,11 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.9.1 =
+La déclaration douanière se remplit désormais sur la demande d'expédition, le
+champ « contenu » peut devenir un menu de vos propres catégories, et la
+déclaration est lisible sur l'expédition. Aucun changement de base de données.
 
 = 1.9.0 =
 Les clients peuvent désormais déclarer le contenu de leurs colis pour la douane,

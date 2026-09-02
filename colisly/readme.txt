@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.9.0
+Stable tag: 1.9.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,10 +118,12 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
-= 1.9.0 =
+= 1.9.1 =
 * The declaration is filled where it belongs, on the shipment request, for the parcels being sent. The separate tab stays for clients who prefer to declare each parcel as it arrives; both write the same thing.
 * The contents field can be turned into a menu: fill a list of categories in the settings and clients pick from it instead of typing. Empty by default, so nothing is imposed, and no trade's vocabulary ships with the plugin. The number of lines a parcel may declare can be capped to what your carrier forms hold, uncapped by default.
 * The operator reads the whole declaration on the shipment itself, gathered across its parcels with the total declared value, which is the sheet to copy onto a carrier's own form.
+
+= 1.9.0 =
 * New: customs declarations. Reshipping outside the customs territory needs the contents of each parcel declared, item by item, and until now the forwarder had to collect that by e-mail. The client now declares his parcels from a Customs declaration tab in his account: description, quantity, unit weight, unit value and country of origin per line. A shipment to a destination that requires one is refused while a selected parcel is still undeclared, with the parcel named.
 * Which destinations require a declaration is set on the zones, not guessed. Reshipping from mainland France to Guadeloupe needs one, since the overseas departments sit outside the EU VAT territory, while reshipping to Belgium needs none; a country code cannot tell those apart. Tick the customs column on the zones concerned and nothing changes for anyone who does not.
 * The operator prints the declaration from the parcel list or the client record: sender, recipient, one line per item with its tariff number and origin, the totals a customs form asks for, and the certification to sign. It warns when the declared contents weigh more than the parcel itself, which customs would stop on.
@@ -166,6 +168,11 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.9.1 =
+The customs declaration is now filled on the shipment request, the contents
+field can be a menu of your own categories, and the declaration is readable on
+the shipment. No database change.
 
 = 1.9.0 =
 Clients can now declare the contents of their parcels for customs, and the
