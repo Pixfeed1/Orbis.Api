@@ -77,6 +77,63 @@ class COLISLY_Carriers {
 	}
 
 	/**
+	 * Returns the weight a carrier actually bills for a set of parcels.
+	 *
+	 * Express carriers price on volume rather than mass, because a light bulky
+	 * parcel takes the room of a heavy one. They do not bill the volumetric
+	 * weight instead of the real one though, they bill whichever is greater,
+	 * parcel by parcel: a dense 20 kg box in a small carton would otherwise be
+	 * charged as 3 kg.
+	 *
+	 * A parcel whose dimensions were not entered contributes its real weight.
+	 * Treating a missing dimension as a zero volume would have billed the
+	 * transport of that parcel at nothing.
+	 *
+	 * @param string   $slug    Carrier slug.
+	 * @param object[] $parcels Parcel rows.
+	 * @return float Weight to price on, in kg.
+	 */
+	public static function chargeable_weight( $slug, $parcels ) {
+		$carrier = self::get( $slug );
+		$total   = 0.0;
+
+		$volumetric = $carrier && ! empty( $carrier['volumetric'] );
+		$divisor    = $carrier && ! empty( $carrier['volumetric_divisor'] ) ? (float) $carrier['volumetric_divisor'] : 5000.0;
+
+		if ( $divisor <= 0 ) {
+			$divisor = 5000.0;
+		}
+
+		foreach ( (array) $parcels as $parcel ) {
+			$real = max( 0, (float) $parcel->weight );
+
+			if ( ! $volumetric ) {
+				$total += $real;
+				continue;
+			}
+
+			$length = (float) $parcel->length;
+			$width  = (float) $parcel->width;
+			$height = (float) $parcel->height;
+
+			$volume = ( $length > 0 && $width > 0 && $height > 0 )
+				? ( $length * $width * $height ) / $divisor
+				: 0.0;
+
+			$total += max( $real, $volume );
+		}
+
+		/**
+		 * Filters the weight a carrier is priced on.
+		 *
+		 * @param float    $total   Chargeable weight in kg.
+		 * @param string   $slug    Carrier slug.
+		 * @param object[] $parcels Parcel rows.
+		 */
+		return (float) apply_filters( 'colisly_chargeable_weight', round( $total, 3 ), $slug, $parcels );
+	}
+
+	/**
 	 * Returns the weight brackets a carrier applies to a destination, sorted.
 	 *
 	 * A destination falling in a zone the carrier has a grid for uses that

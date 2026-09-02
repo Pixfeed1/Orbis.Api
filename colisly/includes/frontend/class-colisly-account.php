@@ -379,6 +379,7 @@ class COLISLY_Account {
 										data-grouping="<?php echo $parcel->allow_grouping ? '1' : '0'; ?>"
 										data-carriers="<?php echo esc_attr( implode( ',', COLISLY_Parcels::allowed_carrier_slugs( $parcel ) ) ); ?>"
 										data-weight="<?php echo esc_attr( (string) (float) $parcel->weight ); ?>"
+										data-volume="<?php echo esc_attr( (string) ( (float) $parcel->length * (float) $parcel->width * (float) $parcel->height ) ); ?>"
 										data-price="<?php echo esc_attr( (string) (float) $parcel->price ); ?>"
 										data-storage="<?php echo esc_attr( (string) COLISLY_Storage::fees_for_parcel( $parcel ) ); ?>"
 									/>
@@ -459,6 +460,8 @@ class COLISLY_Account {
 							data-rate="<?php echo esc_attr( (string) $rate ); ?>"
 							data-tiers="<?php echo esc_attr( wp_json_encode( $tiers ) ); ?>"
 							data-zone-tiers="<?php echo esc_attr( wp_json_encode( $by_country ) ); ?>"
+							data-volumetric="<?php echo empty( $carrier['volumetric'] ) ? '0' : '1'; ?>"
+							data-divisor="<?php echo esc_attr( ! empty( $carrier['volumetric_divisor'] ) ? (string) (int) $carrier['volumetric_divisor'] : '5000' ); ?>"
 						>
 							<?php
 							if ( $tiers ) {

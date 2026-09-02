@@ -194,6 +194,16 @@ l'extension ainsi que ses options.
 ================================================================================
 
 = 1.8.0 =
+* Nouveau : les transporteurs peuvent être facturés au poids volumétrique. Les
+  transporteurs express facturent l'encombrement plutôt que la masse : un
+  transporteur peut désormais être marqué volumétrique, avec son propre
+  diviseur (5000 par défaut). Le transport est alors facturé sur le plus grand
+  des deux, le poids réel ou longueur x largeur x hauteur divisé par le
+  diviseur, colis par colis. C'est ainsi que les transporteurs calculent
+  eux-mêmes : facturer le volumétrique à la place du réel ferait passer un
+  carton dense de 20 kg dans 20x20x20 pour 1,6 kg. Un colis dont les dimensions
+  n'ont jamais été saisies est facturé sur son poids réel plutôt que sur un
+  volume nul.
 * Nouveau : zones de destination. Un réexpéditeur ne facture pas le même
   transport vers la métropole, vers l'outre-mer et vers Madagascar, et une
   grille unique par transporteur ne pouvait donc pas porter de vrais tarifs.

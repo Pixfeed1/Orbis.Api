@@ -54,6 +54,7 @@ class COLISLY_Settings {
 					'price_base'   => 15.0,
 					'price_per_kg' => 2.5,
 					'tiers'        => array(),
+					'volumetric'   => 0,
 				),
 				array(
 					'slug'         => 'ups',
@@ -62,6 +63,7 @@ class COLISLY_Settings {
 					'price_base'   => 14.0,
 					'price_per_kg' => 2.2,
 					'tiers'        => array(),
+					'volumetric'   => 0,
 				),
 				array(
 					'slug'         => 'fedex',
@@ -70,6 +72,7 @@ class COLISLY_Settings {
 					'price_base'   => 14.0,
 					'price_per_kg' => 2.3,
 					'tiers'        => array(),
+					'volumetric'   => 0,
 				),
 				array(
 					'slug'         => 'colissimo',
@@ -78,6 +81,7 @@ class COLISLY_Settings {
 					'price_base'   => 8.0,
 					'price_per_kg' => 1.5,
 					'tiers'        => array(),
+					'volumetric'   => 0,
 				),
 			),
 			'zones'                   => array(),

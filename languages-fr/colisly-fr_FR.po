@@ -869,8 +869,6 @@ msgstr "Tranches de poids par transporteur"
 msgid "Carriers usually publish a grid of weight brackets rather than a price per kilo. Fill one in here and it replaces the base price and the price per kg for that carrier: the first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. Leave a carrier empty and it keeps billing base price + price per kg. Beyond the last bracket that formula applies again, but it can only ever charge more than the last bracket, never less."
 msgstr "Les transporteurs publient en général une grille de tranches de poids plutôt qu’un tarif au kilo. Renseignez-la ici et elle remplace le prix de base et le tarif au kilo pour ce transporteur : la première tranche dont le poids maximal est supérieur ou égal au poids de l’expédition fixe le prix. Laissez un transporteur vide et il continue d’être facturé au prix de base + tarif au kilo. Au-delà de la dernière tranche, cette formule s’applique de nouveau, sans jamais descendre sous la dernière tranche."
 
-msgid "Add a carrier and save to configure its brackets."
-msgstr "Ajoutez un transporteur et enregistrez pour configurer ses tranches."
 
 msgid "Include in the shipment"
 msgstr "Inclure dans l’expédition"
@@ -976,3 +974,15 @@ msgstr "Un transporteur ne facture pas la même chose pour réexpédier à côt�
 
 msgid "Transport is priced on the destination. It starts on the address of your account."
 msgstr "Le transport est tarifé selon la destination. Elle part de l’adresse de votre compte."
+
+msgid "Volumetric"
+msgstr "Volumétrique"
+
+msgid "Divisor"
+msgstr "Diviseur"
+
+msgid "Add a carrier and save to configure its brackets. A zone you have just created appears here after saving too."
+msgstr "Ajoutez un transporteur et enregistrez pour configurer ses tranches. Une zone que vous venez de créer apparaît elle aussi ici après enregistrement."
+
+msgid "Volumetric: express carriers price bulk rather than mass. Tick the box and the transport is billed on whichever is greater, the real weight or length x width x height divided by the divisor, parcel by parcel. A parcel whose dimensions were not entered is billed on its real weight."
+msgstr "Volumétrique : les transporteurs express facturent l’encombrement plutôt que la masse. Cochez la case et le transport est facturé sur le plus grand des deux, le poids réel ou longueur x largeur x hauteur divisé par le diviseur, colis par colis. Un colis dont les dimensions n’ont pas été saisies est facturé sur son poids réel."

@@ -57,10 +57,15 @@
 		$row.find( 'input' ).first().trigger( 'focus' );
 	} );
 
-	$( document ).on( 'change', '.colisly-carrier-enabled', function () {
+	/*
+	 * An unchecked checkbox is not posted at all, which would shift every
+	 * carrier row by one. Each one is therefore paired with a hidden field
+	 * that always is, and carries the real value.
+	 */
+	$( document ).on( 'change', '.colisly-toggle', function () {
 		$( this )
 			.closest( 'td' )
-			.find( '.colisly-carrier-enabled-value' )
+			.find( '.colisly-toggle-value' )
 			.val( this.checked ? '1' : '0' );
 	} );
 

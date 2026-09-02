@@ -128,6 +128,7 @@ class COLISLY_Admin_Settings {
 
 				<h2><?php esc_html_e( 'Carriers', 'colisly' ); ?></h2>
 				<p class="description"><?php esc_html_e( 'A disabled carrier is no longer offered, neither at parcel reception nor to clients.', 'colisly' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Volumetric: express carriers price bulk rather than mass. Tick the box and the transport is billed on whichever is greater, the real weight or length x width x height divided by the divisor, parcel by parcel. A parcel whose dimensions were not entered is billed on its real weight.', 'colisly' ); ?></p>
 				<p class="description"><?php esc_html_e( 'Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are the fallback: they apply to a carrier with no grid, and beyond the last bracket of a carrier that has one.', 'colisly' ); ?></p>
 				<table class="widefat fixed striped colisly-carriers-table">
 					<thead>
@@ -136,6 +137,8 @@ class COLISLY_Admin_Settings {
 							<th><?php esc_html_e( 'Slug', 'colisly' ); ?></th>
 							<th><?php esc_html_e( 'Base price (beyond brackets)', 'colisly' ); ?></th>
 							<th><?php esc_html_e( 'Price per kg (beyond brackets)', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Volumetric', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Divisor', 'colisly' ); ?></th>
 							<th><?php esc_html_e( 'Enabled', 'colisly' ); ?></th>
 						</tr>
 					</thead>
@@ -148,6 +151,7 @@ class COLISLY_Admin_Settings {
 							'enabled'      => 1,
 							'price_base'   => '',
 							'price_per_kg' => '',
+							'volumetric'   => 0,
 						); // Extra empty row to add a carrier.
 						foreach ( $carriers as $i => $carrier ) :
 							?>
@@ -169,8 +173,16 @@ class COLISLY_Admin_Settings {
 									<input type="number" step="0.01" min="0" id="colisly-carrier-k-<?php echo esc_attr( (string) $i ); ?>" name="carrier_price_per_kg[]" value="<?php echo esc_attr( isset( $carrier['price_per_kg'] ) ? (string) $carrier['price_per_kg'] : '' ); ?>" />
 								</td>
 								<td>
-									<input type="hidden" name="carrier_enabled[]" value="<?php echo empty( $carrier['enabled'] ) ? '0' : '1'; ?>" class="colisly-carrier-enabled-value" />
-									<input type="checkbox" class="colisly-carrier-enabled" <?php checked( ! empty( $carrier['enabled'] ) ); ?> aria-label="<?php esc_attr_e( 'Enabled', 'colisly' ); ?>" />
+									<input type="hidden" name="carrier_volumetric[]" value="<?php echo empty( $carrier['volumetric'] ) ? '0' : '1'; ?>" class="colisly-toggle-value" />
+									<input type="checkbox" class="colisly-toggle" <?php checked( ! empty( $carrier['volumetric'] ) ); ?> aria-label="<?php esc_attr_e( 'Volumetric', 'colisly' ); ?>" />
+								</td>
+								<td>
+									<label class="screen-reader-text" for="colisly-carrier-d-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Divisor', 'colisly' ); ?></label>
+									<input type="number" step="1" min="1" id="colisly-carrier-d-<?php echo esc_attr( (string) $i ); ?>" name="carrier_divisor[]" value="<?php echo esc_attr( isset( $carrier['volumetric_divisor'] ) && $carrier['volumetric_divisor'] ? (string) (int) $carrier['volumetric_divisor'] : '5000' ); ?>" />
+								</td>
+								<td>
+									<input type="hidden" name="carrier_enabled[]" value="<?php echo empty( $carrier['enabled'] ) ? '0' : '1'; ?>" class="colisly-toggle-value" />
+									<input type="checkbox" class="colisly-toggle" <?php checked( ! empty( $carrier['enabled'] ) ); ?> aria-label="<?php esc_attr_e( 'Enabled', 'colisly' ); ?>" />
 								</td>
 							</tr>
 						<?php endforeach; ?>
@@ -186,7 +198,7 @@ class COLISLY_Admin_Settings {
 				$saved_carriers = is_array( $settings['carriers'] ) ? $settings['carriers'] : array();
 				if ( ! $saved_carriers ) :
 					?>
-					<p><?php esc_html_e( 'Add a carrier and save to configure its brackets.', 'colisly' ); ?></p>
+					<p><?php esc_html_e( 'Add a carrier and save to configure its brackets. A zone you have just created appears here after saving too.', 'colisly' ); ?></p>
 					<?php
 				endif;
 				foreach ( $saved_carriers as $carrier ) :
@@ -471,6 +483,8 @@ class COLISLY_Admin_Settings {
 		$enabled  = isset( $_POST['carrier_enabled'] ) ? array_map( 'absint', wp_unslash( (array) $_POST['carrier_enabled'] ) ) : array();
 		$bases    = isset( $_POST['carrier_price_base'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['carrier_price_base'] ) ) : array();
 		$rates    = isset( $_POST['carrier_price_per_kg'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['carrier_price_per_kg'] ) ) : array();
+		$vols     = isset( $_POST['carrier_volumetric'] ) ? array_map( 'absint', wp_unslash( (array) $_POST['carrier_volumetric'] ) ) : array();
+		$divisors = isset( $_POST['carrier_divisor'] ) ? array_map( 'absint', wp_unslash( (array) $_POST['carrier_divisor'] ) ) : array();
 
 		// Brackets are posted per carrier slug, since a carrier can be renamed
 		// or reordered in the same save without its grid following the wrong row.
@@ -492,16 +506,18 @@ class COLISLY_Admin_Settings {
 				$name = ucfirst( $slug );
 			}
 			$carriers[] = array(
-				'slug'         => $slug,
-				'name'         => $name,
-				'enabled'      => empty( $enabled[ $i ] ) ? 0 : 1,
-				'price_base'   => isset( $bases[ $i ] ) ? max( 0, COLISLY_Parcels::to_float( $bases[ $i ] ) ) : 0,
-				'price_per_kg' => isset( $rates[ $i ] ) ? max( 0, COLISLY_Parcels::to_float( $rates[ $i ] ) ) : 0,
-				'tiers'        => self::sanitize_tiers(
+				'slug'               => $slug,
+				'name'               => $name,
+				'enabled'            => empty( $enabled[ $i ] ) ? 0 : 1,
+				'price_base'         => isset( $bases[ $i ] ) ? max( 0, COLISLY_Parcels::to_float( $bases[ $i ] ) ) : 0,
+				'price_per_kg'       => isset( $rates[ $i ] ) ? max( 0, COLISLY_Parcels::to_float( $rates[ $i ] ) ) : 0,
+				'volumetric'         => empty( $vols[ $i ] ) ? 0 : 1,
+				'volumetric_divisor' => isset( $divisors[ $i ] ) && $divisors[ $i ] > 0 ? (int) $divisors[ $i ] : 5000,
+				'tiers'              => self::sanitize_tiers(
 					isset( $tier_weights[ $slug ] ) ? (array) $tier_weights[ $slug ] : array(),
 					isset( $tier_prices[ $slug ] ) ? (array) $tier_prices[ $slug ] : array()
 				),
-				'zone_tiers'   => self::sanitize_zone_tiers(
+				'zone_tiers'         => self::sanitize_zone_tiers(
 					isset( $zone_weights[ $slug ] ) ? (array) $zone_weights[ $slug ] : array(),
 					isset( $zone_prices[ $slug ] ) ? (array) $zone_prices[ $slug ] : array(),
 					$zones

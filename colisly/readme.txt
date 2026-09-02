@@ -119,6 +119,7 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 == Changelog ==
 
 = 1.8.0 =
+* New: carriers can be billed on volumetric weight. Express carriers price bulk rather than mass, so a carrier can now be marked volumetric with its own divisor, 5000 by default. The transport is then billed on whichever is greater, the real weight or length x width x height divided by the divisor, parcel by parcel. That is how the carriers themselves compute it: billing the volumetric weight instead of the real one would charge a dense 20 kg box in a small carton as 1.6 kg. A parcel whose dimensions were never entered is billed on its real weight rather than on a volume of nothing.
 * New: destination zones. A forwarder does not charge the same to reship to mainland France, to the overseas departments and to Madagascar, and a single grid per carrier could never hold real tariffs. Zones group destination countries, and each carrier gets a weight bracket grid per zone. The client picks the destination when requesting a shipment, starting from the shipping address on his account, and the live estimate follows it. A country in no zone, or a zone a carrier was never priced for, keeps that carrier's default grid, so nothing changes for a site that does not use zones.
 
 = 1.7.0 =

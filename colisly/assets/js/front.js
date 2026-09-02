@@ -112,11 +112,29 @@
 			return;
 		}
 
-		var weight = 0;
 		var total = 0;
 
+		/*
+		 * Same rule as COLISLY_Carriers::chargeable_weight: an express carrier
+		 * bills whichever is greater, the real weight or the volume divided by
+		 * its divisor, parcel by parcel. A parcel with no dimensions has no
+		 * volume and keeps its real weight.
+		 */
+		var volumetric = '1' === option.getAttribute( 'data-volumetric' );
+		var divisor = parseFloat( option.getAttribute( 'data-divisor' ) || '5000' );
+
+		if ( ! ( divisor > 0 ) ) {
+			divisor = 5000;
+		}
+
+		var weight = 0;
+
 		selected.forEach( function ( box ) {
-			weight += parseFloat( box.getAttribute( 'data-weight' ) || '0' );
+			var real = parseFloat( box.getAttribute( 'data-weight' ) || '0' );
+			var volume = parseFloat( box.getAttribute( 'data-volume' ) || '0' );
+
+			weight += volumetric ? Math.max( real, volume / divisor ) : real;
+
 			total += parseFloat( box.getAttribute( 'data-price' ) || '0' );
 			total += parseFloat( box.getAttribute( 'data-storage' ) || '0' );
 		} );

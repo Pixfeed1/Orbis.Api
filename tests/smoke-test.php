@@ -845,6 +845,111 @@ colisly_check( 'Zone : tarif suit la destination choisie', 25.0 === (float) $col
 list( $colisly_zone_settings['zones'], $colisly_zone_settings['carriers'] ) = $colisly_zone_saved;
 COLISLY_Settings::update( $colisly_zone_settings );
 
+/*
+ * Poids volumetrique.
+ *
+ * Les transporteurs express facturent l'encombrement, mais pas a la place du
+ * poids reel : ils retiennent le plus grand des deux, colis par colis. Un
+ * carton dense de 20 kg dans 20x20x20 serait sinon facture 1,6 kg. Un colis
+ * dont les dimensions n'ont pas ete saisies garde son poids reel, sinon un
+ * oubli de saisie ferait voyager le colis gratuitement.
+ */
+$colisly_vol_settings = COLISLY_Settings::all();
+$colisly_vol_saved    = $colisly_vol_settings['carriers'];
+
+$colisly_vol_settings['carriers'] = array(
+	array(
+		'slug'               => 'reel',
+		'name'               => 'Reel',
+		'enabled'            => 1,
+		'price_base'         => 0,
+		'price_per_kg'       => 1,
+		'volumetric'         => 0,
+	),
+	array(
+		'slug'               => 'volume',
+		'name'               => 'Volume',
+		'enabled'            => 1,
+		'price_base'         => 0,
+		'price_per_kg'       => 1,
+		'volumetric'         => 1,
+		'volumetric_divisor' => 5000,
+	),
+	array(
+		'slug'               => 'volume4000',
+		'name'               => 'Volume 4000',
+		'enabled'            => 1,
+		'price_base'         => 0,
+		'price_per_kg'       => 1,
+		'volumetric'         => 1,
+		'volumetric_divisor' => 4000,
+	),
+);
+COLISLY_Settings::update( $colisly_vol_settings );
+
+// 60x40x40 = 96000 cm3, soit 19,2 kg a 5000 et 24 kg a 4000, pour 3 kg reels.
+$colisly_vol_leger = (object) array(
+	'weight' => 3.0,
+	'length' => 60,
+	'width'  => 40,
+	'height' => 40,
+);
+// 20x20x20 = 8000 cm3, soit 1,6 kg, pour 20 kg reels.
+$colisly_vol_dense = (object) array(
+	'weight' => 20.0,
+	'length' => 20,
+	'width'  => 20,
+	'height' => 20,
+);
+$colisly_vol_sans  = (object) array(
+	'weight' => 5.0,
+	'length' => null,
+	'width'  => null,
+	'height' => null,
+);
+
+colisly_check( 'Volumetrique : transporteur au reel ignore les dimensions', 3.0 === COLISLY_Carriers::chargeable_weight( 'reel', array( $colisly_vol_leger ) ) );
+colisly_check( 'Volumetrique : colis leger et volumineux facture au volume', 19.2 === COLISLY_Carriers::chargeable_weight( 'volume', array( $colisly_vol_leger ) ) );
+colisly_check( 'Volumetrique : diviseur du contrat respecte', 24.0 === COLISLY_Carriers::chargeable_weight( 'volume4000', array( $colisly_vol_leger ) ) );
+colisly_check( 'Volumetrique : colis dense garde son poids reel', 20.0 === COLISLY_Carriers::chargeable_weight( 'volume', array( $colisly_vol_dense ) ) );
+colisly_check( 'Volumetrique : sans dimensions, poids reel', 5.0 === COLISLY_Carriers::chargeable_weight( 'volume', array( $colisly_vol_sans ) ) );
+colisly_check(
+	'Volumetrique : cumul colis par colis',
+	44.2 === COLISLY_Carriers::chargeable_weight( 'volume', array( $colisly_vol_leger, $colisly_vol_dense, $colisly_vol_sans ) )
+);
+colisly_check(
+	'Volumetrique : jamais moins qu au poids reel',
+	COLISLY_Carriers::chargeable_weight( 'volume', array( $colisly_vol_dense ) ) >= COLISLY_Carriers::chargeable_weight( 'reel', array( $colisly_vol_dense ) )
+);
+colisly_check( 'Volumetrique : transporteur inconnu, poids reel', 3.0 === COLISLY_Carriers::chargeable_weight( 'inexistant', array( $colisly_vol_leger ) ) );
+
+// Le tarif de l'expedition doit suivre le poids taxable, pas celui de la balance.
+$colisly_vol_client = COLISLY_Clients::create(
+	wp_insert_user(
+		array(
+			'user_login' => 'vol-' . wp_generate_password( 6, false ),
+			'user_email' => 'vol-' . wp_generate_password( 6, false ) . '@example.com',
+			'user_pass'  => wp_generate_password(),
+			'role'       => 'customer',
+		)
+	)
+);
+$colisly_vol_parcel = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_vol_client,
+		'weight'    => 3,
+		'length'    => 60,
+		'width'     => 40,
+		'height'    => 40,
+	)
+);
+$colisly_vol_ship = COLISLY_Shipments::get( COLISLY_Shipments::request( $colisly_vol_client, array( $colisly_vol_parcel ), 'volume' ) );
+colisly_check( 'Volumetrique : transport facture sur 19,2 kg', 19.2 === (float) $colisly_vol_ship->carrier_price );
+colisly_check( 'Volumetrique : le poids reel reste enregistre sur l expedition', 3.0 === (float) $colisly_vol_ship->total_weight );
+
+$colisly_vol_settings['carriers'] = $colisly_vol_saved;
+COLISLY_Settings::update( $colisly_vol_settings );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

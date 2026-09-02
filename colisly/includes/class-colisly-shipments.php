@@ -118,7 +118,10 @@ class COLISLY_Shipments {
 		}
 
 		$storage_fees  = COLISLY_Storage::fees_for_parcels( $parcels );
-		$carrier_price = COLISLY_Carriers::price_for( $carrier, $total_weight, $country );
+		// Express carriers price on volume, so what is billed is not always
+		// the weight on the scales. The shipment still records the real one.
+		$chargeable    = COLISLY_Carriers::chargeable_weight( $carrier, $parcels );
+		$carrier_price = COLISLY_Carriers::price_for( $carrier, $chargeable, $country );
 
 		// The cover amount comes from the form, its price never does: it is
 		// read back from the settings, so a posted figure cannot decide what
