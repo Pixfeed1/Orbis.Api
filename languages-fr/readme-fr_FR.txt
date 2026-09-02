@@ -1,161 +1,181 @@
-Traduction française du readme.txt, destinée au sous-projet
-« Stable Readme » sur https://translate.wordpress.org/projects/wp-plugins/colisly/
-
-Les en-têtes (Contributors, Tags, Requires at least…) ne se traduisent pas :
-ils n'apparaissent pas dans le projet de traduction.
-
-La structure ci-dessous suit exactement celle de colisly/readme.txt, section par
-section, pour que chaque chaîne de GlotPress se retrouve au même endroit.
-
 ================================================================================
-DESCRIPTION COURTE
+ Traduction française de readme.txt — Colisly
+ À déposer sur https://translate.wordpress.org/projects/wp-plugins/colisly/
+ dans le sous-projet « Stable Readme (latest release) », locale fr_FR.
+ Version de référence : 1.6.9
 ================================================================================
 
-Réexpédition de colis et de paquets pour WooCommerce : fiches clients,
-réception, frais de stockage, groupage et expédition.
+== Nom affiché ==
+
+Réexpédition de colis et groupage pour WooCommerce
+
+== Description courte ==
+(150 caractères maximum sur le répertoire ; celle-ci en fait 132)
+
+Gérez une activité de réexpédition de colis sur WooCommerce : réception,
+frais de stockage, groupage, réexpédition et espace client.
 
 ================================================================================
 == Description ==
 ================================================================================
 
-Colisly Parcel Forwarding fournit un système complet de gestion des clients et
-des colis pour une activité de réexpédition : réception, stockage, groupage et
-réacheminement de colis (vers les DOM-TOM, par exemple). Il convient aux
-réexpéditeurs et aux services d'adresse virtuelle dont la boutique tourne déjà
-sous WooCommerce. L'interface est en anglais et peut être traduite dans
-n'importe quelle langue via translate.wordpress.org.
+Colisly transforme une boutique WooCommerce en une véritable plateforme de
+réexpédition de colis. Chaque client reçoit une référence et une adresse à
+laquelle se faire livrer. Les colis qui arrivent dans votre entrepôt sont
+enregistrés, conservés, facturés au stockage une fois la franchise écoulée,
+regroupés à la demande puis réexpédiés en un seul envoi, payé sur votre propre
+tunnel de commande.
 
-= Module de gestion des clients =
+L'extension tourne sur votre hébergement, avec vos contrats transporteurs et vos
+prix. Rien ne sort de votre base de données.
 
-* Chaque client est rattaché à un compte WordPress/WooCommerce et dispose d'une
-  fiche interne avec une référence courte et unique (CL000001).
-* Recherche des clients par référence, prénom, nom, adresse e-mail ou numéro de
-  téléphone.
-* La fiche client centralise tout : informations du client, référence, colis en
-  stock, colis expédiés, expéditions, documents transmis et historique complet
-  des opérations.
-* Indicateurs calculés automatiquement : colis actuellement en stock, poids
-  total stocké, expéditions réalisées, frais de stockage dus, dernière réception
-  de colis, dernière expédition.
-* Période de stockage gratuit par colis (15 jours par défaut, configurable),
-  puis frais de stockage automatiques par jour.
-* Depuis la fiche client : créer un colis, parcourir les colis, préparer une
-  expédition, consulter les documents et lire l'historique.
+= À qui elle s'adresse =
 
-= Module de création de colis =
+* À quiconque lance un service de réexpédition ou de groupage de colis et en
+  cherche la partie logicielle
+* Aux réexpéditeurs en activité qui pilotent encore l'entrepôt avec un tableur
+  et une boîte mail
+* Aux transitaires et groupeurs qui ont besoin d'un espace client plutôt que
+  d'un ERP
+* Aux boutiques qui reçoivent, conservent et réexpédient des colis pour des
+  clients résidant à l'étranger
 
-* Recherche du client par référence interne, nom ou e-mail, avec affichage
-  immédiat de ses colis encore en stock.
-* Formulaire complet : numéro de suivi du transporteur, poids réel, dimensions
-  (visibles par les administrateurs uniquement), photo de réception facultative,
-  commentaire interne réservé à l'équipe, groupage autorisé ou interdit,
-  transporteurs autorisés colis par colis.
-* Numéro de colis unique généré automatiquement (COL000001), date de réception,
-  créateur et statut initial « disponible ».
-* Cycle de vie : disponible, commandé, en attente de paiement, payé, en
-  préparation, expédié, détruit, annulé.
-* Le tarif du colis est calculé automatiquement à partir de son poids (paliers
-  configurables) et enregistré au moment de la réception.
+Les logiciels commerciaux de cette catégorie se vendent en licence unique à
+quatre chiffres, ou en abonnement mensuel qui héberge vos données clients.
+Colisly est gratuite et sous licence GPL.
+
+= Exploitation =
+
+* Fiches clients avec référence unique (CL000001), recherche multi-critères et
+  franchise de stockage définie selon votre politique (15 jours par défaut)
+* Réception des colis avec numéro généré (COL000001), poids, dimensions, photos,
+  notes internes et restrictions de transporteur colis par colis
+* Frais de stockage calculés automatiquement dès la fin de la franchise
+* Groupage : plusieurs colis en stock réunis en une seule expédition, ce qui est
+  le fondement même du métier
+* Paliers de tarification au poids et tarifs transporteurs que vous définissez
+  vous-même, pour utiliser n'importe quel transporteur ou contrat négocié
 
 = Côté client =
 
-Les clients ne voient que les informations qui leur sont destinées (numéro de
-colis, date de réception, numéro de suivi, poids, statut, groupage autorisé)
-depuis leur espace Mon compte WooCommerce : « Mes colis », « Mes expéditions »,
-« Mes documents » et « Demande d'expédition » (mes-colis, mes-expeditions,
-mes-documents et demande-expedition sur les sites francophones). Les
-commentaires internes et les dimensions ne leur sont jamais affichés.
+* Un espace dédié dans la page Mon compte de WooCommerce, listant les colis, les
+  expéditions et les documents
+* Les champs internes restent internes : vos notes, vos dimensions et vos prix
+  de revient ne sont jamais exposés
+* Une demande d'expédition devient une commande WooCommerce native, détaillée en
+  lignes de manutention, de stockage et de transport, réglée sur votre tunnel
+  habituel avec vos moyens de paiement habituels
+* Stockage de documents privés avec téléchargement authentifié, pour les
+  déclarations en douane, les factures commerciales et les preuves de livraison
 
-= Paiements WooCommerce natifs =
+= Points pratiques =
 
-Chaque demande d'expédition crée une commande WooCommerce détaillée : une ligne
-de frais par colis, une ligne de frais de stockage et le transporteur choisi
-sous forme de ligne de livraison native, tarifée depuis son barème configurable
-(prix de base + prix au kilo). Le client est redirigé vers la page de paiement
-WooCommerce standard et règle avec n'importe quelle passerelle activée sur la
-boutique. Les statuts restent synchronisés dans les deux sens : commande payée →
-expédition « payée » ; expédition « expédiée » → commande terminée ; commande
-annulée → colis remis en stock. Le formulaire de demande d'expédition affiche le
-tarif de chaque transporteur, désactive ceux qui ne sont pas autorisés pour la
-sélection en cours, et affiche une estimation totale en direct (colis + stockage
-+ transport).
+* Traduction française complète incluse
+* Export et effacement des données personnelles via les outils de
+  confidentialité natifs de WordPress
+* Hooks et filtres tout au long du parcours, pour étendre le fonctionnement
+* Migration automatique des données entre versions, et suppression des données à
+  la désinstallation en option
 
-= E-mails WooCommerce natifs =
-
-Deux véritables e-mails WooCommerce sont enregistrés sous WooCommerce →
-Réglages → E-mails : « Colis réceptionné » (envoyé au client) et « Demande
-d'expédition » (envoyé à l'équipe, avec destinataires configurables). Ils
-utilisent le modèle d'e-mail de la boutique et peuvent être surchargés depuis le
-thème. Sans WooCommerce, un repli en texte brut maintient les notifications.
-
-= Documents privés =
-
-Les documents des clients et les photos de réception sont stockés dans un
-répertoire protégé (accès direct refusé, noms de fichiers aléatoires) et servis
-uniquement via un point de téléchargement authentifié : un client ne peut
-télécharger que ses propres documents marqués comme visibles ; les photos de
-réception sont réservées à l'équipe.
-
-= Extensible =
-
-L'architecture est conçue pour évoluer : des actions et des filtres
-(`colisly_parcel_created`, `colisly_shipment_requested`, `colisly_carriers`,
-`colisly_parcel_price`, `colisly_carrier_price`, …) permettent d'ajouter
-import/export, statistiques, programmes de fidélité, API REST ou gestion
-multi-entrepôts sans toucher au cœur.
+Un usage typique est un service de réexpédition depuis la France métropolitaine
+vers les départements et territoires d'outre-mer, mais rien dans l'extension
+n'est lié à un pays, à une devise ou à un transporteur.
 
 ================================================================================
 == Installation ==
 ================================================================================
 
-1. Déposez le dossier `colisly` dans `/wp-content/plugins/`, ou installez
+1. Envoyez le dossier `colisly` dans `/wp-content/plugins/`, ou installez
    l'extension depuis l'écran Extensions.
-2. Activez l'extension. WooCommerce doit être installé et actif.
-3. Rendez-vous dans « Colisly → Réglages » pour configurer les paliers
-   tarifaires, les frais de stockage et les transporteurs.
+2. Activez l'extension. WooCommerce doit être installée et active.
+3. Rendez-vous dans « Colisly → Réglages » pour configurer les paliers de
+   tarification, les frais de stockage et les transporteurs.
 4. Créez une fiche client depuis « Colisly → Clients », puis enregistrez des
    colis depuis « Colisly → Nouveau colis ».
 
 ================================================================================
-== Frequently Asked Questions ==
+== Foire aux questions ==
 ================================================================================
+
+= Puis-je lancer une activité de réexpédition de colis avec WordPress ? =
+
+Oui, et c'est exactement ce pour quoi Colisly est conçue. L'extension couvre le
+volet opérationnel : comptes et références clients, réception des colis, frais de
+stockage, groupage, demandes d'expédition et facturation. Vous apportez l'adresse
+de l'entrepôt, les contrats transporteurs et vos tarifs.
+
+= En quoi est-ce différent d'un logiciel payant de réexpédition ? =
+
+Les plateformes propriétaires de cette catégorie se vendent en licence unique à
+quatre chiffres, ou par abonnement mensuel où vos fiches clients vivent sur le
+serveur de quelqu'un d'autre. Colisly est gratuite, sous licence GPL, et tourne
+sur votre propre hébergement, à côté de votre boutique WooCommerce existante.
+
+= Je gère ma réexpédition sur un tableur. Qu'est-ce qui change ? =
+
+C'est de là que vient la majorité des utilisateurs. Le tableur devient des fiches
+clients cherchables, des numéros de colis qui se génèrent seuls, des frais de
+stockage qui se calculent seuls, et un espace client qui répond à « où est mon
+colis » sans e-mail.
+
+= Quels transporteurs sont pris en charge ? =
+
+Tous. Les tarifs transporteurs et les paliers de poids sont définis par vous
+plutôt que tirés d'une intégration figée, ce qui compte dans ce métier car la
+marge se loge le plus souvent dans un contrat négocié ou régional, pas dans une
+API publique.
+
+= Peut-on regrouper plusieurs colis en une seule expédition ? =
+
+Oui, et c'est le cœur du fonctionnement. Le client choisit les colis en stock,
+demande une expédition, et l'extension construit une commande WooCommerce unique
+combinant manutention, stockage et transport. Un colis peut aussi être signalé
+comme devant voyager seul.
+
+= Comment les clients paient-ils ? =
+
+Par votre tunnel de commande existant. Une demande d'expédition crée une commande
+WooCommerce native : vos moyens de paiement, vos taxes et vos e-mails de commande
+s'appliquent, sans rien de nouveau à configurer.
+
+= WooCommerce est-elle nécessaire ? =
+
+Oui. WooCommerce fournit la couche compte, commande et paiement sur laquelle
+Colisly s'appuie.
 
 = Le client peut-il modifier l'autorisation de groupage ? =
 
-Non. Cette décision revient exclusivement à l'équipe, au moment de la réception
-du colis, et le client ne peut jamais la modifier. Un colis dont le groupage est
-interdit doit être expédié seul.
+Non. L'autorisation de regrouper un colis est décidée à la réception par
+l'opérateur, car elle dépend du contenu et du transporteur. Le groupage est
+autorisé par défaut. Le client choisit lesquels des colis regroupables inclure
+dans une demande d'expédition.
 
 = Comment les frais de stockage sont-ils calculés ? =
 
-Chaque colis bénéficie d'une période de stockage gratuit (15 jours par défaut).
-Au-delà, les frais sont calculés automatiquement par jour et par colis, selon le
-montant défini dans les réglages.
+Chaque colis est stocké gratuitement pendant une durée configurable, 15 jours par
+défaut. Au-delà, le tarif défini dans les réglages s'applique et s'ajoute
+automatiquement à la commande d'expédition.
 
 = Les documents sont-ils privés ? =
 
-Oui. Les fichiers ne transitent jamais par la médiathèque publique : ils sont
-placés dans un répertoire protégé et ne sont servis qu'après connexion, avec
-vérification du propriétaire. Un client ne peut télécharger que ses propres
-documents ; les photos de réception sont réservées à l'équipe.
+Oui. Les documents sont stockés hors du flux public des fichiers envoyés et
+téléchargés via une requête authentifiée, de sorte que seul le client concerné
+peut les récupérer. Les documents non partagés avec le client restent internes.
 
 = L'extension est-elle conforme au RGPD ? =
 
-Oui. Elle enregistre un exportateur et un effaceur de données personnelles
-auprès des outils de confidentialité natifs de WordPress (Outils → Exporter /
-Effacer les données personnelles), et la suppression d'un compte utilisateur
-supprime toutes ses données liées à l'extension, fichiers privés compris.
+Oui. Colisly se branche sur les outils natifs de données personnelles de
+WordPress, et l'export couvre tout ce que l'effacement supprime, y compris les
+notes internes et les documents non partagés.
 
 = Des données sont-elles supprimées à la désinstallation ? =
 
-Pas par défaut : supprimer l'extension laisse vos clients, vos colis et vos
-fichiers intacts. Un administrateur du site peut demander un nettoyage complet
-en réglant l'option `colisly_remove_data_on_uninstall` sur `yes` avant de
-supprimer l'extension, par exemple avec WP-CLI :
-`wp option update colisly_remove_data_on_uninstall yes`.
+Uniquement si vous le demandez. La suppression des données à la désinstallation
+s'active dans les réglages, et elle retire également le droit propre à
+l'extension ainsi que ses options.
 
 ================================================================================
-== Screenshots ==
+== Captures d'écran ==
 ================================================================================
 
 1. Liste des clients avec recherche multi-critères.
@@ -163,10 +183,14 @@ supprimer l'extension, par exemple avec WP-CLI :
    historique).
 3. Formulaire de création de colis, avec recherche client en direct et stock
    actuel du client.
-4. Écran « Mes colis » du client, dans l'espace Mon compte WooCommerce.
+4. Écran « Mes colis » du client, dans l'espace Mon compte de WooCommerce.
+5. Réglages : jours de stockage gratuits, frais de stockage, paliers de
+   tarification au poids et tarifs transporteurs.
+6. Tranches de poids par transporteur, pour les transporteurs qui publient une
+   grille plutôt qu'un tarif au kilo.
 
 ================================================================================
-== Changelog ==
+== Journal des modifications ==
 ================================================================================
 
 = 1.6.9 =
@@ -174,9 +198,9 @@ supprimer l'extension, par exemple avec WP-CLI :
   poids. Les transporteurs facturent rarement au kilo, ils publient une grille,
   et un colis de 6 kg à 45 € à côté d'un de 15 kg à 150 € ne tient sur aucune
   droite. La première tranche dont le poids maximal est supérieur ou égal au
-  poids de l'expédition fixe le prix. Un transporteur laissé sans grille
-  continue d'être facturé au prix de base + tarif au kilo exactement comme
-  avant : rien ne change sur les sites existants.
+  poids de l'expédition fixe le prix. Un transporteur laissé sans grille continue
+  d'être facturé au prix de base + tarif au kilo exactement comme avant : rien ne
+  change sur les sites existants.
 * Au-delà de la dernière tranche, le tarif retombe sur prix de base + tarif au
   kilo, mais il ne peut désormais que dépasser la dernière tranche, jamais
   descendre en dessous. Une grille s'arrêtant à 15 kg rendait auparavant une
@@ -189,21 +213,21 @@ supprimer l'extension, par exemple avec WP-CLI :
 
 = 1.6.8 =
 * Correction : dans l'espace client, les tableaux des colis et des expéditions
-  étaient plus larges que la colonne de contenu de la plupart des thèmes, si
-  bien que la dernière colonne se retrouvait hors écran, derrière une barre de
-  défilement horizontale que personne ne pense à chercher. WooCommerce
-  n'empile ces tableaux que sous 768 px de fenêtre, or ce qui les contraint
-  c'est la colonne, pas la fenêtre : avec une fenêtre de 1600 px, les six
-  colonnes devaient encore tenir dans 680 px. L'empilement se déclenche
-  désormais sur la largeur du conteneur lui-même.
+  étaient plus larges que la colonne de contenu de la plupart des thèmes, si bien
+  que la dernière colonne se retrouvait hors écran, derrière une barre de
+  défilement horizontale que personne ne pense à chercher. WooCommerce n'empile
+  ces tableaux que sous 768 px de fenêtre, or ce qui les contraint c'est la
+  colonne, pas la fenêtre : avec une fenêtre de 1600 px, les six colonnes
+  devaient encore tenir dans 680 px. L'empilement se déclenche désormais sur la
+  largeur du conteneur lui-même.
 * Nouvelle capture de l'écran des réglages sur la fiche du répertoire.
 
 = 1.6.7 =
-* Correction : un colis créé sans que la décision de groupage soit précisée
-  était enregistré en « doit être expédié seul », à rebours de la valeur par
-  défaut de la colonne comme du formulaire de réception, où le groupage est
-  autorisé. Le groupage est le fondement même du métier : l'omission vaut
-  désormais autorisation.
+* Correction : un colis créé sans que la décision de groupage soit précisée était
+  enregistré en « doit être expédié seul », à rebours de la valeur par défaut de
+  la colonne comme du formulaire de réception, où le groupage est autorisé. Le
+  groupage est le fondement même du métier : l'omission vaut désormais
+  autorisation.
 * Confidentialité : l'export des données personnelles couvre maintenant tout ce
   que l'effacement supprime. Les notes internes de la fiche client, le
   commentaire interne de chaque colis et les documents non partagés avec le
@@ -225,172 +249,31 @@ supprimer l'extension, par exemple avec WP-CLI :
   échouaient jusqu'ici sans la moindre explication.
 * Correction : ajouter un client possédant déjà une fiche annonçait une création
   qui n'avait pas eu lieu.
-* Correction : un palier tarifaire plafonné à zéro était accepté et décalait
-  silencieusement tous les colis au palier suivant. Il est désormais écarté
-  comme une ligne vide.
-* Correction : sur les écrans étroits, les dimensions du colis se coupaient
-  entre un libellé et son champ.
-* Le texte d'aide des transporteurs autorisés précise maintenant que n'en
-  cocher aucun ne pose aucune restriction.
-
-= 1.6.5 =
-* Correction : dans l'espace client, seul le numéro de suivi peut désormais se
-  couper en milieu de chaîne. En 1.6.4 toutes les cellules le pouvaient, ce qui
-  éclatait les dates et les références sur plusieurs lignes.
-
-= 1.6.4 =
-* Correction : dans les réglages, les champs des paliers tarifaires et des
-  transporteurs débordaient de leurs cellules ; la liste des colis et les
-  tableaux client étaient rognés, masquant leur dernière colonne. Les longs
-  numéros de suivi se coupent maintenant pour que les tableaux client tiennent
-  dans la colonne du compte, et les larges tableaux d'administration défilent
-  au lieu d'être tronqués.
-
-= 1.6.3 =
-* Formulation de la fiche du répertoire : les étiquettes et la description
-  emploient désormais les termes du métier « package forwarding »,
-  « reshipping » et « consolidation », afin que les opérateurs qui les
-  recherchent trouvent l'extension.
-
-= 1.6.2 =
-* Les instructions d'installation mentionnaient un menu d'administration
-  « Colis Pro », qui n'existe plus ; le menu s'appelle « Colisly ».
-
-= 1.6.1 =
-* Les URL de l'extension et de l'auteur pointent désormais vers la page du
-  répertoire des extensions et vers le site de l'auteur, au lieu d'un dépôt de
-  développement.
-
-= 1.6.0 =
-* Extension renommée en « Colisly Parcel Forwarding » (auparavant
-  « Gestionnaire Colis Pro »), avec un domaine de traduction correspondant, afin
-  de respecter les exigences de nommage du répertoire des extensions : un nom
-  distinctif plutôt que purement descriptif.
-* Préfixe interne renommé de « gcp » en « colisly » pour atteindre le minimum de
-  quatre caractères exigé pour les préfixes d'extension. Les installations
-  existantes sont migrées automatiquement : tables, options, droit, répertoire
-  de fichiers privés et métadonnées de commande WooCommerce sont tous repris.
-* Correction de l'échappement d'URL dans l'e-mail « demande d'expédition » en
-  texte brut (esc_url au lieu de esc_url_raw).
-* Les fichiers de traduction ne sont plus inclus : les traductions sont
-  distribuées via translate.wordpress.org, et l'appel à load_plugin_textdomain()
-  a été retiré (inutile depuis WordPress 4.6).
-
-= 1.5.0 =
-* Confidentialité (RGPD) : l'extension s'intègre désormais aux outils de
-  confidentialité natifs de WordPress. L'exportateur de données personnelles
-  inclut la fiche client, les colis, les expéditions et les documents ;
-  l'effaceur supprime les documents et les fichiers privés, vide le numéro de
-  téléphone, les notes, les numéros de suivi et les photos de réception, et
-  signale que les enregistrements de colis et d'expéditions sont conservés à
-  titre de pièces comptables. La suppression d'un compte utilisateur WordPress
-  supprime toutes ses données et ses fichiers privés.
-
-= 1.4.0 =
-* Internationalisation : toutes les chaînes sources sont désormais en anglais ;
-  la traduction française complète est fournie avec l'extension (.po/.mo
-  fr_FR), afin que les sites francophones conservent exactement la même
-  interface. Les contextes de traduction préservent les accords grammaticaux
-  français sur les statuts.
-* Les slugs des points d'entrée Mon compte sont désormais traduisibles et
-  filtrables (les sites francophones conservent mes-colis, mes-expeditions,
-  mes-documents, demande-expedition ; les autres langues obtiennent my-parcels,
-  my-shipments, my-documents, shipment-request par défaut).
-* Transporteurs internationaux par défaut (DHL, UPS, FedEx, Colissimo) sur les
-  nouvelles installations.
-* Nouveau réglage permettant d'appliquer les taxes de la boutique aux commandes
-  d'expédition (hors taxes par défaut).
-* La pagination de la recherche client s'exécute désormais en SQL (COUNT +
-  LIMIT/OFFSET) et supporte les grandes bases de clients.
-* L'estimation en direct du formulaire de demande d'expédition suit la locale du
-  navigateur pour le formatage des nombres.
-
-= 1.3.1 =
-* Le readme est désormais rédigé en anglais, comme l'exige le répertoire des
-  extensions WordPress.org.
-* Les fichiers de développement ne sont plus livrés dans le dossier de
-  l'extension.
-
-= 1.3.0 =
-* Tarifs des transporteurs (prix de base + prix au kilo) configurables dans les
-  réglages ; le transport est facturé sur la ligne de livraison native de la
-  commande WooCommerce et inclus dans le total de l'expédition.
-* Demande d'expédition : chaque transporteur affiche son tarif, les
-  transporteurs incompatibles sont désactivés, et une estimation totale en
-  direct (colis + stockage + transport) s'affiche pendant la sélection.
-* E-mails WooCommerce natifs : « Colis réceptionné » (client) et « Demande
-  d'expédition » (équipe, destinataires configurables) enregistrés sous
-  WooCommerce → Réglages → E-mails, avec des modèles HTML et texte brut
-  surchargeables depuis le thème ; repli sur wp_mail sans WooCommerce.
-
-= 1.2.0 =
-* Paiements WooCommerce natifs : chaque demande d'expédition crée une commande
-  WooCommerce (une ligne de frais par colis, les frais de stockage, le
-  transporteur en ligne de livraison) ; le client est redirigé vers la page de
-  paiement standard et un e-mail de facture client WooCommerce (avec lien de
-  paiement) peut être envoyé automatiquement.
-* Synchronisation des statuts dans les deux sens : commande payée → expédition
-  payée ; expédition expédiée → commande terminée ; commande annulée →
-  expédition annulée et colis remis en stock.
-* Fiche client : la colonne « Commande » relie chaque expédition à sa commande
-  WooCommerce ; l'espace client affiche un bouton « Payer » tant que la commande
-  est en attente de paiement.
-
-= 1.1.0 =
-* Sécurité : les documents des clients et les photos de réception sont désormais
-  stockés dans un répertoire privé (.htaccess + noms aléatoires) et servis via
-  un point de téléchargement authentifié avec vérification du propriétaire
-  (nonce + droit). Types de fichiers restreints (images, PDF, Office).
-* Correction : les poids et dimensions saisis avec une virgule décimale
-  (« 2,5 ») sont maintenant interprétés correctement.
-
-= 1.0.0 =
-* Version initiale : gestion des clients (références CL), création de colis
-  (références COL), tarification automatique au poids, frais de stockage
-  automatiques, règles de groupage, restrictions de transporteurs, demandes
-  d'expédition, documents, historique et notifications par e-mail.
+* Correction : un palier de tarification plafonné à zéro était accepté et
+  décalait silencieusement chaque colis vers le palier suivant. Il est désormais
+  écarté comme une ligne vide.
+* Correction : sur les écrans étroits, les dimensions du colis passaient à la
+  ligne entre un libellé et son champ.
+* Le texte d'aide des transporteurs autorisés précise maintenant que n'en cocher
+  aucun n'applique aucune restriction.
 
 ================================================================================
-== Upgrade Notice ==
+== Note de mise à jour ==
 ================================================================================
 
 = 1.6.9 =
 Les transporteurs peuvent désormais être tarifés par tranche de poids plutôt
-qu'au kilo. Les transporteurs existants ne sont pas modifiés. Aucun changement
-de base de données.
+qu'au kilo. Les transporteurs existants ne sont pas modifiés. Aucun changement de
+base de données.
 
 = 1.6.8 =
-Corrige une colonne hors écran dans l'espace client sur les thèmes à colonne
-de contenu étroite. Aucun changement de base de données.
+Corrige une colonne hors écran dans l'espace client sur les thèmes à colonne de
+contenu étroite. Aucun changement de base de données.
 
 = 1.6.7 =
 Export de données personnelles complété et trois corrections relevées lors d'un
 second audit. Aucun changement de base de données.
 
 = 1.6.6 =
-Corrections d'ergonomie relevées lors d'un parcours complet. Aucun changement
-de base de données.
-
-= 1.6.5 =
-Correction de mise en page dans les tableaux client. Aucun changement de base
-de données.
-
-= 1.6.4 =
-Corrections de mise en page sur l'écran des réglages et sur les tableaux
-larges. Aucun changement de base de données.
-
-= 1.6.3 =
-Formulation de la fiche du répertoire uniquement. Aucun changement de base de
-données ni de comportement.
-
-= 1.6.2 =
-Correction de documentation uniquement. Aucun changement de base de données ni
-de comportement.
-
-= 1.6.1 =
-Version de maintenance : URL de l'extension et de l'auteur mises à jour. Aucun
-changement de base de données ni de comportement.
-
-= 1.6.0 =
-Extension renommée et préfixe interne mis à jour ; les données existantes sont
-migrées automatiquement lors de la mise à jour.
+Corrections d'ergonomie relevées lors d'un parcours complet. Aucun changement de
+base de données.
