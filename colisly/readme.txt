@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.10.0
+Stable tag: 1.11.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.11.0 =
+* Fixed: the declaration form offered a single blank line whatever the limit set in the settings. A cap of three lines was a promise the form never kept, since the client could only ever declare one item per submission, and on the shipment request there is no second submission. A cap now gives the client exactly that many lines; without a cap he gets a few and a button for the rest.
+* The quantity, the unit weight and the country of origin can each be turned off. They are what a real CN23 form needs line by line, but a forwarder who only wants to know what a parcel holds before copying it onto his carrier's own form needs none of the three, and three columns filled for nothing are three columns filled badly. All three stay asked by default, so a site collecting them keeps collecting them.
+
 = 1.10.0 =
 * The shipment request now shows the delivery address the parcels are actually reshipped to, and a request can no longer be sent while that address is incomplete, with the missing lines named. The form used to ask for a destination country and nothing else, so a request could reach the forwarder with no street to deliver to, and an account that only ever filled a billing address produced an order carrying no destination at all.
 * The destination is the address itself rather than a separate menu beside it. The two could disagree, the transport being priced for one country while the label was printed for another, and only the label was true.
@@ -175,6 +179,11 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.11.0 =
+Fixes a declaration form that offered one line whatever the limit set, and lets
+the quantity, unit weight and country of origin be turned off. No database
+change.
 
 = 1.10.0 =
 The shipment request shows and requires a complete delivery address, clients

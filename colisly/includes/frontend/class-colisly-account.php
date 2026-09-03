@@ -685,27 +685,56 @@ class COLISLY_Account {
 		$max        = COLISLY_Customs::max_lines();
 		$items      = COLISLY_Customs::items( (int) $parcel->id );
 
-		// Room for one more line, within the limit the forwarder set.
-		$rows = $items;
-		if ( 0 === $max || count( $rows ) < $max ) {
-			$rows[] = (object) array(
+		$ask_quantity = COLISLY_Customs::asks( 'quantity' );
+		$ask_weight   = COLISLY_Customs::asks( 'weight' );
+		$ask_origin   = COLISLY_Customs::asks( 'origin' );
+
+		$blank = static function () {
+			return (object) array(
 				'description'    => '',
 				'quantity'       => 1,
 				'unit_weight'    => '',
 				'unit_value'     => '',
 				'origin_country' => '',
 			);
+		};
+
+		/*
+		 * The form offered exactly one blank line, so a cap of three lines was
+		 * a promise it never kept: the client could only ever declare one item
+		 * per submission, and on the request form there is no second
+		 * submission. A cap now means the client is given that many lines.
+		 */
+		$rows = $items;
+
+		if ( $max > 0 ) {
+			while ( count( $rows ) < $max ) {
+				$rows[] = $blank();
+			}
+		} else {
+			// Uncapped, a handful of lines to start with and a button for the
+			// rest, since there is no number that is right for every parcel.
+			for ( $colisly_b = 0; $colisly_b < 3; $colisly_b++ ) {
+				$rows[] = $blank();
+			}
 		}
+
 		?>
 		<div class="colisly-table-wrap">
 			<table class="woocommerce-orders-table shop_table shop_table_responsive colisly-front-table">
 				<thead>
 					<tr>
 						<th><?php esc_html_e( 'Contents', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Quantity', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Unit weight (kg)', 'colisly' ); ?></th>
+						<?php if ( $ask_quantity ) : ?>
+							<th><?php esc_html_e( 'Quantity', 'colisly' ); ?></th>
+						<?php endif; ?>
+						<?php if ( $ask_weight ) : ?>
+							<th><?php esc_html_e( 'Unit weight (kg)', 'colisly' ); ?></th>
+						<?php endif; ?>
 						<th><?php esc_html_e( 'Value', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Country of origin', 'colisly' ); ?></th>
+						<?php if ( $ask_origin ) : ?>
+							<th><?php esc_html_e( 'Country of origin', 'colisly' ); ?></th>
+						<?php endif; ?>
 					</tr>
 				</thead>
 				<tbody>
@@ -727,23 +756,34 @@ class COLISLY_Account {
 									<input type="text" name="<?php echo esc_attr( $name ); ?>[description]" value="<?php echo esc_attr( $item->description ); ?>" placeholder="<?php esc_attr_e( 'Cotton t-shirts', 'colisly' ); ?>" aria-label="<?php esc_attr_e( 'Contents', 'colisly' ); ?>" />
 								<?php endif; ?>
 							</td>
-							<td data-title="<?php esc_attr_e( 'Quantity', 'colisly' ); ?>">
-								<input type="number" min="1" step="1" name="<?php echo esc_attr( $name ); ?>[quantity]" value="<?php echo esc_attr( (string) $item->quantity ); ?>" aria-label="<?php esc_attr_e( 'Quantity', 'colisly' ); ?>" />
-							</td>
-							<td data-title="<?php esc_attr_e( 'Unit weight (kg)', 'colisly' ); ?>">
-								<input type="text" name="<?php echo esc_attr( $name ); ?>[unit_weight]" value="<?php echo esc_attr( (string) $item->unit_weight ); ?>" aria-label="<?php esc_attr_e( 'Unit weight (kg)', 'colisly' ); ?>" />
-							</td>
+							<?php if ( $ask_quantity ) : ?>
+								<td data-title="<?php esc_attr_e( 'Quantity', 'colisly' ); ?>">
+									<input type="number" min="1" step="1" name="<?php echo esc_attr( $name ); ?>[quantity]" value="<?php echo esc_attr( (string) $item->quantity ); ?>" aria-label="<?php esc_attr_e( 'Quantity', 'colisly' ); ?>" />
+								</td>
+							<?php endif; ?>
+							<?php if ( $ask_weight ) : ?>
+								<td data-title="<?php esc_attr_e( 'Unit weight (kg)', 'colisly' ); ?>">
+									<input type="text" name="<?php echo esc_attr( $name ); ?>[unit_weight]" value="<?php echo esc_attr( (string) $item->unit_weight ); ?>" aria-label="<?php esc_attr_e( 'Unit weight (kg)', 'colisly' ); ?>" />
+								</td>
+							<?php endif; ?>
 							<td data-title="<?php esc_attr_e( 'Value', 'colisly' ); ?>">
 								<input type="text" name="<?php echo esc_attr( $name ); ?>[unit_value]" value="<?php echo esc_attr( (string) $item->unit_value ); ?>" aria-label="<?php esc_attr_e( 'Value', 'colisly' ); ?>" />
 							</td>
-							<td data-title="<?php esc_attr_e( 'Country of origin', 'colisly' ); ?>">
-								<input type="text" maxlength="2" size="2" name="<?php echo esc_attr( $name ); ?>[origin_country]" value="<?php echo esc_attr( $item->origin_country ); ?>" placeholder="FR" aria-label="<?php esc_attr_e( 'Country of origin', 'colisly' ); ?>" />
-							</td>
+							<?php if ( $ask_origin ) : ?>
+								<td data-title="<?php esc_attr_e( 'Country of origin', 'colisly' ); ?>">
+									<input type="text" maxlength="2" size="2" name="<?php echo esc_attr( $name ); ?>[origin_country]" value="<?php echo esc_attr( $item->origin_country ); ?>" placeholder="FR" aria-label="<?php esc_attr_e( 'Country of origin', 'colisly' ); ?>" />
+								</td>
+							<?php endif; ?>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>
 			</table>
 		</div>
+		<?php if ( 0 === $max ) : ?>
+			<p>
+				<button type="button" class="button colisly-add-customs-line"><?php esc_html_e( 'Add a line', 'colisly' ); ?></button>
+			</p>
+		<?php endif; ?>
 		<?php
 	}
 
@@ -769,7 +809,9 @@ class COLISLY_Account {
 			return;
 		}
 
-		echo '<p>' . esc_html__( 'Some destinations require the contents of a parcel to be declared before it can be shipped. Describe what each parcel holds, item by item, with the quantity, the unit weight and the unit value.', 'colisly' ) . '</p>';
+		// The columns the forwarder actually asks for are his choice, so the
+		// wording cannot promise a quantity and a weight that may not be there.
+		echo '<p>' . esc_html__( 'Some destinations require the contents of a parcel to be declared before it can be shipped. Describe what each parcel holds, item by item, filling every column shown.', 'colisly' ) . '</p>';
 
 		foreach ( $parcels as $parcel ) :
 			?>

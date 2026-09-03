@@ -193,6 +193,22 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.11.0 =
+* Corrigé : le formulaire de déclaration n'offrait qu'une seule ligne vierge,
+  quelle que soit la limite réglée dans les réglages. Une limite de trois lignes
+  était une promesse que le formulaire ne tenait jamais, puisque le client ne
+  pouvait déclarer qu'un article par envoi, et que sur la demande d'expédition
+  il n'y a pas de second envoi. Une limite donne désormais au client exactement
+  ce nombre de lignes ; sans limite, il en obtient quelques-unes et un bouton
+  pour le reste.
+* La quantité, le poids unitaire et le pays d'origine peuvent chacun être
+  retirés. Ce sont les colonnes qu'un vrai formulaire CN23 réclame ligne par
+  ligne, mais un réexpéditeur qui veut seulement savoir ce que contient un colis
+  avant de le recopier sur le formulaire de son transporteur n'en a aucun
+  besoin, et trois colonnes remplies pour rien sont trois colonnes remplies
+  n'importe comment. Les trois restent demandées par défaut : un site qui les
+  collecte continue de les collecter.
+
 = 1.10.0 =
 * La demande d'expédition affiche désormais l'adresse de livraison vers laquelle
   les colis partent réellement, et une demande ne peut plus être envoyée tant
@@ -383,6 +399,11 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.11.0 =
+Corrige un formulaire de déclaration qui n'offrait qu'une ligne quelle que soit
+la limite réglée, et permet de retirer la quantité, le poids unitaire et le pays
+d'origine. Aucun changement de base de données.
 
 = 1.10.0 =
 La demande d'expédition affiche et exige une adresse de livraison complète, les

@@ -1378,6 +1378,163 @@ colisly_check(
 	false !== strpos( $colisly_guard_src, 'cancel_shipment' )
 );
 
+/*
+ * Formulaire de declaration : autant de lignes que la limite en promet.
+ *
+ * Le formulaire n'offrait qu'une seule ligne vierge. Une limite de trois
+ * lignes reglee dans les reglages etait donc une promesse jamais tenue : le
+ * client ne pouvait declarer qu'un article par envoi, et sur la demande
+ * d'expedition il n'y a pas de second envoi. Le rendu est teste ici, pas
+ * seulement l'enregistrement, parce que c'est le rendu qui etait faux.
+ */
+$colisly_form_settings = COLISLY_Settings::all();
+$colisly_form_saved    = array(
+	$colisly_form_settings['customs_max_lines'],
+	$colisly_form_settings['customs_categories'],
+	isset( $colisly_form_settings['customs_ask_quantity'] ) ? $colisly_form_settings['customs_ask_quantity'] : 1,
+	isset( $colisly_form_settings['customs_ask_weight'] ) ? $colisly_form_settings['customs_ask_weight'] : 1,
+	isset( $colisly_form_settings['customs_ask_origin'] ) ? $colisly_form_settings['customs_ask_origin'] : 1,
+);
+
+$colisly_form_client = COLISLY_Clients::create(
+	wp_insert_user(
+		array(
+			'user_login' => 'decl-' . wp_generate_password( 6, false ),
+			'user_email' => 'decl-' . wp_generate_password( 6, false ) . '@example.com',
+			'user_pass'  => wp_generate_password(),
+			'role'       => 'customer',
+		)
+	)
+);
+$colisly_form_parcel = COLISLY_Parcels::get(
+	COLISLY_Parcels::create(
+		array(
+			'client_id' => $colisly_form_client,
+			'weight'    => 2,
+		)
+	)
+);
+
+$colisly_render = new ReflectionMethod( 'COLISLY_Account', 'customs_lines_table' );
+$colisly_render->setAccessible( true );
+
+/**
+ * Rend le tableau de declaration d'un colis et renvoie son HTML.
+ *
+ * @param ReflectionMethod $method Methode privee de rendu.
+ * @param object           $parcel Colis.
+ * @return string
+ */
+function colisly_render_declaration( $method, $parcel ) {
+	ob_start();
+	$method->invoke( null, $parcel, 'customs' );
+	return (string) ob_get_clean();
+}
+
+/**
+ * Compte les lignes du corps du tableau rendu.
+ *
+ * @param string $html HTML rendu.
+ * @return int
+ */
+function colisly_count_rows( $html ) {
+	if ( ! preg_match( '/<tbody>(.*)<\/tbody>/s', $html, $m ) ) {
+		return 0;
+	}
+	return preg_match_all( '/<tr>/', $m[1] );
+}
+
+$colisly_form_settings['customs_max_lines']    = 3;
+$colisly_form_settings['customs_categories']   = "Vetements\nChaussures\nLivres";
+$colisly_form_settings['customs_ask_quantity'] = 1;
+$colisly_form_settings['customs_ask_weight']   = 1;
+$colisly_form_settings['customs_ask_origin']   = 1;
+COLISLY_Settings::update( $colisly_form_settings );
+
+$colisly_html = colisly_render_declaration( $colisly_render, $colisly_form_parcel );
+colisly_check( 'Declaration : une limite de 3 offre 3 lignes', 3 === colisly_count_rows( $colisly_html ) );
+colisly_check( 'Declaration : sous limite, aucun bouton d ajout', false === strpos( $colisly_html, 'colisly-add-customs-line' ) );
+
+// Deux lignes deja declarees : le formulaire complete jusqu'a la limite au
+// lieu de repartir de zero ou d'en offrir une de trop.
+COLISLY_Customs::save(
+	(int) $colisly_form_parcel->id,
+	array(
+		array( 'description' => 'Vetements', 'unit_value' => 20 ),
+		array( 'description' => 'Livres', 'unit_value' => 10 ),
+	)
+);
+$colisly_html = colisly_render_declaration( $colisly_render, $colisly_form_parcel );
+colisly_check( 'Declaration : 2 lignes saisies + 1 vierge = 3', 3 === colisly_count_rows( $colisly_html ) );
+
+// Sans limite, quelques lignes et un bouton, puisqu aucun nombre n est juste
+// pour tous les colis.
+$colisly_form_settings['customs_max_lines'] = 0;
+COLISLY_Settings::update( $colisly_form_settings );
+$colisly_html = colisly_render_declaration( $colisly_render, $colisly_form_parcel );
+colisly_check( 'Declaration : sans limite, les lignes saisies plus des vierges', colisly_count_rows( $colisly_html ) > 3 );
+colisly_check( 'Declaration : sans limite, un bouton d ajout', false !== strpos( $colisly_html, 'colisly-add-customs-line' ) );
+
+/*
+ * Colonnes facultatives.
+ *
+ * Quantite, poids unitaire et pays d'origine sont ce qu'un CN23 reclame ligne
+ * par ligne. Un reexpediteur qui recopie ensuite le formulaire de son
+ * transporteur n'en a aucun besoin, et trois colonnes remplies pour rien sont
+ * trois colonnes remplies n'importe comment. Elles restent demandees par
+ * defaut : un site qui les collecte continue de les collecter.
+ */
+colisly_check( 'Colonnes : la quantite est demandee par defaut', COLISLY_Customs::asks( 'quantity' ) );
+colisly_check( 'Colonnes : le poids est demande par defaut', COLISLY_Customs::asks( 'weight' ) );
+colisly_check( 'Colonnes : l origine est demandee par defaut', COLISLY_Customs::asks( 'origin' ) );
+
+$colisly_form_settings['customs_ask_quantity'] = 0;
+$colisly_form_settings['customs_ask_weight']   = 0;
+$colisly_form_settings['customs_ask_origin']   = 0;
+COLISLY_Settings::update( $colisly_form_settings );
+
+colisly_check( 'Colonnes : la quantite peut etre retiree', ! COLISLY_Customs::asks( 'quantity' ) );
+colisly_check( 'Colonnes : le poids peut etre retire', ! COLISLY_Customs::asks( 'weight' ) );
+colisly_check( 'Colonnes : l origine peut etre retiree', ! COLISLY_Customs::asks( 'origin' ) );
+
+$colisly_html = colisly_render_declaration( $colisly_render, $colisly_form_parcel );
+colisly_check( 'Colonnes : la quantite disparait du formulaire', false === strpos( $colisly_html, '[quantity]' ) );
+colisly_check( 'Colonnes : le poids disparait du formulaire', false === strpos( $colisly_html, '[unit_weight]' ) );
+colisly_check( 'Colonnes : l origine disparait du formulaire', false === strpos( $colisly_html, '[origin_country]' ) );
+colisly_check( 'Colonnes : le contenu reste demande', false !== strpos( $colisly_html, '[description]' ) );
+colisly_check( 'Colonnes : la valeur reste demandee', false !== strpos( $colisly_html, '[unit_value]' ) );
+
+// Chaque cellule garde son libelle, colonnes retirees comprises : c est ce qui
+// permet au tableau de s empiler proprement sur mobile.
+if ( preg_match( '/<tbody>(.*)<\/tbody>/s', $colisly_html, $colisly_body ) ) {
+	colisly_check(
+		'Colonnes : chaque cellule restante porte son libelle',
+		preg_match_all( '/<td[ >]/', $colisly_body[1] ) === preg_match_all( '/data-title=/', $colisly_body[1] )
+	);
+}
+
+// Une declaration posee sans quantite ni origine reste valide, les valeurs
+// manquantes prenant leur defaut plutot que de faire echouer l enregistrement.
+COLISLY_Customs::save(
+	(int) $colisly_form_parcel->id,
+	array(
+		array( 'description' => 'Chaussures', 'unit_value' => 30 ),
+	)
+);
+$colisly_form_items = COLISLY_Customs::items( (int) $colisly_form_parcel->id );
+colisly_check( 'Colonnes : une ligne sans quantite vaut 1', 1 === (int) $colisly_form_items[0]->quantity );
+colisly_check( 'Colonnes : une ligne sans origine reste vide', '' === (string) $colisly_form_items[0]->origin_country );
+colisly_check( 'Colonnes : la valeur est bien enregistree', 30.0 === (float) $colisly_form_items[0]->unit_value );
+
+list(
+	$colisly_form_settings['customs_max_lines'],
+	$colisly_form_settings['customs_categories'],
+	$colisly_form_settings['customs_ask_quantity'],
+	$colisly_form_settings['customs_ask_weight'],
+	$colisly_form_settings['customs_ask_origin']
+) = $colisly_form_saved;
+COLISLY_Settings::update( $colisly_form_settings );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

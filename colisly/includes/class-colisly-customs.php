@@ -70,6 +70,32 @@ class COLISLY_Customs {
 	}
 
 	/**
+	 * Whether the client is asked for one of the optional declaration columns.
+	 *
+	 * What a declaration must carry depends on what the forwarder does with
+	 * it. A form printed as a real CN23 needs the quantity, the net weight and
+	 * the country of origin of every line. A forwarder who only wants to know
+	 * what is in the parcel before copying it onto the carrier's own form needs
+	 * none of the three, and asking anyway is three columns of noise in front
+	 * of every client. All three are asked by default, so a site already
+	 * collecting them keeps collecting them.
+	 *
+	 * @param string $field One of quantity, weight, origin.
+	 * @return bool
+	 */
+	public static function asks( $field ) {
+		$key = 'customs_ask_' . sanitize_key( $field );
+
+		/**
+		 * Filters whether a declaration column is asked of the client.
+		 *
+		 * @param bool   $asked Whether the column is shown.
+		 * @param string $field Column key.
+		 */
+		return (bool) apply_filters( 'colisly_customs_asks', (bool) COLISLY_Settings::get( $key, 1 ), $field );
+	}
+
+	/**
 	 * Returns how many lines a declaration may hold, 0 for no limit.
 	 *
 	 * @return int

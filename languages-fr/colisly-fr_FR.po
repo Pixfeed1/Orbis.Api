@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.10.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.11.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -1040,9 +1040,6 @@ msgstr "Colis %1$s — suivi %2$s"
 msgid "%1$s (x%2$d, %3$s kg each, %4$s each)"
 msgstr "%1$s (x%2$d, %3$s kg pièce, %4$s pièce)"
 
-msgid "Some destinations require the contents of a parcel to be declared before it can be shipped. Describe what each parcel holds, item by item, with the quantity, the unit weight and the unit value."
-msgstr "Certaines destinations exigent que le contenu d’un colis soit déclaré avant son expédition. Décrivez ce que contient chaque colis, article par article, avec la quantité, le poids unitaire et la valeur unitaire."
-
 msgid "Parcel %s is going to a destination that requires a customs declaration. Declare its contents before requesting the shipment."
 msgstr "Le colis %s part vers une destination qui exige une déclaration douanière. Déclarez son contenu avant de demander l’expédition."
 
@@ -1081,9 +1078,6 @@ msgstr "Total déclaré : %s"
 
 msgid "%1$s x%2$d — %3$s — origin %4$s"
 msgstr "%1$s x%2$d — %3$s — origine %4$s"
-
-msgid "0 for no limit. Set it to the number of lines your carrier forms hold."
-msgstr "0 pour aucune limite. Réglez-le sur le nombre de lignes que comportent les formulaires de vos transporteurs."
 
 msgid "One category per line. Leave empty and clients describe the contents in their own words, which is what a customs form asks for. Fill it and the field becomes a menu of your categories, quicker to fill and consistent across clients."
 msgstr "Une catégorie par ligne. Laissez vide et les clients décrivent le contenu avec leurs propres mots, ce qu’un formulaire douanier réclame. Remplissez-la et le champ devient un menu de vos catégories, plus rapide à remplir et homogène d’un client à l’autre."
@@ -1132,4 +1126,19 @@ msgstr "Modifier mon adresse de livraison"
 
 msgid "This shipment can no longer be cancelled. Please get in touch with us."
 msgstr "Cette expédition ne peut plus être annulée. Merci de nous contacter."
+
+msgid "0 for no limit. Set it to the number of lines your carrier forms hold. The client is given exactly that many lines to fill."
+msgstr "0 pour aucune limite. Réglez-la sur le nombre de lignes que contiennent les formulaires de votre transporteur. Le client se voit proposer exactement ce nombre de lignes à remplir."
+
+msgid "Ask the client for"
+msgstr "Demander au client"
+
+msgid "The contents and the value are always asked, since a declaration without them declares nothing. The other three are what a real CN23 form needs, line by line. Untick them if you only want to know what a parcel holds before copying it onto your carrier's own form: three columns a client fills for nothing are three columns he fills badly."
+msgstr "Le contenu et la valeur sont toujours demandés, une déclaration qui en manque ne déclare rien. Les trois autres sont ce qu’un vrai formulaire CN23 réclame, ligne par ligne. Décochez-les si vous voulez seulement savoir ce que contient un colis avant de le recopier sur le formulaire de votre transporteur : trois colonnes qu’un client remplit pour rien sont trois colonnes qu’il remplit mal."
+
+msgid "Add a line"
+msgstr "Ajouter une ligne"
+
+msgid "Some destinations require the contents of a parcel to be declared before it can be shipped. Describe what each parcel holds, item by item, filling every column shown."
+msgstr "Certaines destinations exigent que le contenu d’un colis soit déclaré avant son expédition. Décrivez ce que contient chaque colis, article par article, en remplissant chaque colonne affichée."
 

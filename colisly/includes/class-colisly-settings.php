@@ -90,6 +90,9 @@ class COLISLY_Settings {
 			// are imposed on the others.
 			'customs_categories'      => '',
 			'customs_max_lines'       => 0,
+			'customs_ask_quantity'    => 1,
+			'customs_ask_weight'      => 1,
+			'customs_ask_origin'      => 1,
 			'insurance_options'       => array(),
 			'notify_client_on_parcel' => 1,
 			'notify_admin_on_request' => 1,

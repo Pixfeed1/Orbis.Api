@@ -188,3 +188,50 @@
 		}
 	} );
 } )();
+
+/**
+ * One more declaration line, when the forwarder set no limit.
+ *
+ * A capped declaration is rendered with all its lines at once, so the button
+ * only exists when there is no cap and no number would have been right.
+ */
+( function () {
+	'use strict';
+
+	document.addEventListener( 'click', function ( event ) {
+		var button = event.target.closest ? event.target.closest( '.colisly-add-customs-line' ) : null;
+
+		if ( ! button ) {
+			return;
+		}
+
+		var wrap = button.closest( 'p' ).previousElementSibling;
+		var body = wrap ? wrap.querySelector( 'tbody' ) : null;
+
+		if ( ! body || ! body.rows.length ) {
+			return;
+		}
+
+		var index = body.rows.length;
+		var row = body.rows[ index - 1 ].cloneNode( true );
+
+		Array.prototype.forEach.call( row.querySelectorAll( 'input, select' ), function ( field ) {
+			// Every line posts under its own index; keeping the cloned one
+			// would have overwritten the line it was copied from.
+			field.name = field.name.replace( /\[(\d+)\](\[[a-z_]+\])$/, '[' + index + ']$2' );
+
+			if ( 'number' === field.type ) {
+				field.value = '1';
+			} else {
+				field.value = '';
+			}
+		} );
+
+		body.appendChild( row );
+
+		var first = row.querySelector( 'input, select' );
+		if ( first ) {
+			first.focus();
+		}
+	} );
+} )();

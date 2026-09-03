@@ -321,7 +321,30 @@ class COLISLY_Admin_Settings {
 						<th scope="row"><label for="colisly-customs-max"><?php esc_html_e( 'Maximum lines per parcel', 'colisly' ); ?></label></th>
 						<td>
 							<input type="number" id="colisly-customs-max" name="customs_max_lines" min="0" step="1" value="<?php echo esc_attr( (string) (int) $settings['customs_max_lines'] ); ?>" />
-							<p class="description"><?php esc_html_e( '0 for no limit. Set it to the number of lines your carrier forms hold.', 'colisly' ); ?></p>
+							<p class="description"><?php esc_html_e( '0 for no limit. Set it to the number of lines your carrier forms hold. The client is given exactly that many lines to fill.', 'colisly' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Ask the client for', 'colisly' ); ?></th>
+						<td>
+							<?php
+							$colisly_customs_columns = array(
+								'quantity' => __( 'Quantity', 'colisly' ),
+								'weight'   => __( 'Unit weight (kg)', 'colisly' ),
+								'origin'   => __( 'Country of origin', 'colisly' ),
+							);
+							foreach ( $colisly_customs_columns as $colisly_col => $colisly_label ) :
+								$colisly_on = ! empty( $settings[ 'customs_ask_' . $colisly_col ] );
+								?>
+								<p>
+									<input type="hidden" name="<?php echo esc_attr( 'customs_ask_' . $colisly_col ); ?>" value="<?php echo $colisly_on ? '1' : '0'; ?>" class="colisly-toggle-value" />
+									<label>
+										<input type="checkbox" class="colisly-toggle" <?php checked( $colisly_on ); ?> />
+										<?php echo esc_html( $colisly_label ); ?>
+									</label>
+								</p>
+							<?php endforeach; ?>
+							<p class="description"><?php esc_html_e( 'The contents and the value are always asked, since a declaration without them declares nothing. The other three are what a real CN23 form needs, line by line. Untick them if you only want to know what a parcel holds before copying it onto your carrier\'s own form: three columns a client fills for nothing are three columns he fills badly.', 'colisly' ); ?></p>
 						</td>
 					</tr>
 				</table>
@@ -585,6 +608,11 @@ class COLISLY_Admin_Settings {
 
 		$settings['customs_categories'] = isset( $_POST['customs_categories'] ) ? sanitize_textarea_field( wp_unslash( $_POST['customs_categories'] ) ) : '';
 		$settings['customs_max_lines']  = isset( $_POST['customs_max_lines'] ) ? absint( $_POST['customs_max_lines'] ) : 0;
+
+		foreach ( array( 'quantity', 'weight', 'origin' ) as $colisly_col ) {
+			$key                = 'customs_ask_' . $colisly_col;
+			$settings[ $key ] = isset( $_POST[ $key ] ) && '1' === (string) wp_unslash( $_POST[ $key ] ) ? 1 : 0;
+		}
 
 		$settings['orders_taxable']          = empty( $_POST['orders_taxable'] ) ? 0 : 1;
 		$settings['notify_client_on_parcel'] = empty( $_POST['notify_client_on_parcel'] ) ? 0 : 1;
