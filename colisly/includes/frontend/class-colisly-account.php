@@ -422,7 +422,7 @@ class COLISLY_Account {
 			return;
 		}
 		?>
-		<form method="post" class="colisly-request-form">
+		<form method="post" class="colisly-request-form" enctype="multipart/form-data">
 			<?php wp_nonce_field( 'colisly_request_shipment' ); ?>
 			<input type="hidden" name="colisly_action" value="request_shipment" />
 
@@ -528,6 +528,7 @@ class COLISLY_Account {
 						?>
 						<option
 							value="<?php echo esc_attr( $carrier['slug'] ); ?>"
+							data-name="<?php echo esc_attr( $carrier['name'] ); ?>"
 							data-base="<?php echo esc_attr( (string) $base ); ?>"
 							data-rate="<?php echo esc_attr( (string) $rate ); ?>"
 							data-tiers="<?php echo esc_attr( wp_json_encode( $tiers ) ); ?>"
@@ -785,6 +786,53 @@ class COLISLY_Account {
 			</p>
 		<?php endif; ?>
 		<?php
+		// Customs outside the EU want the purchase invoice next to the
+		// declaration, and only the client has it. It is attached here, to
+		// the parcel it concerns, so the forwarder finds it on the parcel.
+		$invoices = COLISLY_Customs::invoices( (int) $parcel->id );
+		?>
+		<div class="colisly-invoices">
+			<p>
+				<label for="colisly-invoices-<?php echo esc_attr( (string) $parcel->id ); ?>"><strong><?php esc_html_e( 'Purchase invoices', 'colisly' ); ?></strong></label>
+				<span class="colisly-note"><?php esc_html_e( 'Customs may ask for the invoice of what the parcel holds. Attach it here, PDF or image.', 'colisly' ); ?></span>
+			</p>
+			<?php if ( $invoices ) : ?>
+				<ul class="colisly-documents-list">
+					<?php foreach ( $invoices as $invoice ) : ?>
+						<li>
+							<a href="<?php echo esc_url( COLISLY_Downloads::document_url( $invoice ) ); ?>"><?php echo esc_html( $invoice->file_name ? $invoice->file_name : $invoice->title ); ?></a>
+							<span class="colisly-doc-date">(<?php echo esc_html( COLISLY_Format::date( $invoice->created_at ) ); ?>)</span>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
+			<p>
+				<input
+					type="file"
+					id="colisly-invoices-<?php echo esc_attr( (string) $parcel->id ); ?>"
+					name="colisly_invoices[<?php echo esc_attr( (string) $parcel->id ); ?>][]"
+					multiple
+					accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp"
+				/>
+			</p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Attaches the invoices posted for a parcel, if any.
+	 *
+	 * @param object $parcel Parcel row, already checked to belong to the client.
+	 * @return int|WP_Error Number attached, or the first failure.
+	 */
+	private static function attach_posted_invoices( $parcel ) {
+		$entries = COLISLY_Files::entries( 'colisly_invoices', (int) $parcel->id );
+
+		if ( empty( $entries ) ) {
+			return 0;
+		}
+
+		return COLISLY_Customs::attach_invoices( (int) $parcel->id, $entries );
 	}
 
 	/**
@@ -809,13 +857,21 @@ class COLISLY_Account {
 			return;
 		}
 
+		if ( ! empty( $_GET['colisly_customs'] ) && 'saved' === $_GET['colisly_customs'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
+			wc_print_notice( __( 'Declaration saved.', 'colisly' ), 'success' );
+		}
+
+		if ( ! empty( $_GET['colisly_error'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
+			wc_print_notice( sanitize_text_field( wp_unslash( $_GET['colisly_error'] ) ), 'error' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		}
+
 		// The columns the forwarder actually asks for are his choice, so the
 		// wording cannot promise a quantity and a weight that may not be there.
 		echo '<p>' . esc_html__( 'Some destinations require the contents of a parcel to be declared before it can be shipped. Describe what each parcel holds, item by item, filling every column shown.', 'colisly' ) . '</p>';
 
 		foreach ( $parcels as $parcel ) :
 			?>
-			<form method="post" class="colisly-customs-form">
+			<form method="post" class="colisly-customs-form" enctype="multipart/form-data">
 				<?php wp_nonce_field( 'colisly_save_customs_' . $parcel->id ); ?>
 				<input type="hidden" name="colisly_action" value="save_customs" />
 				<input type="hidden" name="parcel_id" value="<?php echo esc_attr( (string) $parcel->id ); ?>" />
@@ -874,13 +930,19 @@ class COLISLY_Account {
 
 		$url = wc_get_account_endpoint_url( self::endpoint( 'customs' ) );
 
-		wp_safe_redirect(
-			add_query_arg(
-				'colisly_customs',
-				is_wp_error( $saved ) ? 'error' : 'saved',
-				$url
-			)
-		);
+		if ( is_wp_error( $saved ) ) {
+			wp_safe_redirect( add_query_arg( 'colisly_error', rawurlencode( $saved->get_error_message() ), $url ) );
+			exit;
+		}
+
+		$attached = self::attach_posted_invoices( $parcel );
+
+		if ( is_wp_error( $attached ) ) {
+			wp_safe_redirect( add_query_arg( 'colisly_error', rawurlencode( $attached->get_error_message() ), $url ) );
+			exit;
+		}
+
+		wp_safe_redirect( add_query_arg( 'colisly_customs', 'saved', $url ) );
 		exit;
 	}
 
@@ -941,7 +1003,21 @@ class COLISLY_Account {
 					continue;
 				}
 
-				COLISLY_Customs::save( $colisly_pid, is_array( $colisly_lines ) ? $colisly_lines : array() );
+				$colisly_saved = COLISLY_Customs::save( $colisly_pid, is_array( $colisly_lines ) ? $colisly_lines : array() );
+
+				// A refused declaration stops the request here, with the
+				// reason, rather than letting it fail later as "undeclared".
+				if ( is_wp_error( $colisly_saved ) ) {
+					wp_safe_redirect( add_query_arg( 'colisly_error', rawurlencode( $colisly_saved->get_error_message() ), $url ) );
+					exit;
+				}
+
+				$colisly_attached = self::attach_posted_invoices( $colisly_parcel );
+
+				if ( is_wp_error( $colisly_attached ) ) {
+					wp_safe_redirect( add_query_arg( 'colisly_error', rawurlencode( $colisly_attached->get_error_message() ), $url ) );
+					exit;
+				}
 			}
 		}
 

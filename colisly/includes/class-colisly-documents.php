@@ -22,9 +22,11 @@ class COLISLY_Documents {
 	 * @param array  $file       File info from COLISLY_Files::upload() (path, name, type).
 	 * @param string $title      Optional title; defaults to the original file name.
 	 * @param string $visibility 'client' (visible to the client) or 'admin'.
+	 * @param array  $extra      Optional: parcel_id (the parcel the document
+	 *                           belongs to) and kind (for instance 'invoice').
 	 * @return int|WP_Error Document ID.
 	 */
-	public static function add( $client_id, $file, $title = '', $visibility = 'client' ) {
+	public static function add( $client_id, $file, $title = '', $visibility = 'client', $extra = array() ) {
 		global $wpdb;
 
 		$client = COLISLY_Clients::get( $client_id );
@@ -47,9 +49,11 @@ class COLISLY_Documents {
 				'title'       => sanitize_text_field( $title ? $title : $name ),
 				'visibility'  => 'admin' === $visibility ? 'admin' : 'client',
 				'uploaded_by' => get_current_user_id(),
+				'parcel_id'   => isset( $extra['parcel_id'] ) ? (int) $extra['parcel_id'] : 0,
+				'kind'        => isset( $extra['kind'] ) ? sanitize_key( $extra['kind'] ) : '',
 				'created_at'  => current_time( 'mysql', true ),
 			),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%d', '%s' )
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s' )
 		);
 
 		if ( ! $inserted ) {
@@ -79,6 +83,33 @@ class COLISLY_Documents {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}colisly_documents WHERE id = %d", (int) $document_id )
+		);
+	}
+
+	/**
+	 * Returns the documents attached to a parcel, oldest first.
+	 *
+	 * @param int    $parcel_id Parcel ID.
+	 * @param string $kind      Optional kind to filter on.
+	 * @return object[]
+	 */
+	public static function for_parcel( $parcel_id, $kind = '' ) {
+		global $wpdb;
+
+		if ( '' !== $kind ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			return $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM {$wpdb->prefix}colisly_documents WHERE parcel_id = %d AND kind = %s ORDER BY id ASC",
+					(int) $parcel_id,
+					sanitize_key( $kind )
+				)
+			);
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		return $wpdb->get_results(
+			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}colisly_documents WHERE parcel_id = %d ORDER BY id ASC", (int) $parcel_id )
 		);
 	}
 

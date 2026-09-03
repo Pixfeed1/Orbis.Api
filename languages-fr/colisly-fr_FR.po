@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.12.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.13.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -1147,4 +1147,33 @@ msgstr "Choisissez d’abord un client."
 
 msgid "new client, record created with the first parcel"
 msgstr "nouveau client, fiche créée avec le premier colis"
+
+msgid "Invoice: %s"
+msgstr "Facture : %s"
+
+msgid "Parcel %1$s: enter the value of “%2$s”. Customs assess duty on it, so a declaration cannot go without."
+msgstr "Colis %1$s : indiquez la valeur de « %2$s ». La douane taxe dessus, une déclaration ne peut donc pas s’en passer."
+
+msgid "Purchase invoice, parcel %1$s: %2$s"
+msgstr "Facture d’achat, colis %1$s : %2$s"
+
+msgid "%d purchase invoice attached"
+msgid_plural "%d purchase invoices attached"
+msgstr[0] "%d facture d’achat jointe"
+msgstr[1] "%d factures d’achat jointes"
+
+msgid "File %1$s is too large (limit %2$s)."
+msgstr "Le fichier %1$s est trop lourd (limite : %2$s)."
+
+msgid "Parcel"
+msgstr "Colis"
+
+msgid "Purchase invoices"
+msgstr "Factures d’achat"
+
+msgid "Customs may ask for the invoice of what the parcel holds. Attach it here, PDF or image."
+msgstr "La douane peut demander la facture de ce que contient le colis. Joignez-la ici, en PDF ou en image."
+
+msgid "Declaration saved."
+msgstr "Déclaration enregistrée."
 

@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.12.0
+Stable tag: 1.13.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,12 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.13.0 =
+* New: purchase invoices for customs. Customs outside the EU ask for the commercial invoice next to the declaration, and only the client has it. He attaches it to each parcel, on the shipment request or on the customs tab, PDF or image, several if needed. The forwarder finds the invoices on the parcel and on the shipment, the printed customs form states how many are attached, and the client reads them back from his documents. Stored in the private directory like every other document, served only through the authenticated download, covered by the privacy export and eraser.
+* Every carrier now shows what it would charge for the parcels ticked, right in the carrier list, so the client compares before choosing rather than trying them one by one. The figure follows the same brackets, zones and volumetric rule as the checkout.
+* A declared line must carry a value. Customs assess duty on it, so a line without one declared nothing they could use; it is now refused with the parcel and the contents named, on the request as on the customs tab. The form asks for the value as soon as the contents are filled.
+* Two columns and one index are added to the documents table on update.
+
 = 1.12.0 =
 * A customer without a client record yet can be picked straight from the parcel creation form. The search now offers the shop's registered users alongside the clients, marked as new, and the record is created with the first parcel. Until now every new customer had to be created by hand on the Clients tab before his first parcel could be booked in, which is not where the operator is standing when the parcel arrives. The Clients tab keeps its manual creation for whoever wants a record ahead of time.
 
@@ -186,6 +192,11 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.13.0 =
+Clients can attach purchase invoices for customs, every carrier shows its
+price in the list, and a declared line must carry a value. Two columns are
+added to the documents table on update.
 
 = 1.12.0 =
 New customers can be picked directly on the parcel form; their client record

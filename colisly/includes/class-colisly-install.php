@@ -263,9 +263,12 @@ CREATE TABLE {$wpdb->prefix}colisly_documents (
 	title VARCHAR(255) NOT NULL DEFAULT '',
 	visibility VARCHAR(20) NOT NULL DEFAULT 'client',
 	uploaded_by BIGINT UNSIGNED NOT NULL DEFAULT 0,
+	parcel_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+	kind VARCHAR(20) NOT NULL DEFAULT '',
 	created_at DATETIME NOT NULL,
 	PRIMARY KEY  (id),
-	KEY client_id (client_id)
+	KEY client_id (client_id),
+	KEY parcel_id (parcel_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}colisly_history (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

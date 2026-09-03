@@ -103,23 +103,13 @@
 		return price;
 	}
 
-	function updateEstimate() {
-		var selected = selectedBoxes();
-		var option = select.options[ select.selectedIndex ];
-
-		if ( ! selected.length || ! option || ! option.value ) {
-			estimate.hidden = true;
-			return;
-		}
-
-		var total = 0;
-
-		/*
-		 * Same rule as COLISLY_Carriers::chargeable_weight: an express carrier
-		 * bills whichever is greater, the real weight or the volume divided by
-		 * its divisor, parcel by parcel. A parcel with no dimensions has no
-		 * volume and keeps its real weight.
-		 */
+	/*
+	 * Same rule as COLISLY_Carriers::chargeable_weight: an express carrier
+	 * bills whichever is greater, the real weight or the volume divided by
+	 * its divisor, parcel by parcel. A parcel with no dimensions has no
+	 * volume and keeps its real weight.
+	 */
+	function chargeableWeight( option, selected ) {
 		var volumetric = '1' === option.getAttribute( 'data-volumetric' );
 		var divisor = parseFloat( option.getAttribute( 'data-divisor' ) || '5000' );
 
@@ -134,12 +124,58 @@
 			var volume = parseFloat( box.getAttribute( 'data-volume' ) || '0' );
 
 			weight += volumetric ? Math.max( real, volume / divisor ) : real;
+		} );
 
+		return weight;
+	}
+
+	/*
+	 * Every carrier shows what it would charge for the parcels ticked, so the
+	 * client compares before choosing rather than trying them one by one.
+	 * With nothing ticked the labels go back to what the server printed.
+	 */
+	function updateCarrierPrices() {
+		var selected = selectedBoxes();
+
+		Array.prototype.slice.call( select.options ).forEach( function ( option ) {
+			if ( ! option.value ) {
+				return;
+			}
+
+			if ( null === option.getAttribute( 'data-label' ) ) {
+				option.setAttribute( 'data-label', option.textContent );
+			}
+
+			var label = option.getAttribute( 'data-label' );
+
+			if ( ! selected.length ) {
+				option.textContent = label;
+				return;
+			}
+
+			var name = option.getAttribute( 'data-name' ) || label;
+
+			option.textContent = name + ' — ' + formatPrice( carrierPrice( option, chargeableWeight( option, selected ) ) );
+		} );
+	}
+
+	function updateEstimate() {
+		var selected = selectedBoxes();
+		var option = select.options[ select.selectedIndex ];
+
+		if ( ! selected.length || ! option || ! option.value ) {
+			estimate.hidden = true;
+			return;
+		}
+
+		var total = 0;
+
+		selected.forEach( function ( box ) {
 			total += parseFloat( box.getAttribute( 'data-price' ) || '0' );
 			total += parseFloat( box.getAttribute( 'data-storage' ) || '0' );
 		} );
 
-		total += carrierPrice( option, weight );
+		total += carrierPrice( option, chargeableWeight( option, selected ) );
 
 		// The cover level the client picked, when insurance is offered.
 		var insurance = document.getElementById( 'colisly-insurance' );
@@ -160,9 +196,12 @@
 	boxes.forEach( function ( box ) {
 		box.addEventListener( 'change', function () {
 			updateCarrierOptions();
+			updateCarrierPrices();
 			updateEstimate();
 		} );
 	} );
+
+	updateCarrierPrices();
 
 	select.addEventListener( 'change', updateEstimate );
 } )();
@@ -234,4 +273,51 @@
 			first.focus();
 		}
 	} );
+} )();
+
+/**
+ * A declared line needs its value: the browser asks for it as soon as the
+ * contents are filled, and the server refuses the line without it anyway.
+ */
+( function () {
+	'use strict';
+
+	function syncRow( field ) {
+		var row = field.closest ? field.closest( 'tr' ) : null;
+
+		if ( ! row ) {
+			return;
+		}
+
+		var description = row.querySelector( '[name$="[description]"]' );
+		var value = row.querySelector( '[name$="[unit_value]"]' );
+
+		if ( ! description || ! value ) {
+			return;
+		}
+
+		var filled = '' !== String( description.value || '' ).trim();
+
+		value.required = filled;
+		if ( filled ) {
+			value.setAttribute( 'min', '0.01' );
+			value.setAttribute( 'inputmode', 'decimal' );
+		} else {
+			value.removeAttribute( 'min' );
+		}
+	}
+
+	document.addEventListener( 'input', function ( event ) {
+		if ( event.target && /\[description\]$/.test( event.target.name || '' ) ) {
+			syncRow( event.target );
+		}
+	} );
+
+	document.addEventListener( 'change', function ( event ) {
+		if ( event.target && /\[description\]$/.test( event.target.name || '' ) ) {
+			syncRow( event.target );
+		}
+	} );
+
+	Array.prototype.forEach.call( document.querySelectorAll( '[name$="[description]"]' ), syncRow );
 } )();

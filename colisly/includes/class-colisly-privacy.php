@@ -218,6 +218,10 @@ class COLISLY_Privacy {
 						'value' => $document->created_at,
 					),
 					array(
+						'name'  => __( 'Parcel', 'colisly' ),
+						'value' => ! empty( $document->parcel_id ) && COLISLY_Parcels::get( (int) $document->parcel_id ) ? COLISLY_Parcels::get( (int) $document->parcel_id )->reference : '',
+					),
+					array(
 						'name'  => __( 'Shared with the client', 'colisly' ),
 						'value' => 'client' === $document->visibility ? __( 'Yes', 'colisly' ) : __( 'No', 'colisly' ),
 					),

@@ -318,6 +318,9 @@ class COLISLY_Admin_Clients {
 										<?php if ( COLISLY_Customs::declared( (int) $parcel->id ) ) : ?>
 											<div class="row-actions"><span class="customs"><a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=colisly_customs_form&parcel=' . (int) $parcel->id ), 'colisly_customs_form_' . (int) $parcel->id ) ); ?>" target="_blank"><?php esc_html_e( 'Customs form', 'colisly' ); ?></a></span></div>
 										<?php endif; ?>
+										<?php foreach ( COLISLY_Customs::invoices( (int) $parcel->id ) as $colisly_invoice ) : ?>
+											<div class="row-actions"><span class="invoice"><a href="<?php echo esc_url( COLISLY_Downloads::document_url( $colisly_invoice ) ); ?>"><?php echo esc_html( sprintf( /* translators: %s: file name. */ __( 'Invoice: %s', 'colisly' ), $colisly_invoice->file_name ? $colisly_invoice->file_name : $colisly_invoice->title ) ); ?></a></span></div>
+										<?php endforeach; ?>
 									</td>
 								<td><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
 								<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
@@ -401,10 +404,14 @@ class COLISLY_Admin_Clients {
 							// the carrier's own customs form.
 							$colisly_declared = array();
 							$colisly_declared_value = 0.0;
+							$colisly_invoices = array();
 							foreach ( COLISLY_Shipments::parcels( (int) $shipment->id ) as $colisly_sp ) {
 								foreach ( COLISLY_Customs::items( (int) $colisly_sp->id ) as $colisly_ci ) {
 									$colisly_declared[]      = $colisly_ci;
 									$colisly_declared_value += (int) $colisly_ci->quantity * (float) $colisly_ci->unit_value;
+								}
+								foreach ( COLISLY_Customs::invoices( (int) $colisly_sp->id ) as $colisly_inv ) {
+									$colisly_invoices[] = $colisly_inv;
 								}
 							}
 							?>
@@ -440,6 +447,13 @@ class COLISLY_Admin_Clients {
 												)
 											);
 											?>
+										</div>
+									<?php endif; ?>
+									<?php if ( $colisly_invoices ) : ?>
+										<div class="colisly-declared">
+											<?php foreach ( $colisly_invoices as $colisly_inv ) : ?>
+												<span><a href="<?php echo esc_url( COLISLY_Downloads::document_url( $colisly_inv ) ); ?>"><?php echo esc_html( sprintf( /* translators: %s: file name. */ __( 'Invoice: %s', 'colisly' ), $colisly_inv->file_name ? $colisly_inv->file_name : $colisly_inv->title ) ); ?></a></span>
+											<?php endforeach; ?>
 										</div>
 									<?php endif; ?>
 								</td>

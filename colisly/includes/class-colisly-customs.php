@@ -191,11 +191,27 @@ class COLISLY_Customs {
 				continue;
 			}
 
+			// A value is what customs assess duty on; a line without one
+			// declares nothing they can use, so it is refused rather than
+			// stored as worth nothing.
+			$value = isset( $line['unit_value'] ) ? COLISLY_Parcels::to_float( $line['unit_value'] ) : 0;
+			if ( $value <= 0 ) {
+				return new WP_Error(
+					'colisly_customs_value',
+					sprintf(
+						/* translators: 1: parcel reference, 2: contents of the line. */
+						__( 'Parcel %1$s: enter the value of “%2$s”. Customs assess duty on it, so a declaration cannot go without.', 'colisly' ),
+						$parcel->reference,
+						$description
+					)
+				);
+			}
+
 			$clean[] = array(
 				'description'    => $description,
 				'quantity'       => max( 1, isset( $line['quantity'] ) ? (int) $line['quantity'] : 1 ),
 				'unit_weight'    => max( 0, isset( $line['unit_weight'] ) ? COLISLY_Parcels::to_float( $line['unit_weight'] ) : 0 ),
-				'unit_value'     => max( 0, isset( $line['unit_value'] ) ? COLISLY_Parcels::to_float( $line['unit_value'] ) : 0 ),
+				'unit_value'     => $value,
 				'origin_country' => isset( $line['origin_country'] ) ? strtoupper( substr( preg_replace( '/[^A-Za-z]/', '', (string) $line['origin_country'] ), 0, 2 ) ) : '',
 				'hs_code'        => isset( $line['hs_code'] ) ? sanitize_text_field( $line['hs_code'] ) : '',
 			);
@@ -247,6 +263,93 @@ class COLISLY_Customs {
 		do_action( 'colisly_customs_saved', (int) $parcel->id, $clean );
 
 		return count( $clean );
+	}
+
+	/**
+	 * Size cap of one purchase invoice, in bytes.
+	 *
+	 * @return int
+	 */
+	public static function invoice_max_bytes() {
+		/**
+		 * Filters the size cap of one purchase invoice.
+		 *
+		 * @param int $bytes Cap in bytes.
+		 */
+		return (int) apply_filters( 'colisly_invoice_max_bytes', 10 * MB_IN_BYTES );
+	}
+
+	/**
+	 * Returns the purchase invoices attached to a parcel.
+	 *
+	 * @param int $parcel_id Parcel ID.
+	 * @return object[] Document rows.
+	 */
+	public static function invoices( $parcel_id ) {
+		return COLISLY_Documents::for_parcel( (int) $parcel_id, 'invoice' );
+	}
+
+	/**
+	 * Attaches purchase invoices to a parcel.
+	 *
+	 * Customs outside the EU want the commercial invoice next to the CN23,
+	 * and the client is the only one who has it: he bought the goods. The
+	 * files land in the private directory as documents of the client, linked
+	 * to the parcel and visible to him, so the forwarder finds them on the
+	 * parcel and the client can read them back from his account.
+	 *
+	 * @param int     $parcel_id Parcel ID.
+	 * @param array[] $entries   File entries, as returned by COLISLY_Files::entries().
+	 * @param bool    $sideload  Take local files rather than HTTP uploads.
+	 * @return int|WP_Error Number of invoices attached, or the first failure.
+	 */
+	public static function attach_invoices( $parcel_id, $entries, $sideload = false ) {
+		$parcel = COLISLY_Parcels::get( $parcel_id );
+		if ( ! $parcel ) {
+			return new WP_Error( 'colisly_parcel_not_found', __( 'Parcel not found.', 'colisly' ) );
+		}
+
+		/**
+		 * Filters how many invoices one submission may attach to a parcel.
+		 *
+		 * @param int $max Cap.
+		 */
+		$max     = max( 1, (int) apply_filters( 'colisly_invoices_per_submission', 10 ) );
+		$entries = array_slice( (array) $entries, 0, $max );
+		$count   = 0;
+
+		foreach ( $entries as $entry ) {
+			$file = COLISLY_Files::upload_entry( $entry, COLISLY_Files::invoice_mimes(), self::invoice_max_bytes(), $sideload );
+
+			if ( is_wp_error( $file ) ) {
+				return $file;
+			}
+
+			$added = COLISLY_Documents::add(
+				(int) $parcel->client_id,
+				$file,
+				sprintf(
+					/* translators: 1: parcel reference, 2: file name. */
+					__( 'Purchase invoice, parcel %1$s: %2$s', 'colisly' ),
+					$parcel->reference,
+					$file['name']
+				),
+				'client',
+				array(
+					'parcel_id' => (int) $parcel->id,
+					'kind'      => 'invoice',
+				)
+			);
+
+			if ( is_wp_error( $added ) ) {
+				COLISLY_Files::delete( $file['path'] );
+				return $added;
+			}
+
+			$count++;
+		}
+
+		return $count;
 	}
 
 	/**
@@ -333,6 +436,15 @@ class COLISLY_Customs {
 					esc_html( $parcel->reference ),
 					esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' )
 				);
+				$invoice_count = count( self::invoices( (int) $parcel->id ) );
+				if ( $invoice_count ) {
+					echo ' — ';
+					printf(
+						/* translators: %d: number of invoices. */
+						esc_html( _n( '%d purchase invoice attached', '%d purchase invoices attached', $invoice_count, 'colisly' ) ),
+						(int) $invoice_count
+					);
+				}
 				?>
 			</p>
 

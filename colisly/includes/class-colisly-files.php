@@ -39,6 +39,21 @@ class COLISLY_Files {
 	}
 
 	/**
+	 * Allowed mime types for the purchase invoices a client attaches for
+	 * customs: what an online shop hands out, and nothing executable.
+	 *
+	 * @return array
+	 */
+	public static function invoice_mimes() {
+		return array(
+			'pdf'          => 'application/pdf',
+			'jpg|jpeg|jpe' => 'image/jpeg',
+			'png'          => 'image/png',
+			'webp'         => 'image/webp',
+		);
+	}
+
+	/**
 	 * Allowed mime types for reception photos.
 	 *
 	 * @return array
@@ -111,6 +126,79 @@ class COLISLY_Files {
 			return new WP_Error( 'colisly_no_file', __( 'No file uploaded.', 'colisly' ) );
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in upload_entry().
+		return self::upload_entry( $_FILES[ $file_key ], $mimes );
+	}
+
+	/**
+	 * Returns the entries of a multi-file field, one per file.
+	 *
+	 * PHP posts `name="field[42][]"` as five parallel arrays keyed the same
+	 * way, which nothing downstream wants. This turns them back into one
+	 * array per file, for the sub-key asked, skipping the empty slots a
+	 * browser posts for a file input left blank.
+	 *
+	 * @param string     $file_key Key in $_FILES.
+	 * @param string|int $sub      Sub-key, for instance the parcel ID.
+	 * @return array[] File entries: name, type, tmp_name, error, size.
+	 */
+	public static function entries( $file_key, $sub ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- callers verify their own nonce before calling.
+		if ( empty( $_FILES[ $file_key ] ) || ! is_array( $_FILES[ $file_key ]['name'] ) ) {
+			return array();
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in upload_entry().
+		$field   = $_FILES[ $file_key ];
+		$entries = array();
+
+		if ( ! isset( $field['name'][ $sub ] ) || ! is_array( $field['name'][ $sub ] ) ) {
+			return array();
+		}
+
+		foreach ( $field['name'][ $sub ] as $i => $name ) {
+			if ( '' === (string) $name ) {
+				continue;
+			}
+
+			$entries[] = array(
+				'name'     => $name,
+				'type'     => isset( $field['type'][ $sub ][ $i ] ) ? $field['type'][ $sub ][ $i ] : '',
+				'tmp_name' => isset( $field['tmp_name'][ $sub ][ $i ] ) ? $field['tmp_name'][ $sub ][ $i ] : '',
+				'error'    => isset( $field['error'][ $sub ][ $i ] ) ? (int) $field['error'][ $sub ][ $i ] : 0,
+				'size'     => isset( $field['size'][ $sub ][ $i ] ) ? (int) $field['size'][ $sub ][ $i ] : 0,
+			);
+		}
+
+		return $entries;
+	}
+
+	/**
+	 * Moves one uploaded file entry into the private directory.
+	 *
+	 * @param array $file      One $_FILES entry: name, type, tmp_name, error, size.
+	 * @param array $mimes     Allowed mime types (extension pattern => type).
+	 * @param int   $max_bytes Size cap, 0 for the server limit only.
+	 * @param bool  $sideload  Take a local file rather than an HTTP upload.
+	 * @return array|WP_Error Same shape as upload().
+	 */
+	public static function upload_entry( $file, $mimes, $max_bytes = 0, $sideload = false ) {
+		if ( empty( $file['name'] ) ) {
+			return new WP_Error( 'colisly_no_file', __( 'No file uploaded.', 'colisly' ) );
+		}
+
+		if ( $max_bytes > 0 && isset( $file['size'] ) && (int) $file['size'] > $max_bytes ) {
+			return new WP_Error(
+				'colisly_file_too_large',
+				sprintf(
+					/* translators: 1: file name, 2: size limit. */
+					__( 'File %1$s is too large (limit %2$s).', 'colisly' ),
+					sanitize_file_name( (string) $file['name'] ),
+					size_format( $max_bytes )
+				)
+			);
+		}
+
 		if ( ! self::ensure_dir() ) {
 			return new WP_Error( 'colisly_dir_error', __( 'The protected storage directory could not be created.', 'colisly' ) );
 		}
@@ -127,25 +215,22 @@ class COLISLY_Files {
 
 		add_filter( 'upload_dir', $to_private );
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- callers verify their own nonce before calling.
-		$file = array_map( 'sanitize_text_field', wp_unslash( $_FILES[ $file_key ] ) );
+		$clean = array_map( 'sanitize_text_field', wp_unslash( $file ) );
 		// tmp_name must not be sanitized: it is a server-generated path.
-		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
-		$file['tmp_name'] = isset( $_FILES[ $file_key ]['tmp_name'] ) ? $_FILES[ $file_key ]['tmp_name'] : '';
+		$clean['tmp_name'] = isset( $file['tmp_name'] ) ? $file['tmp_name'] : '';
 
-		$original_name = sanitize_file_name( $file['name'] );
+		$original_name = sanitize_file_name( $clean['name'] );
 
-		$result = wp_handle_upload(
-			$file,
-			array(
-				'test_form'                => false,
-				'mimes'                    => $mimes,
-				'unique_filename_callback' => static function ( $dir, $name, $ext ) {
-					// Random, non-guessable file name (defence in depth).
-					return gmdate( 'Ymd' ) . '-' . wp_generate_password( 24, false ) . strtolower( $ext );
-				},
-			)
+		$overrides = array(
+			'test_form'                => false,
+			'mimes'                    => $mimes,
+			'unique_filename_callback' => static function ( $dir, $name, $ext ) {
+				// Random, non-guessable file name (defence in depth).
+				return gmdate( 'Ymd' ) . '-' . wp_generate_password( 24, false ) . strtolower( $ext );
+			},
 		);
+
+		$result = $sideload ? wp_handle_sideload( $clean, $overrides ) : wp_handle_upload( $clean, $overrides );
 
 		remove_filter( 'upload_dir', $to_private );
 

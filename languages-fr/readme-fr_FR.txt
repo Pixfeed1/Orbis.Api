@@ -193,6 +193,26 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.13.0 =
+* Nouveau : factures d'achat pour la douane. Hors UE, la douane réclame la
+  facture commerciale à côté de la déclaration, et seul le client l'a. Il la
+  joint à chaque colis, sur la demande d'expédition ou sur l'onglet douane, en
+  PDF ou en image, plusieurs si besoin. Le réexpéditeur retrouve les factures
+  sur le colis et sur l'expédition, le formulaire douanier imprimé indique
+  combien sont jointes, et le client les relit depuis ses documents. Rangées
+  dans le dossier privé comme tout document, servies uniquement par le
+  téléchargement authentifié, couvertes par l'export et l'effacement RGPD.
+* Chaque transporteur affiche désormais ce qu'il facturerait pour les colis
+  cochés, directement dans la liste des transporteurs, pour que le client
+  compare avant de choisir au lieu de les essayer un par un. Le montant suit
+  les mêmes tranches, zones et règle volumétrique que le paiement.
+* Une ligne déclarée doit porter une valeur. La douane taxe dessus, une ligne
+  sans valeur ne déclarait donc rien d'utilisable ; elle est maintenant refusée
+  en nommant le colis et le contenu, sur la demande comme sur l'onglet douane.
+  Le formulaire réclame la valeur dès que le contenu est rempli.
+* Deux colonnes et un index sont ajoutés à la table des documents à la mise à
+  jour.
+
 = 1.12.0 =
 * Un client sans fiche peut être choisi directement depuis le formulaire de
   création de colis. La recherche propose désormais les comptes inscrits sur la
@@ -423,6 +443,12 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.13.0 =
+Les clients peuvent joindre leurs factures d'achat pour la douane, chaque
+transporteur affiche son prix dans la liste, et une ligne déclarée doit porter
+une valeur. Deux colonnes sont ajoutées à la table des documents à la mise à
+jour.
 
 = 1.12.0 =
 Les nouveaux clients se choisissent directement sur le formulaire de colis ;

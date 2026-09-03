@@ -1033,7 +1033,7 @@ colisly_check( 'Douane : quantite totale', 5 === $colisly_cu_totals['quantity'] 
 colisly_check( 'Douane : poids net total', 2.4 === $colisly_cu_totals['weight'] );
 colisly_check( 'Douane : valeur totale', 125.0 === $colisly_cu_totals['value'] );
 
-COLISLY_Customs::save( $colisly_cu_parcel, array( array( 'description' => 'Livres' ) ) );
+COLISLY_Customs::save( $colisly_cu_parcel, array( array( 'description' => 'Livres', 'unit_value' => 12 ) ) );
 colisly_check( 'Douane : declaration remplacee et non cumulee', 1 === count( COLISLY_Customs::items( $colisly_cu_parcel ) ) );
 
 // Le blocage a l'expedition.
@@ -1058,7 +1058,7 @@ $colisly_cu_p3 = COLISLY_Parcels::create(
 		'weight'    => 2,
 	)
 );
-COLISLY_Customs::save( $colisly_cu_p3, array( array( 'description' => 'Vetements' ) ) );
+COLISLY_Customs::save( $colisly_cu_p3, array( array( 'description' => 'Vetements', 'unit_value' => 30 ) ) );
 colisly_check(
 	'Douane : expedition acceptee une fois le colis declare',
 	! is_wp_error( COLISLY_Shipments::request( $colisly_cu_client, array( $colisly_cu_p3 ), 'colissimo', 0, 'GP' ) )
@@ -1071,7 +1071,7 @@ $colisly_cu_p4 = COLISLY_Parcels::create(
 		'weight'    => 1,
 	)
 );
-COLISLY_Customs::save( $colisly_cu_p4, array( array( 'description' => 'Objet declare' ) ) );
+COLISLY_Customs::save( $colisly_cu_p4, array( array( 'description' => 'Objet declare', 'unit_value' => 5 ) ) );
 $colisly_cu_user  = get_userdata( (int) COLISLY_Clients::get( $colisly_cu_client )->user_id );
 $colisly_cu_export = COLISLY_Privacy::export( $colisly_cu_user->user_email, 1 );
 $colisly_cu_found  = false;
@@ -1178,11 +1178,11 @@ colisly_check(
 	5 === COLISLY_Customs::save(
 		$colisly_cat_parcel,
 		array(
-			array( 'description' => 'A' ),
-			array( 'description' => 'B' ),
-			array( 'description' => 'C' ),
-			array( 'description' => 'D' ),
-			array( 'description' => 'E' ),
+			array( 'description' => 'A', 'unit_value' => 1 ),
+			array( 'description' => 'B', 'unit_value' => 1 ),
+			array( 'description' => 'C', 'unit_value' => 1 ),
+			array( 'description' => 'D', 'unit_value' => 1 ),
+			array( 'description' => 'E', 'unit_value' => 1 ),
 		)
 	)
 );
@@ -1703,6 +1703,116 @@ colisly_check( 'Sans fiche : une fois la fiche creee, il est trouve comme client
 $colisly_nf_src = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-parcels.php' );
 colisly_check( 'Garde : le formulaire de colis transmet le compte sans fiche', false !== strpos( $colisly_nf_src, 'name="client_user_id"' ) );
 colisly_check( 'Garde : le traitement cree la fiche avec le premier colis', false !== strpos( $colisly_nf_src, 'COLISLY_Clients::create( $user_id )' ) );
+
+/*
+ * Valeur obligatoire.
+ *
+ * Une ligne declaree sans valeur ne sert a rien a la douane, qui taxe sur la
+ * valeur. Elle est refusee en nommant le colis et le contenu, plutot
+ * qu'enregistree comme valant zero.
+ */
+$colisly_val_client = COLISLY_Clients::create(
+	wp_insert_user(
+		array(
+			'user_login' => 'val-' . wp_generate_password( 6, false ),
+			'user_email' => 'val-' . wp_generate_password( 6, false ) . '@example.com',
+			'user_pass'  => wp_generate_password(),
+			'role'       => 'customer',
+		)
+	)
+);
+$colisly_val_parcel = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_val_client,
+		'weight'    => 1,
+	)
+);
+$colisly_val_ref = COLISLY_Parcels::get( $colisly_val_parcel )->reference;
+
+$colisly_val_err = COLISLY_Customs::save( $colisly_val_parcel, array( array( 'description' => 'Montre' ) ) );
+colisly_check( 'Valeur obligatoire : une ligne sans valeur est refusee', is_wp_error( $colisly_val_err ) );
+colisly_check( 'Valeur obligatoire : le refus nomme le colis', is_wp_error( $colisly_val_err ) && false !== strpos( $colisly_val_err->get_error_message(), $colisly_val_ref ) );
+colisly_check( 'Valeur obligatoire : le refus nomme le contenu', is_wp_error( $colisly_val_err ) && false !== strpos( $colisly_val_err->get_error_message(), 'Montre' ) );
+colisly_check( 'Valeur obligatoire : zero vaut absence', is_wp_error( COLISLY_Customs::save( $colisly_val_parcel, array( array( 'description' => 'Montre', 'unit_value' => '0' ) ) ) ) );
+colisly_check( 'Valeur obligatoire : rien n a ete enregistre', ! COLISLY_Customs::declared( $colisly_val_parcel ) );
+colisly_check( 'Valeur obligatoire : une valeur a la francaise passe', 1 === COLISLY_Customs::save( $colisly_val_parcel, array( array( 'description' => 'Montre', 'unit_value' => '149,90' ) ) ) );
+colisly_check( 'Valeur obligatoire : une ligne vide reste ignoree sans erreur', 1 === COLISLY_Customs::save( $colisly_val_parcel, array( array( 'description' => 'Montre', 'unit_value' => 10 ), array( 'description' => '', 'unit_value' => '' ) ) ) );
+
+/*
+ * Factures d'achat.
+ *
+ * La douane hors UE reclame la facture commerciale a cote du CN23, et seul le
+ * client l'a. Elle est deposee sur le colis, rangee comme document du client,
+ * visible par lui, et retrouvee par l'operateur sur le colis et l'expedition.
+ */
+$colisly_inv_tmp = wp_tempnam( 'facture.pdf' );
+file_put_contents( $colisly_inv_tmp, "%PDF-1.4\n1 0 obj << /Type /Catalog >> endobj\ntrailer << /Root 1 0 R >>\n%%EOF\n" ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+$colisly_inv_entry = array(
+	'name'     => 'facture-amazon.pdf',
+	'type'     => 'application/pdf',
+	'tmp_name' => $colisly_inv_tmp,
+	'error'    => 0,
+	'size'     => filesize( $colisly_inv_tmp ),
+);
+
+$colisly_inv_n = COLISLY_Customs::attach_invoices( $colisly_val_parcel, array( $colisly_inv_entry ), true );
+colisly_check( 'Facture : une facture est jointe', 1 === $colisly_inv_n );
+
+$colisly_inv_rows = COLISLY_Customs::invoices( $colisly_val_parcel );
+colisly_check( 'Facture : retrouvee sur le colis', 1 === count( $colisly_inv_rows ) );
+colisly_check( 'Facture : rangee comme facture', ! empty( $colisly_inv_rows ) && 'invoice' === $colisly_inv_rows[0]->kind );
+colisly_check( 'Facture : le titre nomme le colis et le fichier', ! empty( $colisly_inv_rows ) && false !== strpos( $colisly_inv_rows[0]->title, $colisly_val_ref ) && false !== strpos( $colisly_inv_rows[0]->title, 'facture-amazon.pdf' ) );
+colisly_check( 'Facture : le fichier est dans le dossier prive', ! empty( $colisly_inv_rows ) && false !== COLISLY_Files::resolve( $colisly_inv_rows[0]->file_path ) );
+colisly_check( 'Facture : nom de fichier aleatoire, pas l original', ! empty( $colisly_inv_rows ) && 'facture-amazon.pdf' !== $colisly_inv_rows[0]->file_path );
+
+$colisly_val_row = COLISLY_Clients::get( $colisly_val_client );
+colisly_check( 'Facture : le client peut la relire', ! empty( $colisly_inv_rows ) && COLISLY_Downloads::user_can_download_document( $colisly_inv_rows[0], (int) $colisly_val_row->user_id ) );
+colisly_check( 'Facture : un autre client ne peut pas', ! empty( $colisly_inv_rows ) && ! COLISLY_Downloads::user_can_download_document( $colisly_inv_rows[0], (int) $colisly_srch_user ) );
+colisly_check( 'Facture : listee dans les documents du client', 1 === count( array_filter( COLISLY_Documents::for_client( $colisly_val_client, true ), static function ( $d ) { return 'invoice' === $d->kind; } ) ) );
+
+// Un fichier qui n est pas une facture (executable deguise) est refuse, et
+// un fichier trop lourd aussi, avant meme d etre deplace.
+$colisly_bad_tmp = wp_tempnam( 'virus.pdf' );
+file_put_contents( $colisly_bad_tmp, "<?php echo 'x';" ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+$colisly_bad = COLISLY_Customs::attach_invoices(
+	$colisly_val_parcel,
+	array( array( 'name' => 'virus.pdf', 'type' => 'application/pdf', 'tmp_name' => $colisly_bad_tmp, 'error' => 0, 'size' => 20 ) ),
+	true
+);
+colisly_check( 'Facture : un faux PDF est refuse', is_wp_error( $colisly_bad ) );
+colisly_check( 'Facture : rien de plus n a ete range', 1 === count( COLISLY_Customs::invoices( $colisly_val_parcel ) ) );
+$colisly_big = COLISLY_Customs::attach_invoices(
+	$colisly_val_parcel,
+	array( array( 'name' => 'gros.pdf', 'type' => 'application/pdf', 'tmp_name' => $colisly_inv_tmp, 'error' => 0, 'size' => COLISLY_Customs::invoice_max_bytes() + 1 ) ),
+	true
+);
+colisly_check( 'Facture : un fichier trop lourd est refuse', is_wp_error( $colisly_big ) && 'colisly_file_too_large' === $colisly_big->get_error_code() );
+
+// L export RGPD cite le colis de la facture, et l effacement l emporte avec
+// les autres documents : la regle de 1.6.7 tient.
+$colisly_inv_export = COLISLY_Privacy::export( get_userdata( (int) $colisly_val_row->user_id )->user_email );
+$colisly_inv_found  = false;
+foreach ( $colisly_inv_export['data'] as $colisly_item ) {
+	if ( 'colisly_documents' !== $colisly_item['group_id'] ) {
+		continue;
+	}
+	foreach ( $colisly_item['data'] as $colisly_field ) {
+		if ( $colisly_val_ref === $colisly_field['value'] ) {
+			$colisly_inv_found = true;
+		}
+	}
+}
+colisly_check( 'Facture : l export RGPD cite le colis', $colisly_inv_found );
+
+// Gardes : les deux formulaires envoient des fichiers et portent le champ.
+$colisly_inv_src = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/frontend/class-colisly-account.php' );
+colisly_check( 'Garde : la demande d expedition accepte les fichiers', false !== strpos( $colisly_inv_src, 'class="colisly-request-form" enctype="multipart/form-data"' ) );
+colisly_check( 'Garde : l onglet douane accepte les fichiers', false !== strpos( $colisly_inv_src, 'class="colisly-customs-form" enctype="multipart/form-data"' ) );
+colisly_check( 'Garde : le champ facture est present', false !== strpos( $colisly_inv_src, 'name="colisly_invoices[' ) );
+colisly_check( 'Garde : une declaration refusee arrete la demande', false !== strpos( $colisly_inv_src, 'is_wp_error( $colisly_saved )' ) );
+
+$colisly_js_src = file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/front.js' );
+colisly_check( 'Garde : chaque transporteur affiche son prix', false !== strpos( $colisly_js_src, 'updateCarrierPrices' ) && false !== strpos( $colisly_inv_src, 'data-name=' ) );
 
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 

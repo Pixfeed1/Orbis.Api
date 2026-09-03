@@ -93,3 +93,16 @@
 	line-height: 1.5;
 	margin-bottom: 0.5em;
 }
+
+/*
+ * Invoices sit under the declaration lines of the same parcel: a small
+ * block, its own margin, so it reads as part of that parcel and not as a
+ * new section.
+ */
+.colisly-invoices {
+	margin: 0.5em 0 1.5em;
+}
+
+.colisly-invoices .colisly-documents-list {
+	margin-bottom: 0.5em;
+}
