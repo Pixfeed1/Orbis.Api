@@ -193,6 +193,13 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.14.1 =
+* Corrigé : le tableau des transporteurs dans les réglages était écrasé en
+  champs de deux caractères depuis que la 1.14.0 lui a ajouté ses trois
+  colonnes de limites, une largeur maximale prévue pour sept colonnes ayant
+  été gardée pour dix. Le tableau prend maintenant la largeur qu'il lui faut
+  et défile latéralement quand l'écran en a moins.
+
 = 1.14.0 =
 * Nouveau : limites des transporteurs. Chaque transporteur peut porter un
   poids maximum, une longueur maximum et un développé maximum (longueur plus
@@ -472,6 +479,10 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.14.1 =
+Corrige le tableau des transporteurs écrasé dans les réglages. Aucun
+changement de base de données.
 
 = 1.14.0 =
 Les transporteurs peuvent porter des limites de poids et de dimensions, et la

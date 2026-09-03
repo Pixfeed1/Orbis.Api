@@ -172,6 +172,7 @@ class COLISLY_Admin_Settings {
 				<p class="description"><?php esc_html_e( 'Volumetric: express carriers price bulk rather than mass. Tick the box and the transport is billed on whichever is greater, the real weight or length x width x height divided by the divisor, parcel by parcel. A parcel whose dimensions were not entered is billed on its real weight.', 'colisly' ); ?></p>
 				<p class="description"><?php esc_html_e( 'Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are optional: they only apply to a carrier with no grid, and beyond the last bracket of a carrier that has one. Leave them empty if you price by grid.', 'colisly' ); ?></p>
 				<p class="description"><?php esc_html_e( 'Limits: what the carrier physically takes. Maximum weight applies to the whole shipment, since grouped parcels leave in one carton; maximum length and girth (length plus twice the width plus twice the height, in cm) apply to each parcel. Leave empty for no limit. A parcel or shipment beyond a limit cannot be requested with that carrier.', 'colisly' ); ?></p>
+				<div class="colisly-table-wrap">
 				<table class="widefat fixed striped colisly-carriers-table">
 					<thead>
 						<tr>
@@ -245,6 +246,7 @@ class COLISLY_Admin_Settings {
 						<?php endforeach; ?>
 					</tbody>
 				</table>
+				</div>
 				<p><button type="button" class="button colisly-add-row"><?php esc_html_e( 'Add a carrier', 'colisly' ); ?></button></p>
 
 				<h2><?php esc_html_e( 'Carrier weight brackets', 'colisly' ); ?></h2>

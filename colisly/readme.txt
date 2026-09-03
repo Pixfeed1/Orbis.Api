@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.14.0
+Stable tag: 1.14.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.14.1 =
+* Fixed: the carriers table in the settings was squeezed into fields two characters wide since 1.14.0 added its three limit columns, a width cap that suited seven columns being kept for ten. The table now takes the width it needs and scrolls sideways when the screen has less.
+
 = 1.14.0 =
 * New: carrier limits. Each carrier can carry a maximum weight, a maximum length and a maximum girth (length plus twice the width plus twice the height), the figures carriers publish and refuse beyond at the counter. The weight applies to the whole shipment, since grouped parcels leave in one carton; the dimensions to each parcel, on those entered at reception. A carrier the ticked parcels exceed is greyed out in the client's list, and a request that would force it is refused naming the parcel and the limit. A parcel whose dimensions were never entered is not refused on a measurement nobody took. All three are optional and empty by default.
 * The weight bracket page reads in the order it applies: each carrier shows its zone grids first, then a grid titled "all other destinations", with a note saying to leave it empty when every destination served is in a zone. Nothing changes in how prices are computed; the page only says what it does.
@@ -199,6 +202,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.14.1 =
+Fixes the squeezed carriers table in the settings. No database change.
 
 = 1.14.0 =
 Carriers can carry weight and dimension limits, and the bracket page reads

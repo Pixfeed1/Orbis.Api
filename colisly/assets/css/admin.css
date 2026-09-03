@@ -127,9 +127,27 @@
 	font-size: 12px;
 }
 
-.colisly-tiers-table,
-.colisly-carriers-table {
+.colisly-tiers-table {
 	max-width: 640px;
+}
+
+/*
+ * The carriers table grew from seven columns to ten with the limits, and a
+ * 640px cap that suited seven squeezed ten into fields two characters wide.
+ * It takes the width it needs and scrolls sideways inside its wrapper when
+ * the screen has less.
+ */
+.colisly-carriers-table {
+	max-width: none;
+	min-width: 1180px;
+	width: 100%;
+}
+
+/* The two checkbox columns need no room; what they give up lets a name
+   like "Chronopost" show whole. */
+.colisly-carriers-table th:nth-child(5),
+.colisly-carriers-table th:nth-child(10) {
+	width: 7%;
 }
 
 /* Without this the fields keep their intrinsic width and spill out of the

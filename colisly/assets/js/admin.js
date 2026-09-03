@@ -29,7 +29,10 @@
 	 * the whole grid enterable in one pass.
 	 */
 	$( document ).on( 'click', '.colisly-add-row', function () {
-		var $table = $( this ).closest( 'p' ).prev( 'table' );
+		// The table may sit inside a scrolling wrapper, as the carriers
+		// table does since it grew to ten columns.
+		var $prev = $( this ).closest( 'p' ).prev();
+		var $table = $prev.is( 'table' ) ? $prev : $prev.find( 'table' ).first();
 		var $last = $table.find( 'tbody tr' ).last();
 
 		if ( ! $last.length ) {
