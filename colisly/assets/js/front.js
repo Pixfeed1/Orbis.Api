@@ -152,11 +152,6 @@
 		estimate.hidden = false;
 	}
 
-	var countrySelect = document.getElementById( 'colisly-country' );
-	if ( countrySelect ) {
-		countrySelect.addEventListener( 'change', updateEstimate );
-	}
-
 	var insuranceSelect = document.getElementById( 'colisly-insurance' );
 	if ( insuranceSelect ) {
 		insuranceSelect.addEventListener( 'change', updateEstimate );
@@ -170,4 +165,26 @@
 	} );
 
 	select.addEventListener( 'change', updateEstimate );
+} )();
+
+/**
+ * Confirmation before a client withdraws his own shipment request.
+ *
+ * Its own closure: the estimate above bails out on any page without the
+ * request form, and the shipments list is exactly such a page.
+ */
+( function () {
+	'use strict';
+
+	document.addEventListener( 'click', function ( event ) {
+		var button = event.target.closest ? event.target.closest( '[data-colisly-confirm]' ) : null;
+
+		if ( ! button ) {
+			return;
+		}
+
+		if ( ! window.confirm( button.getAttribute( 'data-colisly-confirm' ) ) ) {
+			event.preventDefault();
+		}
+	} );
 } )();

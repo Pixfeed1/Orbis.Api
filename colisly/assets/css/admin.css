@@ -177,3 +177,28 @@
 	font-weight: 600;
 	margin-top: 2px;
 }
+
+/*
+ * Zone countries: the field holds codes, the picker adds them by name and the
+ * line underneath reads them back, so a typo is visible before saving.
+ */
+.colisly-zones-table .colisly-zone-countries,
+.colisly-zones-table .colisly-country-picker {
+	max-width: 100%;
+	width: 100%;
+}
+
+.colisly-zones-table .colisly-country-picker {
+	margin-top: 4px;
+}
+
+.colisly-country-preview {
+	color: #646970;
+	display: block;
+	font-size: 12px;
+	margin-top: 4px;
+}
+
+.colisly-country-preview.colisly-country-unknown {
+	color: #b32d2e;
+}

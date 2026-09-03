@@ -52,6 +52,7 @@
 			$input.removeAttr( 'id' );
 		} );
 		$row.find( 'label' ).removeAttr( 'for' );
+		$row.find( '.colisly-country-preview' ).text( '' ).removeClass( 'colisly-country-unknown' );
 
 		$table.find( 'tbody' ).append( $row );
 		$row.find( 'input' ).first().trigger( 'focus' );
@@ -67,6 +68,74 @@
 			.closest( 'td' )
 			.find( '.colisly-toggle-value' )
 			.val( this.checked ? '1' : '0' );
+	} );
+
+	/*
+	 * Zone countries are stored as the two-letter codes a carrier grid is
+	 * keyed on, but nobody remembers that YT is Mayotte and GP Guadeloupe.
+	 * A picker adds them by name, and the line under the field reads back
+	 * what the codes currently in it actually mean, typos included.
+	 */
+	function colislyCodes( value ) {
+		return String( value || '' )
+			.toUpperCase()
+			.split( /[\s,;]+/ )
+			.filter( Boolean );
+	}
+
+	function colislyRenderCountries( $input ) {
+		var names = window.colislyCountries;
+		var $preview = $input.closest( 'td' ).find( '.colisly-country-preview' );
+
+		if ( ! names || ! $preview.length ) {
+			return;
+		}
+
+		var unknown = [];
+		var labels = colislyCodes( $input.val() ).map( function ( code ) {
+			if ( names[ code ] ) {
+				return names[ code ];
+			}
+
+			unknown.push( code );
+			return code;
+		} );
+
+		var text = labels.join( ', ' );
+
+		if ( unknown.length && window.colislyAdmin ) {
+			text += ' (' + window.colislyAdmin.i18n.unknownCode.replace( '%s', unknown.join( ', ' ) ) + ')';
+		}
+
+		$preview.text( text ).toggleClass( 'colisly-country-unknown', unknown.length > 0 );
+	}
+
+	$( document ).on( 'input', '.colisly-zone-countries', function () {
+		colislyRenderCountries( $( this ) );
+	} );
+
+	$( document ).on( 'change', '.colisly-country-picker', function () {
+		var $picker = $( this );
+		var code = $picker.val();
+
+		if ( ! code ) {
+			return;
+		}
+
+		var $input = $picker.closest( 'td' ).find( '.colisly-zone-countries' );
+		var codes = colislyCodes( $input.val() );
+
+		if ( -1 === codes.indexOf( code ) ) {
+			codes.push( code );
+		}
+
+		$input.val( codes.join( ', ' ) );
+		$picker.val( '' );
+		colislyRenderCountries( $input );
+	} );
+
+	$( '.colisly-zone-countries' ).each( function () {
+		colislyRenderCountries( $( this ) );
 	} );
 
 	// Live client search on the parcel creation form.

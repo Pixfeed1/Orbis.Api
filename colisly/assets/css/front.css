@@ -77,3 +77,19 @@
 	color: #767676;
 	font-size: 0.9em;
 }
+
+/*
+ * The actions column holds a link and a form side by side. A form is a block
+ * by default, which would have dropped "Cancel" onto its own line under
+ * "Pay" and read as a second, unrelated control.
+ */
+.colisly-inline-form {
+	display: inline-block;
+	margin: 0;
+}
+
+.colisly-address {
+	font-style: normal;
+	line-height: 1.5;
+	margin-bottom: 0.5em;
+}

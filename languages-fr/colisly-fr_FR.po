@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.9.1\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.10.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -712,9 +712,6 @@ msgstr "Numéro de suivi"
 msgid "No shipments yet."
 msgstr "Aucune expédition pour le moment."
 
-msgid "Payment"
-msgstr "Paiement"
-
 msgid "Pay"
 msgstr "Payer"
 
@@ -963,17 +960,8 @@ msgstr "Pays"
 msgid "Add a zone"
 msgstr "Ajouter une zone"
 
-msgid "Delivered to:"
-msgstr "Livré vers :"
-
 msgid "%1$s — zone %2$s"
 msgstr "%1$s — zone %2$s"
-
-msgid "A carrier does not charge the same to reship next door and to the other side of the world. Group your destinations here, then price each carrier per zone below. Countries are two-letter codes, separated by commas: FR, RE, YT, GP. A country you do not list keeps the carrier default grid."
-msgstr "Un transporteur ne facture pas la même chose pour réexpédier à côté et à l’autre bout du monde. Regroupez vos destinations ici, puis tarifez chaque transporteur par zone ci-dessous. Les pays s’écrivent en deux lettres, séparés par des virgules : FR, RE, YT, GP. Un pays que vous ne listez pas conserve la grille par défaut du transporteur."
-
-msgid "Transport is priced on the destination. It starts on the address of your account."
-msgstr "Le transport est tarifé selon la destination. Elle part de l’adresse de votre compte."
 
 msgid "Volumetric"
 msgstr "Volumétrique"
@@ -1102,3 +1090,46 @@ msgstr "Une catégorie par ligne. Laissez vide et les clients décrivent le cont
 
 msgid "Required for some destinations. Declare the contents of the parcels you are sending; a parcel left undeclared will be refused if its destination asks for one."
 msgstr "Exigée pour certaines destinations. Déclarez le contenu des colis que vous envoyez ; un colis laissé sans déclaration sera refusé si sa destination en exige une."
+
+msgid "A carrier does not charge the same to reship next door and to the other side of the world. Group your destinations here, then price each carrier per zone below. Pick the countries by name from the list, or type their two-letter codes separated by commas; the names of the codes you entered are spelled out under the field. A country you do not list keeps the carrier default grid."
+msgstr "Un transporteur ne facture pas la même chose pour réexpédier à côté et à l’autre bout du monde. Regroupez vos destinations ici, puis tarifez chaque transporteur par zone ci-dessous. Choisissez les pays par leur nom dans la liste, ou saisissez leurs codes à deux lettres séparés par des virgules ; les noms des codes saisis sont rappelés sous le champ. Un pays que vous ne listez pas conserve la grille par défaut du transporteur."
+
+msgid "Add a country to this zone"
+msgstr "Ajouter un pays à cette zone"
+
+msgid "Add a country…"
+msgstr "Ajouter un pays…"
+
+msgid "unrecognised: %s"
+msgstr "non reconnu : %s"
+
+msgid "Your shipment request has been withdrawn and the parcels are back in your stock."
+msgstr "Votre demande d’expédition a été retirée et les colis sont de retour dans votre stock."
+
+msgid "Actions"
+msgstr "Actions"
+
+msgid "Withdraw this shipment request? The parcels go back into your stock."
+msgstr "Retirer cette demande d’expédition ? Les colis retournent dans votre stock."
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Your delivery address is incomplete, so no shipment can be requested yet. Still missing: %s."
+msgstr "Votre adresse de livraison est incomplète, aucune expédition ne peut donc être demandée pour l’instant. Il manque encore : %s."
+
+msgid "Complete my delivery address"
+msgstr "Compléter mon adresse de livraison"
+
+msgid "Delivered to"
+msgstr "Livré à"
+
+msgid "Your parcels are reshipped to this address, and the transport is priced on it."
+msgstr "Vos colis sont réexpédiés à cette adresse, et le transport est tarifé sur celle-ci."
+
+msgid "Change my delivery address"
+msgstr "Modifier mon adresse de livraison"
+
+msgid "This shipment can no longer be cancelled. Please get in touch with us."
+msgstr "Cette expédition ne peut plus être annulée. Merci de nous contacter."
+

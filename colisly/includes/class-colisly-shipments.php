@@ -241,6 +241,120 @@ class COLISLY_Shipments {
 	}
 
 	/**
+	 * Returns the address the parcels of a client will be reshipped to.
+	 *
+	 * A forwarder ships to one address: the one on the client's account. The
+	 * shipping address is that address; billing is the fallback for accounts
+	 * that only ever filled one, which is the common case when the shop does
+	 * not ask for a separate delivery address at checkout. The two sets are
+	 * never mixed, since half a street from one and half a town from the other
+	 * would produce an address that exists nowhere.
+	 *
+	 * @param object $client Client row.
+	 * @return array Address in the WooCommerce field shape.
+	 */
+	public static function client_address( $client ) {
+		$user_id = (int) $client->user_id;
+		$fields  = array( 'first_name', 'last_name', 'company', 'address_1', 'address_2', 'city', 'state', 'postcode', 'country', 'phone' );
+
+		$prefix  = '' !== trim( (string) get_user_meta( $user_id, 'shipping_address_1', true ) ) ? 'shipping_' : 'billing_';
+		$address = array();
+
+		foreach ( $fields as $field ) {
+			$address[ $field ] = trim( (string) get_user_meta( $user_id, $prefix . $field, true ) );
+		}
+
+		// A delivery address is routinely saved without repeating the name,
+		// which the account holds anyway. Taking it from billing, then from
+		// the client record, keeps the parcel addressed to somebody.
+		if ( '' === $address['first_name'] && '' === $address['last_name'] ) {
+			$address['first_name'] = trim( (string) get_user_meta( $user_id, 'billing_first_name', true ) );
+			$address['last_name']  = trim( (string) get_user_meta( $user_id, 'billing_last_name', true ) );
+		}
+		if ( '' === $address['first_name'] && '' === $address['last_name'] ) {
+			// The client row carries no name of its own; the account does.
+			$user = get_userdata( $user_id );
+			if ( $user ) {
+				$address['last_name'] = trim( (string) $user->display_name );
+			}
+		}
+
+		/**
+		 * Filters the delivery address of a client.
+		 *
+		 * @param array  $address Address fields.
+		 * @param object $client  Client row.
+		 */
+		return apply_filters( 'colisly_client_address', $address, $client );
+	}
+
+	/**
+	 * Returns the labels of the delivery address fields still to be filled.
+	 *
+	 * What a carrier insists on depends on the destination: France needs a
+	 * postcode and no state, Madagascar needs both. WooCommerce already knows
+	 * that country by country, so the requirement is read from it rather than
+	 * guessed here.
+	 *
+	 * @param array $address Address fields.
+	 * @return string[] Labels of the missing fields, empty when complete.
+	 */
+	public static function address_missing_fields( $address ) {
+		$missing = array();
+
+		if ( ! function_exists( 'WC' ) || ! WC()->countries ) {
+			// Without WooCommerce there is no locale to consult, so only the
+			// lines no carrier anywhere can do without are demanded.
+			foreach ( array( 'address_1', 'city', 'country' ) as $field ) {
+				if ( empty( $address[ $field ] ) ) {
+					$missing[] = $field;
+				}
+			}
+
+			return $missing;
+		}
+
+		$country = isset( $address['country'] ) ? $address['country'] : '';
+		$fields  = WC()->countries->get_address_fields( $country, 'shipping_' );
+
+		foreach ( $fields as $key => $field ) {
+			if ( empty( $field['required'] ) ) {
+				continue;
+			}
+
+			$name = substr( $key, strlen( 'shipping_' ) );
+
+			if ( empty( $address[ $name ] ) ) {
+				$missing[] = isset( $field['label'] ) ? $field['label'] : $name;
+			}
+		}
+
+		return $missing;
+	}
+
+	/**
+	 * Whether a client may still call off a shipment request himself.
+	 *
+	 * A request that has not been paid has cost nobody anything, so the client
+	 * withdraws it on his own. Once it is paid the parcels are being handled,
+	 * and calling it off becomes a conversation with the forwarder.
+	 *
+	 * @param object $shipment Shipment row.
+	 * @return bool
+	 */
+	public static function client_can_cancel( $shipment ) {
+		$cancellable = in_array( $shipment->status, array( 'requested', 'awaiting_payment' ), true );
+
+		/**
+		 * Filters whether a client may cancel his own shipment request.
+		 *
+		 * @param bool   $cancellable Whether the request can be withdrawn.
+		 * @param object $shipment    Shipment row.
+		 */
+		return (bool) apply_filters( 'colisly_client_can_cancel_shipment', $cancellable, $shipment );
+	}
+
+	/**
 	 * Formats a shipment reference from its numeric ID (e.g. EXP000001).
 	 *
 	 * @param int $id Shipment ID.

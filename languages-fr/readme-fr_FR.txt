@@ -193,6 +193,31 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.10.0 =
+* La demande d'expédition affiche désormais l'adresse de livraison vers laquelle
+  les colis partent réellement, et une demande ne peut plus être envoyée tant
+  que cette adresse est incomplète, les lignes manquantes étant nommées. Le
+  formulaire ne demandait qu'un pays de destination et rien d'autre : une
+  demande pouvait donc arriver chez le réexpéditeur sans aucune rue où livrer,
+  et un compte n'ayant jamais rempli qu'une adresse de facturation produisait
+  une commande sans destination du tout.
+* La destination est l'adresse elle-même plutôt qu'un menu séparé à côté. Les
+  deux pouvaient se contredire, le transport étant tarifé pour un pays pendant
+  que l'étiquette était imprimée pour un autre, et seule l'étiquette disait
+  vrai.
+* Un client peut retirer sa propre demande d'expédition tant qu'elle n'est pas
+  payée. C'était jusqu'ici une impasse : la demande restait dans les commandes à
+  régler sans rien d'autre à faire que la payer. Le retrait remet les colis en
+  stock et annule la commande impayée avec eux.
+* Les pays d'une zone se choisissent par leur nom dans la liste des pays connus
+  de la boutique, et les codes déjà présents dans le champ sont rappelés en
+  toutes lettres en dessous, les codes non reconnus étant signalés. Les codes à
+  deux lettres sont ce sur quoi une grille de transporteur est indexée, mais
+  personne n'est censé savoir que YT est Mayotte.
+* La déclaration douanière sur le formulaire de demande n'apparaît plus que
+  lorsque la destination en exige réellement une, au lieu de s'afficher pour
+  tous les clients dès qu'une seule zone réclamait des déclarations.
+
 = 1.9.1 =
 * La déclaration se remplit là où elle a sa place, sur la demande d'expédition,
   pour les colis qui partent. L'onglet séparé demeure pour les clients qui
@@ -358,6 +383,11 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.10.0 =
+La demande d'expédition affiche et exige une adresse de livraison complète, les
+clients peuvent retirer eux-mêmes une demande impayée, et les pays d'une zone se
+choisissent par leur nom. Aucun changement de base de données.
 
 = 1.9.1 =
 La déclaration douanière se remplit désormais sur la demande d'expédition, le

@@ -133,9 +133,17 @@ class COLISLY_Admin {
 					'groupingCol' => __( 'Grouping allowed', 'colisly' ),
 					'noteCol'     => __( 'Internal comment', 'colisly' ),
 					'noParcels'   => __( 'No parcels in stock for this client.', 'colisly' ),
+					/* translators: %s: comma separated list of unrecognised country codes. */
+					'unknownCode' => __( 'unrecognised: %s', 'colisly' ),
 				),
 			)
 		);
+
+		// The country list only serves the zones, so it is not carried onto
+		// every other screen of the plugin.
+		if ( false !== strpos( $hook, 'colisly-settings' ) && function_exists( 'WC' ) && WC()->countries ) {
+			wp_localize_script( 'colisly-admin', 'colislyCountries', WC()->countries->get_countries() );
+		}
 	}
 
 	/**

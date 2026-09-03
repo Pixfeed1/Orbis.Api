@@ -95,7 +95,13 @@ class COLISLY_Orders {
 		if ( ! empty( $billing ) ) {
 			$order->set_address( $billing, 'billing' );
 		}
-		$shipping = array_filter( $customer->get_shipping() );
+
+		// The delivery address is where the parcels are actually reshipped, so
+		// it is resolved the same way the request form displays it. Reading
+		// the shipping fields raw would have left the order with no address at
+		// all for the many accounts that only ever filled the billing one, and
+		// a forwarding order without a destination is worthless.
+		$shipping = array_filter( COLISLY_Shipments::client_address( $client ) );
 		if ( ! empty( $shipping ) ) {
 			$order->set_address( $shipping, 'shipping' );
 		}

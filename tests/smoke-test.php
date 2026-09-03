@@ -1208,6 +1208,176 @@ colisly_check( 'Valeur : total = somme des lignes', 120.0 === COLISLY_Customs::t
 list( $colisly_cat_settings['customs_categories'], $colisly_cat_settings['customs_max_lines'] ) = $colisly_cat_saved;
 COLISLY_Settings::update( $colisly_cat_settings );
 
+/*
+ * Adresse de livraison.
+ *
+ * Le formulaire ne demandait qu'un pays de destination : une demande pouvait
+ * donc arriver chez le reexpediteur sans aucune rue ou envoyer le colis. Pire,
+ * le pays choisi servait au tarif pendant que l'etiquette portait l'adresse du
+ * compte, et seule l'etiquette disait vrai. La destination est desormais
+ * l'adresse elle-meme.
+ */
+$colisly_addr_user = wp_insert_user(
+	array(
+		'user_login' => 'addr-' . wp_generate_password( 6, false ),
+		'user_email' => 'addr-' . wp_generate_password( 6, false ) . '@example.com',
+		'user_pass'  => wp_generate_password(),
+		'role'       => 'customer',
+	)
+);
+$colisly_addr_client = COLISLY_Clients::create( $colisly_addr_user );
+$colisly_addr_row    = COLISLY_Clients::get( $colisly_addr_client );
+
+$colisly_addr_empty = COLISLY_Shipments::address_missing_fields( COLISLY_Shipments::client_address( $colisly_addr_row ) );
+colisly_check( 'Adresse : un compte vide est signale incomplet', ! empty( $colisly_addr_empty ) );
+
+// Compte ne portant qu'une adresse de facturation, le cas le plus frequent
+// quand la boutique ne demande pas d'adresse de livraison distincte.
+foreach (
+	array(
+		'first_name' => 'Jean',
+		'last_name'  => 'Dupont',
+		'address_1'  => '12 rue des Lilas',
+		'city'       => 'Paris',
+		'postcode'   => '75011',
+		'country'    => 'FR',
+	) as $colisly_addr_k => $colisly_addr_v
+) {
+	update_user_meta( $colisly_addr_user, 'billing_' . $colisly_addr_k, $colisly_addr_v );
+}
+
+$colisly_addr = COLISLY_Shipments::client_address( $colisly_addr_row );
+colisly_check( 'Adresse : la facturation sert de repli', '12 rue des Lilas' === $colisly_addr['address_1'] );
+colisly_check( 'Adresse : pays lu sur le repli', 'FR' === $colisly_addr['country'] );
+colisly_check( 'Adresse : complete, plus rien ne manque', array() === COLISLY_Shipments::address_missing_fields( $colisly_addr ) );
+
+// Une adresse de livraison renseignee prime, et les deux jeux ne se melangent
+// pas : une rue d'un cote et une ville de l'autre donneraient une adresse qui
+// n'existe nulle part.
+update_user_meta( $colisly_addr_user, 'shipping_address_1', '8 allee des Manguiers' );
+update_user_meta( $colisly_addr_user, 'shipping_city', 'Antananarivo' );
+update_user_meta( $colisly_addr_user, 'shipping_postcode', '101' );
+update_user_meta( $colisly_addr_user, 'shipping_country', 'MG' );
+
+$colisly_addr2 = COLISLY_Shipments::client_address( $colisly_addr_row );
+colisly_check( 'Adresse : la livraison prime sur la facturation', '8 allee des Manguiers' === $colisly_addr2['address_1'] );
+colisly_check( 'Adresse : aucun melange entre les deux jeux', 'Antananarivo' === $colisly_addr2['city'] );
+colisly_check( 'Adresse : le nom est repris de la facturation', 'Dupont' === $colisly_addr2['last_name'] );
+
+// Ce qu'un transporteur exige depend du pays : Madagascar reclame une region,
+// la France non. La regle est lue dans WooCommerce, pas devinee ici.
+$colisly_addr_mg = COLISLY_Shipments::address_missing_fields( $colisly_addr2 );
+colisly_check( 'Adresse : exigence propre au pays de destination', in_array( 'MG', array( $colisly_addr2['country'] ), true ) && ! empty( $colisly_addr_mg ) );
+
+update_user_meta( $colisly_addr_user, 'shipping_state', 'Analamanga' );
+$colisly_addr3 = COLISLY_Shipments::client_address( $colisly_addr_row );
+colisly_check( 'Adresse : region renseignee, plus rien ne manque', array() === COLISLY_Shipments::address_missing_fields( $colisly_addr3 ) );
+
+// La commande WooCommerce doit porter une destination. Elle etait construite a
+// partir des seuls champs de livraison : un compte sans adresse de livraison
+// produisait une commande sans destination du tout.
+$colisly_addr_user2 = wp_insert_user(
+	array(
+		'user_login' => 'addr2-' . wp_generate_password( 6, false ),
+		'user_email' => 'addr2-' . wp_generate_password( 6, false ) . '@example.com',
+		'user_pass'  => wp_generate_password(),
+		'role'       => 'customer',
+	)
+);
+foreach (
+	array(
+		'first_name' => 'Marie',
+		'last_name'  => 'Martin',
+		'address_1'  => '4 quai Saint-Antoine',
+		'city'       => 'Lyon',
+		'postcode'   => '69002',
+		'country'    => 'FR',
+	) as $colisly_addr_k => $colisly_addr_v
+) {
+	update_user_meta( $colisly_addr_user2, 'billing_' . $colisly_addr_k, $colisly_addr_v );
+}
+
+$colisly_addr_client2 = COLISLY_Clients::create( $colisly_addr_user2 );
+$colisly_addr_parcel  = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_addr_client2,
+		'weight'    => 1,
+	)
+);
+$colisly_addr_ship  = COLISLY_Shipments::get( COLISLY_Shipments::request( $colisly_addr_client2, array( $colisly_addr_parcel ), 'colissimo' ) );
+$colisly_addr_order = wc_get_order( (int) $colisly_addr_ship->order_id );
+colisly_check( 'Commande : une destination est toujours portee', '4 quai Saint-Antoine' === $colisly_addr_order->get_shipping_address_1() );
+colisly_check( 'Commande : ville de destination portee', 'Lyon' === $colisly_addr_order->get_shipping_city() );
+
+/*
+ * Annulation par le client.
+ *
+ * Une demande faite par erreur n'offrait qu'une issue : la payer. Elle restait
+ * dans les commandes a regler sans moyen de la retirer. Le client la retire
+ * tant qu'elle n'est pas payee, ce qui remet les colis en stock et annule la
+ * commande impayee avec elle.
+ */
+$colisly_cancel_client = COLISLY_Clients::create(
+	wp_insert_user(
+		array(
+			'user_login' => 'annul-' . wp_generate_password( 6, false ),
+			'user_email' => 'annul-' . wp_generate_password( 6, false ) . '@example.com',
+			'user_pass'  => wp_generate_password(),
+			'role'       => 'customer',
+		)
+	)
+);
+$colisly_cancel_parcel = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_cancel_client,
+		'weight'    => 1,
+	)
+);
+$colisly_cancel_id   = COLISLY_Shipments::request( $colisly_cancel_client, array( $colisly_cancel_parcel ), 'colissimo' );
+$colisly_cancel_ship = COLISLY_Shipments::get( $colisly_cancel_id );
+
+colisly_check( 'Annulation : une demande en attente de paiement est retirable', COLISLY_Shipments::client_can_cancel( $colisly_cancel_ship ) );
+
+$colisly_cancel_order_id = (int) $colisly_cancel_ship->order_id;
+COLISLY_Shipments::set_status( $colisly_cancel_id, 'cancelled' );
+
+$colisly_cancel_after  = COLISLY_Shipments::get( $colisly_cancel_id );
+$colisly_cancel_parcel_after = COLISLY_Parcels::get( $colisly_cancel_parcel );
+colisly_check( 'Annulation : le colis revient en stock', 'available' === $colisly_cancel_parcel_after->status );
+colisly_check( 'Annulation : le colis est detache de l expedition', empty( $colisly_cancel_parcel_after->shipment_id ) );
+colisly_check( 'Annulation : la commande impayee est annulee', 'cancelled' === wc_get_order( $colisly_cancel_order_id )->get_status() );
+colisly_check( 'Annulation : une demande annulee ne l est plus une seconde fois', ! COLISLY_Shipments::client_can_cancel( $colisly_cancel_after ) );
+
+$colisly_cancel_paid = (object) array( 'status' => 'paid' );
+colisly_check( 'Annulation : une expedition payee echappe au client', ! COLISLY_Shipments::client_can_cancel( $colisly_cancel_paid ) );
+colisly_check( 'Annulation : une expedition partie echappe au client', ! COLISLY_Shipments::client_can_cancel( (object) array( 'status' => 'shipped' ) ) );
+colisly_check( 'Annulation : une demande fraiche est retirable', COLISLY_Shipments::client_can_cancel( (object) array( 'status' => 'requested' ) ) );
+
+/*
+ * Gardes de source.
+ *
+ * Le pays de destination ne doit plus etre un choix libre a cote de l'adresse :
+ * les deux pouvaient se contredire, le tarif suivant l'un et l'etiquette
+ * l'autre. Et une demande retiree doit rester atteignable depuis la liste.
+ */
+$colisly_guard_src = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/frontend/class-colisly-account.php' );
+colisly_check(
+	'Garde : le pays de destination n est plus un menu libre',
+	false === strpos( $colisly_guard_src, '<select name="colisly_country"' )
+);
+colisly_check(
+	'Garde : la destination est portee par l adresse du compte',
+	false !== strpos( $colisly_guard_src, 'name="colisly_country" id="colisly-country"' )
+);
+colisly_check(
+	'Garde : la demande refuse une adresse incomplete',
+	false !== strpos( $colisly_guard_src, 'address_missing_fields' )
+);
+colisly_check(
+	'Garde : le retrait d une demande est propose au client',
+	false !== strpos( $colisly_guard_src, 'cancel_shipment' )
+);
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

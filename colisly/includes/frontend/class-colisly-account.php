@@ -67,6 +67,7 @@ class COLISLY_Account {
 
 		add_action( 'template_redirect', array( __CLASS__, 'handle_request_submit' ) );
 		add_action( 'template_redirect', array( __CLASS__, 'handle_customs_submit' ) );
+		add_action( 'template_redirect', array( __CLASS__, 'handle_cancel_submit' ) );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
 	}
 
@@ -235,6 +236,14 @@ class COLISLY_Account {
 			return;
 		}
 
+		if ( ! empty( $_GET['colisly_cancelled'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
+			wc_print_notice( __( 'Your shipment request has been withdrawn and the parcels are back in your stock.', 'colisly' ), 'success' );
+		}
+
+		if ( ! empty( $_GET['colisly_error'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
+			wc_print_notice( sanitize_text_field( wp_unslash( $_GET['colisly_error'] ) ), 'error' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		}
+
 		$shipments = COLISLY_Shipments::for_client( (int) $client->id );
 
 		if ( empty( $shipments ) ) {
@@ -254,7 +263,7 @@ class COLISLY_Account {
 						<th><?php esc_html_e( 'Insured for', 'colisly' ); ?></th>
 						<th><?php esc_html_e( 'Total', 'colisly' ); ?></th>
 						<th><?php esc_html_e( 'Status', 'colisly' ); ?></th>
-						<th><?php esc_html_e( 'Payment', 'colisly' ); ?></th>
+						<th><?php esc_html_e( 'Actions', 'colisly' ); ?></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -272,7 +281,7 @@ class COLISLY_Account {
 							<td data-title="<?php esc_attr_e( 'Insured for', 'colisly' ); ?>"><?php echo (float) $shipment->insured_value > 0 ? esc_html( COLISLY_Format::price( (float) $shipment->insured_value ) ) : '—'; ?></td>
 							<td data-title="<?php esc_attr_e( 'Total', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Format::price( (float) $shipment->total_price ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Status', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Shipments::status_label( $shipment->status ) ); ?></td>
-							<td data-title="<?php esc_attr_e( 'Payment', 'colisly' ); ?>">
+							<td data-title="<?php esc_attr_e( 'Actions', 'colisly' ); ?>">
 								<?php if ( $order && $order->needs_payment() ) : ?>
 									<a class="woocommerce-button button pay" href="<?php echo esc_url( $order->get_checkout_payment_url() ); ?>"><?php esc_html_e( 'Pay', 'colisly' ); ?></a>
 								<?php elseif ( $order ) : ?>
@@ -285,8 +294,27 @@ class COLISLY_Account {
 										);
 										?>
 									</a>
-								<?php else : ?>
-									—
+								<?php endif; ?>
+								<?php if ( COLISLY_Shipments::client_can_cancel( $shipment ) ) : ?>
+									<?php
+									// A request the client changed his mind about used
+									// to be a dead end: the only thing on offer was to
+									// pay for it. Withdrawing it puts the parcels back
+									// in stock and cancels the unpaid order with them.
+									?>
+									<form method="post" class="colisly-inline-form">
+										<?php wp_nonce_field( 'colisly_cancel_shipment_' . (int) $shipment->id ); ?>
+										<input type="hidden" name="colisly_action" value="cancel_shipment" />
+										<input type="hidden" name="colisly_shipment" value="<?php echo esc_attr( (string) $shipment->id ); ?>" />
+										<button
+											type="submit"
+											class="woocommerce-button button colisly-cancel"
+											data-colisly-confirm="<?php esc_attr_e( 'Withdraw this shipment request? The parcels go back into your stock.', 'colisly' ); ?>"
+										><?php esc_html_e( 'Cancel', 'colisly' ); ?></button>
+									</form>
+								<?php endif; ?>
+								<?php if ( ! $order && ! COLISLY_Shipments::client_can_cancel( $shipment ) ) : ?>
+									&mdash;
 								<?php endif; ?>
 							</td>
 						</tr>
@@ -363,6 +391,36 @@ class COLISLY_Account {
 			echo '<p>' . esc_html__( 'No parcels available for a shipment.', 'colisly' ) . '</p>';
 			return;
 		}
+
+		// Nothing can be reshipped, let alone priced, before the account says
+		// where to. The form used to ask for a destination country only, so a
+		// request could reach the forwarder with no street to deliver to.
+		$address     = COLISLY_Shipments::client_address( $client );
+		$missing     = COLISLY_Shipments::address_missing_fields( $address );
+		$address_url = function_exists( 'wc_get_endpoint_url' ) && function_exists( 'wc_get_page_permalink' )
+			? wc_get_endpoint_url( 'edit-address', 'shipping', wc_get_page_permalink( 'myaccount' ) )
+			: '';
+
+		if ( ! empty( $missing ) ) {
+			wc_print_notice(
+				sprintf(
+					/* translators: %s: comma separated list of address fields. */
+					esc_html__( 'Your delivery address is incomplete, so no shipment can be requested yet. Still missing: %s.', 'colisly' ),
+					esc_html( implode( ', ', $missing ) )
+				),
+				'error'
+			);
+
+			if ( $address_url ) {
+				printf(
+					'<p><a class="woocommerce-button button" href="%s">%s</a></p>',
+					esc_url( $address_url ),
+					esc_html__( 'Complete my delivery address', 'colisly' )
+				);
+			}
+
+			return;
+		}
 		?>
 		<form method="post" class="colisly-request-form">
 			<?php wp_nonce_field( 'colisly_request_shipment' ); ?>
@@ -406,20 +464,22 @@ class COLISLY_Account {
 			</div>
 
 			<?php
-			$client_country = COLISLY_Shipments::client_country( $client );
-			$countries      = function_exists( 'WC' ) && WC()->countries ? WC()->countries->get_shipping_countries() : array();
+			// The destination is the address, not a separate choice. A country
+			// picked apart from it could be priced for Madagascar and printed
+			// on a label bound for France, and only the label would be true.
+			$formatted = function_exists( 'WC' ) && WC()->countries
+				? WC()->countries->get_formatted_address( $address )
+				: implode( ', ', array_filter( $address ) );
 			?>
-			<?php if ( $countries ) : ?>
-				<p>
-					<label for="colisly-country"><?php esc_html_e( 'Delivered to:', 'colisly' ); ?></label>
-					<select name="colisly_country" id="colisly-country">
-						<?php foreach ( $countries as $code => $label ) : ?>
-							<option value="<?php echo esc_attr( $code ); ?>" <?php selected( $code, $client_country ); ?>><?php echo esc_html( $label ); ?></option>
-						<?php endforeach; ?>
-					</select>
-				</p>
-				<p class="colisly-note"><?php esc_html_e( 'Transport is priced on the destination. It starts on the address of your account.', 'colisly' ); ?></p>
-			<?php endif; ?>
+			<h3><?php esc_html_e( 'Delivered to', 'colisly' ); ?></h3>
+			<address class="colisly-address"><?php echo wp_kses_post( $formatted ); ?></address>
+			<input type="hidden" name="colisly_country" id="colisly-country" value="<?php echo esc_attr( $address['country'] ); ?>" />
+			<p class="colisly-note">
+				<?php esc_html_e( 'Your parcels are reshipped to this address, and the transport is priced on it.', 'colisly' ); ?>
+				<?php if ( $address_url ) : ?>
+					<a href="<?php echo esc_url( $address_url ); ?>"><?php esc_html_e( 'Change my delivery address', 'colisly' ); ?></a>
+				<?php endif; ?>
+			</p>
 			<p>
 				<label for="colisly-carrier"><?php esc_html_e( 'Preferred carrier:', 'colisly' ); ?></label>
 				<select name="colisly_carrier" id="colisly-carrier" required>
@@ -522,13 +582,10 @@ class COLISLY_Account {
 			<?php
 			// Declaring at the moment of the request is where it belongs: this
 			// is when the client knows the parcel is leaving, and what for.
-			$needs_customs = false;
-			foreach ( COLISLY_Zones::all() as $colisly_zone ) {
-				if ( ! empty( $colisly_zone['customs'] ) ) {
-					$needs_customs = true;
-					break;
-				}
-			}
+			// Only the destination it is actually leaving for decides, so a
+			// client reshipping inside the EU is not asked to fill a form no
+			// customs office will ever read.
+			$needs_customs = COLISLY_Customs::required_for( $address['country'] );
 			?>
 			<?php if ( $needs_customs ) : ?>
 				<h3><?php esc_html_e( 'Customs declaration', 'colisly' ); ?></h3>
@@ -553,6 +610,58 @@ class COLISLY_Account {
 			<button type="submit" class="woocommerce-button button"><?php esc_html_e( 'Send the request', 'colisly' ); ?></button>
 		</form>
 		<?php
+	}
+
+	/**
+	 * Withdraws a shipment request at the client's own initiative.
+	 *
+	 * @return void
+	 */
+	public static function handle_cancel_submit() {
+		if ( empty( $_POST['colisly_action'] ) || 'cancel_shipment' !== $_POST['colisly_action'] ) {
+			return;
+		}
+
+		$shipment_id = isset( $_POST['colisly_shipment'] ) ? absint( wp_unslash( $_POST['colisly_shipment'] ) ) : 0;
+
+		check_admin_referer( 'colisly_cancel_shipment_' . $shipment_id );
+
+		$client = self::current_client();
+
+		if ( ! $client ) {
+			return;
+		}
+
+		$url      = wc_get_account_endpoint_url( self::endpoint( 'shipments' ) );
+		$shipment = COLISLY_Shipments::get( $shipment_id );
+
+		// Somebody else's shipment is not reported as uncancellable, only as
+		// absent: whether it exists is none of this client's business.
+		if ( ! $shipment || (int) $shipment->client_id !== (int) $client->id ) {
+			wp_safe_redirect( add_query_arg( 'colisly_error', rawurlencode( __( 'Shipment not found.', 'colisly' ) ), $url ) );
+			exit;
+		}
+
+		if ( ! COLISLY_Shipments::client_can_cancel( $shipment ) ) {
+			wp_safe_redirect(
+				add_query_arg(
+					'colisly_error',
+					rawurlencode( __( 'This shipment can no longer be cancelled. Please get in touch with us.', 'colisly' ) ),
+					$url
+				)
+			);
+			exit;
+		}
+
+		$result = COLISLY_Shipments::set_status( $shipment_id, 'cancelled' );
+
+		if ( is_wp_error( $result ) ) {
+			wp_safe_redirect( add_query_arg( 'colisly_error', rawurlencode( $result->get_error_message() ), $url ) );
+			exit;
+		}
+
+		wp_safe_redirect( add_query_arg( 'colisly_cancelled', '1', $url ) );
+		exit;
 	}
 
 	/**
@@ -751,7 +860,31 @@ class COLISLY_Account {
 
 		$insurance = isset( $_POST['colisly_insurance'] ) ? sanitize_text_field( wp_unslash( $_POST['colisly_insurance'] ) ) : 0;
 
-		$country = isset( $_POST['colisly_country'] ) ? sanitize_text_field( wp_unslash( $_POST['colisly_country'] ) ) : '';
+		// The destination is read back from the account rather than from the
+		// posted field, so a hand-crafted request cannot get itself priced for
+		// a cheap zone and delivered to an expensive one.
+		$address = COLISLY_Shipments::client_address( $client );
+		$missing = COLISLY_Shipments::address_missing_fields( $address );
+		$country = $address['country'];
+
+		$url = wc_get_account_endpoint_url( self::endpoint( 'request' ) );
+
+		if ( ! empty( $missing ) ) {
+			wp_safe_redirect(
+				add_query_arg(
+					'colisly_error',
+					rawurlencode(
+						sprintf(
+							/* translators: %s: comma separated list of address fields. */
+							__( 'Your delivery address is incomplete, so no shipment can be requested yet. Still missing: %s.', 'colisly' ),
+							implode( ', ', $missing )
+						)
+					),
+					$url
+				)
+			);
+			exit;
+		}
 
 		// Declarations are saved before the request is built, so the request
 		// sees them and a parcel declared in the same submission is not
@@ -771,8 +904,6 @@ class COLISLY_Account {
 		}
 
 		$result = COLISLY_Shipments::request( (int) $client->id, $parcel_ids, $carrier, $insurance, $country );
-
-		$url = wc_get_account_endpoint_url( self::endpoint( 'request' ) );
 
 		if ( is_wp_error( $result ) ) {
 			wp_safe_redirect( add_query_arg( 'colisly_error', rawurlencode( $result->get_error_message() ), $url ) );

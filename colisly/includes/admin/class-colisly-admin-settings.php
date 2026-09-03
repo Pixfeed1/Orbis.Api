@@ -93,7 +93,7 @@ class COLISLY_Admin_Settings {
 				</table>
 
 				<h2><?php esc_html_e( 'Destination zones', 'colisly' ); ?></h2>
-				<p class="description"><?php esc_html_e( 'A carrier does not charge the same to reship next door and to the other side of the world. Group your destinations here, then price each carrier per zone below. Countries are two-letter codes, separated by commas: FR, RE, YT, GP. A country you do not list keeps the carrier default grid.', 'colisly' ); ?></p>
+				<p class="description"><?php esc_html_e( 'A carrier does not charge the same to reship next door and to the other side of the world. Group your destinations here, then price each carrier per zone below. Pick the countries by name from the list, or type their two-letter codes separated by commas; the names of the codes you entered are spelled out under the field. A country you do not list keeps the carrier default grid.', 'colisly' ); ?></p>
 				<p class="description"><?php esc_html_e( 'Tick the customs column for the zones that need a declaration of the contents. The plugin cannot work this out on its own: reshipping from mainland France to Guadeloupe needs one, since the overseas departments sit outside the EU VAT territory, while reshipping to Belgium needs none. The client then declares what each parcel holds before it can leave.', 'colisly' ); ?></p>
 				<table class="widefat fixed striped colisly-zones-table">
 					<thead>
@@ -111,6 +111,13 @@ class COLISLY_Admin_Settings {
 							'name'      => '',
 							'countries' => array(),
 						); // Extra empty row to add a zone.
+
+						// Two letters are what a carrier grid is keyed on, but
+						// nobody is expected to know that YT is Mayotte. The
+						// picker turns the list into a choice of names, and the
+						// field keeps holding the codes.
+						$colisly_country_list = function_exists( 'WC' ) && WC()->countries ? WC()->countries->get_countries() : array();
+
 						foreach ( $zones as $z => $zone ) :
 							?>
 							<tr>
@@ -120,7 +127,16 @@ class COLISLY_Admin_Settings {
 								</td>
 								<td>
 									<label class="screen-reader-text" for="colisly-zone-c-<?php echo esc_attr( (string) $z ); ?>"><?php esc_html_e( 'Countries', 'colisly' ); ?></label>
-									<input type="text" id="colisly-zone-c-<?php echo esc_attr( (string) $z ); ?>" name="zone_countries[]" value="<?php echo esc_attr( implode( ', ', $zone['countries'] ) ); ?>" placeholder="FR, RE, YT" />
+									<input type="text" id="colisly-zone-c-<?php echo esc_attr( (string) $z ); ?>" name="zone_countries[]" value="<?php echo esc_attr( implode( ', ', $zone['countries'] ) ); ?>" placeholder="FR, RE, YT" class="colisly-zone-countries" />
+									<?php if ( $colisly_country_list ) : ?>
+										<select class="colisly-country-picker" aria-label="<?php esc_attr_e( 'Add a country to this zone', 'colisly' ); ?>">
+											<option value=""><?php esc_html_e( 'Add a country…', 'colisly' ); ?></option>
+											<?php foreach ( $colisly_country_list as $colisly_code => $colisly_label ) : ?>
+												<option value="<?php echo esc_attr( $colisly_code ); ?>"><?php echo esc_html( $colisly_label . ' (' . $colisly_code . ')' ); ?></option>
+											<?php endforeach; ?>
+										</select>
+									<?php endif; ?>
+									<span class="colisly-country-preview"></span>
 								</td>
 								<td>
 									<input type="hidden" name="zone_customs[]" value="<?php echo empty( $zone['customs'] ) ? '0' : '1'; ?>" class="colisly-toggle-value" />

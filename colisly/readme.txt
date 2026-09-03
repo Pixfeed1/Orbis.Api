@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.9.1
+Stable tag: 1.10.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,13 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.10.0 =
+* The shipment request now shows the delivery address the parcels are actually reshipped to, and a request can no longer be sent while that address is incomplete, with the missing lines named. The form used to ask for a destination country and nothing else, so a request could reach the forwarder with no street to deliver to, and an account that only ever filled a billing address produced an order carrying no destination at all.
+* The destination is the address itself rather than a separate menu beside it. The two could disagree, the transport being priced for one country while the label was printed for another, and only the label was true.
+* A client can withdraw his own shipment request as long as it is unpaid. It used to be a dead end: the request sat in the orders to pay with nothing on offer but paying it. Withdrawing puts the parcels back in stock and cancels the unpaid order with them.
+* Zone countries can be picked by name from the list of countries the shop knows, and the codes already in the field are spelled out underneath, unrecognised ones flagged. Two-letter codes are what a carrier grid is keyed on, but nobody is expected to know that YT is Mayotte.
+* The customs declaration on the request form now appears only when the destination actually requires one, instead of for every client as soon as a single zone asked for declarations.
+
 = 1.9.1 =
 * The declaration is filled where it belongs, on the shipment request, for the parcels being sent. The separate tab stays for clients who prefer to declare each parcel as it arrives; both write the same thing.
 * The contents field can be turned into a menu: fill a list of categories in the settings and clients pick from it instead of typing. Empty by default, so nothing is imposed, and no trade's vocabulary ships with the plugin. The number of lines a parcel may declare can be capped to what your carrier forms hold, uncapped by default.
@@ -168,6 +175,11 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.10.0 =
+The shipment request shows and requires a complete delivery address, clients
+can withdraw an unpaid request themselves, and zone countries are picked by
+name. No database change.
 
 = 1.9.1 =
 The customs declaration is now filled on the shipment request, the contents
