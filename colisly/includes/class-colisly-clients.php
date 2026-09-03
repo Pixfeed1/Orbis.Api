@@ -175,6 +175,49 @@ class COLISLY_Clients {
 	}
 
 	/**
+	 * Searches the WordPress users the plugin holds no client record for.
+	 *
+	 * A customer registered on the shop is a client the moment a parcel
+	 * arrives for him, and the operator learns about him at the counter, not
+	 * on a screen where a record is created in advance. Until now the parcel
+	 * form only knew people with a record, so every new customer had to be
+	 * created by hand elsewhere before his first parcel could be booked in.
+	 * These users are offered alongside the clients; the record is created
+	 * when a parcel is actually recorded for them.
+	 *
+	 * @param string $term  Search term.
+	 * @param int    $limit Maximum results.
+	 * @return object[] User rows: user_id, user_email, display_name, user_login.
+	 */
+	public static function search_users_without_record( $term, $limit = 20 ) {
+		global $wpdb;
+
+		$term = trim( (string) $term );
+		if ( '' === $term ) {
+			return array();
+		}
+
+		$match  = self::match_sql( $term );
+		$params = $match['params'];
+
+		$params[] = (int) $limit;
+
+		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- the condition is built from literals and placeholders; values go through $wpdb->prepare().
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT u.ID AS user_id, u.user_email, u.display_name, u.user_login
+				FROM {$wpdb->users} u
+				LEFT JOIN {$wpdb->prefix}colisly_clients c ON c.user_id = u.ID
+				WHERE c.id IS NULL AND {$match['where']}
+				ORDER BY u.ID DESC LIMIT %d",
+				$params
+			)
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	}
+
+	/**
 	 * Returns the SQL condition matching a term against everything a client
 	 * is known by, for queries that join the clients table as `c` and the
 	 * users table as `u`.

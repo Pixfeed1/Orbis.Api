@@ -213,7 +213,8 @@ class COLISLY_Admin_Parcels {
 								value="<?php echo esc_attr( $client ? $client->reference . ' — ' . COLISLY_Clients::name( $client ) : '' ); ?>"
 								<?php echo $editing_parcel ? 'readonly' : ''; ?>
 							/>
-							<input type="hidden" name="client_id" id="colisly-client-id" value="<?php echo esc_attr( $client ? (string) $client->id : '' ); ?>" required />
+							<input type="hidden" name="client_id" id="colisly-client-id" value="<?php echo esc_attr( $client ? (string) $client->id : '' ); ?>" />
+							<input type="hidden" name="client_user_id" id="colisly-client-user-id" value="" />
 							<div id="colisly-client-results" class="colisly-client-results" role="listbox"></div>
 							<p class="description">
 								<?php
@@ -451,9 +452,29 @@ class COLISLY_Admin_Parcels {
 			$carriers = array_map( 'sanitize_key', wp_unslash( $_POST['allowed_carriers'] ) );
 		}
 
+		$client_id = isset( $_POST['client_id'] ) ? absint( $_POST['client_id'] ) : 0;
+		$user_id   = isset( $_POST['client_user_id'] ) ? absint( $_POST['client_user_id'] ) : 0;
+
+		// A customer picked from the search without a record yet gets one
+		// here, with his first parcel: the record exists because a parcel
+		// does, not the other way round.
+		if ( ! $client_id && $user_id ) {
+			$created = COLISLY_Clients::create( $user_id );
+
+			if ( is_wp_error( $created ) ) {
+				COLISLY_Admin::redirect( 'colisly-new-parcel', array(), $created->get_error_message(), 'error' );
+			}
+
+			$client_id = (int) $created;
+		}
+
+		if ( ! $client_id ) {
+			COLISLY_Admin::redirect( 'colisly-new-parcel', array(), __( 'Select a client first.', 'colisly' ), 'error' );
+		}
+
 		$result = COLISLY_Parcels::create(
 			array(
-				'client_id'        => isset( $_POST['client_id'] ) ? absint( $_POST['client_id'] ) : 0,
+				'client_id'        => $client_id,
 				'tracking_number'  => isset( $_POST['tracking_number'] ) ? sanitize_text_field( wp_unslash( $_POST['tracking_number'] ) ) : '',
 				'weight'           => isset( $_POST['weight'] ) ? COLISLY_Parcels::to_float( sanitize_text_field( wp_unslash( $_POST['weight'] ) ) ) : 0,
 				'length'           => isset( $_POST['length'] ) ? sanitize_text_field( wp_unslash( $_POST['length'] ) ) : '',

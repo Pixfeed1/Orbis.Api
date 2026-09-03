@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.11.1\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.12.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-03T10:57:23+00:00\n"
+"POT-Creation-Date: 2026-09-03T11:25:55+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: colisly\n"
@@ -49,10 +49,10 @@ msgstr ""
 #: includes/admin/class-colisly-admin-clients.php:674
 #: includes/admin/class-colisly-admin-parcels.php:24
 #: includes/admin/class-colisly-admin-parcels.php:159
-#: includes/admin/class-colisly-admin-parcels.php:355
-#: includes/admin/class-colisly-admin-parcels.php:374
-#: includes/admin/class-colisly-admin-parcels.php:432
-#: includes/admin/class-colisly-admin-parcels.php:493
+#: includes/admin/class-colisly-admin-parcels.php:356
+#: includes/admin/class-colisly-admin-parcels.php:375
+#: includes/admin/class-colisly-admin-parcels.php:433
+#: includes/admin/class-colisly-admin-parcels.php:514
 #: includes/admin/class-colisly-admin-settings.php:24
 #: includes/admin/class-colisly-admin-settings.php:508
 #: includes/class-colisly-ajax.php:35
@@ -248,7 +248,7 @@ msgstr ""
 #: includes/admin/class-colisly-admin-clients.php:294
 #: includes/admin/class-colisly-admin-clients.php:386
 #: includes/admin/class-colisly-admin-parcels.php:72
-#: includes/admin/class-colisly-admin-parcels.php:241
+#: includes/admin/class-colisly-admin-parcels.php:242
 #: includes/admin/class-colisly-admin.php:132
 #: includes/class-colisly-privacy.php:137
 #: includes/frontend/class-colisly-account.php:202
@@ -275,7 +275,7 @@ msgstr ""
 
 #: includes/admin/class-colisly-admin-clients.php:296
 #: includes/admin/class-colisly-admin-parcels.php:74
-#: includes/admin/class-colisly-admin-parcels.php:305
+#: includes/admin/class-colisly-admin-parcels.php:306
 msgid "Grouping"
 msgstr ""
 
@@ -286,7 +286,7 @@ msgid "Storage fees"
 msgstr ""
 
 #: includes/admin/class-colisly-admin-clients.php:298
-#: includes/admin/class-colisly-admin-parcels.php:243
+#: includes/admin/class-colisly-admin-parcels.php:244
 #: includes/admin/class-colisly-admin.php:134
 #: includes/class-colisly-privacy.php:133
 msgid "Internal comment"
@@ -327,7 +327,7 @@ msgstr ""
 
 #: includes/admin/class-colisly-admin-clients.php:326
 #: includes/admin/class-colisly-admin-parcels.php:113
-#: includes/admin/class-colisly-admin-parcels.php:254
+#: includes/admin/class-colisly-admin-parcels.php:255
 #: includes/admin/class-colisly-admin.php:129
 #: includes/class-colisly-privacy.php:222
 #: includes/frontend/class-colisly-account.php:215
@@ -337,7 +337,7 @@ msgstr ""
 
 #: includes/admin/class-colisly-admin-clients.php:326
 #: includes/admin/class-colisly-admin-parcels.php:113
-#: includes/admin/class-colisly-admin-parcels.php:254
+#: includes/admin/class-colisly-admin-parcels.php:255
 #: includes/admin/class-colisly-admin.php:130
 #: includes/class-colisly-privacy.php:222
 #: includes/frontend/class-colisly-account.php:215
@@ -537,19 +537,19 @@ msgstr ""
 msgid "Reference (CL000001), name or e-mail…"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:224
+#: includes/admin/class-colisly-admin-parcels.php:225
 msgid "The client of a parcel cannot be changed after reception."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:225
+#: includes/admin/class-colisly-admin-parcels.php:226
 msgid "Search by internal reference, name or e-mail address."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:234
+#: includes/admin/class-colisly-admin-parcels.php:235
 msgid "Parcels of this client still in stock"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:240
+#: includes/admin/class-colisly-admin-parcels.php:241
 #: includes/admin/class-colisly-admin.php:131
 #: includes/class-colisly-privacy.php:125
 #: includes/frontend/class-colisly-account.php:199
@@ -560,7 +560,7 @@ msgstr ""
 msgid "Parcel number"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:242
+#: includes/admin/class-colisly-admin-parcels.php:243
 #: includes/admin/class-colisly-admin.php:133
 #: includes/frontend/class-colisly-account.php:204
 #: includes/frontend/class-colisly-account.php:215
@@ -569,88 +569,88 @@ msgstr ""
 msgid "Grouping allowed"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:248
+#: includes/admin/class-colisly-admin-parcels.php:249
 #: includes/admin/class-colisly-admin.php:135
 msgid "No parcels in stock for this client."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:265
+#: includes/admin/class-colisly-admin-parcels.php:266
 msgid "2. Parcel information"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:268
+#: includes/admin/class-colisly-admin-parcels.php:269
 msgid "Carrier tracking number"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:272
+#: includes/admin/class-colisly-admin-parcels.php:273
 msgid "Real weight (kg)"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:272
+#: includes/admin/class-colisly-admin-parcels.php:273
 msgid "required"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:276
+#: includes/admin/class-colisly-admin-parcels.php:277
 msgid "Dimensions (cm, visible to administrators only)"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:279
+#: includes/admin/class-colisly-admin-parcels.php:280
 msgid "Length"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:283
+#: includes/admin/class-colisly-admin-parcels.php:284
 msgid "Width"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:287
+#: includes/admin/class-colisly-admin-parcels.php:288
 msgid "Height"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:293
+#: includes/admin/class-colisly-admin-parcels.php:294
 msgid "Photo of the parcel at reception (optional)"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:297
+#: includes/admin/class-colisly-admin-parcels.php:298
 msgid "Internal comment (never visible to the client)"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:298
+#: includes/admin/class-colisly-admin-parcels.php:299
 msgid "Damaged packaging, fragile parcel, anomaly…"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:302
+#: includes/admin/class-colisly-admin-parcels.php:303
 msgid "3. Shipping rules"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:309
+#: includes/admin/class-colisly-admin-parcels.php:310
 msgid "Allow this parcel to be grouped with other parcels"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:311
+#: includes/admin/class-colisly-admin-parcels.php:312
 msgid "If unchecked, this parcel will have to be shipped alone. This decision can never be changed by the client."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:315
+#: includes/admin/class-colisly-admin-parcels.php:316
 msgid "Allowed carriers"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:323
+#: includes/admin/class-colisly-admin-parcels.php:324
 msgid "Uncheck incompatible carriers (oversize, restrictions…). Only checked carriers will be offered to the client. Leaving none checked places no restriction: every carrier stays available."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:329
+#: includes/admin/class-colisly-admin-parcels.php:330
 msgid "The parcel price is computed automatically from its weight when saved, then used for the shipment request."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:332
+#: includes/admin/class-colisly-admin-parcels.php:333
 msgid "Save the changes"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:332
+#: includes/admin/class-colisly-admin-parcels.php:333
 msgid "Save the parcel"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:365
+#: includes/admin/class-colisly-admin-parcels.php:366
 #: includes/class-colisly-customs.php:179
 #: includes/class-colisly-parcels.php:208
 #: includes/class-colisly-parcels.php:523
@@ -658,18 +658,22 @@ msgid "Parcel not found."
 msgstr ""
 
 #. translators: %s: parcel reference.
-#: includes/admin/class-colisly-admin-parcels.php:424
+#: includes/admin/class-colisly-admin-parcels.php:425
 #, php-format
 msgid "Parcel %s updated. Its price has been recomputed from the weight."
 msgstr ""
 
+#: includes/admin/class-colisly-admin-parcels.php:472
+msgid "Select a client first."
+msgstr ""
+
 #. translators: %s: parcel reference.
-#: includes/admin/class-colisly-admin-parcels.php:480
+#: includes/admin/class-colisly-admin-parcels.php:501
 #, php-format
 msgid "Parcel %s saved. Its price has been computed automatically."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-parcels.php:510
+#: includes/admin/class-colisly-admin-parcels.php:531
 msgid "Parcel status updated."
 msgstr ""
 
@@ -972,8 +976,12 @@ msgstr ""
 msgid "parcel(s) in stock"
 msgstr ""
 
+#: includes/admin/class-colisly-admin.php:136
+msgid "new client, record created with the first parcel"
+msgstr ""
+
 #. translators: %s: comma separated list of unrecognised country codes.
-#: includes/admin/class-colisly-admin.php:137
+#: includes/admin/class-colisly-admin.php:138
 #, php-format
 msgid "unrecognised: %s"
 msgstr ""

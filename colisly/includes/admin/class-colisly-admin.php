@@ -133,6 +133,7 @@ class COLISLY_Admin {
 					'groupingCol' => __( 'Grouping allowed', 'colisly' ),
 					'noteCol'     => __( 'Internal comment', 'colisly' ),
 					'noParcels'   => __( 'No parcels in stock for this client.', 'colisly' ),
+					'newClient'   => __( 'new client, record created with the first parcel', 'colisly' ),
 					/* translators: %s: comma separated list of unrecognised country codes. */
 					'unknownCode' => __( 'unrecognised: %s', 'colisly' ),
 				),

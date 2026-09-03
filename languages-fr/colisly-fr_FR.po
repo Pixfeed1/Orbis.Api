@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.11.1\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.12.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -1141,4 +1141,10 @@ msgstr "Ajouter une ligne"
 
 msgid "Some destinations require the contents of a parcel to be declared before it can be shipped. Describe what each parcel holds, item by item, filling every column shown."
 msgstr "Certaines destinations exigent que le contenu d’un colis soit déclaré avant son expédition. Décrivez ce que contient chaque colis, article par article, en remplissant chaque colonne affichée."
+
+msgid "Select a client first."
+msgstr "Choisissez d’abord un client."
+
+msgid "new client, record created with the first parcel"
+msgstr "nouveau client, fiche créée avec le premier colis"
 

@@ -1646,6 +1646,64 @@ $colisly_srch_bare = wp_insert_user(
 );
 colisly_check( 'Nom : l identifiant quand rien d autre n existe', get_userdata( $colisly_srch_bare )->user_login === COLISLY_Clients::name( (object) array( 'user_id' => $colisly_srch_bare ) ) );
 
+/*
+ * Clients sans fiche.
+ *
+ * Un client inscrit sur la boutique devient un client du reexpediteur au
+ * moment ou un colis arrive pour lui, et c'est au comptoir qu'on l'apprend.
+ * Le formulaire de colis ne connaissait que les comptes ayant deja une fiche :
+ * chaque nouveau client devait etre cree a la main ailleurs avant que son
+ * premier colis puisse etre enregistre. Les comptes sans fiche sont proposes
+ * avec les autres, et la fiche nait avec le premier colis.
+ */
+$colisly_nf_user = wp_insert_user(
+	array(
+		'user_login' => 'nofiche-' . wp_generate_password( 6, false ),
+		'user_email' => 'nofiche-' . wp_generate_password( 6, false ) . '@example.com',
+		'user_pass'  => wp_generate_password(),
+		'role'       => 'customer',
+	)
+);
+update_user_meta( $colisly_nf_user, 'billing_first_name', 'Nadia' );
+update_user_meta( $colisly_nf_user, 'billing_last_name', 'Andriamasy' );
+
+/**
+ * Indique si un compte sans fiche est propose pour un terme.
+ *
+ * @param string $term    Terme.
+ * @param int    $user_id Compte attendu.
+ * @return bool
+ */
+function colisly_offers_user( $term, $user_id ) {
+	foreach ( COLISLY_Clients::search_users_without_record( $term ) as $row ) {
+		if ( (int) $row->user_id === (int) $user_id ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+colisly_check( 'Sans fiche : absent de la recherche des clients', ! colisly_finds_client( 'Andriamasy', 0 ) && 0 === count( array_filter( COLISLY_Clients::search( 'Andriamasy' ), static function ( $r ) use ( $colisly_nf_user ) { return (int) $r->user_id === (int) $colisly_nf_user; } ) ) );
+colisly_check( 'Sans fiche : propose par son nom de facturation', colisly_offers_user( 'Andriamasy', $colisly_nf_user ) );
+colisly_check( 'Sans fiche : propose par son e-mail', colisly_offers_user( 'nofiche-', $colisly_nf_user ) );
+colisly_check( 'Sans fiche : nomme par sa facturation', 'Nadia Andriamasy' === COLISLY_Clients::name( (object) array( 'user_id' => $colisly_nf_user ) ) );
+colisly_check( 'Sans fiche : un client avec fiche n y figure pas', ! colisly_offers_user( 'Ravalomanana', $colisly_srch_user ) );
+colisly_check( 'Sans fiche : terme vide, rien', array() === COLISLY_Clients::search_users_without_record( '' ) );
+
+// La fiche nait avec le premier colis, et une seconde creation renvoie la
+// meme fiche plutot que d en ouvrir une autre.
+$colisly_nf_client = COLISLY_Clients::create( $colisly_nf_user );
+colisly_check( 'Sans fiche : la fiche est creee', is_int( $colisly_nf_client ) && $colisly_nf_client > 0 );
+colisly_check( 'Sans fiche : creer deux fois rend la meme fiche', $colisly_nf_client === COLISLY_Clients::create( $colisly_nf_user ) );
+colisly_check( 'Sans fiche : une fois la fiche creee, il n est plus propose comme nouveau', ! colisly_offers_user( 'Andriamasy', $colisly_nf_user ) );
+colisly_check( 'Sans fiche : une fois la fiche creee, il est trouve comme client', colisly_finds_client( 'Andriamasy', $colisly_nf_client ) );
+
+// Garde : le formulaire de colis porte bien le compte choisi, et le
+// traitement cree la fiche a partir de lui.
+$colisly_nf_src = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-parcels.php' );
+colisly_check( 'Garde : le formulaire de colis transmet le compte sans fiche', false !== strpos( $colisly_nf_src, 'name="client_user_id"' ) );
+colisly_check( 'Garde : le traitement cree la fiche avec le premier colis', false !== strpos( $colisly_nf_src, 'COLISLY_Clients::create( $user_id )' ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

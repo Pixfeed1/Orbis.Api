@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.11.1
+Stable tag: 1.12.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.12.0 =
+* A customer without a client record yet can be picked straight from the parcel creation form. The search now offers the shop's registered users alongside the clients, marked as new, and the record is created with the first parcel. Until now every new customer had to be created by hand on the Clients tab before his first parcel could be booked in, which is not where the operator is standing when the parcel arrives. The Clients tab keeps its manual creation for whoever wants a record ahead of time.
+
 = 1.11.1 =
 * Fixed: the client search, on the parcel creation form and on the parcels list, read the WordPress first and last name only. A customer created by WooCommerce, at checkout or from its Customers screen, carries a billing name and usually no WordPress name at all, so the operator typed the name he saw on every order and found nobody, while the account sat in the Clients tab. The search now matches the billing and delivery names, the company, the phone and the login, and a first name and last name typed together find the client whichever order they come in.
 * Clients are named by their billing name when WordPress only knows them by their login, on the Clients tab, the parcels list and the search results alike. "fabrice-1" is not a name anybody recognises.
@@ -183,6 +186,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.12.0 =
+New customers can be picked directly on the parcel form; their client record
+is created with their first parcel. No database change.
 
 = 1.11.1 =
 The client search now finds customers by their billing name, company, phone

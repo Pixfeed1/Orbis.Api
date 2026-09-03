@@ -147,6 +147,7 @@
 
 	var $results = $( '#colisly-client-results' );
 	var $clientId = $( '#colisly-client-id' );
+	var $clientUserId = $( '#colisly-client-user-id' );
 	var $stock = $( '#colisly-client-stock' );
 	var timer = null;
 
@@ -156,7 +157,8 @@
 
 	function renderStock( client ) {
 		var i18n = window.colislyAdmin.i18n;
-		var html = '<h3>' + esc( client.reference ) + ' — ' + esc( client.name ) + ' : ' + client.in_stock + ' ' + esc( i18n.inStock ) + '</h3>';
+		var label = client.reference ? esc( client.reference ) + ' — ' + esc( client.name ) : esc( client.name );
+		var html = '<h3>' + label + ' : ' + client.in_stock + ' ' + esc( i18n.inStock ) + '</h3>';
 
 		html += '<table class="wp-list-table widefat fixed striped colisly-stock-table"><thead><tr>';
 		html += '<th>' + esc( i18n.refCol ) + '</th><th>' + esc( i18n.weightCol ) + '</th><th>' + esc( i18n.groupingCol ) + '</th><th>' + esc( i18n.noteCol ) + '</th>';
@@ -190,12 +192,17 @@
 		clients.forEach( function ( client ) {
 			var $item = $( '<button type="button" class="colisly-client-result" role="option" />' );
 
-			$item.append( $( '<span class="colisly-result-ref" />' ).text( client.reference + ' — ' + client.name ) );
+			// A customer without a record yet is offered like any other, and
+			// says so: his reference does not exist before his first parcel.
+			var title = client.is_new ? client.name + ' — ' + window.colislyAdmin.i18n.newClient : client.reference + ' — ' + client.name;
+
+			$item.append( $( '<span class="colisly-result-ref" />' ).text( title ) );
 			$item.append( $( '<span class="colisly-result-meta" />' ).text( client.email + ( client.phone ? ' · ' + client.phone : '' ) ) );
 
 			$item.on( 'click', function () {
-				$clientId.val( client.id );
-				$search.val( client.reference + ' — ' + client.name );
+				$clientId.val( client.id ? client.id : '' );
+				$clientUserId.val( client.is_new ? client.user_id : '' );
+				$search.val( title );
 				$results.removeClass( 'colisly-open' ).empty();
 				renderStock( client );
 			} );
@@ -210,6 +217,7 @@
 		var term = $.trim( $search.val() );
 
 		$clientId.val( '' );
+		$clientUserId.val( '' );
 		window.clearTimeout( timer );
 
 		if ( term.length < 2 ) {

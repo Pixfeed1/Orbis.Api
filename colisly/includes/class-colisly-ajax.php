@@ -47,6 +47,8 @@ class COLISLY_Ajax {
 			$stock     = COLISLY_Parcels::in_stock_for_client( (int) $client->id );
 			$results[] = array(
 				'id'        => (int) $client->id,
+				'user_id'   => (int) $client->user_id,
+				'is_new'    => false,
 				'reference' => $client->reference,
 				'name'      => COLISLY_Clients::name( $client ),
 				'email'     => $client->user_email,
@@ -63,6 +65,22 @@ class COLISLY_Ajax {
 					},
 					$stock
 				),
+			);
+		}
+
+		// Customers the plugin has no record for yet come after: picking one
+		// creates his record along with his first parcel.
+		foreach ( COLISLY_Clients::search_users_without_record( $term ) as $user ) {
+			$results[] = array(
+				'id'        => 0,
+				'user_id'   => (int) $user->user_id,
+				'is_new'    => true,
+				'reference' => '',
+				'name'      => COLISLY_Clients::name( $user ),
+				'email'     => $user->user_email,
+				'phone'     => (string) get_user_meta( (int) $user->user_id, 'billing_phone', true ),
+				'in_stock'  => 0,
+				'parcels'   => array(),
 			);
 		}
 

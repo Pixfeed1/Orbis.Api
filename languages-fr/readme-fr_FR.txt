@@ -193,6 +193,16 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.12.0 =
+* Un client sans fiche peut être choisi directement depuis le formulaire de
+  création de colis. La recherche propose désormais les comptes inscrits sur la
+  boutique à côté des clients, signalés comme nouveaux, et la fiche est créée
+  avec le premier colis. Jusqu'ici chaque nouveau client devait être créé à la
+  main dans l'onglet Clients avant que son premier colis puisse être
+  enregistré, ce qui n'est pas là où se trouve l'opérateur quand le colis
+  arrive. L'onglet Clients garde sa création manuelle pour qui veut une fiche à
+  l'avance.
+
 = 1.11.1 =
 * Corrigé : la recherche de clients, sur le formulaire de création de colis et
   sur la liste des colis, ne lisait que le prénom et le nom WordPress. Un client
@@ -413,6 +423,11 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.12.0 =
+Les nouveaux clients se choisissent directement sur le formulaire de colis ;
+leur fiche est créée avec leur premier colis. Aucun changement de base de
+données.
 
 = 1.11.1 =
 La recherche de clients trouve désormais les clients par leur nom de
