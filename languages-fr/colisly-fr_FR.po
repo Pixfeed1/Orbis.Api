@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.13.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.13.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -1176,4 +1176,15 @@ msgstr "La douane peut demander la facture de ce que contient le colis. Joignez-
 
 msgid "Declaration saved."
 msgstr "Déclaration enregistrée."
+
+msgid "This carrier is enabled but has no rate at all, so clients are not offered it: %s. Give it a weight bracket grid, or a base price and a price per kg."
+msgid_plural "These carriers are enabled but have no rate at all, so clients are not offered them: %s. Give them a weight bracket grid, or a base price and a price per kg."
+msgstr[0] "Ce transporteur est activé mais n’a aucun tarif, les clients ne se le voient donc pas proposer : %s. Donnez-lui une grille de tranches de poids, ou un prix de base et un prix au kilo."
+msgstr[1] "Ces transporteurs sont activés mais n’ont aucun tarif, les clients ne se les voient donc pas proposer : %s. Donnez-leur une grille de tranches de poids, ou un prix de base et un prix au kilo."
+
+msgid "%s has no rate for this destination. Choose another carrier or get in touch with us."
+msgstr "%s n’a pas de tarif pour cette destination. Choisissez un autre transporteur ou contactez-nous."
+
+msgid "No carrier is priced for your destination yet. Please get in touch with us."
+msgstr "Aucun transporteur n’est encore tarifé pour votre destination. Merci de nous contacter."
 

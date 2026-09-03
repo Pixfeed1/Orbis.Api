@@ -480,11 +480,24 @@ class COLISLY_Account {
 					<a href="<?php echo esc_url( $address_url ); ?>"><?php esc_html_e( 'Change my delivery address', 'colisly' ); ?></a>
 				<?php endif; ?>
 			</p>
+			<?php
+			// A carrier with no rate for this destination is not offered at
+			// all: shown, it would read 0.00 and sell at that.
+			$offered = array_filter(
+				COLISLY_Carriers::all( true ),
+				static function ( $carrier ) use ( $address ) {
+					return COLISLY_Carriers::is_priced( $carrier['slug'], $address['country'] );
+				}
+			);
+			?>
+			<?php if ( empty( $offered ) ) : ?>
+				<?php wc_print_notice( __( 'No carrier is priced for your destination yet. Please get in touch with us.', 'colisly' ), 'error' ); ?>
+			<?php endif; ?>
 			<p>
 				<label for="colisly-carrier"><?php esc_html_e( 'Preferred carrier:', 'colisly' ); ?></label>
 				<select name="colisly_carrier" id="colisly-carrier" required>
 					<option value=""><?php esc_html_e( '— Select —', 'colisly' ); ?></option>
-					<?php foreach ( COLISLY_Carriers::all( true ) as $carrier ) : ?>
+					<?php foreach ( $offered as $carrier ) : ?>
 						<?php
 						$base = isset( $carrier['price_base'] ) ? (float) $carrier['price_base'] : 0;
 						$rate = isset( $carrier['price_per_kg'] ) ? (float) $carrier['price_per_kg'] : 0;

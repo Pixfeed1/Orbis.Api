@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.13.0
+Stable tag: 1.13.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.13.1 =
+* Fixed: a carrier enabled but never priced was offered to clients at 0.00 and the order went through at that price, the fallback formula with an empty base and an empty price per kg being simply zero. A carrier with no rate for the client's destination is no longer offered, a request that would force it is refused naming the carrier, and the settings warn about enabled carriers that have no rate anywhere. A bracket explicitly set to zero still counts as a price: a forwarder who includes transport in his service typed it on purpose.
+
 = 1.13.0 =
 * New: purchase invoices for customs. Customs outside the EU ask for the commercial invoice next to the declaration, and only the client has it. He attaches it to each parcel, on the shipment request or on the customs tab, PDF or image, several if needed. The forwarder finds the invoices on the parcel and on the shipment, the printed customs form states how many are attached, and the client reads them back from his documents. Stored in the private directory like every other document, served only through the authenticated download, covered by the privacy export and eraser.
 * Every carrier now shows what it would charge for the parcels ticked, right in the carrier list, so the client compares before choosing rather than trying them one by one. The figure follows the same brackets, zones and volumetric rule as the checkout.
@@ -192,6 +195,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.13.1 =
+A carrier with no rate for a destination is no longer offered at 0.00. No
+database change.
 
 = 1.13.0 =
 Clients can attach purchase invoices for customs, every carrier shows its

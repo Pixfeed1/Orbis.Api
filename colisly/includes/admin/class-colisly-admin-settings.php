@@ -29,6 +29,25 @@ class COLISLY_Admin_Settings {
 		<div class="wrap colisly-wrap">
 			<h1><?php esc_html_e( 'Settings — Colisly Parcel Forwarding', 'colisly' ); ?></h1>
 			<?php COLISLY_Admin::maybe_notice(); ?>
+			<?php
+			// An enabled carrier nobody priced is not offered to clients, so
+			// the forwarder is told here rather than by a client asking why a
+			// carrier is missing.
+			$colisly_unpriced = COLISLY_Carriers::unpriced();
+			if ( $colisly_unpriced ) :
+				?>
+				<div class="notice notice-warning">
+					<p>
+						<?php
+						printf(
+							/* translators: %s: comma separated carrier names. */
+							esc_html( _n( 'This carrier is enabled but has no rate at all, so clients are not offered it: %s. Give it a weight bracket grid, or a base price and a price per kg.', 'These carriers are enabled but have no rate at all, so clients are not offered them: %s. Give them a weight bracket grid, or a base price and a price per kg.', count( $colisly_unpriced ), 'colisly' ) ),
+							esc_html( implode( ', ', wp_list_pluck( $colisly_unpriced, 'name' ) ) )
+						);
+						?>
+					</p>
+				</div>
+			<?php endif; ?>
 
 			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 				<?php wp_nonce_field( 'colisly_save_settings' ); ?>

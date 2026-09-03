@@ -94,10 +94,14 @@ colisly_check( 'Tarif hors palier (10 kg = 5 + 2x10 = 25.00)', 25.0 === COLISLY_
 // depending on whatever the site happens to hold. Reading the existing
 // configuration made the scenarios below depend on install order.
 $settings             = COLISLY_Settings::all();
+// Transport at zero, on purpose: an explicit zero bracket is a rate, an empty
+// carrier is not and is no longer offered since 1.13.1. These scenarios look
+// at parcel prices and storage fees, so transport must cost nothing here.
+$colisly_free = array( array( 'max_weight' => 1000, 'price' => 0 ) );
 $settings['carriers'] = array(
-	array( 'slug' => 'colissimo', 'name' => 'Colissimo', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
-	array( 'slug' => 'chronopost', 'name' => 'Chronopost', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
-	array( 'slug' => 'ups', 'name' => 'UPS', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0 ),
+	array( 'slug' => 'colissimo', 'name' => 'Colissimo', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0, 'tiers' => $colisly_free ),
+	array( 'slug' => 'chronopost', 'name' => 'Chronopost', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0, 'tiers' => $colisly_free ),
+	array( 'slug' => 'ups', 'name' => 'UPS', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0, 'tiers' => $colisly_free ),
 );
 COLISLY_Settings::update( $settings );
 
@@ -188,6 +192,7 @@ $settings = COLISLY_Settings::all();
 foreach ( $settings['carriers'] as $colisly_i => $colisly_carrier ) {
 	$settings['carriers'][ $colisly_i ]['price_base']   = 0;
 	$settings['carriers'][ $colisly_i ]['price_per_kg'] = 0;
+	$settings['carriers'][ $colisly_i ]['tiers']        = $colisly_free;
 }
 COLISLY_Settings::update( $settings );
 
@@ -1813,6 +1818,67 @@ colisly_check( 'Garde : une declaration refusee arrete la demande', false !== st
 
 $colisly_js_src = file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/front.js' );
 colisly_check( 'Garde : chaque transporteur affiche son prix', false !== strpos( $colisly_js_src, 'updateCarrierPrices' ) && false !== strpos( $colisly_inv_src, 'data-name=' ) );
+
+/*
+ * Transporteur sans tarif.
+ *
+ * Un transporteur ajoute et jamais tarife etait propose a 0,00 et la commande
+ * passait a ce prix : la formule de repli avec une base a zero et un prix au
+ * kilo a zero vaut zero. Il n'est plus propose pour une destination ou rien
+ * ne le tarife, et une demande qui le forcerait est refusee. Un palier
+ * explicitement a zero reste un tarif : le reexpediteur l'a tape expres.
+ */
+$colisly_np_settings = COLISLY_Settings::all();
+$colisly_np_saved    = array( $colisly_np_settings['carriers'], $colisly_np_settings['zones'] );
+
+$colisly_np_settings['zones']      = array(
+	array( 'slug' => 'np-zone', 'name' => 'NP zone', 'countries' => array( 'MG' ), 'customs' => 0 ),
+);
+$colisly_np_settings['carriers'][] = array( 'slug' => 'np-vide', 'name' => 'NP vide', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0, 'tiers' => array(), 'zone_tiers' => array() );
+$colisly_np_settings['carriers'][] = array( 'slug' => 'np-base', 'name' => 'NP base', 'enabled' => 1, 'price_base' => 5, 'price_per_kg' => 0, 'tiers' => array(), 'zone_tiers' => array() );
+$colisly_np_settings['carriers'][] = array( 'slug' => 'np-gratuit', 'name' => 'NP gratuit', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0, 'tiers' => array( array( 'max_weight' => 30, 'price' => 0 ) ), 'zone_tiers' => array() );
+$colisly_np_settings['carriers'][] = array( 'slug' => 'np-zone-seule', 'name' => 'NP zone seule', 'enabled' => 1, 'price_base' => 0, 'price_per_kg' => 0, 'tiers' => array(), 'zone_tiers' => array( 'np-zone' => array( array( 'max_weight' => 30, 'price' => 40 ) ) ) );
+$colisly_np_settings['carriers'][] = array( 'slug' => 'np-inactif', 'name' => 'NP inactif', 'enabled' => 0, 'price_base' => 0, 'price_per_kg' => 0, 'tiers' => array(), 'zone_tiers' => array() );
+COLISLY_Settings::update( $colisly_np_settings );
+
+colisly_check( 'Sans tarif : rien du tout, pas tarife', ! COLISLY_Carriers::is_priced( 'np-vide', 'FR' ) );
+colisly_check( 'Sans tarif : une base suffit', COLISLY_Carriers::is_priced( 'np-base', 'FR' ) );
+colisly_check( 'Sans tarif : un palier a zero est un tarif voulu', COLISLY_Carriers::is_priced( 'np-gratuit', 'FR' ) );
+colisly_check( 'Sans tarif : une grille de zone tarife sa zone', COLISLY_Carriers::is_priced( 'np-zone-seule', 'MG' ) );
+colisly_check( 'Sans tarif : une grille de zone ne tarife pas les autres pays', ! COLISLY_Carriers::is_priced( 'np-zone-seule', 'FR' ) );
+colisly_check( 'Sans tarif : transporteur inconnu, pas tarife', ! COLISLY_Carriers::is_priced( 'np-inexistant', 'FR' ) );
+
+$colisly_np_names = wp_list_pluck( COLISLY_Carriers::unpriced(), 'slug' );
+colisly_check( 'Sans tarif : le transporteur vide est signale', in_array( 'np-vide', $colisly_np_names, true ) );
+colisly_check( 'Sans tarif : un transporteur tarife par zone n est pas signale', ! in_array( 'np-zone-seule', $colisly_np_names, true ) );
+colisly_check( 'Sans tarif : un transporteur desactive n est pas signale', ! in_array( 'np-inactif', $colisly_np_names, true ) );
+colisly_check( 'Sans tarif : le gratuit explicite n est pas signale', ! in_array( 'np-gratuit', $colisly_np_names, true ) );
+
+$colisly_np_client = COLISLY_Clients::create(
+	wp_insert_user(
+		array(
+			'user_login' => 'np-' . wp_generate_password( 6, false ),
+			'user_email' => 'np-' . wp_generate_password( 6, false ) . '@example.com',
+			'user_pass'  => wp_generate_password(),
+			'role'       => 'customer',
+		)
+	)
+);
+$colisly_np_parcel = COLISLY_Parcels::create( array( 'client_id' => $colisly_np_client, 'weight' => 2 ) );
+$colisly_np_err    = COLISLY_Shipments::request( $colisly_np_client, array( $colisly_np_parcel ), 'np-vide', 0, 'FR' );
+colisly_check( 'Sans tarif : la demande est refusee', is_wp_error( $colisly_np_err ) && 'colisly_carrier_unpriced' === $colisly_np_err->get_error_code() );
+colisly_check( 'Sans tarif : le refus nomme le transporteur', is_wp_error( $colisly_np_err ) && false !== strpos( $colisly_np_err->get_error_message(), 'NP vide' ) );
+colisly_check( 'Sans tarif : le colis reste disponible', 'available' === COLISLY_Parcels::get( $colisly_np_parcel )->status );
+$colisly_np_err2 = COLISLY_Shipments::request( $colisly_np_client, array( $colisly_np_parcel ), 'np-zone-seule', 0, 'FR' );
+colisly_check( 'Sans tarif : refuse hors de sa zone', is_wp_error( $colisly_np_err2 ) && 'colisly_carrier_unpriced' === $colisly_np_err2->get_error_code() );
+$colisly_np_ok = COLISLY_Shipments::request( $colisly_np_client, array( $colisly_np_parcel ), 'np-gratuit', 0, 'FR' );
+colisly_check( 'Sans tarif : le gratuit explicite passe a zero', ! is_wp_error( $colisly_np_ok ) && 0.0 === (float) COLISLY_Shipments::get( $colisly_np_ok )->carrier_price );
+
+list( $colisly_np_settings['carriers'], $colisly_np_settings['zones'] ) = $colisly_np_saved;
+COLISLY_Settings::update( $colisly_np_settings );
+
+$colisly_np_src = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/frontend/class-colisly-account.php' );
+colisly_check( 'Garde : seuls les transporteurs tarifes sont proposes au client', false !== strpos( $colisly_np_src, "COLISLY_Carriers::is_priced( \$carrier['slug'], \$address['country'] )" ) );
 
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 

@@ -193,6 +193,16 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.13.1 =
+* Corrigé : un transporteur activé mais jamais tarifé était proposé aux clients
+  à 0,00 et la commande passait à ce prix, la formule de repli avec une base
+  vide et un prix au kilo vide valant simplement zéro. Un transporteur sans
+  tarif pour la destination du client n'est plus proposé, une demande qui le
+  forcerait est refusée en nommant le transporteur, et les réglages signalent
+  les transporteurs activés qui n'ont aucun tarif. Un palier explicitement à
+  zéro reste un tarif : un réexpéditeur qui inclut le transport dans sa
+  prestation l'a tapé exprès.
+
 = 1.13.0 =
 * Nouveau : factures d'achat pour la douane. Hors UE, la douane réclame la
   facture commerciale à côté de la déclaration, et seul le client l'a. Il la
@@ -443,6 +453,10 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.13.1 =
+Un transporteur sans tarif pour une destination n'est plus proposé à 0,00.
+Aucun changement de base de données.
 
 = 1.13.0 =
 Les clients peuvent joindre leurs factures d'achat pour la douane, chaque

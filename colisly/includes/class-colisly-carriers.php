@@ -164,6 +164,59 @@ class COLISLY_Carriers {
 	}
 
 	/**
+	 * Whether a carrier has any rate at all for a destination.
+	 *
+	 * A carrier added to the list and never priced used to be offered at
+	 * 0.00 and the order went through at that price: the fallback formula
+	 * with a base of zero and a rate of zero is simply zero. Nothing is priced
+	 * when no bracket applies to the destination and both fallback prices are
+	 * empty. A bracket explicitly set to zero still counts as a price, since
+	 * a forwarder who includes transport in his service typed it on purpose.
+	 *
+	 * @param string $slug    Carrier slug.
+	 * @param string $country Destination ISO country code, empty for none.
+	 * @return bool
+	 */
+	public static function is_priced( $slug, $country = '' ) {
+		$carrier = self::get( $slug );
+
+		if ( ! $carrier ) {
+			return false;
+		}
+
+		if ( self::tiers( $carrier, $country ) ) {
+			return true;
+		}
+
+		$base = isset( $carrier['price_base'] ) ? (float) $carrier['price_base'] : 0.0;
+		$rate = isset( $carrier['price_per_kg'] ) ? (float) $carrier['price_per_kg'] : 0.0;
+
+		return $base > 0 || $rate > 0;
+	}
+
+	/**
+	 * Returns the enabled carriers that have no rate anywhere.
+	 *
+	 * @return array[] Carrier rows.
+	 */
+	public static function unpriced() {
+		$list = array();
+
+		foreach ( self::all( true ) as $carrier ) {
+			$has_grid = ! empty( $carrier['tiers'] ) && is_array( $carrier['tiers'] );
+			$has_zone = ! empty( $carrier['zone_tiers'] ) && is_array( $carrier['zone_tiers'] ) && array_filter( $carrier['zone_tiers'] );
+			$base     = isset( $carrier['price_base'] ) ? (float) $carrier['price_base'] : 0.0;
+			$rate     = isset( $carrier['price_per_kg'] ) ? (float) $carrier['price_per_kg'] : 0.0;
+
+			if ( ! $has_grid && ! $has_zone && $base <= 0 && $rate <= 0 ) {
+				$list[] = $carrier;
+			}
+		}
+
+		return $list;
+	}
+
+	/**
 	 * Computes the transport price of a carrier for a total weight.
 	 *
 	 * Carriers rarely bill per kilo: they publish a grid of weight brackets,

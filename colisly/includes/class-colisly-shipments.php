@@ -85,6 +85,19 @@ class COLISLY_Shipments {
 			$country = self::client_country( $client );
 		}
 
+		// A carrier with no rate for the destination cannot be sold at the
+		// zero the fallback formula would produce.
+		if ( ! COLISLY_Carriers::is_priced( $carrier, $country ) ) {
+			return new WP_Error(
+				'colisly_carrier_unpriced',
+				sprintf(
+					/* translators: %s: carrier name. */
+					__( '%s has no rate for this destination. Choose another carrier or get in touch with us.', 'colisly' ),
+					COLISLY_Carriers::name( $carrier )
+				)
+			);
+		}
+
 		$parcels      = array();
 		$total_weight = 0.0;
 		$total_price  = 0.0;
