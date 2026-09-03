@@ -461,9 +461,13 @@ class COLISLY_Parcels {
 		$params = array();
 
 		if ( '' !== $args['search'] ) {
+			// A parcel is found by what is written on it, or by whoever it
+			// belongs to, the client being matched exactly as on his own
+			// screen so the two searches never disagree about a name.
 			$like   = '%' . $wpdb->esc_like( $args['search'] ) . '%';
-			$where .= ' AND (p.reference LIKE %s OR p.tracking_number LIKE %s OR c.reference LIKE %s OR u.display_name LIKE %s OR u.user_email LIKE %s)';
-			array_push( $params, $like, $like, $like, $like, $like );
+			$match  = COLISLY_Clients::match_sql( $args['search'] );
+			$where .= ' AND (p.reference LIKE %s OR p.tracking_number LIKE %s OR ' . $match['where'] . ')';
+			$params = array_merge( $params, array( $like, $like ), $match['params'] );
 		}
 
 		if ( '' !== $args['status'] && array_key_exists( $args['status'], self::statuses() ) ) {
@@ -488,7 +492,7 @@ class COLISLY_Parcels {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$items = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT p.*, c.reference AS client_reference, u.display_name, u.user_email $join $where ORDER BY p.id DESC LIMIT %d OFFSET %d",
+				"SELECT p.*, c.reference AS client_reference, c.user_id, u.display_name, u.user_login, u.user_email $join $where ORDER BY p.id DESC LIMIT %d OFFSET %d",
 				$params_page
 			)
 		);

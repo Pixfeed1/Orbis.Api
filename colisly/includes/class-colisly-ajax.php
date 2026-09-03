@@ -48,7 +48,7 @@ class COLISLY_Ajax {
 			$results[] = array(
 				'id'        => (int) $client->id,
 				'reference' => $client->reference,
-				'name'      => $client->display_name,
+				'name'      => COLISLY_Clients::name( $client ),
 				'email'     => $client->user_email,
 				'phone'     => $client->phone,
 				'in_stock'  => count( $stock ),

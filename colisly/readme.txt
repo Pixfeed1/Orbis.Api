@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.11.0
+Stable tag: 1.11.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.11.1 =
+* Fixed: the client search, on the parcel creation form and on the parcels list, read the WordPress first and last name only. A customer created by WooCommerce, at checkout or from its Customers screen, carries a billing name and usually no WordPress name at all, so the operator typed the name he saw on every order and found nobody, while the account sat in the Clients tab. The search now matches the billing and delivery names, the company, the phone and the login, and a first name and last name typed together find the client whichever order they come in.
+* Clients are named by their billing name when WordPress only knows them by their login, on the Clients tab, the parcels list and the search results alike. "fabrice-1" is not a name anybody recognises.
+
 = 1.11.0 =
 * Fixed: the declaration form offered a single blank line whatever the limit set in the settings. A cap of three lines was a promise the form never kept, since the client could only ever declare one item per submission, and on the shipment request there is no second submission. A cap now gives the client exactly that many lines; without a cap he gets a few and a button for the rest.
 * The quantity, the unit weight and the country of origin can each be turned off. They are what a real CN23 form needs line by line, but a forwarder who only wants to know what a parcel holds before copying it onto his carrier's own form needs none of the three, and three columns filled for nothing are three columns filled badly. All three stay asked by default, so a site collecting them keeps collecting them.
@@ -179,6 +183,11 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.11.1 =
+The client search now finds customers by their billing name, company, phone
+and login, and names them by their billing name when WordPress only knows
+their login. No database change.
 
 = 1.11.0 =
 Fixes a declaration form that offered one line whatever the limit set, and lets

@@ -193,6 +193,20 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.11.1 =
+* Corrigé : la recherche de clients, sur le formulaire de création de colis et
+  sur la liste des colis, ne lisait que le prénom et le nom WordPress. Un client
+  créé par WooCommerce, à la commande ou depuis son écran Clients, porte un nom
+  de facturation et le plus souvent aucun nom WordPress : l'opérateur tapait le
+  nom qu'il voyait sur chaque commande et ne trouvait personne, alors que le
+  compte figurait bien dans l'onglet Clients. La recherche couvre maintenant les
+  noms de facturation et de livraison, la société, le téléphone et
+  l'identifiant, et un prénom et un nom tapés ensemble trouvent le client dans
+  n'importe quel ordre.
+* Les clients sont nommés par leur nom de facturation quand WordPress ne les
+  connaît que par leur identifiant, dans l'onglet Clients, la liste des colis
+  et les résultats de recherche. « fabrice-1 » n'est le nom de personne.
+
 = 1.11.0 =
 * Corrigé : le formulaire de déclaration n'offrait qu'une seule ligne vierge,
   quelle que soit la limite réglée dans les réglages. Une limite de trois lignes
@@ -399,6 +413,12 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.11.1 =
+La recherche de clients trouve désormais les clients par leur nom de
+facturation, leur société, leur téléphone et leur identifiant, et les nomme par
+leur nom de facturation quand WordPress ne connaît que leur identifiant. Aucun
+changement de base de données.
 
 = 1.11.0 =
 Corrige un formulaire de déclaration qui n'offrait qu'une ligne quelle que soit

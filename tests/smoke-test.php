@@ -1535,6 +1535,117 @@ list(
 ) = $colisly_form_saved;
 COLISLY_Settings::update( $colisly_form_settings );
 
+/*
+ * Recherche de clients.
+ *
+ * Elle ne lisait que le prenom et le nom WordPress. Un client cree par
+ * WooCommerce, a la commande ou depuis son ecran Clients, porte un nom de
+ * facturation et le plus souvent aucun nom WordPress : l'operateur tapait le
+ * nom qu'il voyait sur chaque commande et ne trouvait personne, alors que le
+ * compte figurait bien dans l'onglet Clients.
+ */
+$colisly_srch_user = wp_insert_user(
+	array(
+		'user_login' => 'srch-' . wp_generate_password( 6, false ),
+		'user_email' => 'srch-' . wp_generate_password( 6, false ) . '@example.com',
+		'user_pass'  => wp_generate_password(),
+		'role'       => 'customer',
+	)
+);
+update_user_meta( $colisly_srch_user, 'billing_first_name', 'Fabrice' );
+update_user_meta( $colisly_srch_user, 'billing_last_name', 'Ravalomanana' );
+update_user_meta( $colisly_srch_user, 'billing_company', 'Import Tana' );
+update_user_meta( $colisly_srch_user, 'billing_phone', '+261 34 05 123 45' );
+update_user_meta( $colisly_srch_user, 'shipping_last_name', 'Rakoto' );
+
+$colisly_srch_client = COLISLY_Clients::create( $colisly_srch_user );
+$colisly_srch_row    = COLISLY_Clients::get( $colisly_srch_client );
+$colisly_srch_parcel = COLISLY_Parcels::create(
+	array(
+		'client_id' => $colisly_srch_client,
+		'weight'    => 1,
+	)
+);
+
+/**
+ * Indique si une recherche de clients renvoie le client de test.
+ *
+ * @param string $term      Terme.
+ * @param int    $client_id Client attendu.
+ * @return bool
+ */
+function colisly_finds_client( $term, $client_id ) {
+	foreach ( COLISLY_Clients::search( $term ) as $row ) {
+		if ( (int) $row->id === (int) $client_id ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Indique si une recherche de colis renvoie le colis de test.
+ *
+ * @param string $term      Terme.
+ * @param int    $parcel_id Colis attendu.
+ * @return bool
+ */
+function colisly_finds_parcel( $term, $parcel_id ) {
+	foreach ( COLISLY_Parcels::paged_list( array( 'search' => $term ) )['items'] as $row ) {
+		if ( (int) $row->id === (int) $parcel_id ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+colisly_check( 'Recherche : nom de facturation', colisly_finds_client( 'Ravalomanana', $colisly_srch_client ) );
+colisly_check( 'Recherche : prenom de facturation', colisly_finds_client( 'fabrice', $colisly_srch_client ) );
+colisly_check( 'Recherche : societe de facturation', colisly_finds_client( 'Tana', $colisly_srch_client ) );
+colisly_check( 'Recherche : telephone de facturation', colisly_finds_client( '34 05', $colisly_srch_client ) );
+colisly_check( 'Recherche : nom du destinataire (livraison)', colisly_finds_client( 'Rakoto', $colisly_srch_client ) );
+colisly_check( 'Recherche : identifiant WordPress', colisly_finds_client( 'srch-', $colisly_srch_client ) );
+colisly_check( 'Recherche : reference client', colisly_finds_client( $colisly_srch_row->reference, $colisly_srch_client ) );
+colisly_check( 'Recherche : prenom et nom tapes ensemble', colisly_finds_client( 'Fabrice Rav', $colisly_srch_client ) );
+colisly_check( 'Recherche : nom puis prenom', colisly_finds_client( 'ravalomanana fabrice', $colisly_srch_client ) );
+colisly_check( 'Recherche : un mot faux suffit a ecarter', ! colisly_finds_client( 'Fabrice Durand', $colisly_srch_client ) );
+colisly_check( 'Recherche : aucun homonyme inventé', ! colisly_finds_client( 'Zzxq', $colisly_srch_client ) );
+
+// La liste des colis cherche le client de la meme facon, pour que les deux
+// ecrans ne se contredisent jamais sur un nom.
+colisly_check( 'Recherche colis : par nom de facturation du client', colisly_finds_parcel( 'Ravalomanana', $colisly_srch_parcel ) );
+colisly_check( 'Recherche colis : par prenom et nom', colisly_finds_parcel( 'fabrice rav', $colisly_srch_parcel ) );
+colisly_check( 'Recherche colis : par numero de colis', colisly_finds_parcel( COLISLY_Parcels::get( $colisly_srch_parcel )->reference, $colisly_srch_parcel ) );
+
+/*
+ * Nom affiche.
+ *
+ * WordPress donne a un compte son identifiant comme nom affiche tant que
+ * personne n'en tape un vrai, et WooCommerce ne le fait presque jamais. Le nom
+ * de facturation est prefere quand le nom affiche n'est que l'identifiant, le
+ * nom affiche quand c'est un vrai nom.
+ */
+colisly_check( 'Nom : facturation quand le nom affiche est l identifiant', 'Fabrice Ravalomanana' === COLISLY_Clients::name( $colisly_srch_row ) );
+colisly_check( 'Nom : depuis la seule ligne client', 'Fabrice Ravalomanana' === COLISLY_Clients::name( (object) array( 'user_id' => $colisly_srch_user ) ) );
+
+wp_update_user(
+	array(
+		'ID'           => $colisly_srch_user,
+		'display_name' => 'F. Ravalomanana',
+	)
+);
+colisly_check( 'Nom : un vrai nom affiche prime', 'F. Ravalomanana' === COLISLY_Clients::name( COLISLY_Clients::get( $colisly_srch_client ) ) );
+
+$colisly_srch_bare = wp_insert_user(
+	array(
+		'user_login' => 'bare-' . wp_generate_password( 6, false ),
+		'user_email' => 'bare-' . wp_generate_password( 6, false ) . '@example.com',
+		'user_pass'  => wp_generate_password(),
+		'role'       => 'customer',
+	)
+);
+colisly_check( 'Nom : l identifiant quand rien d autre n existe', get_userdata( $colisly_srch_bare )->user_login === COLISLY_Clients::name( (object) array( 'user_id' => $colisly_srch_bare ) ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

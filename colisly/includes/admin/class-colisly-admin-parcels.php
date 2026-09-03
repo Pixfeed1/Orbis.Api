@@ -103,7 +103,7 @@ class COLISLY_Admin_Parcels {
 									</td>
 									<td>
 										<a href="<?php echo esc_url( $client_url ); ?>">
-											<?php echo esc_html( $parcel->client_reference . ' — ' . $parcel->display_name ); ?>
+											<?php echo esc_html( $parcel->client_reference . ' — ' . COLISLY_Clients::name( $parcel ) ); ?>
 										</a>
 									</td>
 									<td><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
@@ -174,7 +174,6 @@ class COLISLY_Admin_Parcels {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only prefill.
 		$preselected = $editing_parcel ? (int) $editing_parcel->client_id : ( isset( $_GET['client'] ) ? absint( $_GET['client'] ) : 0 );
 		$client      = $preselected ? COLISLY_Clients::get( $preselected ) : null;
-		$client_user = $client ? get_userdata( (int) $client->user_id ) : null;
 
 		$dimensions = array(
 			'length' => $editing_parcel && null !== $editing_parcel->length ? (string) (float) $editing_parcel->length : '',
@@ -211,7 +210,7 @@ class COLISLY_Admin_Parcels {
 								class="regular-text"
 								placeholder="<?php esc_attr_e( 'Reference (CL000001), name or e-mail…', 'colisly' ); ?>"
 								autocomplete="off"
-								value="<?php echo esc_attr( $client ? $client->reference . ' — ' . ( $client_user ? $client_user->display_name : '' ) : '' ); ?>"
+								value="<?php echo esc_attr( $client ? $client->reference . ' — ' . COLISLY_Clients::name( $client ) : '' ); ?>"
 								<?php echo $editing_parcel ? 'readonly' : ''; ?>
 							/>
 							<input type="hidden" name="client_id" id="colisly-client-id" value="<?php echo esc_attr( $client ? (string) $client->id : '' ); ?>" required />

@@ -110,7 +110,7 @@ class COLISLY_Admin_Clients {
 								?>
 								<tr>
 									<td><a href="<?php echo esc_url( $url ); ?>"><strong><?php echo esc_html( $client->reference ); ?></strong></a></td>
-									<td><a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( $client->display_name ); ?></a></td>
+									<td><a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( COLISLY_Clients::name( $client ) ); ?></a></td>
 									<td><?php echo esc_html( $client->user_email ); ?></td>
 									<td><?php echo esc_html( $client->phone ); ?></td>
 									<td><?php echo esc_html( number_format_i18n( count( COLISLY_Parcels::in_stock_for_client( (int) $client->id ) ) ) ); ?></td>
@@ -164,7 +164,7 @@ class COLISLY_Admin_Clients {
 					/* translators: 1: client reference, 2: client name. */
 					esc_html__( 'Client record %1$s — %2$s', 'colisly' ),
 					esc_html( $client->reference ),
-					esc_html( $user ? $user->display_name : '' )
+					esc_html( COLISLY_Clients::name( $client ) )
 				);
 				?>
 			</h1>

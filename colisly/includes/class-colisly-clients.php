@@ -162,12 +162,9 @@ class COLISLY_Clients {
 		$params = array();
 
 		if ( '' !== $term ) {
-			$like   = '%' . $wpdb->esc_like( $term ) . '%';
-			$joins .= "
-			LEFT JOIN {$wpdb->usermeta} fn ON fn.user_id = u.ID AND fn.meta_key = 'first_name'
-			LEFT JOIN {$wpdb->usermeta} ln ON ln.user_id = u.ID AND ln.meta_key = 'last_name'";
-			$where  = ' WHERE (c.reference LIKE %s OR u.user_email LIKE %s OR u.display_name LIKE %s OR fn.meta_value LIKE %s OR ln.meta_value LIKE %s OR c.phone LIKE %s)';
-			$params = array( $like, $like, $like, $like, $like, $like );
+			$match  = self::match_sql( $term );
+			$where  = ' WHERE ' . $match['where'];
+			$params = $match['params'];
 		}
 
 		return array(
@@ -178,11 +175,141 @@ class COLISLY_Clients {
 	}
 
 	/**
+	 * Returns the SQL condition matching a term against everything a client
+	 * is known by, for queries that join the clients table as `c` and the
+	 * users table as `u`.
+	 *
+	 * The search used to read the WordPress first and last name only. A
+	 * customer created by WooCommerce, at checkout or from its Customers
+	 * screen, carries a billing name and usually no WordPress name at all,
+	 * so the operator typed the name he saw on every order and found nobody.
+	 * The name of the person, the company and the phone are matched wherever
+	 * WooCommerce may have stored them, and the login as well, since that is
+	 * what the Users screen shows.
+	 *
+	 * The meta lookup is a single EXISTS rather than one LEFT JOIN per key:
+	 * it cannot multiply rows, so the callers need no GROUP BY, and it adds
+	 * a key without adding a join.
+	 *
+	 * @param string $term Search term, already trimmed and non-empty.
+	 * @return array { where: string, params: array } A parenthesised condition
+	 *               and the values its placeholders expect, in order.
+	 */
+	public static function match_sql( $term ) {
+		global $wpdb;
+
+		/*
+		 * "Fabrice Rav" is how an operator types a name, and no single field
+		 * holds it: the first name sits in one meta row and the last name in
+		 * another. Each word is therefore matched on its own, anywhere, and
+		 * every word has to match somewhere. One word is the plain search.
+		 */
+		$words = preg_split( '/\s+/', trim( (string) $term ), -1, PREG_SPLIT_NO_EMPTY );
+		$words = array_slice( (array) $words, 0, 6 );
+
+		if ( count( $words ) > 1 ) {
+			$conditions = array();
+			$params     = array();
+
+			foreach ( $words as $word ) {
+				$part         = self::match_sql( $word );
+				$conditions[] = $part['where'];
+				$params       = array_merge( $params, $part['params'] );
+			}
+
+			return array(
+				'where'  => '(' . implode( ' AND ', $conditions ) . ')',
+				'params' => $params,
+			);
+		}
+
+		$like = '%' . $wpdb->esc_like( $term ) . '%';
+
+		/**
+		 * Filters the user meta keys a client search matches against.
+		 *
+		 * @param string[] $keys Meta keys.
+		 */
+		$keys = apply_filters(
+			'colisly_client_search_meta_keys',
+			array(
+				'first_name',
+				'last_name',
+				'billing_first_name',
+				'billing_last_name',
+				'billing_company',
+				'billing_phone',
+				'shipping_first_name',
+				'shipping_last_name',
+				'shipping_company',
+			)
+		);
+		$keys = array_values( array_filter( array_map( 'strval', (array) $keys ) ) );
+
+		$where  = '(c.reference LIKE %s OR u.user_email LIKE %s OR u.user_login LIKE %s OR u.display_name LIKE %s OR c.phone LIKE %s';
+		$params = array( $like, $like, $like, $like, $like );
+
+		if ( $keys ) {
+			$placeholders = implode( ', ', array_fill( 0, count( $keys ), '%s' ) );
+			$where       .= " OR EXISTS (SELECT 1 FROM {$wpdb->usermeta} m WHERE m.user_id = u.ID AND m.meta_key IN ({$placeholders}) AND m.meta_value LIKE %s)";
+			$params       = array_merge( $params, $keys, array( $like ) );
+		}
+
+		$where .= ')';
+
+		return array(
+			'where'  => $where,
+			'params' => $params,
+		);
+	}
+
+	/**
+	 * Returns the best name known for a client.
+	 *
+	 * WordPress gives a user its login as display name until somebody types a
+	 * real one, and WooCommerce rarely does: a customer created at checkout is
+	 * "fabrice-1" to WordPress and "Fabrice Ravalomanana" on every one of his
+	 * orders. The display name is used when it is a real name, the billing
+	 * name when the display name is only the login, and the login when
+	 * nothing better exists.
+	 *
+	 * @param object $client Client row, ideally carrying display_name and
+	 *                       user_login from the list queries; user_id is
+	 *                       enough otherwise.
+	 * @return string
+	 */
+	public static function name( $client ) {
+		$user_id = isset( $client->user_id ) ? (int) $client->user_id : 0;
+		$display = isset( $client->display_name ) ? trim( (string) $client->display_name ) : '';
+		$login   = isset( $client->user_login ) ? (string) $client->user_login : '';
+
+		if ( '' === $display || '' === $login ) {
+			$user = get_userdata( $user_id );
+			if ( $user ) {
+				$display = trim( (string) $user->display_name );
+				$login   = (string) $user->user_login;
+			}
+		}
+
+		if ( '' !== $display && $display !== $login ) {
+			return $display;
+		}
+
+		$billing = trim( (string) get_user_meta( $user_id, 'billing_first_name', true ) . ' ' . (string) get_user_meta( $user_id, 'billing_last_name', true ) );
+		if ( '' !== $billing ) {
+			return $billing;
+		}
+
+		return '' !== $display ? $display : $login;
+	}
+
+	/**
 	 * Searches clients by reference, name, e-mail or phone number.
 	 *
 	 * @param string $term  Search term.
 	 * @param int    $limit Maximum results.
-	 * @return object[] Rows with client fields plus user_email and display_name.
+	 * @return object[] Rows with client fields plus user_email, display_name
+	 *                  and user_login.
 	 */
 	public static function search( $term, $limit = 20 ) {
 		return self::paged_list( trim( (string) $term ), (int) $limit, 1 );
@@ -229,7 +356,7 @@ class COLISLY_Clients {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT c.*, u.user_email, u.display_name {$sql['joins']}{$sql['where']} GROUP BY c.id ORDER BY c.id DESC LIMIT %d OFFSET %d",
+				"SELECT c.*, u.user_email, u.display_name, u.user_login {$sql['joins']}{$sql['where']} ORDER BY c.id DESC LIMIT %d OFFSET %d",
 				$params
 			)
 		);
