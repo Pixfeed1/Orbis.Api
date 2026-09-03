@@ -144,6 +144,14 @@ class COLISLY_Shipments {
 			$total_price  += (float) $parcel->price;
 		}
 
+		// What the carrier physically takes: the weight of the whole shipment,
+		// the dimensions of each parcel. Refused here, with the reason, rather
+		// than at the counter after the client has paid.
+		$fit = COLISLY_Carriers::fits( $carrier, $parcels );
+		if ( is_wp_error( $fit ) ) {
+			return $fit;
+		}
+
 		$storage_fees  = COLISLY_Storage::fees_for_parcels( $parcels );
 		// Express carriers price on volume, so what is billed is not always
 		// the weight on the scales. The shipment still records the real one.

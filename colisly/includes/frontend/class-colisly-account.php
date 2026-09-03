@@ -447,7 +447,7 @@ class COLISLY_Account {
 										value="<?php echo esc_attr( (string) $parcel->id ); ?>"
 										id="colisly-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"
 										data-grouping="<?php echo $parcel->allow_grouping ? '1' : '0'; ?>"
-										data-carriers="<?php echo esc_attr( implode( ',', COLISLY_Parcels::allowed_carrier_slugs( $parcel ) ) ); ?>"
+										data-carriers="<?php echo esc_attr( implode( ',', self::carriers_for_parcel( $parcel ) ) ); ?>"
 										data-weight="<?php echo esc_attr( (string) (float) $parcel->weight ); ?>"
 										data-volume="<?php echo esc_attr( (string) ( (float) $parcel->length * (float) $parcel->width * (float) $parcel->height ) ); ?>"
 										data-price="<?php echo esc_attr( (string) (float) $parcel->price ); ?>"
@@ -542,6 +542,7 @@ class COLISLY_Account {
 						<option
 							value="<?php echo esc_attr( $carrier['slug'] ); ?>"
 							data-name="<?php echo esc_attr( $carrier['name'] ); ?>"
+							data-max-weight="<?php echo esc_attr( (string) COLISLY_Carriers::limits( $carrier )['max_weight'] ); ?>"
 							data-base="<?php echo esc_attr( (string) $base ); ?>"
 							data-rate="<?php echo esc_attr( (string) $rate ); ?>"
 							data-tiers="<?php echo esc_attr( wp_json_encode( $tiers ) ); ?>"
@@ -830,6 +831,37 @@ class COLISLY_Account {
 			</p>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Returns the carriers a parcel may travel with, for the request form.
+	 *
+	 * Empty means no restriction, which is what the form always read. The
+	 * list narrows to the carriers the parcel is allowed and fits: one it is
+	 * too long or too big for is greyed out like one the operator excluded,
+	 * since the counter would refuse it just the same.
+	 *
+	 * @param object $parcel Parcel row.
+	 * @return string[] Carrier slugs, empty for no restriction.
+	 */
+	private static function carriers_for_parcel( $parcel ) {
+		$allowed   = COLISLY_Parcels::allowed_carrier_slugs( $parcel );
+		$too_small = COLISLY_Carriers::too_small_for( $parcel );
+
+		if ( empty( $too_small ) ) {
+			return $allowed;
+		}
+
+		if ( empty( $allowed ) ) {
+			$allowed = wp_list_pluck( COLISLY_Carriers::all( true ), 'slug' );
+		}
+
+		$fitting = array_values( array_diff( $allowed, $too_small ) );
+
+		// An empty list would read as "no restriction", the opposite of
+		// what is meant: nothing fits. A slug no carrier has keeps the
+		// parcel selectable and every carrier greyed out.
+		return $fitting ? $fitting : array( 'none' );
 	}
 
 	/**

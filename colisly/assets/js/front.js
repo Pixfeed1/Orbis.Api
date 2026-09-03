@@ -51,6 +51,17 @@
 				return 0 === list.length || -1 !== list.indexOf( option.value );
 			} );
 
+			// And only if the whole shipment stays under what it takes: grouped
+			// parcels leave in one carton, so the real weights add up.
+			var maxWeight = parseFloat( option.getAttribute( 'data-max-weight' ) || '0' );
+			if ( allowed && maxWeight > 0 ) {
+				var real = 0;
+				selected.forEach( function ( box ) {
+					real += parseFloat( box.getAttribute( 'data-weight' ) || '0' );
+				} );
+				allowed = real <= maxWeight + 0.0005;
+			}
+
 			option.disabled = ! allowed;
 			if ( ! allowed && option.selected ) {
 				select.value = '';

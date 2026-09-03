@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.13.1
+Stable tag: 1.14.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.14.0 =
+* New: carrier limits. Each carrier can carry a maximum weight, a maximum length and a maximum girth (length plus twice the width plus twice the height), the figures carriers publish and refuse beyond at the counter. The weight applies to the whole shipment, since grouped parcels leave in one carton; the dimensions to each parcel, on those entered at reception. A carrier the ticked parcels exceed is greyed out in the client's list, and a request that would force it is refused naming the parcel and the limit. A parcel whose dimensions were never entered is not refused on a measurement nobody took. All three are optional and empty by default.
+* The weight bracket page reads in the order it applies: each carrier shows its zone grids first, then a grid titled "all other destinations", with a note saying to leave it empty when every destination served is in a zone. Nothing changes in how prices are computed; the page only says what it does.
+
 = 1.13.1 =
 * Fixed: a carrier enabled but never priced was offered to clients at 0.00 and the order went through at that price, the fallback formula with an empty base and an empty price per kg being simply zero. A carrier with no rate for the client's destination is no longer offered, a request that would force it is refused naming the carrier, and the settings warn about enabled carriers that have no rate anywhere. A bracket explicitly set to zero still counts as a price: a forwarder who includes transport in his service typed it on purpose.
 
@@ -195,6 +199,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.14.0 =
+Carriers can carry weight and dimension limits, and the bracket page reads
+in the order it applies. No database change.
 
 = 1.13.1 =
 A carrier with no rate for a destination is no longer offered at 0.00. No

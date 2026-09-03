@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.13.1\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.14.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-03T12:35:42+00:00\n"
+"POT-Creation-Date: 2026-09-03T12:59:18+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: colisly\n"
@@ -54,11 +54,11 @@ msgstr ""
 #: includes/admin/class-colisly-admin-parcels.php:433
 #: includes/admin/class-colisly-admin-parcels.php:514
 #: includes/admin/class-colisly-admin-settings.php:24
-#: includes/admin/class-colisly-admin-settings.php:527
+#: includes/admin/class-colisly-admin-settings.php:553
 #: includes/class-colisly-ajax.php:35
 #: includes/class-colisly-downloads.php:120
 #: includes/class-colisly-downloads.php:137
-#: includes/frontend/class-colisly-account.php:930
+#: includes/frontend/class-colisly-account.php:962
 msgid "Access denied."
 msgstr ""
 
@@ -90,7 +90,7 @@ msgstr ""
 
 #: includes/admin/class-colisly-admin-clients.php:78
 #: includes/frontend/class-colisly-account.php:499
-#: includes/frontend/class-colisly-account.php:761
+#: includes/frontend/class-colisly-account.php:762
 msgid "— Select —"
 msgstr ""
 
@@ -107,8 +107,8 @@ msgid "Reference"
 msgstr ""
 
 #: includes/admin/class-colisly-admin-clients.php:90
-#: includes/admin/class-colisly-admin-settings.php:177
-#: includes/admin/class-colisly-admin-settings.php:201
+#: includes/admin/class-colisly-admin-settings.php:178
+#: includes/admin/class-colisly-admin-settings.php:205
 msgid "Name"
 msgstr ""
 
@@ -264,12 +264,12 @@ msgstr ""
 #: includes/admin/class-colisly-admin-parcels.php:73
 #: includes/admin/class-colisly-admin-settings.php:77
 #: includes/admin/class-colisly-admin-settings.php:95
-#: includes/admin/class-colisly-admin-settings.php:261
-#: includes/admin/class-colisly-admin-settings.php:272
-#: includes/admin/class-colisly-admin-settings.php:304
-#: includes/admin/class-colisly-admin-settings.php:315
-#: includes/admin/class-colisly-admin-settings.php:377
-#: includes/admin/class-colisly-admin-settings.php:395
+#: includes/admin/class-colisly-admin-settings.php:297
+#: includes/admin/class-colisly-admin-settings.php:308
+#: includes/admin/class-colisly-admin-settings.php:333
+#: includes/admin/class-colisly-admin-settings.php:344
+#: includes/admin/class-colisly-admin-settings.php:403
+#: includes/admin/class-colisly-admin-settings.php:421
 msgid "Price"
 msgstr ""
 
@@ -723,10 +723,10 @@ msgstr ""
 
 #: includes/admin/class-colisly-admin-settings.php:76
 #: includes/admin/class-colisly-admin-settings.php:91
-#: includes/admin/class-colisly-admin-settings.php:260
-#: includes/admin/class-colisly-admin-settings.php:268
-#: includes/admin/class-colisly-admin-settings.php:303
-#: includes/admin/class-colisly-admin-settings.php:311
+#: includes/admin/class-colisly-admin-settings.php:296
+#: includes/admin/class-colisly-admin-settings.php:304
+#: includes/admin/class-colisly-admin-settings.php:332
+#: includes/admin/class-colisly-admin-settings.php:340
 msgid "Maximum weight (kg)"
 msgstr ""
 
@@ -766,12 +766,12 @@ msgstr ""
 
 #: includes/admin/class-colisly-admin-settings.php:122
 #: includes/admin/class-colisly-admin-settings.php:162
-#: includes/admin/class-colisly-admin-settings.php:330
+#: includes/admin/class-colisly-admin-settings.php:356
 #: includes/class-colisly-customs.php:430
 #: includes/class-colisly-privacy.php:147
 #: includes/frontend/class-colisly-account.php:124
-#: includes/frontend/class-colisly-account.php:605
-#: includes/frontend/class-colisly-account.php:859
+#: includes/frontend/class-colisly-account.php:606
+#: includes/frontend/class-colisly-account.php:891
 msgid "Customs declaration"
 msgstr ""
 
@@ -800,181 +800,210 @@ msgid "Volumetric: express carriers price bulk rather than mass. Tick the box an
 msgstr ""
 
 #: includes/admin/class-colisly-admin-settings.php:173
-msgid "Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are the fallback: they apply to a carrier with no grid, and beyond the last bracket of a carrier that has one."
+msgid "Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are optional: they only apply to a carrier with no grid, and beyond the last bracket of a carrier that has one. Leave them empty if you price by grid."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:178
-#: includes/admin/class-colisly-admin-settings.php:205
-msgid "Slug"
+#: includes/admin/class-colisly-admin-settings.php:174
+msgid "Limits: what the carrier physically takes. Maximum weight applies to the whole shipment, since grouped parcels leave in one carton; maximum length and girth (length plus twice the width plus twice the height, in cm) apply to each parcel. Leave empty for no limit. A parcel or shipment beyond a limit cannot be requested with that carrier."
 msgstr ""
 
 #: includes/admin/class-colisly-admin-settings.php:179
-msgid "Base price (beyond brackets)"
+#: includes/admin/class-colisly-admin-settings.php:209
+msgid "Slug"
 msgstr ""
 
 #: includes/admin/class-colisly-admin-settings.php:180
-msgid "Price per kg (beyond brackets)"
+msgid "Base price (beyond brackets)"
 msgstr ""
 
 #: includes/admin/class-colisly-admin-settings.php:181
-#: includes/admin/class-colisly-admin-settings.php:218
-msgid "Volumetric"
+msgid "Price per kg (beyond brackets)"
 msgstr ""
 
 #: includes/admin/class-colisly-admin-settings.php:182
-#: includes/admin/class-colisly-admin-settings.php:221
-msgid "Divisor"
+#: includes/admin/class-colisly-admin-settings.php:222
+msgid "Volumetric"
 msgstr ""
 
 #: includes/admin/class-colisly-admin-settings.php:183
-#: includes/admin/class-colisly-admin-settings.php:226
+#: includes/admin/class-colisly-admin-settings.php:225
+msgid "Divisor"
+msgstr ""
+
+#: includes/admin/class-colisly-admin-settings.php:184
+#: includes/admin/class-colisly-admin-settings.php:229
+msgid "Max weight (kg)"
+msgstr ""
+
+#: includes/admin/class-colisly-admin-settings.php:185
+#: includes/admin/class-colisly-admin-settings.php:233
+msgid "Max length (cm)"
+msgstr ""
+
+#: includes/admin/class-colisly-admin-settings.php:186
+#: includes/admin/class-colisly-admin-settings.php:237
+msgid "Max girth (cm)"
+msgstr ""
+
+#: includes/admin/class-colisly-admin-settings.php:187
+#: includes/admin/class-colisly-admin-settings.php:242
 msgid "Enabled"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:209
+#: includes/admin/class-colisly-admin-settings.php:213
 msgid "Base price"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:213
+#: includes/admin/class-colisly-admin-settings.php:217
 msgid "Price per kg"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:232
+#: includes/admin/class-colisly-admin-settings.php:248
 msgid "Add a carrier"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:234
+#: includes/admin/class-colisly-admin-settings.php:250
 msgid "Carrier weight brackets"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:236
-msgid "Carriers usually publish a grid of weight brackets rather than a price per kilo. Fill one in here and it replaces the base price and the price per kg for that carrier: the first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. Leave a carrier empty and it keeps billing base price + price per kg. Beyond the last bracket that formula applies again, but it can only ever charge more than the last bracket, never less."
+#: includes/admin/class-colisly-admin-settings.php:252
+msgid "Carriers usually publish a grid of weight brackets rather than a price per kilo: the first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. Each carrier gets one grid per destination zone, then a grid for all other destinations. Leave that last one empty if every destination you serve is in a zone: the carrier is then simply not offered elsewhere. Beyond the last bracket the base price + price per kg formula applies, but it can only ever charge more than the last bracket, never less."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:242
+#: includes/admin/class-colisly-admin-settings.php:258
 msgid "Add a carrier and save to configure its brackets. A zone you have just created appears here after saving too."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:279
-#: includes/admin/class-colisly-admin-settings.php:322
-msgid "Add a bracket"
-msgstr ""
-
 #. translators: 1: carrier name, 2: zone name.
-#: includes/admin/class-colisly-admin-settings.php:294
+#: includes/admin/class-colisly-admin-settings.php:287
 #, php-format
 msgid "%1$s — zone %2$s"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:333
+#: includes/admin/class-colisly-admin-settings.php:315
+#: includes/admin/class-colisly-admin-settings.php:351
+msgid "Add a bracket"
+msgstr ""
+
+#. translators: %s: carrier name.
+#: includes/admin/class-colisly-admin-settings.php:323
+#, php-format
+msgid "%s — all other destinations"
+msgstr ""
+
+#: includes/admin/class-colisly-admin-settings.php:328
+msgid "Applies to any destination in no zone, or in a zone this carrier has no grid for. Leave empty if every destination you serve is in a zone above."
+msgstr ""
+
+#: includes/admin/class-colisly-admin-settings.php:359
 msgid "Content categories"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:335
+#: includes/admin/class-colisly-admin-settings.php:361
 msgid "Clothing&#10;Shoes&#10;Books"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:336
+#: includes/admin/class-colisly-admin-settings.php:362
 msgid "One category per line. Leave empty and clients describe the contents in their own words, which is what a customs form asks for. Fill it and the field becomes a menu of your categories, quicker to fill and consistent across clients."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:340
+#: includes/admin/class-colisly-admin-settings.php:366
 msgid "Maximum lines per parcel"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:343
+#: includes/admin/class-colisly-admin-settings.php:369
 msgid "0 for no limit. Set it to the number of lines your carrier forms hold. The client is given exactly that many lines to fill."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:347
+#: includes/admin/class-colisly-admin-settings.php:373
 msgid "Ask the client for"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:351
+#: includes/admin/class-colisly-admin-settings.php:377
 #: includes/class-colisly-customs.php:466
-#: includes/frontend/class-colisly-account.php:743
-#: includes/frontend/class-colisly-account.php:774
+#: includes/frontend/class-colisly-account.php:744
 #: includes/frontend/class-colisly-account.php:775
+#: includes/frontend/class-colisly-account.php:776
 msgid "Quantity"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:352
-#: includes/frontend/class-colisly-account.php:746
-#: includes/frontend/class-colisly-account.php:779
+#: includes/admin/class-colisly-admin-settings.php:378
+#: includes/frontend/class-colisly-account.php:747
 #: includes/frontend/class-colisly-account.php:780
+#: includes/frontend/class-colisly-account.php:781
 msgid "Unit weight (kg)"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:353
+#: includes/admin/class-colisly-admin-settings.php:379
 #: includes/class-colisly-customs.php:470
-#: includes/frontend/class-colisly-account.php:750
-#: includes/frontend/class-colisly-account.php:787
+#: includes/frontend/class-colisly-account.php:751
 #: includes/frontend/class-colisly-account.php:788
+#: includes/frontend/class-colisly-account.php:789
 msgid "Country of origin"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:366
+#: includes/admin/class-colisly-admin-settings.php:392
 msgid "The contents and the value are always asked, since a declaration without them declares nothing. The other three are what a real CN23 form needs, line by line. Untick them if you only want to know what a parcel holds before copying it onto your carrier's own form: three columns a client fills for nothing are three columns he fills badly."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:371
+#: includes/admin/class-colisly-admin-settings.php:397
 msgid "Insurance"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:372
+#: includes/admin/class-colisly-admin-settings.php:398
 msgid "Cover levels offered to the client when requesting a shipment: how much the parcel is covered for, and what that costs. Leave the table empty and no insurance is offered at all."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:376
-#: includes/admin/class-colisly-admin-settings.php:391
+#: includes/admin/class-colisly-admin-settings.php:402
+#: includes/admin/class-colisly-admin-settings.php:417
 msgid "Covered up to"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:402
+#: includes/admin/class-colisly-admin-settings.php:428
 msgid "Add a cover level"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:404
+#: includes/admin/class-colisly-admin-settings.php:430
 msgid "Orders"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:407
+#: includes/admin/class-colisly-admin-settings.php:433
 msgid "Taxes"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:411
+#: includes/admin/class-colisly-admin-settings.php:437
 msgid "Apply the shop taxes to shipment orders (parcels, storage and transport lines)"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:413
+#: includes/admin/class-colisly-admin-settings.php:439
 msgid "When unchecked, shipment orders are created tax-free."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:418
+#: includes/admin/class-colisly-admin-settings.php:444
 msgid "Notifications"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:421
+#: includes/admin/class-colisly-admin-settings.php:447
 msgid "E-mails"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:425
+#: includes/admin/class-colisly-admin-settings.php:451
 msgid "Notify the client when a parcel is received"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:430
+#: includes/admin/class-colisly-admin-settings.php:456
 msgid "Notify the administrator when a shipment is requested"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:435
+#: includes/admin/class-colisly-admin-settings.php:461
 msgid "Send the WooCommerce invoice (with payment link) when a shipment is requested"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:441
+#: includes/admin/class-colisly-admin-settings.php:467
 msgid "Save settings"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:643
+#: includes/admin/class-colisly-admin-settings.php:675
 msgid "Settings saved."
 msgstr ""
 
@@ -1000,6 +1029,24 @@ msgstr ""
 #: includes/admin/class-colisly-admin.php:138
 #, php-format
 msgid "unrecognised: %s"
+msgstr ""
+
+#. translators: 1: parcel reference, 2: carrier name, 3: parcel length, 4: limit.
+#: includes/class-colisly-carriers.php:208
+#, php-format
+msgid "Parcel %1$s is too long for %2$s: %3$s cm, limit %4$s cm."
+msgstr ""
+
+#. translators: 1: parcel reference, 2: carrier name, 3: parcel girth, 4: limit.
+#: includes/class-colisly-carriers.php:223
+#, php-format
+msgid "Parcel %1$s is too big for %2$s: length plus twice the width and height is %3$s cm, limit %4$s cm."
+msgstr ""
+
+#. translators: 1: carrier name, 2: shipment weight, 3: limit.
+#: includes/class-colisly-carriers.php:264
+#, php-format
+msgid "%1$s does not take shipments over %3$s kg; this one weighs %2$s kg. Choose another carrier or split the shipment."
 msgstr ""
 
 #: includes/class-colisly-clients.php:40
@@ -1077,9 +1124,9 @@ msgid "Net weight (kg)"
 msgstr ""
 
 #: includes/class-colisly-customs.php:468
-#: includes/frontend/class-colisly-account.php:748
-#: includes/frontend/class-colisly-account.php:783
+#: includes/frontend/class-colisly-account.php:749
 #: includes/frontend/class-colisly-account.php:784
+#: includes/frontend/class-colisly-account.php:785
 msgid "Value"
 msgstr ""
 
@@ -1190,8 +1237,8 @@ msgstr ""
 
 #. translators: 1: parcel reference, 2: weight in kg.
 #: includes/class-colisly-orders.php:118
-#: includes/frontend/class-colisly-account.php:612
-#: includes/frontend/class-colisly-account.php:896
+#: includes/frontend/class-colisly-account.php:613
+#: includes/frontend/class-colisly-account.php:928
 #, php-format
 msgid "Parcel %1$s (%2$s kg)"
 msgstr ""
@@ -1471,27 +1518,27 @@ msgstr ""
 msgid "The chosen carrier is not allowed for parcel %s."
 msgstr ""
 
-#: includes/class-colisly-shipments.php:183
+#: includes/class-colisly-shipments.php:191
 msgid "The shipment request could not be created."
 msgstr ""
 
 #. translators: 1: shipment reference, 2: number of parcels, 3: carrier name.
-#: includes/class-colisly-shipments.php:214
+#: includes/class-colisly-shipments.php:222
 #, php-format
 msgid "Shipment request %1$s created (%2$d parcels, carrier %3$s)."
 msgstr ""
 
-#: includes/class-colisly-shipments.php:448
+#: includes/class-colisly-shipments.php:456
 msgid "Invalid shipment status."
 msgstr ""
 
-#: includes/class-colisly-shipments.php:453
-#: includes/frontend/class-colisly-account.php:655
+#: includes/class-colisly-shipments.php:461
+#: includes/frontend/class-colisly-account.php:656
 msgid "Shipment not found."
 msgstr ""
 
 #. translators: 1: shipment reference, 2: old status, 3: new status.
-#: includes/class-colisly-shipments.php:497
+#: includes/class-colisly-shipments.php:505
 #, php-format
 msgid "Shipment %1$s: status “%2$s” → “%3$s”."
 msgstr ""
@@ -1587,7 +1634,7 @@ msgstr ""
 #: includes/frontend/class-colisly-account.php:235
 #: includes/frontend/class-colisly-account.php:339
 #: includes/frontend/class-colisly-account.php:376
-#: includes/frontend/class-colisly-account.php:862
+#: includes/frontend/class-colisly-account.php:894
 msgid "No client record is linked to your account yet."
 msgstr ""
 
@@ -1654,7 +1701,7 @@ msgstr ""
 
 #. translators: %s: comma separated list of address fields.
 #: includes/frontend/class-colisly-account.php:408
-#: includes/frontend/class-colisly-account.php:996
+#: includes/frontend/class-colisly-account.php:1028
 #, php-format
 msgid "Your delivery address is incomplete, so no shipment can be requested yet. Still missing: %s."
 msgstr ""
@@ -1697,85 +1744,85 @@ msgid "Preferred carrier:"
 msgstr ""
 
 #. translators: 1: carrier name, 2: base price, 3: price per kg.
-#: includes/frontend/class-colisly-account.php:560
+#: includes/frontend/class-colisly-account.php:561
 #, php-format
 msgid "%1$s — %2$s + %3$s/kg"
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:573
+#: includes/frontend/class-colisly-account.php:574
 msgid "Insurance:"
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:575
+#: includes/frontend/class-colisly-account.php:576
 msgid "No insurance"
 msgstr ""
 
 #. translators: 1: covered amount, 2: price of the cover.
-#: includes/frontend/class-colisly-account.php:581
+#: includes/frontend/class-colisly-account.php:582
 #, php-format
 msgid "Covered up to %1$s — %2$s"
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:592
+#: includes/frontend/class-colisly-account.php:593
 msgid "Estimated total:"
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:594
+#: includes/frontend/class-colisly-account.php:595
 msgid "(parcels + storage fees + transport — confirmed on the payment page)"
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:606
+#: includes/frontend/class-colisly-account.php:607
 msgid "Required for some destinations. Declare the contents of the parcels you are sending; a parcel left undeclared will be refused if its destination asks for one."
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:622
+#: includes/frontend/class-colisly-account.php:623
 msgid "Only carriers compatible with every selected parcel can be accepted."
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:624
+#: includes/frontend/class-colisly-account.php:625
 msgid "Send the request"
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:663
+#: includes/frontend/class-colisly-account.php:664
 msgid "This shipment can no longer be cancelled. Please get in touch with us."
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:741
-#: includes/frontend/class-colisly-account.php:758
-#: includes/frontend/class-colisly-account.php:760
-#: includes/frontend/class-colisly-account.php:770
+#: includes/frontend/class-colisly-account.php:742
+#: includes/frontend/class-colisly-account.php:759
+#: includes/frontend/class-colisly-account.php:761
+#: includes/frontend/class-colisly-account.php:771
 msgid "Contents"
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:770
+#: includes/frontend/class-colisly-account.php:771
 msgid "Cotton t-shirts"
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:798
+#: includes/frontend/class-colisly-account.php:799
 msgid "Add a line"
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:809
+#: includes/frontend/class-colisly-account.php:810
 msgid "Purchase invoices"
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:810
+#: includes/frontend/class-colisly-account.php:811
 msgid "Customs may ask for the invoice of what the parcel holds. Attach it here, PDF or image."
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:869
+#: includes/frontend/class-colisly-account.php:901
 msgid "You have no parcel in stock to declare."
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:874
+#: includes/frontend/class-colisly-account.php:906
 msgid "Declaration saved."
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:883
+#: includes/frontend/class-colisly-account.php:915
 msgid "Some destinations require the contents of a parcel to be declared before it can be shipped. Describe what each parcel holds, item by item, filling every column shown."
 msgstr ""
 
-#: includes/frontend/class-colisly-account.php:905
+#: includes/frontend/class-colisly-account.php:937
 msgid "Save the declaration"
 msgstr ""
 

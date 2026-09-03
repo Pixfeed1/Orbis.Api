@@ -170,7 +170,8 @@ class COLISLY_Admin_Settings {
 				<h2><?php esc_html_e( 'Carriers', 'colisly' ); ?></h2>
 				<p class="description"><?php esc_html_e( 'A disabled carrier is no longer offered, neither at parcel reception nor to clients.', 'colisly' ); ?></p>
 				<p class="description"><?php esc_html_e( 'Volumetric: express carriers price bulk rather than mass. Tick the box and the transport is billed on whichever is greater, the real weight or length x width x height divided by the divisor, parcel by parcel. A parcel whose dimensions were not entered is billed on its real weight.', 'colisly' ); ?></p>
-				<p class="description"><?php esc_html_e( 'Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are the fallback: they apply to a carrier with no grid, and beyond the last bracket of a carrier that has one.', 'colisly' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are optional: they only apply to a carrier with no grid, and beyond the last bracket of a carrier that has one. Leave them empty if you price by grid.', 'colisly' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Limits: what the carrier physically takes. Maximum weight applies to the whole shipment, since grouped parcels leave in one carton; maximum length and girth (length plus twice the width plus twice the height, in cm) apply to each parcel. Leave empty for no limit. A parcel or shipment beyond a limit cannot be requested with that carrier.', 'colisly' ); ?></p>
 				<table class="widefat fixed striped colisly-carriers-table">
 					<thead>
 						<tr>
@@ -180,6 +181,9 @@ class COLISLY_Admin_Settings {
 							<th><?php esc_html_e( 'Price per kg (beyond brackets)', 'colisly' ); ?></th>
 							<th><?php esc_html_e( 'Volumetric', 'colisly' ); ?></th>
 							<th><?php esc_html_e( 'Divisor', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Max weight (kg)', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Max length (cm)', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Max girth (cm)', 'colisly' ); ?></th>
 							<th><?php esc_html_e( 'Enabled', 'colisly' ); ?></th>
 						</tr>
 					</thead>
@@ -222,6 +226,18 @@ class COLISLY_Admin_Settings {
 									<input type="number" step="1" min="1" id="colisly-carrier-d-<?php echo esc_attr( (string) $i ); ?>" name="carrier_divisor[]" value="<?php echo esc_attr( isset( $carrier['volumetric_divisor'] ) && $carrier['volumetric_divisor'] ? (string) (int) $carrier['volumetric_divisor'] : '5000' ); ?>" />
 								</td>
 								<td>
+									<label class="screen-reader-text" for="colisly-carrier-mw-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Max weight (kg)', 'colisly' ); ?></label>
+									<input type="number" step="0.001" min="0" id="colisly-carrier-mw-<?php echo esc_attr( (string) $i ); ?>" name="carrier_max_weight[]" value="<?php echo esc_attr( ! empty( $carrier['max_weight'] ) ? (string) $carrier['max_weight'] : '' ); ?>" />
+								</td>
+								<td>
+									<label class="screen-reader-text" for="colisly-carrier-ml-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Max length (cm)', 'colisly' ); ?></label>
+									<input type="number" step="0.1" min="0" id="colisly-carrier-ml-<?php echo esc_attr( (string) $i ); ?>" name="carrier_max_length[]" value="<?php echo esc_attr( ! empty( $carrier['max_length'] ) ? (string) $carrier['max_length'] : '' ); ?>" />
+								</td>
+								<td>
+									<label class="screen-reader-text" for="colisly-carrier-mg-<?php echo esc_attr( (string) $i ); ?>"><?php esc_html_e( 'Max girth (cm)', 'colisly' ); ?></label>
+									<input type="number" step="0.1" min="0" id="colisly-carrier-mg-<?php echo esc_attr( (string) $i ); ?>" name="carrier_max_girth[]" value="<?php echo esc_attr( ! empty( $carrier['max_girth'] ) ? (string) $carrier['max_girth'] : '' ); ?>" />
+								</td>
+								<td>
 									<input type="hidden" name="carrier_enabled[]" value="<?php echo empty( $carrier['enabled'] ) ? '0' : '1'; ?>" class="colisly-toggle-value" />
 									<input type="checkbox" class="colisly-toggle" <?php checked( ! empty( $carrier['enabled'] ) ); ?> aria-label="<?php esc_attr_e( 'Enabled', 'colisly' ); ?>" />
 								</td>
@@ -233,7 +249,7 @@ class COLISLY_Admin_Settings {
 
 				<h2><?php esc_html_e( 'Carrier weight brackets', 'colisly' ); ?></h2>
 				<p class="description">
-					<?php esc_html_e( 'Carriers usually publish a grid of weight brackets rather than a price per kilo. Fill one in here and it replaces the base price and the price per kg for that carrier: the first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. Leave a carrier empty and it keeps billing base price + price per kg. Beyond the last bracket that formula applies again, but it can only ever charge more than the last bracket, never less.', 'colisly' ); ?>
+					<?php esc_html_e( 'Carriers usually publish a grid of weight brackets rather than a price per kilo: the first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. Each carrier gets one grid per destination zone, then a grid for all other destinations. Leave that last one empty if every destination you serve is in a zone: the carrier is then simply not offered elsewhere. Beyond the last bracket the base price + price per kg formula applies, but it can only ever charge more than the last bracket, never less.', 'colisly' ); ?>
 				</p>
 				<?php
 				$saved_carriers = is_array( $settings['carriers'] ) ? $settings['carriers'] : array();
@@ -254,29 +270,6 @@ class COLISLY_Admin_Settings {
 					); // Extra empty row to add a bracket.
 					?>
 					<h3><?php echo esc_html( $carrier['name'] ); ?></h3>
-					<table class="widefat fixed striped colisly-tiers-table colisly-carrier-tiers-table">
-						<thead>
-							<tr>
-								<th><?php esc_html_e( 'Maximum weight (kg)', 'colisly' ); ?></th>
-								<th><?php esc_html_e( 'Price', 'colisly' ); ?></th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php foreach ( $c_tiers as $j => $c_tier ) : ?>
-								<tr>
-									<td>
-										<label class="screen-reader-text" for="colisly-ct-w-<?php echo esc_attr( $slug . '-' . $j ); ?>"><?php esc_html_e( 'Maximum weight (kg)', 'colisly' ); ?></label>
-										<input type="number" id="colisly-ct-w-<?php echo esc_attr( $slug . '-' . $j ); ?>" name="carrier_tier_max_weight[<?php echo esc_attr( $slug ); ?>][]" step="0.001" min="0" value="<?php echo esc_attr( (string) $c_tier['max_weight'] ); ?>" />
-									</td>
-									<td>
-										<label class="screen-reader-text" for="colisly-ct-p-<?php echo esc_attr( $slug . '-' . $j ); ?>"><?php esc_html_e( 'Price', 'colisly' ); ?></label>
-										<input type="number" id="colisly-ct-p-<?php echo esc_attr( $slug . '-' . $j ); ?>" name="carrier_tier_price[<?php echo esc_attr( $slug ); ?>][]" step="0.01" min="0" value="<?php echo esc_attr( (string) $c_tier['price'] ); ?>" />
-									</td>
-								</tr>
-							<?php endforeach; ?>
-						</tbody>
-					</table>
-					<p><button type="button" class="button colisly-add-row"><?php esc_html_e( 'Add a bracket', 'colisly' ); ?></button></p>
 					<?php
 					// One extra grid per zone, so a carrier can be priced
 					// differently for each destination group.
@@ -323,6 +316,39 @@ class COLISLY_Admin_Settings {
 						<?php
 					endforeach;
 					?>
+					<h4>
+						<?php
+						printf(
+							/* translators: %s: carrier name. */
+							esc_html__( '%s — all other destinations', 'colisly' ),
+							esc_html( $carrier['name'] )
+						);
+						?>
+					</h4>
+					<p class="description"><?php esc_html_e( 'Applies to any destination in no zone, or in a zone this carrier has no grid for. Leave empty if every destination you serve is in a zone above.', 'colisly' ); ?></p>
+					<table class="widefat fixed striped colisly-tiers-table colisly-carrier-tiers-table">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'Maximum weight (kg)', 'colisly' ); ?></th>
+								<th><?php esc_html_e( 'Price', 'colisly' ); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php foreach ( $c_tiers as $j => $c_tier ) : ?>
+								<tr>
+									<td>
+										<label class="screen-reader-text" for="colisly-ct-w-<?php echo esc_attr( $slug . '-' . $j ); ?>"><?php esc_html_e( 'Maximum weight (kg)', 'colisly' ); ?></label>
+										<input type="number" id="colisly-ct-w-<?php echo esc_attr( $slug . '-' . $j ); ?>" name="carrier_tier_max_weight[<?php echo esc_attr( $slug ); ?>][]" step="0.001" min="0" value="<?php echo esc_attr( (string) $c_tier['max_weight'] ); ?>" />
+									</td>
+									<td>
+										<label class="screen-reader-text" for="colisly-ct-p-<?php echo esc_attr( $slug . '-' . $j ); ?>"><?php esc_html_e( 'Price', 'colisly' ); ?></label>
+										<input type="number" id="colisly-ct-p-<?php echo esc_attr( $slug . '-' . $j ); ?>" name="carrier_tier_price[<?php echo esc_attr( $slug ); ?>][]" step="0.01" min="0" value="<?php echo esc_attr( (string) $c_tier['price'] ); ?>" />
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+					<p><button type="button" class="button colisly-add-row"><?php esc_html_e( 'Add a bracket', 'colisly' ); ?></button></p>
 					<?php
 				endforeach;
 				?>
@@ -569,6 +595,9 @@ class COLISLY_Admin_Settings {
 		$rates    = isset( $_POST['carrier_price_per_kg'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['carrier_price_per_kg'] ) ) : array();
 		$vols     = isset( $_POST['carrier_volumetric'] ) ? array_map( 'absint', wp_unslash( (array) $_POST['carrier_volumetric'] ) ) : array();
 		$divisors = isset( $_POST['carrier_divisor'] ) ? array_map( 'absint', wp_unslash( (array) $_POST['carrier_divisor'] ) ) : array();
+		$max_w    = isset( $_POST['carrier_max_weight'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['carrier_max_weight'] ) ) : array();
+		$max_l    = isset( $_POST['carrier_max_length'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['carrier_max_length'] ) ) : array();
+		$max_g    = isset( $_POST['carrier_max_girth'] ) ? array_map( 'sanitize_text_field', wp_unslash( (array) $_POST['carrier_max_girth'] ) ) : array();
 
 		// Brackets are posted per carrier slug, since a carrier can be renamed
 		// or reordered in the same save without its grid following the wrong row.
@@ -597,6 +626,9 @@ class COLISLY_Admin_Settings {
 				'price_per_kg'       => isset( $rates[ $i ] ) ? max( 0, COLISLY_Parcels::to_float( $rates[ $i ] ) ) : 0,
 				'volumetric'         => empty( $vols[ $i ] ) ? 0 : 1,
 				'volumetric_divisor' => isset( $divisors[ $i ] ) && $divisors[ $i ] > 0 ? (int) $divisors[ $i ] : 5000,
+				'max_weight'         => isset( $max_w[ $i ] ) ? max( 0, COLISLY_Parcels::to_float( $max_w[ $i ] ) ) : 0,
+				'max_length'         => isset( $max_l[ $i ] ) ? max( 0, COLISLY_Parcels::to_float( $max_l[ $i ] ) ) : 0,
+				'max_girth'          => isset( $max_g[ $i ] ) ? max( 0, COLISLY_Parcels::to_float( $max_g[ $i ] ) ) : 0,
 				'tiers'              => self::sanitize_tiers(
 					isset( $tier_weights[ $slug ] ) ? (array) $tier_weights[ $slug ] : array(),
 					isset( $tier_prices[ $slug ] ) ? (array) $tier_prices[ $slug ] : array()

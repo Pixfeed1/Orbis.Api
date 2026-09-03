@@ -1880,6 +1880,68 @@ COLISLY_Settings::update( $colisly_np_settings );
 $colisly_np_src = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/frontend/class-colisly-account.php' );
 colisly_check( 'Garde : seuls les transporteurs tarifes sont proposes au client', false !== strpos( $colisly_np_src, "COLISLY_Carriers::is_priced( \$carrier['slug'], \$address['country'] )" ) );
 
+/*
+ * Limites physiques des transporteurs.
+ *
+ * Un transporteur refuse au guichet ce qui depasse son poids, sa longueur ou
+ * son developpe, quel que soit le tarif. Le poids se verifie sur l'expedition
+ * entiere, les colis regroupes partant dans un seul carton ; les dimensions
+ * colis par colis. Un colis sans dimensions n'est pas refuse sur une mesure
+ * que personne n'a prise.
+ */
+$colisly_lim_settings = COLISLY_Settings::all();
+$colisly_lim_saved    = $colisly_lim_settings['carriers'];
+$colisly_lim_settings['carriers'][] = array( 'slug' => 'lim-poste', 'name' => 'Lim Poste', 'enabled' => 1, 'price_base' => 5, 'price_per_kg' => 1, 'tiers' => array(), 'zone_tiers' => array(), 'max_weight' => 30, 'max_length' => 150, 'max_girth' => 300 );
+$colisly_lim_settings['carriers'][] = array( 'slug' => 'lim-libre', 'name' => 'Lim Libre', 'enabled' => 1, 'price_base' => 5, 'price_per_kg' => 1, 'tiers' => array(), 'zone_tiers' => array() );
+COLISLY_Settings::update( $colisly_lim_settings );
+
+$colisly_lim_client = COLISLY_Clients::create(
+	wp_insert_user(
+		array(
+			'user_login' => 'lim-' . wp_generate_password( 6, false ),
+			'user_email' => 'lim-' . wp_generate_password( 6, false ) . '@example.com',
+			'user_pass'  => wp_generate_password(),
+			'role'       => 'customer',
+		)
+	)
+);
+$colisly_lim_ok    = COLISLY_Parcels::get( COLISLY_Parcels::create( array( 'client_id' => $colisly_lim_client, 'weight' => 10, 'length' => 100, 'width' => 40, 'height' => 40 ) ) );
+$colisly_lim_long  = COLISLY_Parcels::get( COLISLY_Parcels::create( array( 'client_id' => $colisly_lim_client, 'weight' => 5, 'length' => 160, 'width' => 20, 'height' => 20 ) ) );
+$colisly_lim_big   = COLISLY_Parcels::get( COLISLY_Parcels::create( array( 'client_id' => $colisly_lim_client, 'weight' => 5, 'length' => 120, 'width' => 60, 'height' => 60 ) ) );
+$colisly_lim_nodim = COLISLY_Parcels::get( COLISLY_Parcels::create( array( 'client_id' => $colisly_lim_client, 'weight' => 25 ) ) );
+
+colisly_check( 'Limites : sans limite, tout passe', true === COLISLY_Carriers::fits( 'lim-libre', array( $colisly_lim_long, $colisly_lim_big, $colisly_lim_nodim ) ) );
+colisly_check( 'Limites : un colis dans les clous passe', true === COLISLY_Carriers::parcel_fits( 'lim-poste', $colisly_lim_ok ) );
+$colisly_lim_e1 = COLISLY_Carriers::parcel_fits( 'lim-poste', $colisly_lim_long );
+colisly_check( 'Limites : trop long est refuse', is_wp_error( $colisly_lim_e1 ) && 'colisly_parcel_too_long' === $colisly_lim_e1->get_error_code() );
+colisly_check( 'Limites : le refus nomme le colis et la limite', is_wp_error( $colisly_lim_e1 ) && false !== strpos( $colisly_lim_e1->get_error_message(), $colisly_lim_long->reference ) && false !== strpos( $colisly_lim_e1->get_error_message(), '150' ) );
+$colisly_lim_e2 = COLISLY_Carriers::parcel_fits( 'lim-poste', $colisly_lim_big );
+colisly_check( 'Limites : developpe trop grand est refuse (120 + 2x60 + 2x60 = 360 > 300)', is_wp_error( $colisly_lim_e2 ) && 'colisly_parcel_too_big' === $colisly_lim_e2->get_error_code() );
+colisly_check( 'Limites : la longueur est le plus grand cote, pas le champ longueur', true === COLISLY_Carriers::parcel_fits( 'lim-poste', (object) array( 'reference' => 'X', 'length' => 20, 'width' => 140, 'height' => 20 ) ) );
+colisly_check( 'Limites : un colis sans dimensions n est pas refuse dessus', true === COLISLY_Carriers::parcel_fits( 'lim-poste', $colisly_lim_nodim ) );
+colisly_check( 'Limites : le poids se verifie sur l expedition entiere (10 + 25 = 35 > 30)', is_wp_error( COLISLY_Carriers::fits( 'lim-poste', array( $colisly_lim_ok, $colisly_lim_nodim ) ) ) );
+colisly_check( 'Limites : chaque colis seul sous le poids passe', true === COLISLY_Carriers::fits( 'lim-poste', array( $colisly_lim_nodim ) ) );
+colisly_check( 'Limites : exactement a la limite passe', true === COLISLY_Carriers::fits( 'lim-poste', array( (object) array( 'reference' => 'Y', 'weight' => 30, 'length' => 0, 'width' => 0, 'height' => 0 ) ) ) );
+
+$colisly_lim_small = COLISLY_Carriers::too_small_for( $colisly_lim_long );
+colisly_check( 'Limites : le transporteur trop petit est liste pour le colis', in_array( 'lim-poste', $colisly_lim_small, true ) && ! in_array( 'lim-libre', $colisly_lim_small, true ) );
+colisly_check( 'Limites : rien de trop petit pour un colis dans les clous', array() === COLISLY_Carriers::too_small_for( $colisly_lim_ok ) );
+
+$colisly_lim_err = COLISLY_Shipments::request( $colisly_lim_client, array( (int) $colisly_lim_long->id ), 'lim-poste', 0, 'FR' );
+colisly_check( 'Limites : la demande est refusee', is_wp_error( $colisly_lim_err ) && 'colisly_parcel_too_long' === $colisly_lim_err->get_error_code() );
+colisly_check( 'Limites : le colis refuse reste en stock', 'available' === COLISLY_Parcels::get( (int) $colisly_lim_long->id )->status );
+$colisly_lim_err2 = COLISLY_Shipments::request( $colisly_lim_client, array( (int) $colisly_lim_ok->id, (int) $colisly_lim_nodim->id ), 'lim-poste', 0, 'FR' );
+colisly_check( 'Limites : le regroupement trop lourd est refuse', is_wp_error( $colisly_lim_err2 ) && 'colisly_shipment_too_heavy' === $colisly_lim_err2->get_error_code() );
+colisly_check( 'Limites : le meme regroupement passe chez le transporteur sans limite', ! is_wp_error( COLISLY_Shipments::request( $colisly_lim_client, array( (int) $colisly_lim_ok->id, (int) $colisly_lim_nodim->id ), 'lim-libre', 0, 'FR' ) ) );
+
+$colisly_lim_settings['carriers'] = $colisly_lim_saved;
+COLISLY_Settings::update( $colisly_lim_settings );
+
+$colisly_lim_src = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/frontend/class-colisly-account.php' );
+colisly_check( 'Garde : le formulaire grise les transporteurs trop petits pour un colis', false !== strpos( $colisly_lim_src, 'self::carriers_for_parcel( $parcel )' ) && false !== strpos( $colisly_lim_src, 'data-max-weight=' ) );
+$colisly_lim_set = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-settings.php' );
+colisly_check( 'Garde : les grilles de zone precedent la grille par defaut', strpos( $colisly_lim_set, 'foreach ( COLISLY_Zones::all() as $zone ) :' ) < strpos( $colisly_lim_set, "'%s — all other destinations'" ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.13.1\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.14.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -863,9 +863,6 @@ msgstr "Ajouter une tranche"
 msgid "Carrier weight brackets"
 msgstr "Tranches de poids par transporteur"
 
-msgid "Carriers usually publish a grid of weight brackets rather than a price per kilo. Fill one in here and it replaces the base price and the price per kg for that carrier: the first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. Leave a carrier empty and it keeps billing base price + price per kg. Beyond the last bracket that formula applies again, but it can only ever charge more than the last bracket, never less."
-msgstr "Les transporteurs publient en général une grille de tranches de poids plutôt qu’un tarif au kilo. Renseignez-la ici et elle remplace le prix de base et le tarif au kilo pour ce transporteur : la première tranche dont le poids maximal est supérieur ou égal au poids de l’expédition fixe le prix. Laissez un transporteur vide et il continue d’être facturé au prix de base + tarif au kilo. Au-delà de la dernière tranche, cette formule s’applique de nouveau, sans jamais descendre sous la dernière tranche."
-
 
 msgid "Include in the shipment"
 msgstr "Inclure dans l’expédition"
@@ -917,9 +914,6 @@ msgstr "Prix de base (au-delà des tranches)"
 
 msgid "Price per kg (beyond brackets)"
 msgstr "Tarif au kilo (au-delà des tranches)"
-
-msgid "Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are the fallback: they apply to a carrier with no grid, and beyond the last bracket of a carrier that has one."
-msgstr "La plupart des transporteurs se tarifent avec une grille de tranches de poids, à renseigner dans « Tranches de poids par transporteur » ci-dessous. Les deux prix de ce tableau sont le recours : ils s’appliquent à un transporteur sans grille, et au-delà de la dernière tranche d’un transporteur qui en a une."
 
 msgid "Insurance"
 msgstr "Assurance"
@@ -1187,4 +1181,37 @@ msgstr "%s n’a pas de tarif pour cette destination. Choisissez un autre transp
 
 msgid "No carrier is priced for your destination yet. Please get in touch with us."
 msgstr "Aucun transporteur n’est encore tarifé pour votre destination. Merci de nous contacter."
+
+msgid "Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are optional: they only apply to a carrier with no grid, and beyond the last bracket of a carrier that has one. Leave them empty if you price by grid."
+msgstr "La plupart des transporteurs se tarifent par une grille de tranches de poids, à remplir sous « Tranches de poids des transporteurs » ci-dessous. Les deux prix de ce tableau sont facultatifs : ils ne s’appliquent qu’à un transporteur sans grille, et au-delà de la dernière tranche d’un transporteur qui en a une. Laissez-les vides si vous tarifez par grille."
+
+msgid "Limits: what the carrier physically takes. Maximum weight applies to the whole shipment, since grouped parcels leave in one carton; maximum length and girth (length plus twice the width plus twice the height, in cm) apply to each parcel. Leave empty for no limit. A parcel or shipment beyond a limit cannot be requested with that carrier."
+msgstr "Limites : ce que le transporteur prend physiquement. Le poids maximum s’applique à l’expédition entière, les colis regroupés partant dans un seul carton ; la longueur et le développé maximum (longueur plus deux fois la largeur plus deux fois la hauteur, en cm) s’appliquent à chaque colis. Laissez vide pour aucune limite. Un colis ou une expédition au-delà d’une limite ne peut pas être demandé avec ce transporteur."
+
+msgid "Max weight (kg)"
+msgstr "Poids max (kg)"
+
+msgid "Max length (cm)"
+msgstr "Longueur max (cm)"
+
+msgid "Max girth (cm)"
+msgstr "Développé max (cm)"
+
+msgid "Carriers usually publish a grid of weight brackets rather than a price per kilo: the first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. Each carrier gets one grid per destination zone, then a grid for all other destinations. Leave that last one empty if every destination you serve is in a zone: the carrier is then simply not offered elsewhere. Beyond the last bracket the base price + price per kg formula applies, but it can only ever charge more than the last bracket, never less."
+msgstr "Les transporteurs publient en général une grille de tranches de poids plutôt qu’un prix au kilo : la première tranche dont le poids maximal est supérieur ou égal au poids de l’expédition fixe le prix. Chaque transporteur a une grille par zone de destination, puis une grille pour toutes les autres destinations. Laissez cette dernière vide si toutes les destinations que vous desservez sont dans une zone : le transporteur n’est alors simplement pas proposé ailleurs. Au-delà de la dernière tranche, la formule prix de base + prix au kilo s’applique, mais elle ne peut jamais facturer moins que la dernière tranche."
+
+msgid "%s — all other destinations"
+msgstr "%s — toutes les autres destinations"
+
+msgid "Applies to any destination in no zone, or in a zone this carrier has no grid for. Leave empty if every destination you serve is in a zone above."
+msgstr "S’applique à toute destination hors zone, ou dans une zone pour laquelle ce transporteur n’a pas de grille. Laissez vide si toutes les destinations que vous desservez sont dans une zone ci-dessus."
+
+msgid "Parcel %1$s is too long for %2$s: %3$s cm, limit %4$s cm."
+msgstr "Le colis %1$s est trop long pour %2$s : %3$s cm, limite %4$s cm."
+
+msgid "Parcel %1$s is too big for %2$s: length plus twice the width and height is %3$s cm, limit %4$s cm."
+msgstr "Le colis %1$s est trop grand pour %2$s : longueur plus deux fois la largeur et la hauteur fait %3$s cm, limite %4$s cm."
+
+msgid "%1$s does not take shipments over %3$s kg; this one weighs %2$s kg. Choose another carrier or split the shipment."
+msgstr "%1$s ne prend pas les expéditions de plus de %3$s kg ; celle-ci pèse %2$s kg. Choisissez un autre transporteur ou séparez l’expédition."
 

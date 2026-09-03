@@ -193,6 +193,25 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.14.0 =
+* Nouveau : limites des transporteurs. Chaque transporteur peut porter un
+  poids maximum, une longueur maximum et un développé maximum (longueur plus
+  deux fois la largeur plus deux fois la hauteur), les chiffres que les
+  transporteurs publient et au-delà desquels ils refusent au guichet. Le poids
+  s'applique à l'expédition entière, les colis regroupés partant dans un seul
+  carton ; les dimensions à chaque colis, sur celles saisies à la réception.
+  Un transporteur que les colis cochés dépassent est grisé dans la liste du
+  client, et une demande qui le forcerait est refusée en nommant le colis et la
+  limite. Un colis dont les dimensions n'ont jamais été saisies n'est pas
+  refusé sur une mesure que personne n'a prise. Les trois sont facultatives et
+  vides par défaut.
+* La page des tranches de poids se lit dans l'ordre où elle s'applique :
+  chaque transporteur montre d'abord ses grilles de zones, puis une grille
+  intitulée « toutes les autres destinations », avec une note disant de la
+  laisser vide quand toutes les destinations desservies sont dans une zone.
+  Rien ne change dans le calcul des prix ; la page dit seulement ce qu'elle
+  fait.
+
 = 1.13.1 =
 * Corrigé : un transporteur activé mais jamais tarifé était proposé aux clients
   à 0,00 et la commande passait à ce prix, la formule de repli avec une base
@@ -453,6 +472,11 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.14.0 =
+Les transporteurs peuvent porter des limites de poids et de dimensions, et la
+page des tranches se lit dans l'ordre où elle s'applique. Aucun changement de
+base de données.
 
 = 1.13.1 =
 Un transporteur sans tarif pour une destination n'est plus proposé à 0,00.

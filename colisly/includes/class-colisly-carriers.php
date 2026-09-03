@@ -164,6 +164,133 @@ class COLISLY_Carriers {
 	}
 
 	/**
+	 * Returns the physical limits of a carrier, 0 for none.
+	 *
+	 * @param array|null $carrier Carrier row.
+	 * @return array { max_weight: float, max_length: float, max_girth: float }
+	 */
+	public static function limits( $carrier ) {
+		return array(
+			'max_weight' => $carrier && ! empty( $carrier['max_weight'] ) ? max( 0, (float) $carrier['max_weight'] ) : 0.0,
+			'max_length' => $carrier && ! empty( $carrier['max_length'] ) ? max( 0, (float) $carrier['max_length'] ) : 0.0,
+			'max_girth'  => $carrier && ! empty( $carrier['max_girth'] ) ? max( 0, (float) $carrier['max_girth'] ) : 0.0,
+		);
+	}
+
+	/**
+	 * Whether one parcel fits a carrier's dimension limits.
+	 *
+	 * Carriers publish a longest side and a girth, length plus twice the
+	 * width plus twice the height, past which a parcel is refused at the
+	 * counter whatever it weighs. A parcel whose dimensions were never
+	 * entered is not refused on a measurement nobody took.
+	 *
+	 * @param string $slug   Carrier slug.
+	 * @param object $parcel Parcel row.
+	 * @return true|WP_Error
+	 */
+	public static function parcel_fits( $slug, $parcel ) {
+		$carrier = self::get( $slug );
+		$limits  = self::limits( $carrier );
+
+		$dims = array( (float) $parcel->length, (float) $parcel->width, (float) $parcel->height );
+		if ( min( $dims ) <= 0 ) {
+			return true;
+		}
+
+		rsort( $dims );
+
+		if ( $limits['max_length'] > 0 && $dims[0] > $limits['max_length'] ) {
+			return new WP_Error(
+				'colisly_parcel_too_long',
+				sprintf(
+					/* translators: 1: parcel reference, 2: carrier name, 3: parcel length, 4: limit. */
+					__( 'Parcel %1$s is too long for %2$s: %3$s cm, limit %4$s cm.', 'colisly' ),
+					$parcel->reference,
+					self::name( $slug ),
+					number_format_i18n( $dims[0], 1 ),
+					number_format_i18n( $limits['max_length'], 1 )
+				)
+			);
+		}
+
+		$girth = $dims[0] + 2 * $dims[1] + 2 * $dims[2];
+		if ( $limits['max_girth'] > 0 && $girth > $limits['max_girth'] ) {
+			return new WP_Error(
+				'colisly_parcel_too_big',
+				sprintf(
+					/* translators: 1: parcel reference, 2: carrier name, 3: parcel girth, 4: limit. */
+					__( 'Parcel %1$s is too big for %2$s: length plus twice the width and height is %3$s cm, limit %4$s cm.', 'colisly' ),
+					$parcel->reference,
+					self::name( $slug ),
+					number_format_i18n( $girth, 1 ),
+					number_format_i18n( $limits['max_girth'], 1 )
+				)
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Whether a set of parcels can travel with a carrier.
+	 *
+	 * The weight limit is checked on the whole shipment, since grouped
+	 * parcels leave in one carton; the dimensions on each parcel, since the
+	 * carton they will share is not known yet.
+	 *
+	 * @param string   $slug    Carrier slug.
+	 * @param object[] $parcels Parcel rows.
+	 * @return true|WP_Error
+	 */
+	public static function fits( $slug, $parcels ) {
+		$carrier = self::get( $slug );
+		$limits  = self::limits( $carrier );
+		$weight  = 0.0;
+
+		foreach ( (array) $parcels as $parcel ) {
+			$fit = self::parcel_fits( $slug, $parcel );
+			if ( is_wp_error( $fit ) ) {
+				return $fit;
+			}
+			$weight += max( 0, (float) $parcel->weight );
+		}
+
+		if ( $limits['max_weight'] > 0 && $weight > $limits['max_weight'] + 0.0005 ) {
+			return new WP_Error(
+				'colisly_shipment_too_heavy',
+				sprintf(
+					/* translators: 1: carrier name, 2: shipment weight, 3: limit. */
+					__( '%1$s does not take shipments over %3$s kg; this one weighs %2$s kg. Choose another carrier or split the shipment.', 'colisly' ),
+					self::name( $slug ),
+					number_format_i18n( $weight, 3 ),
+					number_format_i18n( $limits['max_weight'], 3 )
+				)
+			);
+		}
+
+		return true;
+	}
+
+	/**
+	 * Returns the enabled carriers whose dimension limits a parcel exceeds.
+	 *
+	 * @param object $parcel Parcel row.
+	 * @return string[] Carrier slugs.
+	 */
+	public static function too_small_for( $parcel ) {
+		$out = array();
+
+		foreach ( self::all( true ) as $carrier ) {
+			if ( is_wp_error( self::parcel_fits( $carrier['slug'], $parcel ) ) ) {
+				$out[] = $carrier['slug'];
+			}
+		}
+
+		return $out;
+	}
+
+	/**
 	 * Whether a carrier has any rate at all for a destination.
 	 *
 	 * A carrier added to the list and never priced used to be offered at
