@@ -53,7 +53,7 @@ class COLISLY_Orders {
 	 * @param WC_Order $order Order.
 	 * @return int
 	 */
-	private static function shipment_id_from_order( $order ) {
+	public static function shipment_id_from_order( $order ) {
 		$shipment_id = (int) $order->get_meta( '_colisly_shipment_id' );
 
 		// Orders created before the prefix rename, not migrated yet.

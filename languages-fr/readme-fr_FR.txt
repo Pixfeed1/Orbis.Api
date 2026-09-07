@@ -193,6 +193,17 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.15.0 =
+* Nouveau : un encart Colisly sur la commande WooCommerce créée par une
+  expédition. Le réexpéditeur travaille depuis WooCommerce > Commandes, là où
+  le paiement apparaît, mais tout ce qui concerne l'expédition vivait sur la
+  fiche client. La commande montre désormais l'expédition, son transporteur et
+  sa destination, chaque colis avec son poids, ses dimensions et son numéro de
+  suivi, ce qu'il déclare avec la valeur totale, les factures d'achat jointes
+  par le client, et le formulaire douanier à imprimer, avec un lien vers la
+  fiche client. Fonctionne avec les deux stockages de commandes. Une commande
+  ordinaire de la boutique n'est pas touchée.
+
 = 1.14.1 =
 * Corrigé : le tableau des transporteurs dans les réglages était écrasé en
   champs de deux caractères depuis que la 1.14.0 lui a ajouté ses trois
@@ -479,6 +490,11 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.15.0 =
+La commande WooCommerce d'une expédition montre désormais ses colis, sa
+déclaration, ses factures et son formulaire douanier. Aucun changement de base
+de données.
 
 = 1.14.1 =
 Corrige le tableau des transporteurs écrasé dans les réglages. Aucun

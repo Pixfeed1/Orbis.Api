@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.14.1\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.15.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -1214,4 +1214,13 @@ msgstr "Le colis %1$s est trop grand pour %2$s : longueur plus deux fois la larg
 
 msgid "%1$s does not take shipments over %3$s kg; this one weighs %2$s kg. Choose another carrier or split the shipment."
 msgstr "%1$s ne prend pas les expéditions de plus de %3$s kg ; celle-ci pèse %2$s kg. Choisissez un autre transporteur ou séparez l’expédition."
+
+msgid "Colisly shipment"
+msgstr "Expédition Colisly"
+
+msgid "No customs declaration for this parcel."
+msgstr "Aucune déclaration douanière pour ce colis."
+
+msgid "No purchase invoice attached."
+msgstr "Aucune facture d’achat jointe."
 

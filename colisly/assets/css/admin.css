@@ -220,3 +220,16 @@
 .colisly-country-preview.colisly-country-unknown {
 	color: #b32d2e;
 }
+
+/* Colisly panel on the WooCommerce order: one block per parcel. */
+.colisly-order-parcel {
+	border-top: 1px solid #dcdcde;
+	margin-top: 8px;
+	padding-top: 8px;
+}
+
+.colisly-order-declaration,
+.colisly-order-invoices {
+	list-style: disc;
+	margin: 4px 0 4px 20px;
+}

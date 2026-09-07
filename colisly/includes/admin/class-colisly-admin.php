@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-clients.php';
 require_once COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-parcels.php';
 require_once COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-settings.php';
+require_once COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-orders.php';
 
 /**
  * Registers the admin menu and routes form submissions.
@@ -26,6 +27,7 @@ class COLISLY_Admin {
 	public static function init() {
 		add_action( 'admin_menu', array( __CLASS__, 'register_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
+		COLISLY_Admin_Orders::init();
 
 		add_action( 'admin_post_colisly_create_client', array( 'COLISLY_Admin_Clients', 'handle_create' ) );
 		add_action( 'admin_post_colisly_update_client', array( 'COLISLY_Admin_Clients', 'handle_update' ) );

@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.14.1
+Stable tag: 1.15.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.15.0 =
+* New: a Colisly panel on the WooCommerce order a shipment created. The forwarder works from WooCommerce > Orders, where payment shows up, but everything about the shipment lived on the client record. The order now shows the shipment, its carrier and destination, each parcel with its weight, dimensions and tracking number, what it declares with the total value, the purchase invoices the client attached, and the customs form to print, with a link to the client record. Works with both order storages. An ordinary shop order is untouched.
+
 = 1.14.1 =
 * Fixed: the carriers table in the settings was squeezed into fields two characters wide since 1.14.0 added its three limit columns, a width cap that suited seven columns being kept for ten. The table now takes the width it needs and scrolls sideways when the screen has less.
 
@@ -202,6 +205,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.15.0 =
+The WooCommerce order of a shipment now shows its parcels, declaration,
+invoices and customs form. No database change.
 
 = 1.14.1 =
 Fixes the squeezed carriers table in the settings. No database change.

@@ -1942,6 +1942,46 @@ colisly_check( 'Garde : le formulaire grise les transporteurs trop petits pour u
 $colisly_lim_set = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-settings.php' );
 colisly_check( 'Garde : les grilles de zone precedent la grille par defaut', strpos( $colisly_lim_set, 'foreach ( COLISLY_Zones::all() as $zone ) :' ) < strpos( $colisly_lim_set, "'%s — all other destinations'" ) );
 
+/*
+ * Encart Colisly sur la commande WooCommerce.
+ *
+ * Le reexpediteur travaille depuis WooCommerce > Commandes, la ou le paiement
+ * apparait. Tout ce qui concerne l'expedition vivait sur la fiche client :
+ * preparer une commande obligeait a la quitter pour aller le chercher.
+ */
+if ( ! class_exists( 'COLISLY_Admin_Orders' ) ) {
+	require_once COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-orders.php';
+}
+
+// Le colis de la section "valeur obligatoire" porte une declaration et une
+// facture ; on l expedie pour obtenir une commande qui a tout a montrer.
+$colisly_ord_ship_id = COLISLY_Shipments::request( $colisly_val_client, array( $colisly_val_parcel ), 'colissimo', 0, 'FR' );
+colisly_check( 'Encart commande : expedition creee', ! is_wp_error( $colisly_ord_ship_id ) );
+$colisly_ord_ship  = COLISLY_Shipments::get( (int) $colisly_ord_ship_id );
+$colisly_ord_order = wc_get_order( (int) $colisly_ord_ship->order_id );
+colisly_check( 'Encart commande : la commande est retrouvee depuis l expedition', $colisly_ord_order instanceof WC_Order );
+colisly_check( 'Encart commande : l expedition est retrouvee depuis la commande', (int) $colisly_ord_ship->id === COLISLY_Orders::shipment_id_from_order( $colisly_ord_order ) );
+
+$colisly_ord_html = COLISLY_Admin_Orders::panel( $colisly_ord_order );
+colisly_check( 'Encart commande : reference de l expedition', false !== strpos( $colisly_ord_html, $colisly_ord_ship->reference ) );
+colisly_check( 'Encart commande : reference du colis', false !== strpos( $colisly_ord_html, $colisly_val_ref ) );
+colisly_check( 'Encart commande : contenu declare', false !== strpos( $colisly_ord_html, 'Montre' ) );
+colisly_check( 'Encart commande : total declare', false !== strpos( $colisly_ord_html, 'Total declared' ) );
+colisly_check( 'Encart commande : lien vers la facture', false !== strpos( $colisly_ord_html, 'facture-amazon.pdf' ) && false !== strpos( $colisly_ord_html, 'colisly_download_document' ) );
+colisly_check( 'Encart commande : lien vers le formulaire douanier', false !== strpos( $colisly_ord_html, 'colisly_customs_form' ) );
+colisly_check( 'Encart commande : lien vers la fiche client', false !== strpos( $colisly_ord_html, 'page=colisly-clients' ) );
+
+// Une commande ordinaire de la boutique n a rien a voir avec Colisly : l encart
+// n existe pas pour elle.
+$colisly_plain_order = wc_create_order( array( 'customer_id' => 0 ) );
+colisly_check( 'Encart commande : rien sur une commande ordinaire', '' === COLISLY_Admin_Orders::panel( $colisly_plain_order ) );
+colisly_check( 'Encart commande : aucune expedition derriere une commande ordinaire', 0 === COLISLY_Orders::shipment_id_from_order( $colisly_plain_order ) );
+
+$colisly_ord_boot = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin.php' );
+colisly_check( 'Garde : l encart est charge et branche par l administration', false !== strpos( $colisly_ord_boot, 'class-colisly-admin-orders.php' ) && false !== strpos( $colisly_ord_boot, 'COLISLY_Admin_Orders::init()' ) );
+$colisly_ord_src = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-orders.php' );
+colisly_check( 'Garde : l encart couvre les deux stockages de commandes', false !== strpos( $colisly_ord_src, "'shop_order'" ) && false !== strpos( $colisly_ord_src, "wc_get_page_screen_id( 'shop-order' )" ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------
