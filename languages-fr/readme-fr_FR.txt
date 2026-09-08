@@ -193,6 +193,18 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.18.0 =
+* Nouveau : une étiquette imprimable pour chaque colis. Sa référence n'existe
+  qu'une fois le colis enregistré, l'opérateur ne pouvait donc pas étiqueter
+  le carton pendant la saisie et se rabattait sur un logiciel à part et un
+  compteur par client. L'enregistrement d'un colis atterrit désormais dessus,
+  référence en grand, bouton « Imprimer l'étiquette » et lien « Nouveau colis
+  pour ce client » ; un lien « Étiquette » figure sur chaque ligne de colis de
+  la fiche client et de la liste des colis. L'étiquette porte la référence, le
+  nom et la référence du client, la date de réception, le poids et les
+  dimensions, le numéro de suivi et le commentaire interne, sur une page nue au
+  format d'une imprimante d'étiquettes.
+
 = 1.17.0 =
 * Nouveau : traduction espagnole, livrée avec l'extension comme la française.
   Toutes les chaînes de l'extension, 393, y compris les adresses des onglets
@@ -519,6 +531,10 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.18.0 =
+Une étiquette imprimable pour chaque colis, proposée juste après son
+enregistrement. Aucun changement de base de données.
 
 = 1.17.0 =
 Traduction espagnole livrée avec l'extension. Aucun changement de base de

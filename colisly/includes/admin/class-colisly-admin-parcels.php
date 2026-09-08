@@ -97,6 +97,7 @@ class COLISLY_Admin_Parcels {
 												<span class="edit"><a href="<?php echo esc_url( admin_url( 'admin.php?page=colisly-new-parcel&parcel=' . (int) $parcel->id ) ); ?>"><?php esc_html_e( 'Edit', 'colisly' ); ?></a></span>
 											</div>
 										<?php endif; ?>
+										<div class="row-actions"><span class="label"><a href="<?php echo esc_url( COLISLY_Labels::url( $parcel ) ); ?>" target="_blank"><?php esc_html_e( 'Label', 'colisly' ); ?></a></span></div>
 										<?php if ( COLISLY_Customs::declared( (int) $parcel->id ) ) : ?>
 											<div class="row-actions"><span class="customs"><a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=colisly_customs_form&parcel=' . (int) $parcel->id ), 'colisly_customs_form_' . (int) $parcel->id ) ); ?>" target="_blank"><?php esc_html_e( 'Customs form', 'colisly' ); ?></a></span></div>
 										<?php endif; ?>
@@ -428,6 +429,31 @@ class COLISLY_Admin_Parcels {
 		);
 	}
 
+	/**
+	 * Prints the label of a parcel (managers only).
+	 *
+	 * @return void
+	 */
+	public static function handle_label() {
+		$parcel_id = isset( $_GET['parcel'] ) ? absint( $_GET['parcel'] ) : 0;
+
+		check_admin_referer( 'colisly_parcel_label_' . $parcel_id );
+
+		if ( ! current_user_can( 'colisly_manage' ) ) {
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
+		}
+
+		$parcel = COLISLY_Parcels::get( $parcel_id );
+
+		if ( ! $parcel ) {
+			wp_die( esc_html__( 'Parcel not found.', 'colisly' ), '', array( 'response' => 404 ) );
+		}
+
+		nocache_headers();
+		echo COLISLY_Labels::html( $parcel ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped while built.
+		exit;
+	}
+
 	public static function handle_create() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
 			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
@@ -493,9 +519,15 @@ class COLISLY_Admin_Parcels {
 
 		$parcel = COLISLY_Parcels::get( (int) $result );
 
+		// The client record opens on the parcel just saved, reference in
+		// large type and label ready to print: that is the moment the carton
+		// is in the operator's hands.
 		COLISLY_Admin::redirect(
 			'colisly-clients',
-			array( 'client' => (int) $parcel->client_id ),
+			array(
+				'client'         => (int) $parcel->client_id,
+				'colisly_parcel' => (int) $parcel->id,
+			),
 			sprintf(
 				/* translators: %s: parcel reference. */
 				__( 'Parcel %s saved. Its price has been computed automatically.', 'colisly' ),

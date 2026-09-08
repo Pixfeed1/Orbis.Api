@@ -2111,6 +2111,40 @@ colisly_check( 'Traduction : en espagnol, le slug de l onglet reste en ASCII', '
 colisly_check( 'Traduction : en espagnol, le pluriel fonctionne', '3 días' === $colisly_tr_es3 );
 colisly_check( 'Traduction : de retour en anglais apres l espagnol', 'My parcels' === __( 'My parcels', 'colisly' ) );
 
+/*
+ * Etiquette de colis.
+ *
+ * La reference n existe qu une fois le colis enregistre : l operateur ne
+ * pouvait pas etiqueter le carton pendant la saisie et se rabattait sur un
+ * logiciel a part et un compteur par client. L etiquette s imprime juste apres
+ * l enregistrement, et depuis n importe quelle ligne de colis.
+ */
+global $wpdb;
+$wpdb->update( $wpdb->prefix . 'colisly_parcels', array( 'internal_note' => 'Etagere C2' ), array( 'id' => (int) $colisly_val_parcel ), array( '%s' ), array( '%d' ) );
+$colisly_lbl_parcel = COLISLY_Parcels::get( (int) $colisly_val_parcel );
+$colisly_lbl_html   = COLISLY_Labels::html( $colisly_lbl_parcel );
+colisly_check( 'Etiquette : la reference du colis en clair', false !== strpos( $colisly_lbl_html, $colisly_lbl_parcel->reference ) );
+colisly_check( 'Etiquette : le nom du client', false !== strpos( $colisly_lbl_html, COLISLY_Clients::name( COLISLY_Clients::get( (int) $colisly_lbl_parcel->client_id ) ) ) );
+colisly_check( 'Etiquette : la reference du client', false !== strpos( $colisly_lbl_html, COLISLY_Clients::get( (int) $colisly_lbl_parcel->client_id )->reference ) );
+colisly_check( 'Etiquette : le commentaire interne', false !== strpos( $colisly_lbl_html, 'Etagere C2' ) );
+colisly_check( 'Etiquette : la date de reception', false !== strpos( $colisly_lbl_html, COLISLY_Format::date( $colisly_lbl_parcel->received_at ) ) );
+colisly_check( 'Etiquette : une page nue imprimable', false !== strpos( $colisly_lbl_html, '<!DOCTYPE html>' ) && false !== strpos( $colisly_lbl_html, 'window.print()' ) );
+$wpdb->update( $wpdb->prefix . 'colisly_parcels', array( 'internal_note' => '' ), array( 'id' => (int) $colisly_val_parcel ), array( '%s' ), array( '%d' ) );
+// La feuille de style nomme toujours la classe ; c est le paragraphe qui doit
+// manquer.
+colisly_check( 'Etiquette : pas de bloc commentaire quand il est vide', false === strpos( COLISLY_Labels::html( COLISLY_Parcels::get( (int) $colisly_val_parcel ) ), '<p class="colisly-label-note">' ) );
+
+$colisly_lbl_url = COLISLY_Labels::url( $colisly_lbl_parcel );
+colisly_check( 'Etiquette : l adresse porte l action, le colis et un nonce', false !== strpos( $colisly_lbl_url, 'action=colisly_parcel_label' ) && false !== strpos( $colisly_lbl_url, 'parcel=' . (int) $colisly_lbl_parcel->id ) && false !== strpos( $colisly_lbl_url, '_wpnonce=' ) );
+
+$colisly_lbl_admin   = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin.php' );
+$colisly_lbl_parcels = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-parcels.php' );
+$colisly_lbl_clients = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-clients.php' );
+colisly_check( 'Garde : l etiquette est servie par l administration, sous nonce', false !== strpos( $colisly_lbl_admin, "admin_post_colisly_parcel_label" ) && false !== strpos( $colisly_lbl_parcels, "check_admin_referer( 'colisly_parcel_label_' . \$parcel_id )" ) );
+colisly_check( 'Garde : l enregistrement renvoie sur le colis a etiqueter', false !== strpos( $colisly_lbl_parcels, "'colisly_parcel' => (int) \$parcel->id" ) );
+colisly_check( 'Garde : la fiche client propose l impression juste apres l enregistrement', false !== strpos( $colisly_lbl_clients, 'colisly-just-saved' ) && false !== strpos( $colisly_lbl_clients, 'COLISLY_Labels::url( $colisly_just )' ) );
+colisly_check( 'Garde : l etiquette est sur chaque ligne de colis, des deux listes', false !== strpos( $colisly_lbl_clients, 'COLISLY_Labels::url( $parcel )' ) && false !== strpos( $colisly_lbl_parcels, 'COLISLY_Labels::url( $parcel )' ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 # Spanish translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.17.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.18.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -1221,4 +1221,22 @@ msgstr "Total:"
 
 msgid "Client record:"
 msgstr "Ficha de cliente:"
+
+msgid "Print the label"
+msgstr "Imprimir la etiqueta"
+
+msgid "New parcel for this client"
+msgstr "Nuevo paquete para este cliente"
+
+msgid "Label"
+msgstr "Etiqueta"
+
+msgid "Label %s"
+msgstr "Etiqueta %s"
+
+msgid "Received %1$s — %2$s kg"
+msgstr "Recibido el %1$s — %2$s kg"
+
+msgid "Tracking %s"
+msgstr "Seguimiento %s"
 

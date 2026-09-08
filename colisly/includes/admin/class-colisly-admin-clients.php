@@ -171,6 +171,21 @@ class COLISLY_Admin_Clients {
 			<a href="<?php echo esc_url( $new_parcel_url ); ?>" class="page-title-action"><?php esc_html_e( 'New parcel', 'colisly' ); ?></a>
 			<hr class="wp-header-end" />
 			<?php COLISLY_Admin::maybe_notice(); ?>
+			<?php
+			// Straight after booking a parcel in, the operator has the carton
+			// in hand and needs its reference on a label, not in a notice.
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only, the parcel is checked against the client.
+			$colisly_just = isset( $_GET['colisly_parcel'] ) ? COLISLY_Parcels::get( absint( $_GET['colisly_parcel'] ) ) : null;
+			if ( $colisly_just && (int) $colisly_just->client_id === (int) $client->id ) :
+				?>
+				<div class="colisly-just-saved">
+					<p class="colisly-just-saved-ref"><?php echo esc_html( $colisly_just->reference ); ?></p>
+					<p>
+						<a class="button button-primary" href="<?php echo esc_url( COLISLY_Labels::url( $colisly_just ) ); ?>" target="_blank"><?php esc_html_e( 'Print the label', 'colisly' ); ?></a>
+						<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=colisly-new-parcel&client=' . (int) $client->id ) ); ?>"><?php esc_html_e( 'New parcel for this client', 'colisly' ); ?></a>
+					</p>
+				</div>
+			<?php endif; ?>
 
 			<div class="colisly-indicators">
 				<div class="colisly-indicator">
@@ -318,6 +333,7 @@ class COLISLY_Admin_Clients {
 										<?php if ( COLISLY_Customs::declared( (int) $parcel->id ) ) : ?>
 											<div class="row-actions"><span class="customs"><a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=colisly_customs_form&parcel=' . (int) $parcel->id ), 'colisly_customs_form_' . (int) $parcel->id ) ); ?>" target="_blank"><?php esc_html_e( 'Customs form', 'colisly' ); ?></a></span></div>
 										<?php endif; ?>
+										<div class="row-actions"><span class="label"><a href="<?php echo esc_url( COLISLY_Labels::url( $parcel ) ); ?>" target="_blank"><?php esc_html_e( 'Label', 'colisly' ); ?></a></span></div>
 										<?php foreach ( COLISLY_Customs::invoices( (int) $parcel->id ) as $colisly_invoice ) : ?>
 											<div class="row-actions"><span class="invoice"><a href="<?php echo esc_url( COLISLY_Downloads::document_url( $colisly_invoice ) ); ?>"><?php echo esc_html( sprintf( /* translators: %s: file name. */ __( 'Invoice: %s', 'colisly' ), $colisly_invoice->file_name ? $colisly_invoice->file_name : $colisly_invoice->title ) ); ?></a></span></div>
 										<?php endforeach; ?>

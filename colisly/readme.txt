@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.17.0
+Stable tag: 1.18.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.18.0 =
+* New: a printable label for every parcel. Its reference only exists once the parcel is saved, so the operator could not label the carton while typing and reached for a separate label program and a per-client counter instead. Saving a parcel now lands on it with the reference in large type, a "Print the label" button and a "New parcel for this client" link; a "Label" link sits on every parcel row of the client record and the parcels list. The label carries the reference, the client's name and reference, the reception date, the weight and dimensions, the tracking number and the internal comment, on a plain page sized for a label printer.
+
 = 1.17.0 =
 * New: Spanish translation, shipped with the plugin like the French one. Every string the plugin says, 393 of them, including the account tab slugs, which stay plain ASCII. A validated language pack from translate.wordpress.org takes over by itself the day it exists.
 
@@ -217,6 +220,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.18.0 =
+A printable label for every parcel, offered right after saving it. No
+database change.
 
 = 1.17.0 =
 Spanish translation shipped with the plugin. No database change.

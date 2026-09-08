@@ -35,6 +35,7 @@ class COLISLY_Admin {
 		add_action( 'admin_post_colisly_create_parcel', array( 'COLISLY_Admin_Parcels', 'handle_create' ) );
 		add_action( 'admin_post_colisly_update_parcel', array( 'COLISLY_Admin_Parcels', 'handle_update' ) );
 		add_action( 'admin_post_colisly_customs_form', array( 'COLISLY_Admin_Parcels', 'handle_customs_form' ) );
+		add_action( 'admin_post_colisly_parcel_label', array( 'COLISLY_Admin_Parcels', 'handle_label' ) );
 		add_action( 'admin_post_colisly_set_parcel_status', array( 'COLISLY_Admin_Parcels', 'handle_set_status' ) );
 		add_action( 'admin_post_colisly_set_shipment_status', array( 'COLISLY_Admin_Clients', 'handle_set_shipment_status' ) );
 		add_action( 'admin_post_colisly_save_settings', array( 'COLISLY_Admin_Settings', 'handle_save' ) );
