@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.16.0
+Stable tag: 1.16.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.16.1 =
+* The Colisly panel on the WooCommerce order now shows each parcel's internal comment. That is where the operator notes the shelf, the bin or the state of the carton at reception, which is exactly what is needed to find the parcel once the order is paid. Still never shown to the client.
+
 = 1.16.0 =
 * The client's "My parcels" tab now shows the stock first, with everything that already left or never will behind a second tab, "Shipped or unavailable", each with its count. Both tabs, and "My shipments", are paged twenty rows at a time. A client who has been sending parcels for a year has hundreds of them, and only the ones still in the warehouse are of any use day to day; listing all of them on one page made the tab unreadable exactly for the clients who use it most.
 
@@ -208,6 +211,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.16.1 =
+The order panel shows each parcel's internal comment. No database change.
 
 = 1.16.0 =
 The client's parcels tab shows the stock first and pages the rest. No

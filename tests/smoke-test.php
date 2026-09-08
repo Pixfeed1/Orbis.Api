@@ -2036,6 +2036,23 @@ $colisly_pg_src = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/frontend/cla
 colisly_check( 'Garde : l onglet Mes colis est decoupe en stock et historique', false !== strpos( $colisly_pg_src, "for_client_paged( (int) \$client->id, 'stock'" ) && false !== strpos( $colisly_pg_src, "for_client_paged( (int) \$client->id, 'history'" ) );
 colisly_check( 'Garde : les deux onglets sont pages', 2 === substr_count( $colisly_pg_src, 'self::pagination(' ) );
 
+/*
+ * Commentaire interne dans l encart de commande.
+ *
+ * C est le champ ou l operateur note l etagere, le bac ou l etat du carton :
+ * ce qu il faut pour retrouver le colis une fois la commande payee. Il manquait
+ * la ou l operateur prepare la commande. Jamais montre au client.
+ */
+global $wpdb;
+$wpdb->update( $wpdb->prefix . 'colisly_parcels', array( 'internal_note' => 'Etagere B3, carton abime' ), array( 'id' => (int) $colisly_val_parcel ), array( '%s' ), array( '%d' ) );
+$colisly_note_html = COLISLY_Admin_Orders::panel( wc_get_order( (int) $colisly_ord_ship->order_id ) );
+colisly_check( 'Encart commande : le commentaire interne apparait', false !== strpos( $colisly_note_html, 'Etagere B3, carton abime' ) );
+$wpdb->update( $wpdb->prefix . 'colisly_parcels', array( 'internal_note' => '' ), array( 'id' => (int) $colisly_val_parcel ), array( '%s' ), array( '%d' ) );
+$colisly_note_html = COLISLY_Admin_Orders::panel( wc_get_order( (int) $colisly_ord_ship->order_id ) );
+colisly_check( 'Encart commande : rien quand le commentaire est vide', false === strpos( $colisly_note_html, 'Internal comment' ) );
+$colisly_note_front = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/frontend/class-colisly-account.php' );
+colisly_check( 'Garde : le commentaire interne ne sort jamais cote client', false === strpos( $colisly_note_front, 'internal_note' ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

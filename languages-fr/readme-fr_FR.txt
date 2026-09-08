@@ -193,6 +193,12 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.16.1 =
+* L'encart Colisly de la commande WooCommerce montre désormais le commentaire
+  interne de chaque colis. C'est là que l'opérateur note l'étagère, le bac ou
+  l'état du carton à la réception, exactement ce qu'il faut pour retrouver le
+  colis une fois la commande payée. Toujours invisible pour le client.
+
 = 1.16.0 =
 * L'onglet « Mes colis » du client montre désormais le stock d'abord, et tout
   ce qui est déjà parti ou ne partira jamais derrière un second onglet,
@@ -499,6 +505,10 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.16.1 =
+L'encart de commande montre le commentaire interne de chaque colis. Aucun
+changement de base de données.
 
 = 1.16.0 =
 L'onglet des colis du client montre le stock d'abord et pagine le reste.

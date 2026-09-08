@@ -154,6 +154,16 @@ class COLISLY_Admin_Orders {
 						<?php endif; ?>
 					</p>
 
+					<?php if ( '' !== trim( (string) $parcel->internal_note ) ) : ?>
+						<?php
+						// What the operator wrote at reception, shelf, bin or
+						// state of the carton: exactly what is needed to find
+						// the parcel once the order is paid. Never shown to the
+						// client; this panel is the operator's.
+						?>
+						<p class="colisly-order-note"><?php echo esc_html( sprintf( /* translators: %s: internal comment. */ __( 'Internal comment: %s', 'colisly' ), $parcel->internal_note ) ); ?></p>
+					<?php endif; ?>
+
 					<?php if ( $items ) : ?>
 						<ul class="colisly-order-declaration">
 							<?php
