@@ -1982,6 +1982,60 @@ colisly_check( 'Garde : l encart est charge et branche par l administration', fa
 $colisly_ord_src = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-orders.php' );
 colisly_check( 'Garde : l encart couvre les deux stockages de commandes', false !== strpos( $colisly_ord_src, "'shop_order'" ) && false !== strpos( $colisly_ord_src, "wc_get_page_screen_id( 'shop-order' )" ) );
 
+/*
+ * Onglets et pages de l'espace client.
+ *
+ * Un client qui envoie depuis un an a des centaines de colis, et seuls ceux
+ * encore en entrepot lui servent au quotidien. L'onglet montre le stock, et
+ * tout ce qui est parti ou ne partira jamais derriere un second onglet, le
+ * tout par pages.
+ */
+$colisly_pg_client = COLISLY_Clients::create(
+	wp_insert_user(
+		array(
+			'user_login' => 'pages-' . wp_generate_password( 6, false ),
+			'user_email' => 'pages-' . wp_generate_password( 6, false ) . '@example.com',
+			'user_pass'  => wp_generate_password(),
+			'role'       => 'customer',
+		)
+	)
+);
+$colisly_pg_ids = array();
+for ( $colisly_pg_i = 0; $colisly_pg_i < 7; $colisly_pg_i++ ) {
+	$colisly_pg_ids[] = COLISLY_Parcels::create( array( 'client_id' => $colisly_pg_client, 'weight' => 1 ) );
+}
+// Trois partent, un est detruit, trois restent en stock.
+COLISLY_Parcels::set_status( $colisly_pg_ids[0], 'shipped' );
+COLISLY_Parcels::set_status( $colisly_pg_ids[1], 'shipped' );
+COLISLY_Parcels::set_status( $colisly_pg_ids[2], 'paid' );
+COLISLY_Parcels::set_status( $colisly_pg_ids[3], 'destroyed' );
+
+$colisly_pg_stock   = COLISLY_Parcels::for_client_paged( $colisly_pg_client, 'stock', 2, 1 );
+$colisly_pg_history = COLISLY_Parcels::for_client_paged( $colisly_pg_client, 'history', 2, 1 );
+colisly_check( 'Pages : le stock compte les seuls colis disponibles', 3 === $colisly_pg_stock['total'] );
+colisly_check( 'Pages : l historique compte tout le reste', 4 === $colisly_pg_history['total'] );
+colisly_check( 'Pages : une page ne rend que sa taille', 2 === count( $colisly_pg_stock['items'] ) );
+colisly_check( 'Pages : le stock ne contient que du disponible', 'available' === $colisly_pg_stock['items'][0]->status && 'available' === $colisly_pg_stock['items'][1]->status );
+colisly_check( 'Pages : l historique ne contient rien de disponible', 0 === count( array_filter( $colisly_pg_history['items'], static function ( $p ) { return 'available' === $p->status; } ) ) );
+$colisly_pg_stock2 = COLISLY_Parcels::for_client_paged( $colisly_pg_client, 'stock', 2, 2 );
+colisly_check( 'Pages : la derniere page porte le reste', 1 === count( $colisly_pg_stock2['items'] ) && 3 === $colisly_pg_stock2['total'] );
+colisly_check( 'Pages : pas de doublon entre les pages', (int) $colisly_pg_stock['items'][0]->id !== (int) $colisly_pg_stock2['items'][0]->id && (int) $colisly_pg_stock['items'][1]->id !== (int) $colisly_pg_stock2['items'][0]->id );
+colisly_check( 'Pages : une page au-dela de la fin est vide, sans erreur', array() === COLISLY_Parcels::for_client_paged( $colisly_pg_client, 'stock', 2, 9 )['items'] );
+colisly_check( 'Pages : un client sans colis, totaux a zero', 0 === COLISLY_Parcels::for_client_paged( 999999, 'stock' )['total'] && 0 === COLISLY_Parcels::for_client_paged( 999999, 'history' )['total'] );
+
+// Les expeditions sont pagees de la meme facon.
+foreach ( array( 4, 5, 6 ) as $colisly_pg_k ) {
+	COLISLY_Shipments::request( $colisly_pg_client, array( $colisly_pg_ids[ $colisly_pg_k ] ), 'colissimo', 0, 'FR' );
+}
+$colisly_pg_ships = COLISLY_Shipments::for_client_paged( $colisly_pg_client, 2, 1 );
+colisly_check( 'Pages : expeditions comptees', 3 === $colisly_pg_ships['total'] && 2 === count( $colisly_pg_ships['items'] ) );
+colisly_check( 'Pages : expeditions, la plus recente d abord', (int) $colisly_pg_ships['items'][0]->id > (int) $colisly_pg_ships['items'][1]->id );
+colisly_check( 'Pages : expeditions, seconde page', 1 === count( COLISLY_Shipments::for_client_paged( $colisly_pg_client, 2, 2 )['items'] ) );
+
+$colisly_pg_src = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/frontend/class-colisly-account.php' );
+colisly_check( 'Garde : l onglet Mes colis est decoupe en stock et historique', false !== strpos( $colisly_pg_src, "for_client_paged( (int) \$client->id, 'stock'" ) && false !== strpos( $colisly_pg_src, "for_client_paged( (int) \$client->id, 'history'" ) );
+colisly_check( 'Garde : les deux onglets sont pages', 2 === substr_count( $colisly_pg_src, 'self::pagination(' ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

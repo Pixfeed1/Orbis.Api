@@ -106,3 +106,38 @@
 .colisly-invoices .colisly-documents-list {
 	margin-bottom: 0.5em;
 }
+
+/*
+ * Parcels view tabs: two links, the current one underlined, so the split
+ * between the stock and the rest reads as a choice and not as a menu.
+ */
+.colisly-view-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1.5em;
+	margin: 0 0 1em;
+}
+
+.colisly-view-tab {
+	border-bottom: 2px solid transparent;
+	padding-bottom: 0.2em;
+	text-decoration: none;
+}
+
+.colisly-view-tab-current {
+	border-bottom-color: currentColor;
+	font-weight: 600;
+}
+
+.colisly-pagination {
+	align-items: center;
+	display: flex;
+	gap: 1em;
+	justify-content: space-between;
+	margin-top: 1em;
+}
+
+.colisly-pagination-state {
+	color: #767676;
+	font-size: 0.9em;
+}

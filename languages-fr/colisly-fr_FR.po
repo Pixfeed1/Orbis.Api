@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.15.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.16.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -1223,4 +1223,29 @@ msgstr "Aucune déclaration douanière pour ce colis."
 
 msgid "No purchase invoice attached."
 msgstr "Aucune facture d’achat jointe."
+
+msgid "In stock (%d)"
+msgid_plural "In stock (%d)"
+msgstr[0] "En stock (%d)"
+msgstr[1] "En stock (%d)"
+
+msgid "Shipped or unavailable (%d)"
+msgid_plural "Shipped or unavailable (%d)"
+msgstr[0] "Expédié ou indisponible (%d)"
+msgstr[1] "Expédiés ou indisponibles (%d)"
+
+msgid "No parcel has left yet."
+msgstr "Aucun colis n’est encore parti."
+
+msgid "No parcel in stock at the moment."
+msgstr "Aucun colis en stock pour le moment."
+
+msgid "Previous"
+msgstr "Précédent"
+
+msgid "Page %1$d of %2$d"
+msgstr "Page %1$d sur %2$d"
+
+msgid "Next"
+msgstr "Suivant"
 

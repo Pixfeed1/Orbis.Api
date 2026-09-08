@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.15.0
+Stable tag: 1.16.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.16.0 =
+* The client's "My parcels" tab now shows the stock first, with everything that already left or never will behind a second tab, "Shipped or unavailable", each with its count. Both tabs, and "My shipments", are paged twenty rows at a time. A client who has been sending parcels for a year has hundreds of them, and only the ones still in the warehouse are of any use day to day; listing all of them on one page made the tab unreadable exactly for the clients who use it most.
+
 = 1.15.0 =
 * New: a Colisly panel on the WooCommerce order a shipment created. The forwarder works from WooCommerce > Orders, where payment shows up, but everything about the shipment lived on the client record. The order now shows the shipment, its carrier and destination, each parcel with its weight, dimensions and tracking number, what it declares with the total value, the purchase invoices the client attached, and the customs form to print, with a link to the client record. Works with both order storages. An ordinary shop order is untouched.
 
@@ -205,6 +208,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.16.0 =
+The client's parcels tab shows the stock first and pages the rest. No
+database change.
 
 = 1.15.0 =
 The WooCommerce order of a shipment now shows its parcels, declaration,

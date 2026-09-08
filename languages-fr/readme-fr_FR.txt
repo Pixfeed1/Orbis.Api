@@ -193,6 +193,15 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.16.0 =
+* L'onglet « Mes colis » du client montre désormais le stock d'abord, et tout
+  ce qui est déjà parti ou ne partira jamais derrière un second onglet,
+  « Expédiés ou indisponibles », chacun avec son nombre. Les deux onglets, et
+  « Mes expéditions », sont paginés par vingt lignes. Un client qui envoie
+  depuis un an a des centaines de colis, et seuls ceux encore en entrepôt lui
+  servent au quotidien ; tout lister sur une page rendait l'onglet illisible
+  précisément pour les clients qui s'en servent le plus.
+
 = 1.15.0 =
 * Nouveau : un encart Colisly sur la commande WooCommerce créée par une
   expédition. Le réexpéditeur travaille depuis WooCommerce > Commandes, là où
@@ -490,6 +499,10 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.16.0 =
+L'onglet des colis du client montre le stock d'abord et pagine le reste.
+Aucun changement de base de données.
 
 = 1.15.0 =
 La commande WooCommerce d'une expédition montre désormais ses colis, sa

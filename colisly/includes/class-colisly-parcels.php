@@ -439,6 +439,52 @@ class COLISLY_Parcels {
 	}
 
 	/**
+	 * Returns one page of a client's parcels, split between the stock and
+	 * the rest.
+	 *
+	 * A client who has been sending parcels for a year has hundreds of them,
+	 * and only the ones still in the warehouse are of any use to him day to
+	 * day. The account tab therefore shows the stock first, and everything
+	 * that already left, or never will, behind a second tab, each in pages.
+	 *
+	 * @param int    $client_id Client ID.
+	 * @param string $scope     'stock' for parcels still available, 'history'
+	 *                          for every other status.
+	 * @param int    $per_page  Rows per page.
+	 * @param int    $paged     Page number, 1-based.
+	 * @return array { items: object[], total: int }
+	 */
+	public static function for_client_paged( $client_id, $scope = 'stock', $per_page = 20, $paged = 1 ) {
+		global $wpdb;
+
+		$per_page = max( 1, (int) $per_page );
+		$offset   = ( max( 1, (int) $paged ) - 1 ) * $per_page;
+		$where    = 'history' === $scope ? "status <> 'available'" : "status = 'available'";
+
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $where is one of two literals.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$total = (int) $wpdb->get_var(
+			$wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->prefix}colisly_parcels WHERE client_id = %d AND {$where}", (int) $client_id )
+		);
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$items = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$wpdb->prefix}colisly_parcels WHERE client_id = %d AND {$where} ORDER BY received_at DESC, id DESC LIMIT %d OFFSET %d",
+				(int) $client_id,
+				$per_page,
+				$offset
+			)
+		);
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		return array(
+			'items' => $items,
+			'total' => $total,
+		);
+	}
+
+	/**
 	 * Returns a paged list of parcels for the admin list table.
 	 *
 	 * @param array $args Query args: search, status, per_page, paged.

@@ -185,13 +185,45 @@ class COLISLY_Account {
 			esc_html( $client->reference )
 		);
 
-		$parcels = COLISLY_Parcels::for_client( (int) $client->id );
+		// The stock is what the client acts on; what already left, or never
+		// will, is kept behind a second tab so the first stays readable after
+		// a year of parcels. Both are paged.
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only view state.
+		$view  = isset( $_GET['colisly_view'] ) && 'history' === $_GET['colisly_view'] ? 'history' : 'stock';
+		$paged = isset( $_GET['colisly_page'] ) ? max( 1, absint( $_GET['colisly_page'] ) ) : 1;
+		// phpcs:enable
 
-		if ( empty( $parcels ) ) {
+		$per_page = self::per_page();
+		$stock    = COLISLY_Parcels::for_client_paged( (int) $client->id, 'stock', $per_page, 'stock' === $view ? $paged : 1 );
+		$history  = COLISLY_Parcels::for_client_paged( (int) $client->id, 'history', $per_page, 'history' === $view ? $paged : 1 );
+		$current  = 'history' === $view ? $history : $stock;
+
+		// A page past the end, from a stale link or a typed URL, lands on the
+		// last real page rather than on an empty list that reads as "nothing".
+		$last = max( 1, (int) ceil( $current['total'] / $per_page ) );
+		if ( $paged > $last ) {
+			$paged   = $last;
+			$current = COLISLY_Parcels::for_client_paged( (int) $client->id, $view, $per_page, $paged );
+		}
+
+		$parcels  = $current['items'];
+		$base_url = wc_get_account_endpoint_url( self::endpoint( 'parcels' ) );
+
+		if ( 0 === $stock['total'] && 0 === $history['total'] ) {
 			echo '<p>' . esc_html__( 'No parcels yet.', 'colisly' ) . '</p>';
 			return;
 		}
 		?>
+		<p class="colisly-view-tabs">
+			<?php
+			self::view_tab( $base_url, 'stock', $view, sprintf( /* translators: %d: number of parcels. */ _n( 'In stock (%d)', 'In stock (%d)', $stock['total'], 'colisly' ), $stock['total'] ) );
+			self::view_tab( $base_url, 'history', $view, sprintf( /* translators: %d: number of parcels. */ _n( 'Shipped or unavailable (%d)', 'Shipped or unavailable (%d)', $history['total'], 'colisly' ), $history['total'] ) );
+			?>
+		</p>
+		<?php if ( empty( $parcels ) ) : ?>
+			<p><?php echo 'history' === $view ? esc_html__( 'No parcel has left yet.', 'colisly' ) : esc_html__( 'No parcel in stock at the moment.', 'colisly' ); ?></p>
+			<?php return; ?>
+		<?php endif; ?>
 		<div class="colisly-table-wrap">
 			<table class="woocommerce-orders-table shop_table shop_table_responsive colisly-front-table">
 				<thead>
@@ -219,6 +251,79 @@ class COLISLY_Account {
 			</table>
 		</div>
 		<?php
+		self::pagination( add_query_arg( 'colisly_view', $view, $base_url ), $current['total'], $per_page, $paged );
+	}
+
+	/**
+	 * Rows per page on the account tabs.
+	 *
+	 * @return int
+	 */
+	private static function per_page() {
+		/**
+		 * Filters how many rows the account tabs show per page.
+		 *
+		 * @param int $per_page Rows per page.
+		 */
+		return max( 1, (int) apply_filters( 'colisly_account_per_page', 20 ) );
+	}
+
+	/**
+	 * Prints one tab link of the parcels view.
+	 *
+	 * @param string $base_url Endpoint URL.
+	 * @param string $view     Tab key.
+	 * @param string $current  Active tab key.
+	 * @param string $label    Tab label.
+	 * @return void
+	 */
+	private static function view_tab( $base_url, $view, $current, $label ) {
+		printf(
+			'<a class="colisly-view-tab%1$s" href="%2$s"%3$s>%4$s</a>',
+			$view === $current ? ' colisly-view-tab-current' : '',
+			esc_url( 'stock' === $view ? $base_url : add_query_arg( 'colisly_view', $view, $base_url ) ),
+			$view === $current ? ' aria-current="page"' : '',
+			esc_html( $label )
+		);
+	}
+
+	/**
+	 * Prints page links under a paged table, in WooCommerce's own style.
+	 *
+	 * @param string $base_url URL of the list, without the page argument.
+	 * @param int    $total    Total rows.
+	 * @param int    $per_page Rows per page.
+	 * @param int    $paged    Current page.
+	 * @return void
+	 */
+	private static function pagination( $base_url, $total, $per_page, $paged ) {
+		$pages = (int) ceil( $total / max( 1, $per_page ) );
+
+		if ( $pages <= 1 ) {
+			return;
+		}
+
+		$paged = min( max( 1, (int) $paged ), $pages );
+		?>
+		<div class="woocommerce-pagination woocommerce-pagination--without-numbers woocommerce-Pagination colisly-pagination">
+			<?php if ( $paged > 1 ) : ?>
+				<a class="woocommerce-button woocommerce-button--previous woocommerce-Button woocommerce-Button--previous button" href="<?php echo esc_url( add_query_arg( 'colisly_page', $paged - 1, $base_url ) ); ?>"><?php esc_html_e( 'Previous', 'colisly' ); ?></a>
+			<?php endif; ?>
+			<span class="colisly-pagination-state">
+				<?php
+				printf(
+					/* translators: 1: current page, 2: number of pages. */
+					esc_html__( 'Page %1$d of %2$d', 'colisly' ),
+					(int) $paged,
+					(int) $pages
+				);
+				?>
+			</span>
+			<?php if ( $paged < $pages ) : ?>
+				<a class="woocommerce-button woocommerce-button--next woocommerce-Button woocommerce-Button--next button" href="<?php echo esc_url( add_query_arg( 'colisly_page', $paged + 1, $base_url ) ); ?>"><?php esc_html_e( 'Next', 'colisly' ); ?></a>
+			<?php endif; ?>
+		</div>
+		<?php
 	}
 
 	/**
@@ -244,9 +349,20 @@ class COLISLY_Account {
 			wc_print_notice( sanitize_text_field( wp_unslash( $_GET['colisly_error'] ) ), 'error' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		}
 
-		$shipments = COLISLY_Shipments::for_client( (int) $client->id );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only view state.
+		$paged    = isset( $_GET['colisly_page'] ) ? max( 1, absint( $_GET['colisly_page'] ) ) : 1;
+		$per_page = self::per_page();
+		$page     = COLISLY_Shipments::for_client_paged( (int) $client->id, $per_page, $paged );
 
-		if ( empty( $shipments ) ) {
+		$last = max( 1, (int) ceil( $page['total'] / $per_page ) );
+		if ( $paged > $last ) {
+			$paged = $last;
+			$page  = COLISLY_Shipments::for_client_paged( (int) $client->id, $per_page, $paged );
+		}
+
+		$shipments = $page['items'];
+
+		if ( 0 === $page['total'] ) {
 			echo '<p>' . esc_html__( 'No shipments yet.', 'colisly' ) . '</p>';
 			return;
 		}
@@ -323,6 +439,7 @@ class COLISLY_Account {
 			</table>
 		</div>
 		<?php
+		self::pagination( wc_get_account_endpoint_url( self::endpoint( 'shipments' ) ), $page['total'], $per_page, $paged );
 	}
 
 	/**

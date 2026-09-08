@@ -425,6 +425,41 @@ class COLISLY_Shipments {
 	}
 
 	/**
+	 * Returns one page of a client's shipments, newest first.
+	 *
+	 * @param int $client_id Client ID.
+	 * @param int $per_page  Rows per page.
+	 * @param int $paged     Page number, 1-based.
+	 * @return array { items: object[], total: int }
+	 */
+	public static function for_client_paged( $client_id, $per_page = 20, $paged = 1 ) {
+		global $wpdb;
+
+		$per_page = max( 1, (int) $per_page );
+		$offset   = ( max( 1, (int) $paged ) - 1 ) * $per_page;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$total = (int) $wpdb->get_var(
+			$wpdb->prepare( "SELECT COUNT(*) FROM {$wpdb->prefix}colisly_shipments WHERE client_id = %d", (int) $client_id )
+		);
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$items = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$wpdb->prefix}colisly_shipments WHERE client_id = %d ORDER BY id DESC LIMIT %d OFFSET %d",
+				(int) $client_id,
+				$per_page,
+				$offset
+			)
+		);
+
+		return array(
+			'items' => $items,
+			'total' => $total,
+		);
+	}
+
+	/**
 	 * Returns the parcels attached to a shipment.
 	 *
 	 * @param int $shipment_id Shipment ID.
