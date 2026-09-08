@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.16.1
+Stable tag: 1.16.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.16.2 =
+* The French translation ships with the plugin. Language packs from translate.wordpress.org only exist once volunteers have validated the strings, and they get to popular plugins first; until then French sites saw the plugin in English. The bundled catalogue is used whenever no language pack exists, and hands over to the pack by itself the day it does. 393 strings, everything the plugin says.
+
 = 1.16.1 =
 * The Colisly panel on the WooCommerce order now shows each parcel's internal comment. That is where the operator notes the shelf, the bin or the state of the carton at reception, which is exactly what is needed to find the parcel once the order is paid. Still never shown to the client.
 
@@ -211,6 +214,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.16.2 =
+The French translation ships with the plugin, so French sites no longer wait
+for the language pack. No database change.
 
 = 1.16.1 =
 The order panel shows each parcel's internal comment. No database change.

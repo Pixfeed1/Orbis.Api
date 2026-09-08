@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.16.1\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.16.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-08T08:29:19+00:00\n"
+"POT-Creation-Date: 2026-09-08T08:45:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: colisly\n"
@@ -1036,7 +1036,7 @@ msgstr ""
 
 #: includes/admin/class-colisly-admin.php:88
 #: includes/admin/class-colisly-admin.php:89
-#: includes/class-colisly-plugin.php:78
+#: includes/class-colisly-plugin.php:91
 msgid "Settings"
 msgstr ""
 
@@ -1402,21 +1402,21 @@ msgstr ""
 msgid "Parcel %1$s: status “%2$s” → “%3$s”."
 msgstr ""
 
-#: includes/class-colisly-plugin.php:111
+#: includes/class-colisly-plugin.php:124
 msgid "the store is in coming soon mode, so customers cannot reach the payment page"
 msgstr ""
 
-#: includes/class-colisly-plugin.php:115
+#: includes/class-colisly-plugin.php:128
 msgid "no payment method is enabled, so shipment orders cannot be paid"
 msgstr ""
 
 #. translators: %s: list of blocking WooCommerce settings.
-#: includes/class-colisly-plugin.php:127
+#: includes/class-colisly-plugin.php:140
 #, php-format
 msgid "Colisly: shipment requests will not go through because %s."
 msgstr ""
 
-#: includes/class-colisly-plugin.php:128
+#: includes/class-colisly-plugin.php:141
 msgid ", and "
 msgstr ""
 

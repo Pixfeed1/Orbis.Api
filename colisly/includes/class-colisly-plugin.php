@@ -35,11 +35,24 @@ final class COLISLY_Plugin {
 	}
 
 	/**
+	 * Loads the translations, the site's language pack first, the bundled
+	 * catalogue otherwise.
+	 *
+	 * @return void
+	 */
+	public function load_textdomain() {
+		load_plugin_textdomain( 'colisly', false, dirname( plugin_basename( COLISLY_PLUGIN_FILE ) ) . '/languages' );
+	}
+
+	/**
 	 * Wires hooks.
 	 */
 	private function __construct() {
-		// Translations are loaded automatically by WordPress (4.6+) from
-		// translate.wordpress.org, so no load_plugin_textdomain() call here.
+		// A language pack from translate.wordpress.org wins when one exists;
+		// WordPress looks there first. Until the volunteers who validate
+		// French get to this plugin, the catalogue shipped in /languages is
+		// what French sites run on, and it hands over to the pack by itself.
+		add_action( 'init', array( $this, 'load_textdomain' ), 1 );
 		add_action( 'init', array( 'COLISLY_Install', 'maybe_update' ), 5 );
 		// Order meta migration runs in the admin only: WooCommerce order types
 		// are registered by then, and front-end requests stay untouched.

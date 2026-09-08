@@ -193,6 +193,14 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.16.2 =
+* La traduction française est livrée avec l'extension. Les packs de langue de
+  translate.wordpress.org n'existent qu'une fois les chaînes validées par des
+  bénévoles, qui passent d'abord sur les extensions les plus utilisées ; en
+  attendant, les sites français voyaient l'extension en anglais. Le catalogue
+  livré est utilisé tant qu'aucun pack de langue n'existe, et lui cède la place
+  tout seul le jour où il arrive. 393 chaînes, tout ce que dit l'extension.
+
 = 1.16.1 =
 * L'encart Colisly de la commande WooCommerce montre désormais le commentaire
   interne de chaque colis. C'est là que l'opérateur note l'étagère, le bac ou
@@ -505,6 +513,10 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.16.2 =
+La traduction française est livrée avec l'extension : les sites français
+n'attendent plus le pack de langue. Aucun changement de base de données.
 
 = 1.16.1 =
 L'encart de commande montre le commentaire interne de chaque colis. Aucun

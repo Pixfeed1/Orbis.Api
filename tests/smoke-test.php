@@ -2053,6 +2053,39 @@ colisly_check( 'Encart commande : rien quand le commentaire est vide', false ===
 $colisly_note_front = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/frontend/class-colisly-account.php' );
 colisly_check( 'Garde : le commentaire interne ne sort jamais cote client', false === strpos( $colisly_note_front, 'internal_note' ) );
 
+/*
+ * Traduction francaise livree avec l extension.
+ *
+ * Le pack de langue de translate.wordpress.org n existe qu une fois les
+ * chaines validees par des benevoles, qui passent d abord sur les extensions
+ * a fort trafic. En attendant, le catalogue est livre dans /languages et
+ * WordPress s en sert ; le pack prend le relais tout seul le jour ou il existe.
+ */
+colisly_check( 'Traduction : le catalogue francais est livre avec l extension', file_exists( COLISLY_PLUGIN_DIR . 'languages/colisly-fr_FR.mo' ) && file_exists( COLISLY_PLUGIN_DIR . 'languages/colisly-fr_FR.po' ) );
+colisly_check(
+	'Traduction : le catalogue livre est identique a celui du depot',
+	! file_exists( dirname( COLISLY_PLUGIN_DIR ) . '/languages-fr/colisly-fr_FR.po' ) || md5_file( COLISLY_PLUGIN_DIR . 'languages/colisly-fr_FR.po' ) === md5_file( dirname( COLISLY_PLUGIN_DIR ) . '/languages-fr/colisly-fr_FR.po' )
+);
+// switch_to_locale() refuse une langue dont le pack de WordPress lui-meme n'est
+// pas installe, et cet environnement ne peut pas le telecharger. Le site est
+// donc passe en francais par le filtre que get_locale() applique, ce qui est
+// exactement ce que fait un site francais, puis le chargeur de l'extension est
+// rejoue.
+$colisly_tr_force = static function () {
+	return 'fr_FR';
+};
+add_filter( 'locale', $colisly_tr_force );
+unload_textdomain( 'colisly' );
+COLISLY_Plugin::instance()->load_textdomain();
+$colisly_tr_sample  = __( 'My parcels', 'colisly' );
+$colisly_tr_sample2 = __( 'Shipment request', 'colisly' );
+remove_filter( 'locale', $colisly_tr_force );
+unload_textdomain( 'colisly' );
+COLISLY_Plugin::instance()->load_textdomain();
+colisly_check( 'Traduction : en francais, "My parcels" devient "Mes colis"', 'Mes colis' === $colisly_tr_sample );
+colisly_check( 'Traduction : en francais, "Shipment request" est traduit', 'Shipment request' !== $colisly_tr_sample2 );
+colisly_check( 'Traduction : de retour en anglais apres le test', 'My parcels' === __( 'My parcels', 'colisly' ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------
