@@ -2086,6 +2086,31 @@ colisly_check( 'Traduction : en francais, "My parcels" devient "Mes colis"', 'Me
 colisly_check( 'Traduction : en francais, "Shipment request" est traduit', 'Shipment request' !== $colisly_tr_sample2 );
 colisly_check( 'Traduction : de retour en anglais apres le test', 'My parcels' === __( 'My parcels', 'colisly' ) );
 
+// L espagnol suit le meme chemin, avec son propre catalogue livre.
+colisly_check( 'Traduction : le catalogue espagnol est livre avec l extension', file_exists( COLISLY_PLUGIN_DIR . 'languages/colisly-es_ES.mo' ) && file_exists( COLISLY_PLUGIN_DIR . 'languages/colisly-es_ES.po' ) );
+colisly_check(
+	'Traduction : le catalogue espagnol livre est identique a celui du depot',
+	! file_exists( dirname( COLISLY_PLUGIN_DIR ) . '/languages-es/colisly-es_ES.po' ) || md5_file( COLISLY_PLUGIN_DIR . 'languages/colisly-es_ES.po' ) === md5_file( dirname( COLISLY_PLUGIN_DIR ) . '/languages-es/colisly-es_ES.po' )
+);
+// WordPress n accepte qu un changement de langue par processus par le chargeur
+// de l extension ; le second, ici l espagnol apres le francais, est ignore
+// alors qu une vraie requete en espagnol charge bien le catalogue (verifie au
+// navigateur). Le test controle donc les deux moities separement : WordPress
+// resout le catalogue livre pour es_ES, et ce catalogue dit ce qu il doit.
+global $wp_textdomain_registry;
+colisly_check( 'Traduction : WordPress resout le catalogue espagnol livre', is_object( $wp_textdomain_registry ) && false !== strpos( (string) $wp_textdomain_registry->get( 'colisly', 'es_ES' ), 'colisly/languages' ) );
+unload_textdomain( 'colisly' );
+load_textdomain( 'colisly', COLISLY_PLUGIN_DIR . 'languages/colisly-es_ES.mo', 'es_ES' );
+$colisly_tr_es1 = __( 'My parcels', 'colisly' );
+$colisly_tr_es2 = _x( 'my-parcels', 'My Account endpoint slug', 'colisly' );
+$colisly_tr_es3 = sprintf( _n( '%d day', '%d days', 3, 'colisly' ), 3 );
+unload_textdomain( 'colisly' );
+COLISLY_Plugin::instance()->load_textdomain();
+colisly_check( 'Traduction : en espagnol, "My parcels" devient "Mis paquetes"', 'Mis paquetes' === $colisly_tr_es1 );
+colisly_check( 'Traduction : en espagnol, le slug de l onglet reste en ASCII', 'mis-paquetes' === $colisly_tr_es2 && sanitize_title( $colisly_tr_es2 ) === $colisly_tr_es2 );
+colisly_check( 'Traduction : en espagnol, le pluriel fonctionne', '3 días' === $colisly_tr_es3 );
+colisly_check( 'Traduction : de retour en anglais apres l espagnol', 'My parcels' === __( 'My parcels', 'colisly' ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

@@ -193,6 +193,12 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.17.0 =
+* Nouveau : traduction espagnole, livrée avec l'extension comme la française.
+  Toutes les chaînes de l'extension, 393, y compris les adresses des onglets
+  du compte, qui restent en ASCII simple. Un pack de langue validé sur
+  translate.wordpress.org prend le relais tout seul le jour où il existe.
+
 = 1.16.2 =
 * La traduction française est livrée avec l'extension. Les packs de langue de
   translate.wordpress.org n'existent qu'une fois les chaînes validées par des
@@ -513,6 +519,10 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.17.0 =
+Traduction espagnole livrée avec l'extension. Aucun changement de base de
+données.
 
 = 1.16.2 =
 La traduction française est livrée avec l'extension : les sites français

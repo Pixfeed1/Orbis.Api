@@ -1,0 +1,1224 @@
+# Spanish translation for Colisly Parcel Forwarding.
+msgid ""
+msgstr ""
+"Project-Id-Version: Colisly Parcel Forwarding 1.17.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: colisly build\n"
+
+msgid "Colisly Parcel Forwarding"
+msgstr "Colisly Parcel Forwarding"
+
+msgid "https://wordpress.org/plugins/colisly/"
+msgstr "https://wordpress.org/plugins/colisly/"
+
+msgid "Client and parcel management for a parcel receiving, storage, grouping and forwarding business, natively integrated with WooCommerce."
+msgstr "Gestión de clientes y paquetes para una actividad de recepción, almacenamiento, agrupación y reexpedición de paquetes, integrada de forma nativa con WooCommerce."
+
+msgid "Pixfeed"
+msgstr "Pixfeed"
+
+msgid "https://pixfeed.net/"
+msgstr "https://pixfeed.net/"
+
+msgid "Access denied."
+msgstr "Acceso denegado."
+
+msgid "Clients"
+msgstr "Clientes"
+
+msgid "Search clients"
+msgstr "Buscar clientes"
+
+msgid "Reference, name, e-mail, phone…"
+msgstr "Referencia, nombre, correo electrónico, teléfono…"
+
+msgid "Search"
+msgstr "Buscar"
+
+msgid "Add a client"
+msgstr "Añadir un cliente"
+
+msgid "WordPress user"
+msgstr "Usuario de WordPress"
+
+msgid "— Select —"
+msgstr "— Seleccionar —"
+
+msgid "Create the client record"
+msgstr "Crear la ficha de cliente"
+
+msgid "Reference"
+msgstr "Referencia"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "E-mail"
+msgstr "Correo electrónico"
+
+msgid "Phone"
+msgstr "Teléfono"
+
+msgid "Parcels in stock"
+msgstr "Paquetes en stock"
+
+msgid "Created on"
+msgstr "Creado el"
+
+msgid "No clients found."
+msgstr "No se han encontrado clientes."
+
+msgid "Client not found."
+msgstr "Cliente no encontrado."
+
+msgid "Client record %1$s — %2$s"
+msgstr "Ficha de cliente %1$s — %2$s"
+
+msgid "New parcel"
+msgstr "Nuevo paquete"
+
+msgid "Total stored weight"
+msgstr "Peso total almacenado"
+
+msgid "Shipments done"
+msgstr "Envíos realizados"
+
+msgid "Storage fees due"
+msgstr "Gastos de almacenamiento pendientes"
+
+msgid "Last reception"
+msgstr "Última recepción"
+
+msgid "Last shipment"
+msgstr "Último envío"
+
+msgid "Information"
+msgstr "Información"
+
+msgid "Shipped parcels"
+msgstr "Paquetes enviados"
+
+msgid "Shipments"
+msgstr "Envíos"
+
+msgid "Documents"
+msgstr "Documentos"
+
+msgid "History"
+msgstr "Historial"
+
+msgid "Client reference"
+msgstr "Referencia de cliente"
+
+msgid "User"
+msgstr "Usuario"
+
+msgid "Internal notes (never visible to the client)"
+msgstr "Notas internas (nunca visibles para el cliente)"
+
+msgid "Save"
+msgstr "Guardar"
+
+msgid "Add a document"
+msgstr "Añadir un documento"
+
+msgid "Visible to the client"
+msgstr "Visible para el cliente"
+
+msgid "Add"
+msgstr "Añadir"
+
+msgid "Number"
+msgstr "Número"
+
+msgid "Received on"
+msgstr "Recibido el"
+
+msgid "Tracking"
+msgstr "Seguimiento"
+
+msgid "Weight (kg)"
+msgstr "Peso (kg)"
+
+msgid "Price"
+msgstr "Precio"
+
+msgid "Grouping"
+msgstr "Agrupación"
+
+msgid "Storage fees"
+msgstr "Gastos de almacenamiento"
+
+msgid "Internal comment"
+msgstr "Comentario interno"
+
+msgid "Photo"
+msgstr "Foto"
+
+msgid "Status"
+msgstr "Estado"
+
+msgid "No parcels."
+msgstr "No hay paquetes."
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Customs form"
+msgstr "Formulario de aduana"
+
+msgid "Invoice: %s"
+msgstr "Factura: %s"
+
+msgid "Yes"
+msgstr "Sí"
+
+msgid "No"
+msgstr "No"
+
+msgid "View"
+msgstr "Ver"
+
+msgid "OK"
+msgstr "Aceptar"
+
+msgid "Requested on"
+msgstr "Solicitado el"
+
+msgid "Carrier"
+msgstr "Transportista"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Order"
+msgstr "Pedido"
+
+msgid "No shipments."
+msgstr "No hay envíos."
+
+msgid "%1$s x%2$d — %3$s — origin %4$s"
+msgstr "%1$s x%2$d — %3$s — origen %4$s"
+
+msgid "Total declared: %s"
+msgstr "Total declarado: %s"
+
+msgid "#%s"
+msgstr "n.º %s"
+
+msgid "Title"
+msgstr "Título"
+
+msgid "Added on"
+msgstr "Añadido el"
+
+msgid "Visibility"
+msgstr "Visibilidad"
+
+msgid "File"
+msgstr "Archivo"
+
+msgid "No documents."
+msgstr "No hay documentos."
+
+msgid "Internal"
+msgstr "Interno"
+
+msgid "Client"
+msgstr "Cliente"
+
+msgid "Download"
+msgstr "Descargar"
+
+msgid "Date"
+msgstr "Fecha"
+
+msgid "Event"
+msgstr "Evento"
+
+msgid "Details"
+msgstr "Detalles"
+
+msgid "By"
+msgstr "Por"
+
+msgid "No operations recorded."
+msgstr "No hay operaciones registradas."
+
+msgid "This user already has a client record. Here it is."
+msgstr "Este usuario ya tiene una ficha de cliente. Aquí está."
+
+msgid "Client record created."
+msgstr "Ficha de cliente creada."
+
+msgid "Client record updated."
+msgstr "Ficha de cliente actualizada."
+
+msgid "Document added."
+msgstr "Documento añadido."
+
+msgid "Shipment status updated."
+msgstr "Estado del envío actualizado."
+
+msgid "%s client"
+msgid_plural "%s clients"
+msgstr[0] "%s cliente"
+msgstr[1] "%s clientes"
+
+msgid "Colisly shipment"
+msgstr "Envío Colisly"
+
+msgid "Internal comment: %s"
+msgstr "Comentario interno: %s"
+
+msgid "No customs declaration for this parcel."
+msgstr "Este paquete no tiene declaración de aduana."
+
+msgid "No purchase invoice attached."
+msgstr "No se ha adjuntado ninguna factura de compra."
+
+msgid "Parcels"
+msgstr "Paquetes"
+
+msgid "Search parcels"
+msgstr "Buscar paquetes"
+
+msgid "Parcel number, tracking, client…"
+msgstr "Número de paquete, seguimiento, cliente…"
+
+msgid "All statuses"
+msgstr "Todos los estados"
+
+msgid "Filter"
+msgstr "Filtrar"
+
+msgid "No parcels found."
+msgstr "No se han encontrado paquetes."
+
+msgid "This parcel is already engaged in a shipment and can no longer be edited. Only its status can be changed."
+msgstr "Este paquete ya forma parte de un envío y no se puede editar. Solo se puede cambiar su estado."
+
+msgid "Edit parcel %s"
+msgstr "Editar el paquete %s"
+
+msgid "1. Client"
+msgstr "1. Cliente"
+
+msgid "Search for the client"
+msgstr "Buscar el cliente"
+
+msgid "Reference (CL000001), name or e-mail…"
+msgstr "Referencia (CL000001), nombre o correo electrónico…"
+
+msgid "The client of a parcel cannot be changed after reception."
+msgstr "El cliente de un paquete no se puede cambiar después de la recepción."
+
+msgid "Search by internal reference, name or e-mail address."
+msgstr "Busque por referencia interna, nombre o dirección de correo electrónico."
+
+msgid "Parcels of this client still in stock"
+msgstr "Paquetes de este cliente todavía en stock"
+
+msgid "Parcel number"
+msgstr "Número de paquete"
+
+msgid "Grouping allowed"
+msgstr "Agrupación permitida"
+
+msgid "No parcels in stock for this client."
+msgstr "Este cliente no tiene paquetes en stock."
+
+msgid "2. Parcel information"
+msgstr "2. Información del paquete"
+
+msgid "Carrier tracking number"
+msgstr "Número de seguimiento del transportista"
+
+msgid "Real weight (kg)"
+msgstr "Peso real (kg)"
+
+msgid "required"
+msgstr "obligatorio"
+
+msgid "Dimensions (cm, visible to administrators only)"
+msgstr "Dimensiones (cm, visibles solo para los administradores)"
+
+msgid "Length"
+msgstr "Largo"
+
+msgid "Width"
+msgstr "Ancho"
+
+msgid "Height"
+msgstr "Alto"
+
+msgid "Photo of the parcel at reception (optional)"
+msgstr "Foto del paquete en la recepción (opcional)"
+
+msgid "Internal comment (never visible to the client)"
+msgstr "Comentario interno (nunca visible para el cliente)"
+
+msgid "Damaged packaging, fragile parcel, anomaly…"
+msgstr "Embalaje dañado, paquete frágil, anomalía…"
+
+msgid "3. Shipping rules"
+msgstr "3. Reglas de envío"
+
+msgid "Allow this parcel to be grouped with other parcels"
+msgstr "Permitir agrupar este paquete con otros paquetes"
+
+msgid "If unchecked, this parcel will have to be shipped alone. This decision can never be changed by the client."
+msgstr "Si no está marcado, este paquete tendrá que enviarse solo. El cliente nunca podrá cambiar esta decisión."
+
+msgid "Allowed carriers"
+msgstr "Transportistas permitidos"
+
+msgid "Uncheck incompatible carriers (oversize, restrictions…). Only checked carriers will be offered to the client. Leaving none checked places no restriction: every carrier stays available."
+msgstr "Desmarque los transportistas incompatibles (sobredimensión, restricciones…). Solo los transportistas marcados se ofrecerán al cliente. No marcar ninguno no impone ninguna restricción: todos los transportistas siguen disponibles."
+
+msgid "The parcel price is computed automatically from its weight when saved, then used for the shipment request."
+msgstr "El precio del paquete se calcula automáticamente a partir de su peso al guardarlo, y después se usa en la solicitud de envío."
+
+msgid "Save the changes"
+msgstr "Guardar los cambios"
+
+msgid "Save the parcel"
+msgstr "Guardar el paquete"
+
+msgid "Parcel not found."
+msgstr "Paquete no encontrado."
+
+msgid "Parcel %s updated. Its price has been recomputed from the weight."
+msgstr "Paquete %s actualizado. Su precio se ha recalculado a partir del peso."
+
+msgid "Select a client first."
+msgstr "Seleccione primero un cliente."
+
+msgid "Parcel %s saved. Its price has been computed automatically."
+msgstr "Paquete %s guardado. Su precio se ha calculado automáticamente."
+
+msgid "Parcel status updated."
+msgstr "Estado del paquete actualizado."
+
+msgid "Settings — Colisly Parcel Forwarding"
+msgstr "Ajustes — Colisly Parcel Forwarding"
+
+msgid "This carrier is enabled but has no rate at all, so clients are not offered it: %s. Give it a weight bracket grid, or a base price and a price per kg."
+msgid_plural "These carriers are enabled but have no rate at all, so clients are not offered them: %s. Give them a weight bracket grid, or a base price and a price per kg."
+msgstr[0] "Este transportista está activado pero no tiene ninguna tarifa, así que no se ofrece a los clientes: %s. Asígnele una tabla de tramos de peso, o un precio base y un precio por kg."
+msgstr[1] "Estos transportistas están activados pero no tienen ninguna tarifa, así que no se ofrecen a los clientes: %s. Asígneles una tabla de tramos de peso, o un precio base y un precio por kg."
+
+msgid "Storage"
+msgstr "Almacenamiento"
+
+msgid "Free storage days"
+msgstr "Días de almacenamiento gratuito"
+
+msgid "Every parcel gets this free storage period from its reception (15 days by default)."
+msgstr "Cada paquete dispone de este periodo de almacenamiento gratuito desde su recepción (15 días por defecto)."
+
+msgid "Storage fee per day and per parcel"
+msgstr "Gasto de almacenamiento por día y por paquete"
+
+msgid "Weight-based pricing"
+msgstr "Tarifas por peso"
+
+msgid "A parcel price is given by the first tier whose maximum weight is greater than or equal to the parcel weight. Beyond the last tier: base price + price per kg."
+msgstr "El precio de un paquete lo fija el primer tramo cuyo peso máximo sea mayor o igual que el peso del paquete. Más allá del último tramo: precio base + precio por kg."
+
+msgid "Maximum weight (kg)"
+msgstr "Peso máximo (kg)"
+
+msgid "Add a tier"
+msgstr "Añadir un tramo"
+
+msgid "Base price (beyond tiers)"
+msgstr "Precio base (más allá de los tramos)"
+
+msgid "Price per kg (beyond tiers)"
+msgstr "Precio por kg (más allá de los tramos)"
+
+msgid "Destination zones"
+msgstr "Zonas de destino"
+
+msgid "A carrier does not charge the same to reship next door and to the other side of the world. Group your destinations here, then price each carrier per zone below. Pick the countries by name from the list, or type their two-letter codes separated by commas; the names of the codes you entered are spelled out under the field. A country you do not list keeps the carrier default grid."
+msgstr "Un transportista no cobra lo mismo por reexpedir a la puerta de al lado que al otro lado del mundo. Agrupe aquí sus destinos y después tarife cada transportista por zona más abajo. Elija los países por su nombre en la lista, o escriba sus códigos de dos letras separados por comas; los nombres de los códigos introducidos se muestran bajo el campo. Un país que no incluya conserva la tabla por defecto del transportista."
+
+msgid "Tick the customs column for the zones that need a declaration of the contents. The plugin cannot work this out on its own: reshipping from mainland France to Guadeloupe needs one, since the overseas departments sit outside the EU VAT territory, while reshipping to Belgium needs none. The client then declares what each parcel holds before it can leave."
+msgstr "Marque la columna de aduana en las zonas que necesiten una declaración del contenido. La extensión no puede deducirlo sola: reexpedir desde la Península a Canarias necesita una, ya que Canarias está fuera del territorio del IVA de la UE, mientras que reexpedir a Portugal no necesita ninguna. El cliente declara entonces lo que contiene cada paquete antes de que pueda salir."
+
+msgid "Zone name"
+msgstr "Nombre de la zona"
+
+msgid "Countries"
+msgstr "Países"
+
+msgid "Customs declaration"
+msgstr "Declaración de aduana"
+
+msgid "Add a country to this zone"
+msgstr "Añadir un país a esta zona"
+
+msgid "Add a country…"
+msgstr "Añadir un país…"
+
+msgid "Add a zone"
+msgstr "Añadir una zona"
+
+msgid "Carriers"
+msgstr "Transportistas"
+
+msgid "A disabled carrier is no longer offered, neither at parcel reception nor to clients."
+msgstr "Un transportista desactivado deja de ofrecerse, tanto en la recepción de paquetes como a los clientes."
+
+msgid "Volumetric: express carriers price bulk rather than mass. Tick the box and the transport is billed on whichever is greater, the real weight or length x width x height divided by the divisor, parcel by parcel. A parcel whose dimensions were not entered is billed on its real weight."
+msgstr "Volumétrico: los transportistas exprés cobran por volumen y no por masa. Marque la casilla y el transporte se factura sobre el mayor de los dos, el peso real o largo x ancho x alto dividido por el divisor, paquete a paquete. Un paquete cuyas dimensiones no se hayan introducido se factura sobre su peso real."
+
+msgid "Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are optional: they only apply to a carrier with no grid, and beyond the last bracket of a carrier that has one. Leave them empty if you price by grid."
+msgstr "La mayoría de los transportistas deberían tarifarse con una tabla de tramos de peso, que se rellena en «Tramos de peso de los transportistas» más abajo. Los dos precios de esta tabla son opcionales: solo se aplican a un transportista sin tabla, y más allá del último tramo de un transportista que la tenga. Déjelos vacíos si tarifa por tabla."
+
+msgid "Limits: what the carrier physically takes. Maximum weight applies to the whole shipment, since grouped parcels leave in one carton; maximum length and girth (length plus twice the width plus twice the height, in cm) apply to each parcel. Leave empty for no limit. A parcel or shipment beyond a limit cannot be requested with that carrier."
+msgstr "Límites: lo que el transportista acepta físicamente. El peso máximo se aplica al envío completo, ya que los paquetes agrupados salen en una sola caja; el largo y el perímetro máximos (largo más dos veces el ancho más dos veces el alto, en cm) se aplican a cada paquete. Deje vacío para no fijar límite. Un paquete o un envío que supere un límite no se puede solicitar con ese transportista."
+
+msgid "Slug"
+msgstr "Slug"
+
+msgid "Base price (beyond brackets)"
+msgstr "Precio base (más allá de los tramos)"
+
+msgid "Price per kg (beyond brackets)"
+msgstr "Precio por kg (más allá de los tramos)"
+
+msgid "Volumetric"
+msgstr "Volumétrico"
+
+msgid "Divisor"
+msgstr "Divisor"
+
+msgid "Max weight (kg)"
+msgstr "Peso máx. (kg)"
+
+msgid "Max length (cm)"
+msgstr "Largo máx. (cm)"
+
+msgid "Max girth (cm)"
+msgstr "Perímetro máx. (cm)"
+
+msgid "Enabled"
+msgstr "Activado"
+
+msgid "Base price"
+msgstr "Precio base"
+
+msgid "Price per kg"
+msgstr "Precio por kg"
+
+msgid "Add a carrier"
+msgstr "Añadir un transportista"
+
+msgid "Carrier weight brackets"
+msgstr "Tramos de peso de los transportistas"
+
+msgid "Carriers usually publish a grid of weight brackets rather than a price per kilo: the first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. Each carrier gets one grid per destination zone, then a grid for all other destinations. Leave that last one empty if every destination you serve is in a zone: the carrier is then simply not offered elsewhere. Beyond the last bracket the base price + price per kg formula applies, but it can only ever charge more than the last bracket, never less."
+msgstr "Los transportistas suelen publicar una tabla de tramos de peso en lugar de un precio por kilo: el primer tramo cuyo peso máximo sea mayor o igual que el peso del envío fija el precio. Cada transportista tiene una tabla por zona de destino y después una tabla para todos los demás destinos. Deje esta última vacía si todos los destinos que sirve están en una zona: el transportista simplemente no se ofrecerá en otros lugares. Más allá del último tramo se aplica la fórmula precio base + precio por kg, pero nunca puede cobrar menos que el último tramo."
+
+msgid "Add a carrier and save to configure its brackets. A zone you have just created appears here after saving too."
+msgstr "Añada un transportista y guarde para configurar sus tramos. Una zona recién creada también aparece aquí después de guardar."
+
+msgid "%1$s — zone %2$s"
+msgstr "%1$s — zona %2$s"
+
+msgid "Add a bracket"
+msgstr "Añadir un tramo"
+
+msgid "%s — all other destinations"
+msgstr "%s — todos los demás destinos"
+
+msgid "Applies to any destination in no zone, or in a zone this carrier has no grid for. Leave empty if every destination you serve is in a zone above."
+msgstr "Se aplica a cualquier destino sin zona, o en una zona para la que este transportista no tiene tabla. Déjela vacía si todos los destinos que sirve están en una zona de arriba."
+
+msgid "Content categories"
+msgstr "Categorías de contenido"
+
+msgid "Clothing&#10;Shoes&#10;Books"
+msgstr "Ropa&#10;Zapatos&#10;Libros"
+
+msgid "One category per line. Leave empty and clients describe the contents in their own words, which is what a customs form asks for. Fill it and the field becomes a menu of your categories, quicker to fill and consistent across clients."
+msgstr "Una categoría por línea. Déjelo vacío y los clientes describirán el contenido con sus propias palabras, que es lo que pide un formulario de aduana. Rellénelo y el campo se convierte en un menú con sus categorías, más rápido de rellenar y homogéneo entre clientes."
+
+msgid "Maximum lines per parcel"
+msgstr "Líneas máximas por paquete"
+
+msgid "0 for no limit. Set it to the number of lines your carrier forms hold. The client is given exactly that many lines to fill."
+msgstr "0 para no fijar límite. Ponga el número de líneas que admiten los formularios de su transportista. El cliente dispondrá exactamente de ese número de líneas."
+
+msgid "Ask the client for"
+msgstr "Pedir al cliente"
+
+msgid "Quantity"
+msgstr "Cantidad"
+
+msgid "Unit weight (kg)"
+msgstr "Peso unitario (kg)"
+
+msgid "Country of origin"
+msgstr "País de origen"
+
+msgid "The contents and the value are always asked, since a declaration without them declares nothing. The other three are what a real CN23 form needs, line by line. Untick them if you only want to know what a parcel holds before copying it onto your carrier's own form: three columns a client fills for nothing are three columns he fills badly."
+msgstr "El contenido y el valor se piden siempre, ya que una declaración sin ellos no declara nada. Los otros tres son lo que exige un formulario CN23 real, línea a línea. Desmárquelos si solo quiere saber qué contiene un paquete antes de copiarlo en el formulario de su transportista: tres columnas que un cliente rellena para nada son tres columnas que rellena mal."
+
+msgid "Insurance"
+msgstr "Seguro"
+
+msgid "Cover levels offered to the client when requesting a shipment: how much the parcel is covered for, and what that costs. Leave the table empty and no insurance is offered at all."
+msgstr "Niveles de cobertura ofrecidos al cliente al solicitar un envío: hasta cuánto está cubierto el paquete y cuánto cuesta. Deje la tabla vacía y no se ofrecerá ningún seguro."
+
+msgid "Covered up to"
+msgstr "Cubierto hasta"
+
+msgid "Add a cover level"
+msgstr "Añadir un nivel de cobertura"
+
+msgid "Orders"
+msgstr "Pedidos"
+
+msgid "Taxes"
+msgstr "Impuestos"
+
+msgid "Apply the shop taxes to shipment orders (parcels, storage and transport lines)"
+msgstr "Aplicar los impuestos de la tienda a los pedidos de envío (líneas de paquetes, almacenamiento y transporte)"
+
+msgid "When unchecked, shipment orders are created tax-free."
+msgstr "Si no está marcado, los pedidos de envío se crean sin impuestos."
+
+msgid "Notifications"
+msgstr "Notificaciones"
+
+msgid "E-mails"
+msgstr "Correos electrónicos"
+
+msgid "Notify the client when a parcel is received"
+msgstr "Avisar al cliente cuando se recibe un paquete"
+
+msgid "Notify the administrator when a shipment is requested"
+msgstr "Avisar al administrador cuando se solicita un envío"
+
+msgid "Send the WooCommerce invoice (with payment link) when a shipment is requested"
+msgstr "Enviar la factura de WooCommerce (con enlace de pago) cuando se solicita un envío"
+
+msgid "Save settings"
+msgstr "Guardar los ajustes"
+
+msgid "Settings saved."
+msgstr "Ajustes guardados."
+
+msgid "Colisly"
+msgstr "Colisly"
+
+msgid "Settings"
+msgstr "Ajustes"
+
+msgid "parcel(s) in stock"
+msgstr "paquete(s) en stock"
+
+msgid "new client, record created with the first parcel"
+msgstr "cliente nuevo, la ficha se crea con el primer paquete"
+
+msgid "unrecognised: %s"
+msgstr "no reconocido: %s"
+
+msgid "Parcel %1$s is too long for %2$s: %3$s cm, limit %4$s cm."
+msgstr "El paquete %1$s es demasiado largo para %2$s: %3$s cm, límite %4$s cm."
+
+msgid "Parcel %1$s is too big for %2$s: length plus twice the width and height is %3$s cm, limit %4$s cm."
+msgstr "El paquete %1$s es demasiado grande para %2$s: el largo más dos veces el ancho y el alto suma %3$s cm, límite %4$s cm."
+
+msgid "%1$s does not take shipments over %3$s kg; this one weighs %2$s kg. Choose another carrier or split the shipment."
+msgstr "%1$s no acepta envíos de más de %3$s kg; este pesa %2$s kg. Elija otro transportista o divida el envío."
+
+msgid "User not found."
+msgstr "Usuario no encontrado."
+
+msgid "The client record could not be created."
+msgstr "No se ha podido crear la ficha de cliente."
+
+msgid "Client record %s created."
+msgstr "Ficha de cliente %s creada."
+
+msgid "Parcel %1$s: enter the value of “%2$s”. Customs assess duty on it, so a declaration cannot go without."
+msgstr "Paquete %1$s: indique el valor de «%2$s». La aduana calcula los derechos sobre él, así que una declaración no puede prescindir de él."
+
+msgid "Customs declaration of parcel %1$s updated: %2$d line."
+msgid_plural "Customs declaration of parcel %1$s updated: %2$d lines."
+msgstr[0] "Declaración de aduana del paquete %1$s actualizada: %2$d línea."
+msgstr[1] "Declaración de aduana del paquete %1$s actualizada: %2$d líneas."
+
+msgid "Purchase invoice, parcel %1$s: %2$s"
+msgstr "Factura de compra, paquete %1$s: %2$s"
+
+msgid "Customs declaration %s"
+msgstr "Declaración de aduana %s"
+
+msgid "Print"
+msgstr "Imprimir"
+
+msgid "Parcel %1$s — tracking %2$s"
+msgstr "Paquete %1$s — seguimiento %2$s"
+
+msgid "%d purchase invoice attached"
+msgid_plural "%d purchase invoices attached"
+msgstr[0] "%d factura de compra adjunta"
+msgstr[1] "%d facturas de compra adjuntas"
+
+msgid "Sender"
+msgstr "Remitente"
+
+msgid "Recipient"
+msgstr "Destinatario"
+
+msgid "Detailed description of contents"
+msgstr "Descripción detallada del contenido"
+
+msgid "Net weight (kg)"
+msgstr "Peso neto (kg)"
+
+msgid "Value"
+msgstr "Valor"
+
+msgid "HS tariff number"
+msgstr "Código arancelario SA"
+
+msgid "Nothing declared for this parcel."
+msgstr "No se ha declarado nada para este paquete."
+
+msgid "Gross weight of the parcel (kg)"
+msgstr "Peso bruto del paquete (kg)"
+
+msgid "Warning: the declared contents weigh %1$s kg, more than the parcel itself (%2$s kg). Check the declaration before shipping."
+msgstr "Atención: el contenido declarado pesa %1$s kg, más que el propio paquete (%2$s kg). Compruebe la declaración antes de enviar."
+
+msgid "I certify that the particulars given in this declaration are correct and that this item does not contain any dangerous article or article prohibited by legislation or by postal or customs regulations."
+msgstr "Certifico que los datos de esta declaración son exactos y que este envío no contiene ningún artículo peligroso ni prohibido por la legislación o por la reglamentación postal o aduanera."
+
+msgid "Date and signature"
+msgstr "Fecha y firma"
+
+msgid "File not found."
+msgstr "Archivo no encontrado."
+
+msgid "The document could not be saved."
+msgstr "No se ha podido guardar el documento."
+
+msgid "Document “%s” added."
+msgstr "Documento «%s» añadido."
+
+msgid "Document not found."
+msgstr "Documento no encontrado."
+
+msgid "Photo not found."
+msgstr "Foto no encontrada."
+
+msgid "[%1$s] Your parcel %2$s has been received"
+msgstr "[%1$s] Su paquete %2$s ha sido recibido"
+
+msgid "Hello,\n\nWe have received your parcel %1$s (weight: %2$s kg, tracking number: %3$s).\n\nIt is now available in your account, under “My parcels”. You benefit from %4$d days of free storage.\n\nBest regards"
+msgstr "Hola,\n\nHemos recibido su paquete %1$s (peso: %2$s kg, número de seguimiento: %3$s).\n\nYa está disponible en su cuenta, en «Mis paquetes». Dispone de %4$d días de almacenamiento gratuito.\n\nUn cordial saludo"
+
+msgid "New shipment request %1$s (client %2$s)"
+msgstr "Nueva solicitud de envío %1$s (cliente %2$s)"
+
+msgid "A new shipment request %1$s has just been created by client %2$s.\n\nNumber of parcels: %3$d\nPreferred carrier: %4$s\n\nLog in to the administration to process it."
+msgstr "El cliente %2$s acaba de crear una nueva solicitud de envío %1$s.\n\nNúmero de paquetes: %3$d\nTransportista preferido: %4$s\n\nInicie sesión en la administración para tramitarla."
+
+msgid "No file uploaded."
+msgstr "No se ha subido ningún archivo."
+
+msgid "File %1$s is too large (limit %2$s)."
+msgstr "El archivo %1$s es demasiado grande (límite %2$s)."
+
+msgid "The protected storage directory could not be created."
+msgstr "No se ha podido crear el directorio de almacenamiento protegido."
+
+msgid "WooCommerce is not available."
+msgstr "WooCommerce no está disponible."
+
+msgid "Parcel %1$s (%2$s kg)"
+msgstr "Paquete %1$s (%2$s kg)"
+
+msgid "Insurance (cover %s)"
+msgstr "Seguro (cobertura %s)"
+
+msgid "Order created for shipment request %s."
+msgstr "Pedido creado para la solicitud de envío %s."
+
+msgid "WooCommerce order #%1$s created for shipment %2$s."
+msgstr "Pedido de WooCommerce n.º %1$s creado para el envío %2$s."
+
+msgid "Shipment %s shipped."
+msgstr "Envío %s expedido."
+
+msgid "Shipment %s cancelled."
+msgstr "Envío %s cancelado."
+
+msgctxt "parcel status"
+msgid "Available"
+msgstr "Disponible"
+
+msgctxt "parcel status"
+msgid "Ordered"
+msgstr "Pedido"
+
+msgctxt "parcel status"
+msgid "Awaiting payment"
+msgstr "Pendiente de pago"
+
+msgctxt "parcel status"
+msgid "Paid"
+msgstr "Pagado"
+
+msgctxt "parcel status"
+msgid "Preparing"
+msgstr "En preparación"
+
+msgctxt "parcel status"
+msgid "Shipped"
+msgstr "Enviado"
+
+msgctxt "parcel status"
+msgid "Destroyed"
+msgstr "Destruido"
+
+msgctxt "parcel status"
+msgid "Cancelled"
+msgstr "Cancelado"
+
+msgid "The parcel weight must be greater than zero."
+msgstr "El peso del paquete debe ser mayor que cero."
+
+msgid "The parcel could not be saved."
+msgstr "No se ha podido guardar el paquete."
+
+msgid "Parcel %1$s received (%2$s kg, price %3$s)."
+msgstr "Paquete %1$s recibido (%2$s kg, precio %3$s)."
+
+msgid "weight %1$s kg to %2$s kg, price %3$s to %4$s"
+msgstr "peso de %1$s kg a %2$s kg, precio de %3$s a %4$s"
+
+msgid "tracking number"
+msgstr "número de seguimiento"
+
+msgid "internal comment"
+msgstr "comentario interno"
+
+msgid "photo"
+msgstr "foto"
+
+msgid "grouping allowed"
+msgstr "agrupación permitida"
+
+msgid "grouping refused"
+msgstr "agrupación rechazada"
+
+msgid "allowed carriers"
+msgstr "transportistas permitidos"
+
+msgid "Parcel %1$s corrected: %2$s."
+msgstr "Paquete %1$s corregido: %2$s."
+
+msgid "Invalid parcel status."
+msgstr "Estado de paquete no válido."
+
+msgid "The status could not be updated."
+msgstr "No se ha podido actualizar el estado."
+
+msgid "Parcel %1$s: status “%2$s” → “%3$s”."
+msgstr "Paquete %1$s: estado «%2$s» → «%3$s»."
+
+msgid "the store is in coming soon mode, so customers cannot reach the payment page"
+msgstr "la tienda está en modo «próximamente», así que los clientes no pueden llegar a la página de pago"
+
+msgid "no payment method is enabled, so shipment orders cannot be paid"
+msgstr "no hay ningún método de pago activado, así que los pedidos de envío no se pueden pagar"
+
+msgid "Colisly: shipment requests will not go through because %s."
+msgstr "Colisly: las solicitudes de envío no podrán completarse porque %s."
+
+msgid ", and "
+msgstr ", y "
+
+msgid "Client record (Colisly Parcel Forwarding)"
+msgstr "Ficha de cliente (Colisly Parcel Forwarding)"
+
+msgid "Internal notes"
+msgstr "Notas internas"
+
+msgid "Parcels (Colisly Parcel Forwarding)"
+msgstr "Paquetes (Colisly Parcel Forwarding)"
+
+msgid "Tracking number"
+msgstr "Número de seguimiento"
+
+msgid "%1$s (x%2$d, %3$s kg each, %4$s each)"
+msgstr "%1$s (x%2$d, %3$s kg cada uno, %4$s cada uno)"
+
+msgid "Shipments (Colisly Parcel Forwarding)"
+msgstr "Envíos (Colisly Parcel Forwarding)"
+
+msgid "Documents (Colisly Parcel Forwarding)"
+msgstr "Documentos (Colisly Parcel Forwarding)"
+
+msgid "Parcel"
+msgstr "Paquete"
+
+msgid "Shared with the client"
+msgstr "Compartido con el cliente"
+
+msgid "Personal data erased following a privacy request."
+msgstr "Datos personales borrados tras una solicitud de privacidad."
+
+msgid "Parcel and shipment records are retained as business/accounting records; documents, phone number, notes, tracking numbers and photos have been removed."
+msgstr "Los registros de paquetes y envíos se conservan como registros comerciales y contables; se han eliminado los documentos, el teléfono, las notas, los números de seguimiento y las fotos."
+
+msgctxt "shipment status"
+msgid "Requested"
+msgstr "Solicitado"
+
+msgctxt "shipment status"
+msgid "Awaiting payment"
+msgstr "Pendiente de pago"
+
+msgctxt "shipment status"
+msgid "Paid"
+msgstr "Pagado"
+
+msgctxt "shipment status"
+msgid "Preparing"
+msgstr "En preparación"
+
+msgctxt "shipment status"
+msgid "Shipped"
+msgstr "Enviado"
+
+msgctxt "shipment status"
+msgid "Cancelled"
+msgstr "Cancelado"
+
+msgid "Select at least one parcel."
+msgstr "Seleccione al menos un paquete."
+
+msgid "Invalid carrier."
+msgstr "Transportista no válido."
+
+msgid "%s has no rate for this destination. Choose another carrier or get in touch with us."
+msgstr "%s no tiene tarifa para este destino. Elija otro transportista o póngase en contacto con nosotros."
+
+msgid "Parcel not found for this client."
+msgstr "Paquete no encontrado para este cliente."
+
+msgid "Parcel %s is no longer available."
+msgstr "El paquete %s ya no está disponible."
+
+msgid "Parcel %s must be shipped alone (grouping forbidden)."
+msgstr "El paquete %s debe enviarse solo (agrupación prohibida)."
+
+msgid "Parcel %s is going to a destination that requires a customs declaration. Declare its contents before requesting the shipment."
+msgstr "El paquete %s va a un destino que exige una declaración de aduana. Declare su contenido antes de solicitar el envío."
+
+msgid "The chosen carrier is not allowed for parcel %s."
+msgstr "El transportista elegido no está permitido para el paquete %s."
+
+msgid "The shipment request could not be created."
+msgstr "No se ha podido crear la solicitud de envío."
+
+msgid "Shipment request %1$s created (%2$d parcels, carrier %3$s)."
+msgstr "Solicitud de envío %1$s creada (%2$d paquetes, transportista %3$s)."
+
+msgid "Invalid shipment status."
+msgstr "Estado de envío no válido."
+
+msgid "Shipment not found."
+msgstr "Envío no encontrado."
+
+msgid "Shipment %1$s: status “%2$s” → “%3$s”."
+msgstr "Envío %1$s: estado «%2$s» → «%3$s»."
+
+msgid "Parcel received (Colisly Parcel Forwarding)"
+msgstr "Paquete recibido (Colisly Parcel Forwarding)"
+
+msgid "Sent to the client when one of their parcels is registered at the warehouse."
+msgstr "Se envía al cliente cuando uno de sus paquetes se registra en el almacén."
+
+msgid "[{site_title}] Your parcel {parcel_reference} has been received"
+msgstr "[{site_title}] Su paquete {parcel_reference} ha sido recibido"
+
+msgid "Parcel {parcel_reference} received"
+msgstr "Paquete {parcel_reference} recibido"
+
+msgid "Shipment requested (Colisly Parcel Forwarding)"
+msgstr "Envío solicitado (Colisly Parcel Forwarding)"
+
+msgid "Sent to the staff when a client creates a shipment request."
+msgstr "Se envía al personal cuando un cliente crea una solicitud de envío."
+
+msgid "Recipient(s)"
+msgstr "Destinatario(s)"
+
+msgid "Comma-separated addresses. Defaults to %s."
+msgstr "Direcciones separadas por comas. Por defecto, %s."
+
+msgid "[{site_title}] New shipment request {shipment_reference} (client {client_reference})"
+msgstr "[{site_title}] Nueva solicitud de envío {shipment_reference} (cliente {client_reference})"
+
+msgid "New shipment request {shipment_reference}"
+msgstr "Nueva solicitud de envío {shipment_reference}"
+
+msgctxt "My Account endpoint slug"
+msgid "my-parcels"
+msgstr "mis-paquetes"
+
+msgctxt "My Account endpoint slug"
+msgid "my-shipments"
+msgstr "mis-envios"
+
+msgctxt "My Account endpoint slug"
+msgid "my-documents"
+msgstr "mis-documentos"
+
+msgctxt "My Account endpoint slug"
+msgid "shipment-request"
+msgstr "solicitud-de-envio"
+
+msgctxt "My Account endpoint slug"
+msgid "customs-declaration"
+msgstr "declaracion-de-aduana"
+
+msgid "My parcels"
+msgstr "Mis paquetes"
+
+msgid "My shipments"
+msgstr "Mis envíos"
+
+msgid "My documents"
+msgstr "Mis documentos"
+
+msgid "Shipment request"
+msgstr "Solicitud de envío"
+
+msgid "No client record is linked to your account yet."
+msgstr "Todavía no hay ninguna ficha de cliente vinculada a su cuenta."
+
+msgid "Your client reference:"
+msgstr "Su referencia de cliente:"
+
+msgid "No parcels yet."
+msgstr "Todavía no hay paquetes."
+
+msgid "In stock (%d)"
+msgid_plural "In stock (%d)"
+msgstr[0] "En stock (%d)"
+msgstr[1] "En stock (%d)"
+
+msgid "Shipped or unavailable (%d)"
+msgid_plural "Shipped or unavailable (%d)"
+msgstr[0] "Enviado o no disponible (%d)"
+msgstr[1] "Enviados o no disponibles (%d)"
+
+msgid "No parcel has left yet."
+msgstr "Todavía no ha salido ningún paquete."
+
+msgid "No parcel in stock at the moment."
+msgstr "No hay ningún paquete en stock en este momento."
+
+msgid "Reception date"
+msgstr "Fecha de recepción"
+
+msgid "Previous"
+msgstr "Anterior"
+
+msgid "Page %1$d of %2$d"
+msgstr "Página %1$d de %2$d"
+
+msgid "Next"
+msgstr "Siguiente"
+
+msgid "Your shipment request has been withdrawn and the parcels are back in your stock."
+msgstr "Su solicitud de envío se ha retirado y los paquetes vuelven a estar en su stock."
+
+msgid "No shipments yet."
+msgstr "Todavía no hay envíos."
+
+msgid "Insured for"
+msgstr "Asegurado por"
+
+msgid "Actions"
+msgstr "Acciones"
+
+msgid "Pay"
+msgstr "Pagar"
+
+msgid "Order #%s"
+msgstr "Pedido n.º %s"
+
+msgid "Withdraw this shipment request? The parcels go back into your stock."
+msgstr "¿Retirar esta solicitud de envío? Los paquetes vuelven a su stock."
+
+msgid "Cancel"
+msgstr "Cancelar"
+
+msgid "No documents yet."
+msgstr "Todavía no hay documentos."
+
+msgid "Your shipment request has been recorded. We will get back to you shortly."
+msgstr "Su solicitud de envío se ha registrado. Nos pondremos en contacto con usted en breve."
+
+msgid "No parcels available for a shipment."
+msgstr "No hay paquetes disponibles para un envío."
+
+msgid "Your delivery address is incomplete, so no shipment can be requested yet. Still missing: %s."
+msgstr "Su dirección de entrega está incompleta, así que todavía no se puede solicitar ningún envío. Falta: %s."
+
+msgid "Complete my delivery address"
+msgstr "Completar mi dirección de entrega"
+
+msgid "Select the parcels to ship:"
+msgstr "Seleccione los paquetes que desea enviar:"
+
+msgid "Include in the shipment"
+msgstr "Incluir en el envío"
+
+msgid "No — this parcel must be shipped alone"
+msgstr "No — este paquete debe enviarse solo"
+
+msgid "Delivered to"
+msgstr "Entregado en"
+
+msgid "Your parcels are reshipped to this address, and the transport is priced on it."
+msgstr "Sus paquetes se reexpiden a esta dirección, y el transporte se tarifa según ella."
+
+msgid "Change my delivery address"
+msgstr "Cambiar mi dirección de entrega"
+
+msgid "No carrier is priced for your destination yet. Please get in touch with us."
+msgstr "Todavía no hay ningún transportista con tarifa para su destino. Póngase en contacto con nosotros."
+
+msgid "Preferred carrier:"
+msgstr "Transportista preferido:"
+
+msgid "%1$s — %2$s + %3$s/kg"
+msgstr "%1$s — %2$s + %3$s/kg"
+
+msgid "Insurance:"
+msgstr "Seguro:"
+
+msgid "No insurance"
+msgstr "Sin seguro"
+
+msgid "Covered up to %1$s — %2$s"
+msgstr "Cubierto hasta %1$s — %2$s"
+
+msgid "Estimated total:"
+msgstr "Total estimado:"
+
+msgid "(parcels + storage fees + transport — confirmed on the payment page)"
+msgstr "(paquetes + gastos de almacenamiento + transporte — se confirma en la página de pago)"
+
+msgid "Required for some destinations. Declare the contents of the parcels you are sending; a parcel left undeclared will be refused if its destination asks for one."
+msgstr "Obligatorio para algunos destinos. Declare el contenido de los paquetes que envía; un paquete sin declarar será rechazado si su destino lo exige."
+
+msgid "Only carriers compatible with every selected parcel can be accepted."
+msgstr "Solo se pueden aceptar transportistas compatibles con todos los paquetes seleccionados."
+
+msgid "Send the request"
+msgstr "Enviar la solicitud"
+
+msgid "This shipment can no longer be cancelled. Please get in touch with us."
+msgstr "Este envío ya no se puede cancelar. Póngase en contacto con nosotros."
+
+msgid "Contents"
+msgstr "Contenido"
+
+msgid "Cotton t-shirts"
+msgstr "Camisetas de algodón"
+
+msgid "Add a line"
+msgstr "Añadir una línea"
+
+msgid "Purchase invoices"
+msgstr "Facturas de compra"
+
+msgid "Customs may ask for the invoice of what the parcel holds. Attach it here, PDF or image."
+msgstr "La aduana puede pedir la factura de lo que contiene el paquete. Adjúntela aquí, en PDF o imagen."
+
+msgid "You have no parcel in stock to declare."
+msgstr "No tiene ningún paquete en stock que declarar."
+
+msgid "Declaration saved."
+msgstr "Declaración guardada."
+
+msgid "Some destinations require the contents of a parcel to be declared before it can be shipped. Describe what each parcel holds, item by item, filling every column shown."
+msgstr "Algunos destinos exigen declarar el contenido de un paquete antes de poder enviarlo. Describa lo que contiene cada paquete, artículo por artículo, rellenando todas las columnas mostradas."
+
+msgid "Save the declaration"
+msgstr "Guardar la declaración"
+
+msgid "Hello,"
+msgstr "Hola,"
+
+msgid "We have received your parcel %s at the warehouse. It is now visible in your account, under “My parcels”."
+msgstr "Hemos recibido su paquete %s en el almacén. Ya está visible en su cuenta, en «Mis paquetes»."
+
+msgid "Weight"
+msgstr "Peso"
+
+msgid "Free storage"
+msgstr "Almacenamiento gratuito"
+
+msgid "%d day"
+msgid_plural "%d days"
+msgstr[0] "%d día"
+msgstr[1] "%d días"
+
+msgid "Shipment request %1$s has just been created by client %2$s (%3$s)."
+msgstr "El cliente %2$s (%3$s) acaba de crear la solicitud de envío %1$s."
+
+msgid "Total weight"
+msgstr "Peso total"
+
+msgid "Total (parcels + storage + transport)"
+msgstr "Total (paquetes + almacenamiento + transporte)"
+
+msgid "Open the client record"
+msgstr "Abrir la ficha de cliente"
+
+msgid "Parcel number:"
+msgstr "Número de paquete:"
+
+msgid "Tracking number:"
+msgstr "Número de seguimiento:"
+
+msgid "Weight:"
+msgstr "Peso:"
+
+msgid "Free storage: %d days"
+msgstr "Almacenamiento gratuito: %d días"
+
+msgid "Carrier:"
+msgstr "Transportista:"
+
+msgid "Parcels:"
+msgstr "Paquetes:"
+
+msgid "Total weight:"
+msgstr "Peso total:"
+
+msgid "Total:"
+msgstr "Total:"
+
+msgid "Client record:"
+msgstr "Ficha de cliente:"
+
