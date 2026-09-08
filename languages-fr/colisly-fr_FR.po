@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.18.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.18.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -1264,9 +1264,29 @@ msgstr "Étiquette"
 msgid "Label %s"
 msgstr "Étiquette %s"
 
-msgid "Received %1$s — %2$s kg"
-msgstr "Reçu le %1$s — %2$s kg"
-
 msgid "Tracking %s"
 msgstr "Suivi %s"
 
+msgid "Parcel labels"
+msgstr "Étiquettes colis"
+
+msgid "The label printed when a parcel is booked in. Every label printer has its own format, so give the size of your labels in millimetres; the reference, the client and the reception date always fit, and the internal comment when there is one. Add the weight and the tracking number only if your labels have room for them."
+msgstr "L’étiquette imprimée à la réception d’un colis. Chaque imprimante d’étiquettes a son format : indiquez la taille de vos étiquettes en millimètres ; la référence, le client et la date de réception tiennent toujours, ainsi que le commentaire interne quand il y en a un. N’ajoutez le poids et le numéro de suivi que si vos étiquettes ont la place."
+
+msgid "Label size (mm)"
+msgstr "Taille de l’étiquette (mm)"
+
+msgid "Label height (mm)"
+msgstr "Hauteur de l’étiquette (mm)"
+
+msgid "Width × height. 62 × 30 mm by default, the common small label; 100 × 62 mm for a large one."
+msgstr "Largeur × hauteur. 62 × 30 mm par défaut, la petite étiquette la plus courante ; 100 × 62 mm pour une grande."
+
+msgid "Also print"
+msgstr "Imprimer aussi"
+
+msgid "Weight and dimensions"
+msgstr "Poids et dimensions"
+
+msgid "Received %s"
+msgstr "Reçu le %s"

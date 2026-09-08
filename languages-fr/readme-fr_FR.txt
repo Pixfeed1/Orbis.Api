@@ -193,6 +193,19 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.18.1 =
+* L'étiquette de colis s'adapte désormais à l'imprimante du réexpéditeur. Sa
+  taille se règle dans les réglages, 62 × 30 mm par défaut, la petite étiquette
+  courante, et les caractères suivent pour que la référence reste ce qu'il y a
+  de plus gros dessus. L'étiquette porte la référence, le client, la date de
+  réception et le commentaire interne ; le poids, les dimensions et le numéro
+  de suivi ne s'impriment que si vous les cochez, une petite étiquette n'ayant
+  pas la place.
+* Correction : dans les réglages, cocher l'une des cases « Demander au client »
+  des douanes changeait aussi les deux autres en coulisse, les trois partageant
+  une même cellule. Chaque case ne commande plus que son propre réglage ; les
+  nouvelles cases de l'étiquette s'appuient sur la même correction.
+
 = 1.18.0 =
 * Nouveau : une étiquette imprimable pour chaque colis. Sa référence n'existe
   qu'une fois le colis enregistré, l'opérateur ne pouvait donc pas étiqueter
@@ -531,6 +544,10 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.18.1 =
+L'étiquette de colis prend la taille de vos étiquettes, 62 × 30 mm par défaut,
+et n'imprime que ce qui retrouve le colis. Aucun changement de base de données.
 
 = 1.18.0 =
 Une étiquette imprimable pour chaque colis, proposée juste après son

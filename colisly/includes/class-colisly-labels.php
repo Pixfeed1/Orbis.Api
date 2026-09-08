@@ -49,12 +49,50 @@ class COLISLY_Labels {
 	 * @param object $parcel Parcel row.
 	 * @return string
 	 */
+	/**
+	 * Returns the label format from the settings.
+	 *
+	 * Every label printer has its own size, and a 62 × 30 mm label, the
+	 * common small one, has no room for anything but what finds the parcel.
+	 * So the size is the forwarder's, and everything beyond the reference,
+	 * the client, the date and the comment is opt-in.
+	 *
+	 * @return array { width: int, height: int, weight: bool, tracking: bool }
+	 */
+	public static function format() {
+		return array(
+			'width'    => min( 300, max( 20, (int) COLISLY_Settings::get( 'label_width', 62 ) ) ),
+			'height'   => min( 300, max( 10, (int) COLISLY_Settings::get( 'label_height', 30 ) ) ),
+			'weight'   => (bool) COLISLY_Settings::get( 'label_show_weight', 0 ),
+			'tracking' => (bool) COLISLY_Settings::get( 'label_show_tracking', 0 ),
+		);
+	}
+
+	/**
+	 * Builds the label HTML of a parcel.
+	 *
+	 * A standalone page, like the customs form: it goes to a label printer
+	 * or a sheet, and the WordPress chrome would only get in the way. Type
+	 * sizes follow the label height, so the reference stays the biggest
+	 * thing on a 30 mm label as on a 62 mm one.
+	 *
+	 * @param object $parcel Parcel row.
+	 * @return string
+	 */
 	public static function html( $parcel ) {
 		$client = COLISLY_Clients::get( (int) $parcel->client_id );
 		$name   = $client ? COLISLY_Clients::name( $client ) : '';
+		$format = self::format();
 		$dims   = ( (float) $parcel->length > 0 && (float) $parcel->width > 0 && (float) $parcel->height > 0 )
 			? sprintf( '%s × %s × %s cm', number_format_i18n( (float) $parcel->length, 1 ), number_format_i18n( (float) $parcel->width, 1 ), number_format_i18n( (float) $parcel->height, 1 ) )
 			: '';
+
+		// Millimetres, derived from the height: the reference takes about a
+		// quarter of it, the rest shares what is left.
+		$h        = $format['height'];
+		$ref_size = round( max( 5, min( 16, $h * 0.26 ) ), 1 );
+		$txt_size = round( max( 2.6, min( 5, $h * 0.11 ) ), 1 );
+		$pad      = round( max( 1, min( 4, $h * 0.06 ) ), 1 );
 
 		ob_start();
 		?>
@@ -64,15 +102,18 @@ class COLISLY_Labels {
 			<meta charset="<?php bloginfo( 'charset' ); ?>" />
 			<title><?php echo esc_html( sprintf( /* translators: %s: parcel reference. */ __( 'Label %s', 'colisly' ), $parcel->reference ) ); ?></title>
 			<style>
-				@page { size: 100mm 62mm; margin: 4mm; }
-				body { color: #000; font-family: DejaVu Sans, Arial, sans-serif; margin: 0; padding: 12px; }
-				.colisly-label { border: 2px solid #000; box-sizing: border-box; max-width: 100mm; padding: 6mm 5mm; }
-				.colisly-label-ref { font-family: DejaVu Sans Mono, Consolas, monospace; font-size: 30pt; font-weight: bold; letter-spacing: .04em; line-height: 1; margin: 0 0 4mm; }
-				.colisly-label-client { font-size: 14pt; font-weight: bold; margin: 0 0 1mm; }
-				.colisly-label-meta { font-size: 10pt; margin: 0; }
-				.colisly-label-note { border-top: 1px solid #000; font-size: 12pt; font-weight: bold; margin-top: 3mm; padding-top: 2mm; }
-				.colisly-noprint { margin-bottom: 10px; }
-				@media print { body { padding: 0; } .colisly-noprint { display: none; } .colisly-label { border-width: 1px; max-width: none; } }
+				@page { size: <?php echo esc_html( $format['width'] . 'mm ' . $format['height'] . 'mm' ); ?>; margin: 0; }
+				html, body { margin: 0; padding: 0; }
+				body { color: #000; font-family: DejaVu Sans, Arial, sans-serif; }
+				.colisly-label { box-sizing: border-box; height: <?php echo esc_html( $format['height'] ); ?>mm; overflow: hidden; padding: <?php echo esc_html( $pad ); ?>mm; width: <?php echo esc_html( $format['width'] ); ?>mm; }
+				.colisly-label p { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+				.colisly-label-ref { font-family: DejaVu Sans Mono, Consolas, monospace; font-size: <?php echo esc_html( $ref_size ); ?>mm; font-weight: bold; letter-spacing: .02em; line-height: 1.05; }
+				.colisly-label-client { font-size: <?php echo esc_html( $txt_size ); ?>mm; font-weight: bold; line-height: 1.25; }
+				.colisly-label-meta { font-size: <?php echo esc_html( $txt_size ); ?>mm; line-height: 1.25; }
+				.colisly-label-note { font-size: <?php echo esc_html( $txt_size ); ?>mm; font-weight: bold; line-height: 1.25; }
+				.colisly-noprint { margin: 8px; }
+				@media screen { body { padding: 8px; } .colisly-label { outline: 1px dashed #999; } }
+				@media print { .colisly-noprint { display: none; } }
 			</style>
 		</head>
 		<body>
@@ -82,20 +123,13 @@ class COLISLY_Labels {
 				<p class="colisly-label-client"><?php echo esc_html( $name ); ?><?php echo $client ? esc_html( ' · ' . $client->reference ) : ''; ?></p>
 				<p class="colisly-label-meta">
 					<?php
-					echo esc_html(
-						sprintf(
-							/* translators: 1: reception date, 2: weight in kg. */
-							__( 'Received %1$s — %2$s kg', 'colisly' ),
-							COLISLY_Format::date( $parcel->received_at ),
-							number_format_i18n( (float) $parcel->weight, 3 )
-						)
-					);
-					if ( $dims ) {
-						echo esc_html( ' — ' . $dims );
+					echo esc_html( sprintf( /* translators: %s: reception date. */ __( 'Received %s', 'colisly' ), COLISLY_Format::date( $parcel->received_at ) ) );
+					if ( $format['weight'] ) {
+						echo esc_html( ' — ' . number_format_i18n( (float) $parcel->weight, 3 ) . ' kg' . ( $dims ? ' — ' . $dims : '' ) );
 					}
 					?>
 				</p>
-				<?php if ( $parcel->tracking_number ) : ?>
+				<?php if ( $format['tracking'] && $parcel->tracking_number ) : ?>
 					<p class="colisly-label-meta"><?php echo esc_html( sprintf( /* translators: %s: tracking number. */ __( 'Tracking %s', 'colisly' ), $parcel->tracking_number ) ); ?></p>
 				<?php endif; ?>
 				<?php if ( '' !== trim( (string) $parcel->internal_note ) ) : ?>

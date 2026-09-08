@@ -67,9 +67,17 @@
 	 * that always is, and carries the real value.
 	 */
 	$( document ).on( 'change', '.colisly-toggle', function () {
-		$( this )
-			.closest( 'td' )
+		var $scope = $( this ).closest( 'p' );
+
+		// Several toggles can share a cell, one per paragraph: only the
+		// hidden field of this paragraph must follow the checkbox.
+		if ( ! $scope.length || ! $scope.find( '.colisly-toggle-value' ).length ) {
+			$scope = $( this ).closest( 'td' );
+		}
+
+		$scope
 			.find( '.colisly-toggle-value' )
+			.first()
 			.val( this.checked ? '1' : '0' );
 	} );
 

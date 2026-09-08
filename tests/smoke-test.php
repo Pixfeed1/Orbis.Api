@@ -2134,6 +2134,39 @@ $wpdb->update( $wpdb->prefix . 'colisly_parcels', array( 'internal_note' => '' )
 // manquer.
 colisly_check( 'Etiquette : pas de bloc commentaire quand il est vide', false === strpos( COLISLY_Labels::html( COLISLY_Parcels::get( (int) $colisly_val_parcel ) ), '<p class="colisly-label-note">' ) );
 
+// Le format est celui du reexpediteur : 62 x 30 mm par defaut, la petite
+// etiquette courante, sur laquelle rien ne tient au-dela de ce qui retrouve le
+// colis. Le poids et le suivi ne s impriment que sur demande.
+$colisly_lbl_settings = COLISLY_Settings::all();
+$colisly_lbl_saved    = array(
+	isset( $colisly_lbl_settings['label_width'] ) ? $colisly_lbl_settings['label_width'] : 62,
+	isset( $colisly_lbl_settings['label_height'] ) ? $colisly_lbl_settings['label_height'] : 30,
+	isset( $colisly_lbl_settings['label_show_weight'] ) ? $colisly_lbl_settings['label_show_weight'] : 0,
+	isset( $colisly_lbl_settings['label_show_tracking'] ) ? $colisly_lbl_settings['label_show_tracking'] : 0,
+);
+$wpdb->update( $wpdb->prefix . 'colisly_parcels', array( 'tracking_number' => 'TRK123456789' ), array( 'id' => (int) $colisly_val_parcel ), array( '%s' ), array( '%d' ) );
+$colisly_lbl_default = COLISLY_Labels::format();
+colisly_check( 'Etiquette : 62 x 30 mm par defaut', 62 === $colisly_lbl_default['width'] && 30 === $colisly_lbl_default['height'] );
+$colisly_lbl_html2 = COLISLY_Labels::html( COLISLY_Parcels::get( (int) $colisly_val_parcel ) );
+colisly_check( 'Etiquette : la page est au format regle', false !== strpos( $colisly_lbl_html2, 'size: 62mm 30mm' ) );
+colisly_check( 'Etiquette : ni poids ni suivi par defaut', false === strpos( $colisly_lbl_html2, ' kg' ) && false === strpos( $colisly_lbl_html2, 'TRK123456789' ) );
+$colisly_lbl_settings['label_width']         = 100;
+$colisly_lbl_settings['label_height']        = 62;
+$colisly_lbl_settings['label_show_weight']   = 1;
+$colisly_lbl_settings['label_show_tracking'] = 1;
+COLISLY_Settings::update( $colisly_lbl_settings );
+$colisly_lbl_html3 = COLISLY_Labels::html( COLISLY_Parcels::get( (int) $colisly_val_parcel ) );
+colisly_check( 'Etiquette : la taille suit le reglage', false !== strpos( $colisly_lbl_html3, 'size: 100mm 62mm' ) );
+colisly_check( 'Etiquette : poids et suivi sur demande', false !== strpos( $colisly_lbl_html3, ' kg' ) && false !== strpos( $colisly_lbl_html3, 'TRK123456789' ) );
+$colisly_lbl_settings['label_width'] = 5;
+$colisly_lbl_settings['label_height'] = 900;
+COLISLY_Settings::update( $colisly_lbl_settings );
+$colisly_lbl_bounded = COLISLY_Labels::format();
+colisly_check( 'Etiquette : une taille absurde est bornee', 20 === $colisly_lbl_bounded['width'] && 300 === $colisly_lbl_bounded['height'] );
+list( $colisly_lbl_settings['label_width'], $colisly_lbl_settings['label_height'], $colisly_lbl_settings['label_show_weight'], $colisly_lbl_settings['label_show_tracking'] ) = $colisly_lbl_saved;
+COLISLY_Settings::update( $colisly_lbl_settings );
+$wpdb->update( $wpdb->prefix . 'colisly_parcels', array( 'tracking_number' => '' ), array( 'id' => (int) $colisly_val_parcel ), array( '%s' ), array( '%d' ) );
+
 $colisly_lbl_url = COLISLY_Labels::url( $colisly_lbl_parcel );
 colisly_check( 'Etiquette : l adresse porte l action, le colis et un nonce', false !== strpos( $colisly_lbl_url, 'action=colisly_parcel_label' ) && false !== strpos( $colisly_lbl_url, 'parcel=' . (int) $colisly_lbl_parcel->id ) && false !== strpos( $colisly_lbl_url, '_wpnonce=' ) );
 
@@ -2144,6 +2177,8 @@ colisly_check( 'Garde : l etiquette est servie par l administration, sous nonce'
 colisly_check( 'Garde : l enregistrement renvoie sur le colis a etiqueter', false !== strpos( $colisly_lbl_parcels, "'colisly_parcel' => (int) \$parcel->id" ) );
 colisly_check( 'Garde : la fiche client propose l impression juste apres l enregistrement', false !== strpos( $colisly_lbl_clients, 'colisly-just-saved' ) && false !== strpos( $colisly_lbl_clients, 'COLISLY_Labels::url( $colisly_just )' ) );
 colisly_check( 'Garde : l etiquette est sur chaque ligne de colis, des deux listes', false !== strpos( $colisly_lbl_clients, 'COLISLY_Labels::url( $parcel )' ) && false !== strpos( $colisly_lbl_parcels, 'COLISLY_Labels::url( $parcel )' ) );
+$colisly_lbl_js = file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/admin.js' );
+colisly_check( 'Garde : une case a cocher ne pilote que son propre champ cache', false !== strpos( $colisly_lbl_js, "closest( 'p' )" ) && false !== strpos( $colisly_lbl_js, ".first()\n\t\t\t.val( this.checked ? '1' : '0' )" ) );
 
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 

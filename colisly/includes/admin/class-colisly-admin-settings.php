@@ -396,6 +396,42 @@ class COLISLY_Admin_Settings {
 					</tr>
 				</table>
 
+				<h2><?php esc_html_e( 'Parcel labels', 'colisly' ); ?></h2>
+				<p class="description"><?php esc_html_e( 'The label printed when a parcel is booked in. Every label printer has its own format, so give the size of your labels in millimetres; the reference, the client and the reception date always fit, and the internal comment when there is one. Add the weight and the tracking number only if your labels have room for them.', 'colisly' ); ?></p>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><label for="colisly-label-width"><?php esc_html_e( 'Label size (mm)', 'colisly' ); ?></label></th>
+						<td>
+							<input type="number" id="colisly-label-width" name="label_width" min="20" max="300" step="1" value="<?php echo esc_attr( (string) (int) $settings['label_width'] ); ?>" class="small-text" />
+							×
+							<label class="screen-reader-text" for="colisly-label-height"><?php esc_html_e( 'Label height (mm)', 'colisly' ); ?></label>
+							<input type="number" id="colisly-label-height" name="label_height" min="10" max="300" step="1" value="<?php echo esc_attr( (string) (int) $settings['label_height'] ); ?>" class="small-text" />
+							<p class="description"><?php esc_html_e( 'Width × height. 62 × 30 mm by default, the common small label; 100 × 62 mm for a large one.', 'colisly' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Also print', 'colisly' ); ?></th>
+						<td>
+							<?php
+							$colisly_label_extras = array(
+								'weight'   => __( 'Weight and dimensions', 'colisly' ),
+								'tracking' => __( 'Carrier tracking number', 'colisly' ),
+							);
+							foreach ( $colisly_label_extras as $colisly_extra => $colisly_label ) :
+								$colisly_on = ! empty( $settings[ 'label_show_' . $colisly_extra ] );
+								?>
+								<p>
+									<input type="hidden" name="<?php echo esc_attr( 'label_show_' . $colisly_extra ); ?>" value="<?php echo $colisly_on ? '1' : '0'; ?>" class="colisly-toggle-value" />
+									<label>
+										<input type="checkbox" class="colisly-toggle" <?php checked( $colisly_on ); ?> />
+										<?php echo esc_html( $colisly_label ); ?>
+									</label>
+								</p>
+							<?php endforeach; ?>
+						</td>
+					</tr>
+				</table>
+
 				<h2><?php esc_html_e( 'Insurance', 'colisly' ); ?></h2>
 				<p class="description"><?php esc_html_e( 'Cover levels offered to the client when requesting a shipment: how much the parcel is covered for, and what that costs. Leave the table empty and no insurance is offered at all.', 'colisly' ); ?></p>
 				<table class="widefat fixed striped colisly-tiers-table colisly-insurance-table">
@@ -664,6 +700,13 @@ class COLISLY_Admin_Settings {
 
 		foreach ( array( 'quantity', 'weight', 'origin' ) as $colisly_col ) {
 			$key                = 'customs_ask_' . $colisly_col;
+			$settings[ $key ] = isset( $_POST[ $key ] ) && '1' === (string) wp_unslash( $_POST[ $key ] ) ? 1 : 0;
+		}
+
+		$settings['label_width']  = isset( $_POST['label_width'] ) ? min( 300, max( 20, absint( $_POST['label_width'] ) ) ) : 62;
+		$settings['label_height'] = isset( $_POST['label_height'] ) ? min( 300, max( 10, absint( $_POST['label_height'] ) ) ) : 30;
+		foreach ( array( 'weight', 'tracking' ) as $colisly_extra ) {
+			$key              = 'label_show_' . $colisly_extra;
 			$settings[ $key ] = isset( $_POST[ $key ] ) && '1' === (string) wp_unslash( $_POST[ $key ] ) ? 1 : 0;
 		}
 

@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.18.0
+Stable tag: 1.18.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.18.1 =
+* The parcel label now fits the forwarder's printer. Its size is set in the settings, 62 × 30 mm by default, the common small label, and the type scales with it so the reference stays the biggest thing on it. The label carries the reference, the client, the reception date and the internal comment; the weight, dimensions and tracking number are printed only when ticked, since a small label has no room for them.
+* Fixed: on the settings screen, ticking one of the customs "Ask the client for" boxes also switched the two others on or off behind the scenes, since the three shared a cell. Each box now only drives its own setting; the new label boxes rely on the same fix.
+
 = 1.18.0 =
 * New: a printable label for every parcel. Its reference only exists once the parcel is saved, so the operator could not label the carton while typing and reached for a separate label program and a per-client counter instead. Saving a parcel now lands on it with the reference in large type, a "Print the label" button and a "New parcel for this client" link; a "Label" link sits on every parcel row of the client record and the parcels list. The label carries the reference, the client's name and reference, the reception date, the weight and dimensions, the tracking number and the internal comment, on a plain page sized for a label printer.
 
@@ -220,6 +224,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.18.1 =
+The parcel label takes the size of your printer's labels, 62 × 30 mm by
+default, and prints only what finds the parcel. No database change.
 
 = 1.18.0 =
 A printable label for every parcel, offered right after saving it. No
