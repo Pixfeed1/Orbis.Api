@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.18.1\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.19.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -1290,3 +1290,39 @@ msgstr "Poids et dimensions"
 
 msgid "Received %s"
 msgstr "Reçu le %s"
+
+msgid "Fees advanced on delivery"
+msgstr "Frais avancés à la livraison"
+
+msgid "What the fees were for"
+msgstr "Nature des frais"
+
+msgid "Customs duties"
+msgstr "Droits de douane"
+
+msgid "Customs duties, import VAT or a carrier surcharge paid to take delivery of the parcel. The client sees the amount in their account and it is billed back at cost, as its own line, on the shipment order. Leave empty when nothing was paid."
+msgstr "Droits de douane, TVA à l’import ou surtaxe transporteur payés pour prendre livraison du colis. Le client voit le montant dans son espace et il lui est refacturé au coût réel, sur une ligne à part, sur la commande d’expédition. Laissez vide si rien n’a été payé."
+
+msgid "%1$s advanced on parcel %2$s"
+msgstr "%1$s avancés sur le colis %2$s"
+
+msgid "fees advanced %1$s to %2$s"
+msgstr "frais avancés de %1$s à %2$s"
+
+msgid "fees advanced"
+msgstr "frais avancés"
+
+msgid "The fees advanced must be an amount."
+msgstr "Les frais avancés doivent être un montant."
+
+msgid "The fees advanced cannot be negative."
+msgstr "Les frais avancés ne peuvent pas être négatifs."
+
+msgid "%1$s advanced: %2$s"
+msgstr "%1$s avancés : %2$s"
+
+msgid "Paid on your behalf to take delivery of the parcel, added at cost to your next shipment order."
+msgstr "Payés pour votre compte pour prendre livraison du colis, ajoutés au coût réel à votre prochaine commande d’expédition."
+
+msgid "(parcels + fees advanced + storage fees + transport — confirmed on the payment page)"
+msgstr "(colis + frais avancés + frais de stockage + transport — confirmé sur la page de paiement)"

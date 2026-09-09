@@ -1,7 +1,7 @@
 # Spanish translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.18.1\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.19.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -1260,3 +1260,39 @@ msgstr "Peso y dimensiones"
 
 msgid "Received %s"
 msgstr "Recibido el %s"
+
+msgid "Fees advanced on delivery"
+msgstr "Gastos adelantados en la entrega"
+
+msgid "What the fees were for"
+msgstr "Concepto de los gastos"
+
+msgid "Customs duties"
+msgstr "Derechos de aduana"
+
+msgid "Customs duties, import VAT or a carrier surcharge paid to take delivery of the parcel. The client sees the amount in their account and it is billed back at cost, as its own line, on the shipment order. Leave empty when nothing was paid."
+msgstr "Derechos de aduana, IVA de importación o recargo del transportista pagados para recibir el paquete. El cliente ve el importe en su cuenta y se le refactura a precio de coste, en una línea aparte, en el pedido de envío. Déjelo vacío si no se pagó nada."
+
+msgid "%1$s advanced on parcel %2$s"
+msgstr "%1$s adelantados en el paquete %2$s"
+
+msgid "fees advanced %1$s to %2$s"
+msgstr "gastos adelantados de %1$s a %2$s"
+
+msgid "fees advanced"
+msgstr "gastos adelantados"
+
+msgid "The fees advanced must be an amount."
+msgstr "Los gastos adelantados deben ser un importe."
+
+msgid "The fees advanced cannot be negative."
+msgstr "Los gastos adelantados no pueden ser negativos."
+
+msgid "%1$s advanced: %2$s"
+msgstr "%1$s adelantados: %2$s"
+
+msgid "Paid on your behalf to take delivery of the parcel, added at cost to your next shipment order."
+msgstr "Pagados por su cuenta para recibir el paquete, añadidos a precio de coste a su próximo pedido de envío."
+
+msgid "(parcels + fees advanced + storage fees + transport — confirmed on the payment page)"
+msgstr "(paquetes + gastos adelantados + gastos de almacenamiento + transporte — se confirma en la página de pago)"

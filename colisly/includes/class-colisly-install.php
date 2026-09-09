@@ -202,6 +202,8 @@ CREATE TABLE {$wpdb->prefix}colisly_parcels (
 	allow_grouping TINYINT(1) NOT NULL DEFAULT 1,
 	allowed_carriers TEXT NULL,
 	price DECIMAL(12,2) NOT NULL DEFAULT 0,
+	advanced_fees DECIMAL(12,2) NOT NULL DEFAULT 0,
+	advanced_fees_label VARCHAR(190) NOT NULL DEFAULT '',
 	status VARCHAR(30) NOT NULL DEFAULT 'available',
 	shipment_id BIGINT UNSIGNED NULL,
 	received_at DATETIME NOT NULL,

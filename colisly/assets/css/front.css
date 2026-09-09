@@ -13,6 +13,13 @@
 	overflow-wrap: anywhere;
 }
 
+/* Fees advanced on a parcel, under its number. */
+.colisly-front-table .colisly-advanced {
+	display: inline-block;
+	font-weight: normal;
+	opacity: .85;
+}
+
 /* Whatever is left over stays reachable rather than being clipped. */
 .colisly-table-wrap {
 	container-type: inline-size;

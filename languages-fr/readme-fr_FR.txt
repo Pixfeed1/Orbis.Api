@@ -50,6 +50,8 @@ Colisly est gratuite et sous licence GPL.
   franchise de stockage définie selon votre politique (15 jours par défaut)
 * Réception des colis avec numéro généré (COL000001), poids, dimensions, photos,
   notes internes et restrictions de transporteur colis par colis
+* Droits et taxes payés pour prendre livraison d'un colis notés dessus et
+  refacturés au coût réel sur la commande d'expédition
 * Frais de stockage calculés automatiquement dès la fin de la franchise
 * Groupage : plusieurs colis en stock réunis en une seule expédition, ce qui est
   le fondement même du métier
@@ -192,6 +194,22 @@ l'extension ainsi que ses options.
 ================================================================================
 == Journal des modifications ==
 ================================================================================
+
+= 1.19.0 =
+* Nouveau : frais avancés à la livraison. Depuis la réforme douanière qui a
+  supprimé la franchise de droits sur les petits envois, les cartons arrivent
+  de plus en plus souvent à l'entrepôt avec des droits et une TVA à l'import à
+  régler avant que le transporteur ne les remette. Le réexpéditeur paie pour
+  récupérer le colis et n'avait nulle part où le noter. Le formulaire de
+  réception a désormais un champ « Frais avancés à la livraison », avec un
+  libellé court, « Droits de douane » par défaut, pour qu'une surtaxe
+  transporteur ou une représentation y tiennent aussi. Le montant apparaît sur
+  le colis dans l'espace client, dans l'e-mail de réception avec une ligne
+  précisant qu'il a été payé pour son compte, et sur la commande d'expédition
+  comme ligne à part, sans taxe, « Droits de douane avancés sur le colis
+  COL000123 », pour que le client le rembourse au coût réel avec l'expédition.
+  Il se corrige tant que le colis est en stock. Deux colonnes ajoutées à la
+  table des colis, migration automatique à la mise à jour.
 
 = 1.18.1 =
 * L'étiquette de colis s'adapte désormais à l'imprimante du réexpéditeur. Sa
@@ -544,6 +562,11 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.19.0 =
+Les droits et taxes payés pour prendre livraison d'un colis se notent dessus
+et sont refacturés au coût réel sur la commande d'expédition. Deux colonnes
+ajoutées à la table des colis, migrées automatiquement.
 
 = 1.18.1 =
 L'étiquette de colis prend la taille de vos étiquettes, 62 × 30 mm par défaut,

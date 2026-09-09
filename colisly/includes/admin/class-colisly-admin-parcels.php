@@ -110,7 +110,12 @@ class COLISLY_Admin_Parcels {
 									<td><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
 									<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
 									<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
-									<td><?php echo esc_html( COLISLY_Format::price( (float) $parcel->price ) ); ?></td>
+									<td>
+										<?php echo esc_html( COLISLY_Format::price( (float) $parcel->price ) ); ?>
+										<?php if ( (float) $parcel->advanced_fees > 0 ) : ?>
+											<br /><small class="colisly-advanced"><?php echo esc_html( COLISLY_Parcels::advanced_fees_text( $parcel ) ); ?></small>
+										<?php endif; ?>
+									</td>
 									<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No', 'colisly' ); ?></td>
 									<td><?php COLISLY_Admin_Clients::parcel_status_form( $parcel ); ?></td>
 								</tr>
@@ -296,6 +301,15 @@ class COLISLY_Admin_Parcels {
 						<td><input type="file" id="colisly-photo" name="colisly_photo" accept="image/*" /></td>
 					</tr>
 					<tr>
+						<th scope="row"><label for="colisly-advanced-fees"><?php esc_html_e( 'Fees advanced on delivery', 'colisly' ); ?></label></th>
+						<td class="colisly-advanced-fees">
+							<input type="number" id="colisly-advanced-fees" name="advanced_fees" step="0.01" min="0" class="small-text" value="<?php echo esc_attr( $editing_parcel && (float) $editing_parcel->advanced_fees > 0 ? (string) (float) $editing_parcel->advanced_fees : '' ); ?>" />
+							<label class="screen-reader-text" for="colisly-advanced-fees-label"><?php esc_html_e( 'What the fees were for', 'colisly' ); ?></label>
+							<input type="text" id="colisly-advanced-fees-label" name="advanced_fees_label" class="regular-text" placeholder="<?php esc_attr_e( 'Customs duties', 'colisly' ); ?>" value="<?php echo esc_attr( $editing_parcel ? (string) $editing_parcel->advanced_fees_label : '' ); ?>" />
+							<p class="description"><?php esc_html_e( 'Customs duties, import VAT or a carrier surcharge paid to take delivery of the parcel. The client sees the amount in their account and it is billed back at cost, as its own line, on the shipment order. Leave empty when nothing was paid.', 'colisly' ); ?></p>
+						</td>
+					</tr>
+					<tr>
 						<th scope="row"><label for="colisly-note"><?php esc_html_e( 'Internal comment (never visible to the client)', 'colisly' ); ?></label></th>
 						<td><textarea id="colisly-note" name="internal_note" rows="3" class="large-text" placeholder="<?php esc_attr_e( 'Damaged packaging, fragile parcel, anomaly…', 'colisly' ); ?>"><?php echo esc_textarea( $editing_parcel ? $editing_parcel->internal_note : '' ); ?></textarea></td>
 					</tr>
@@ -407,6 +421,8 @@ class COLISLY_Admin_Parcels {
 				'height'           => isset( $_POST['height'] ) ? sanitize_text_field( wp_unslash( $_POST['height'] ) ) : '',
 				'photo_path'       => $photo_path,
 				'internal_note'    => isset( $_POST['internal_note'] ) ? sanitize_textarea_field( wp_unslash( $_POST['internal_note'] ) ) : '',
+				'advanced_fees'    => isset( $_POST['advanced_fees'] ) ? sanitize_text_field( wp_unslash( $_POST['advanced_fees'] ) ) : '',
+				'advanced_fees_label' => isset( $_POST['advanced_fees_label'] ) ? sanitize_text_field( wp_unslash( $_POST['advanced_fees_label'] ) ) : '',
 				'allow_grouping'   => ! empty( $_POST['allow_grouping'] ),
 				'allowed_carriers' => $carriers,
 			)
@@ -508,6 +524,8 @@ class COLISLY_Admin_Parcels {
 				'height'           => isset( $_POST['height'] ) ? sanitize_text_field( wp_unslash( $_POST['height'] ) ) : '',
 				'photo_path'       => $photo_path,
 				'internal_note'    => isset( $_POST['internal_note'] ) ? sanitize_textarea_field( wp_unslash( $_POST['internal_note'] ) ) : '',
+				'advanced_fees'    => isset( $_POST['advanced_fees'] ) ? sanitize_text_field( wp_unslash( $_POST['advanced_fees'] ) ) : '',
+				'advanced_fees_label' => isset( $_POST['advanced_fees_label'] ) ? sanitize_text_field( wp_unslash( $_POST['advanced_fees_label'] ) ) : '',
 				'allow_grouping'   => ! empty( $_POST['allow_grouping'] ),
 				'allowed_carriers' => $carriers,
 			)

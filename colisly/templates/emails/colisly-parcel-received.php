@@ -43,6 +43,15 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Weight', 'colisly' ); ?></th>
 		<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?> kg</td>
 	</tr>
+	<?php if ( (float) $parcel->advanced_fees > 0 ) : ?>
+		<tr>
+			<th scope="row" style="text-align: left;"><?php echo esc_html( COLISLY_Parcels::advanced_fees_label( $parcel ) ); ?></th>
+			<td>
+				<?php echo esc_html( COLISLY_Format::price( (float) $parcel->advanced_fees ) ); ?>
+				<br /><small><?php esc_html_e( 'Paid on your behalf to take delivery of the parcel, added at cost to your next shipment order.', 'colisly' ); ?></small>
+			</td>
+		</tr>
+	<?php endif; ?>
 	<tr>
 		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Free storage', 'colisly' ); ?></th>
 		<td>

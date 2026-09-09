@@ -183,6 +183,7 @@
 
 		selected.forEach( function ( box ) {
 			total += parseFloat( box.getAttribute( 'data-price' ) || '0' );
+			total += parseFloat( box.getAttribute( 'data-advanced' ) || '0' );
 			total += parseFloat( box.getAttribute( 'data-storage' ) || '0' );
 		} );
 

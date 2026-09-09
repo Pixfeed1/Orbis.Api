@@ -79,6 +79,22 @@
 	width: 90px;
 }
 
+/* The amount and what it was for sit on one line; the explanation under. */
+.colisly-advanced-fees input[type="number"] {
+	margin-right: 6px;
+	width: 110px;
+}
+
+/* Fees advanced, printed under the parcel price in the lists. */
+.colisly-advanced {
+	color: #50575e;
+}
+
+.colisly-order-advanced {
+	font-weight: 600;
+	margin: 0 0 4px;
+}
+
 .colisly-carrier-choice {
 	display: inline-block;
 	margin-right: 16px;

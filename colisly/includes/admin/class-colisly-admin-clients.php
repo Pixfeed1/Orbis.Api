@@ -341,7 +341,12 @@ class COLISLY_Admin_Clients {
 								<td><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
 								<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
 								<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
-								<td><?php echo esc_html( COLISLY_Format::price( (float) $parcel->price ) ); ?></td>
+								<td>
+									<?php echo esc_html( COLISLY_Format::price( (float) $parcel->price ) ); ?>
+									<?php if ( (float) $parcel->advanced_fees > 0 ) : ?>
+										<br /><small class="colisly-advanced"><?php echo esc_html( COLISLY_Parcels::advanced_fees_text( $parcel ) ); ?></small>
+									<?php endif; ?>
+								</td>
 								<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No', 'colisly' ); ?></td>
 								<td><?php echo esc_html( COLISLY_Format::price( COLISLY_Storage::fees_for_parcel( $parcel ) ) ); ?></td>
 								<td><?php echo esc_html( $parcel->internal_note ? $parcel->internal_note : '—' ); ?></td>

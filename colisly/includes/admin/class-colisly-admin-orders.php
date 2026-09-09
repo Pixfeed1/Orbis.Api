@@ -154,6 +154,10 @@ class COLISLY_Admin_Orders {
 						<?php endif; ?>
 					</p>
 
+					<?php if ( (float) $parcel->advanced_fees > 0 ) : ?>
+						<p class="colisly-order-advanced"><?php echo esc_html( COLISLY_Parcels::advanced_fees_text( $parcel ) ); ?></p>
+					<?php endif; ?>
+
 					<?php if ( '' !== trim( (string) $parcel->internal_note ) ) : ?>
 						<?php
 						// What the operator wrote at reception, shelf, bin or

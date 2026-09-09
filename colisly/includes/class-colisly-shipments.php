@@ -141,7 +141,7 @@ class COLISLY_Shipments {
 
 			$parcels[]     = $parcel;
 			$total_weight += (float) $parcel->weight;
-			$total_price  += (float) $parcel->price;
+			$total_price  += (float) $parcel->price + (float) $parcel->advanced_fees;
 		}
 
 		// What the carrier physically takes: the weight of the whole shipment,

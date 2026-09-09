@@ -239,7 +239,12 @@ class COLISLY_Account {
 				<tbody>
 					<?php foreach ( $parcels as $parcel ) : ?>
 						<tr>
-							<td data-title="<?php esc_attr_e( 'Parcel number', 'colisly' ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></td>
+							<td data-title="<?php esc_attr_e( 'Parcel number', 'colisly' ); ?>">
+								<strong><?php echo esc_html( $parcel->reference ); ?></strong>
+								<?php if ( (float) $parcel->advanced_fees > 0 ) : ?>
+									<br /><small class="colisly-advanced"><?php echo esc_html( COLISLY_Parcels::advanced_fees_text( $parcel ) ); ?></small>
+								<?php endif; ?>
+							</td>
 							<td data-title="<?php esc_attr_e( 'Reception date', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
 							<td class="colisly-col-tracking" data-title="<?php esc_attr_e( 'Tracking number', 'colisly' ); ?>"><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Weight (kg)', 'colisly' ); ?>"><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
@@ -568,10 +573,16 @@ class COLISLY_Account {
 										data-weight="<?php echo esc_attr( (string) (float) $parcel->weight ); ?>"
 										data-volume="<?php echo esc_attr( (string) ( (float) $parcel->length * (float) $parcel->width * (float) $parcel->height ) ); ?>"
 										data-price="<?php echo esc_attr( (string) (float) $parcel->price ); ?>"
+										data-advanced="<?php echo esc_attr( (string) (float) $parcel->advanced_fees ); ?>"
 										data-storage="<?php echo esc_attr( (string) COLISLY_Storage::fees_for_parcel( $parcel ) ); ?>"
 									/>
 								</td>
-								<td data-title="<?php esc_attr_e( 'Parcel number', 'colisly' ); ?>"><label for="colisly-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></label></td>
+								<td data-title="<?php esc_attr_e( 'Parcel number', 'colisly' ); ?>">
+									<label for="colisly-parcel-<?php echo esc_attr( (string) $parcel->id ); ?>"><strong><?php echo esc_html( $parcel->reference ); ?></strong></label>
+									<?php if ( (float) $parcel->advanced_fees > 0 ) : ?>
+										<br /><small class="colisly-advanced"><?php echo esc_html( COLISLY_Parcels::advanced_fees_text( $parcel ) ); ?></small>
+									<?php endif; ?>
+								</td>
 								<td data-title="<?php esc_attr_e( 'Weight (kg)', 'colisly' ); ?>"><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
 								<td data-title="<?php esc_attr_e( 'Grouping allowed', 'colisly' ); ?>"><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No — this parcel must be shipped alone', 'colisly' ); ?></td>
 							</tr>
@@ -709,7 +720,22 @@ class COLISLY_Account {
 			<p id="colisly-estimate" class="colisly-estimate" hidden>
 				<strong><?php esc_html_e( 'Estimated total:', 'colisly' ); ?></strong>
 				<span id="colisly-estimate-amount"></span>
-				<span class="colisly-note"><?php esc_html_e( '(parcels + storage fees + transport — confirmed on the payment page)', 'colisly' ); ?></span>
+				<span class="colisly-note">
+					<?php
+					// The note lists what the figure is made of, so it names
+					// the fees advanced only when one of the parcels carries some.
+					$colisly_has_advanced = false;
+					foreach ( $parcels as $colisly_est_parcel ) {
+						if ( (float) $colisly_est_parcel->advanced_fees > 0 ) {
+							$colisly_has_advanced = true;
+							break;
+						}
+					}
+					echo $colisly_has_advanced
+						? esc_html__( '(parcels + fees advanced + storage fees + transport — confirmed on the payment page)', 'colisly' )
+						: esc_html__( '(parcels + storage fees + transport — confirmed on the payment page)', 'colisly' );
+					?>
+				</span>
 			</p>
 			<?php
 			// Declaring at the moment of the request is where it belongs: this

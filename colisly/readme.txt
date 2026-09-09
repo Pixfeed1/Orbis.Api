@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.18.1
+Stable tag: 1.19.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,6 +30,7 @@ Commercial package forwarding software in this category is sold as one-time lice
 
 * Client records with unique references (CL000001), multi-criteria search, and a free storage period set per your policy (15 days by default)
 * Parcel intake with generated numbers (COL000001), weight, dimensions, photos, internal notes and per-parcel carrier restrictions
+* Duties and taxes paid to take delivery of a parcel recorded on it and billed back at cost on the shipment order
 * Storage fees calculated automatically once the free period ends
 * Consolidation: several parcels held in stock grouped into one outgoing shipment, which is what the trade rests on
 * Weight-based pricing tiers and carrier tariffs you define yourself, so any carrier or negotiated contract can be used
@@ -117,6 +118,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.19.0 =
+* New: fees advanced on delivery. Since customs reforms removed the duty exemption on low-value parcels, cartons increasingly reach the warehouse with duties and import VAT to pay before the carrier hands them over. The forwarder pays to get the parcel and had nowhere to write it down. The reception form now has a "Fees advanced on delivery" amount, with a short label defaulting to "Customs duties" so a carrier surcharge or a redelivery fee fits too. The amount shows on the parcel in the client's account, in the reception e-mail with a line saying it was paid on their behalf, and on the shipment order as its own untaxed line, "Customs duties advanced on parcel COL000123", so the client pays it back at cost together with the shipment. It can be corrected as long as the parcel is in stock. Adds two columns to the parcels table; the migration runs by itself on update.
 
 = 1.18.1 =
 * The parcel label now fits the forwarder's printer. Its size is set in the settings, 62 × 30 mm by default, the common small label, and the type scales with it so the reference stays the biggest thing on it. The label carries the reference, the client, the reception date and the internal comment; the weight, dimensions and tracking number are printed only when ticked, since a small label has no room for them.
@@ -224,6 +228,11 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.19.0 =
+Duties and taxes paid to take delivery of a parcel can now be recorded on
+it and are billed back at cost on the shipment order. Two columns added to
+the parcels table, migrated automatically.
 
 = 1.18.1 =
 The parcel label takes the size of your printer's labels, 62 × 30 mm by

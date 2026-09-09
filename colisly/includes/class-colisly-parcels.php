@@ -84,6 +84,8 @@ class COLISLY_Parcels {
 	 *     @type string $internal_note    Internal admin-only comment.
 	 *     @type int    $allow_grouping   Whether grouping is allowed (1/0). Defaults to 1 when omitted.
 	 *     @type array  $allowed_carriers Carrier slugs allowed for this parcel (empty = all).
+	 *     @type float  $advanced_fees    Amount paid on delivery to the warehouse, billed back at cost.
+	 *     @type string $advanced_fees_label What that amount was (empty = customs duties).
 	 * }
 	 * @return int|WP_Error Parcel ID on success.
 	 */
@@ -111,6 +113,11 @@ class COLISLY_Parcels {
 			}
 		}
 
+		$advanced = self::advanced_fees_from( $data );
+		if ( is_wp_error( $advanced ) ) {
+			return $advanced;
+		}
+
 		$now      = current_time( 'mysql', true );
 		$price    = COLISLY_Pricing::price_for_weight( $weight );
 		$inserted = $wpdb->insert(
@@ -134,6 +141,8 @@ class COLISLY_Parcels {
 					: 1,
 				'allowed_carriers' => wp_json_encode( $carriers ),
 				'price'            => $price,
+				'advanced_fees'    => $advanced['amount'],
+				'advanced_fees_label' => $advanced['label'],
 				'status'           => 'available',
 				'received_at'      => $now,
 				'created_by'       => get_current_user_id(),
@@ -271,6 +280,32 @@ class COLISLY_Parcels {
 			}
 		}
 
+		if ( isset( $data['advanced_fees'] ) || isset( $data['advanced_fees_label'] ) ) {
+			$advanced = self::advanced_fees_from(
+				array(
+					'advanced_fees'       => isset( $data['advanced_fees'] ) ? $data['advanced_fees'] : $parcel->advanced_fees,
+					'advanced_fees_label' => isset( $data['advanced_fees_label'] ) ? $data['advanced_fees_label'] : $parcel->advanced_fees_label,
+				)
+			);
+			if ( is_wp_error( $advanced ) ) {
+				return $advanced;
+			}
+			if ( abs( $advanced['amount'] - (float) $parcel->advanced_fees ) > 0.001 ) {
+				$changes[] = sprintf(
+					/* translators: 1: former amount, 2: new amount. */
+					__( 'fees advanced %1$s to %2$s', 'colisly' ),
+					number_format_i18n( (float) $parcel->advanced_fees, 2 ),
+					number_format_i18n( $advanced['amount'], 2 )
+				);
+			} elseif ( $advanced['label'] !== (string) $parcel->advanced_fees_label ) {
+				$changes[] = __( 'fees advanced', 'colisly' );
+			}
+			$fields['advanced_fees']       = $advanced['amount'];
+			$formats[]                     = '%f';
+			$fields['advanced_fees_label'] = $advanced['label'];
+			$formats[]                     = '%s';
+		}
+
 		if ( ! empty( $data['photo_path'] ) ) {
 			$fields['photo_path'] = sanitize_file_name( $data['photo_path'] );
 			$formats[]            = '%s';
@@ -334,6 +369,71 @@ class COLISLY_Parcels {
 		do_action( 'colisly_parcel_updated', (int) $parcel->id, $parcel, $fields );
 
 		return true;
+	}
+
+	/**
+	 * Reads the fees advanced on a parcel out of submitted data.
+	 *
+	 * Import duties, VAT or a carrier surcharge are often collected on
+	 * delivery to the warehouse; the forwarder pays them to get the carton
+	 * and bills them back to the client at cost. The amount is money the
+	 * client owes, so a negative or unreadable one is refused rather than
+	 * silently zeroed.
+	 *
+	 * @param array $data Submitted data, keys advanced_fees and advanced_fees_label.
+	 * @return array|WP_Error { amount: float, label: string }
+	 */
+	private static function advanced_fees_from( $data ) {
+		$raw = isset( $data['advanced_fees'] ) ? trim( (string) $data['advanced_fees'] ) : '';
+		if ( '' !== $raw && ! is_numeric( str_replace( ',', '.', $raw ) ) ) {
+			return new WP_Error( 'colisly_invalid_fees', __( 'The fees advanced must be an amount.', 'colisly' ) );
+		}
+
+		$amount = '' === $raw ? 0.0 : round( self::to_float( $raw ), 2 );
+		if ( $amount < 0 ) {
+			return new WP_Error( 'colisly_invalid_fees', __( 'The fees advanced cannot be negative.', 'colisly' ) );
+		}
+
+		$label = isset( $data['advanced_fees_label'] ) ? sanitize_text_field( $data['advanced_fees_label'] ) : '';
+
+		return array(
+			'amount' => $amount,
+			'label'  => $amount > 0 ? mb_substr( $label, 0, 190 ) : '',
+		);
+	}
+
+	/**
+	 * What the fees advanced on a parcel were for, in words.
+	 *
+	 * Customs duties are by far the common case, so an empty label reads as
+	 * that rather than as nothing.
+	 *
+	 * @param object $parcel Parcel row.
+	 * @return string
+	 */
+	public static function advanced_fees_label( $parcel ) {
+		$label = isset( $parcel->advanced_fees_label ) ? trim( (string) $parcel->advanced_fees_label ) : '';
+
+		return '' !== $label ? $label : __( 'Customs duties', 'colisly' );
+	}
+
+	/**
+	 * Fees advanced on a parcel, ready to print: "Customs duties: 12.00".
+	 *
+	 * @param object $parcel Parcel row.
+	 * @return string Empty when nothing was advanced.
+	 */
+	public static function advanced_fees_text( $parcel ) {
+		if ( empty( $parcel->advanced_fees ) || (float) $parcel->advanced_fees <= 0 ) {
+			return '';
+		}
+
+		return sprintf(
+			/* translators: 1: what the fees were for, 2: amount. */
+			__( '%1$s advanced: %2$s', 'colisly' ),
+			self::advanced_fees_label( $parcel ),
+			COLISLY_Format::price( (float) $parcel->advanced_fees )
+		);
 	}
 
 	/**

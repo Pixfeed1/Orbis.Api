@@ -123,6 +123,31 @@ class COLISLY_Orders {
 			$fee->set_tax_status( $tax_status );
 			$fee->set_total( (string) $parcel->price );
 			$order->add_item( $fee );
+
+			// Duties or taxes the forwarder paid to take delivery of this
+			// parcel, billed back at cost. Money passed through rather than
+			// a service sold, so it carries no tax of its own unless the
+			// shop decides otherwise.
+			if ( (float) $parcel->advanced_fees > 0 ) {
+				$fee = new WC_Order_Item_Fee();
+				$fee->set_name(
+					sprintf(
+						/* translators: 1: what the fees were for, 2: parcel reference. */
+						__( '%1$s advanced on parcel %2$s', 'colisly' ),
+						COLISLY_Parcels::advanced_fees_label( $parcel ),
+						$parcel->reference
+					)
+				);
+				/**
+				 * Filters whether fees advanced on a parcel are taxed on the order.
+				 *
+				 * @param bool   $taxable Default false: a disbursement, not a service.
+				 * @param object $parcel  Parcel row.
+				 */
+				$fee->set_tax_status( apply_filters( 'colisly_advanced_fees_taxable', false, $parcel ) ? 'taxable' : 'none' );
+				$fee->set_total( (string) $parcel->advanced_fees );
+				$order->add_item( $fee );
+			}
 		}
 
 		// Storage fees, when due.

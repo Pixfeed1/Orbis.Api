@@ -2180,6 +2180,107 @@ colisly_check( 'Garde : l etiquette est sur chaque ligne de colis, des deux list
 $colisly_lbl_js = file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/admin.js' );
 colisly_check( 'Garde : une case a cocher ne pilote que son propre champ cache', false !== strpos( $colisly_lbl_js, "closest( 'p' )" ) && false !== strpos( $colisly_lbl_js, ".first()\n\t\t\t.val( this.checked ? '1' : '0' )" ) );
 
+// ---------------------------------------------------------------------------
+// 1.19.0 : frais avances a la livraison.
+//
+// Les cartons arrivent de plus en plus souvent avec des droits et une TVA a
+// regler avant que le transporteur ne les remette. Le reexpediteur paie pour
+// recuperer le colis, le note dessus, et le client le rembourse au cout reel
+// sur sa commande d expedition, comme ligne a part et sans taxe.
+// ---------------------------------------------------------------------------
+$colisly_adv_neg = COLISLY_Parcels::create( array( 'client_id' => $client_id, 'weight' => 1.0, 'advanced_fees' => '-3' ) );
+colisly_check( 'Frais avances : un montant negatif est refuse', is_wp_error( $colisly_adv_neg ) && 'colisly_invalid_fees' === $colisly_adv_neg->get_error_code() );
+$colisly_adv_txt = COLISLY_Parcels::create( array( 'client_id' => $client_id, 'weight' => 1.0, 'advanced_fees' => 'douze' ) );
+colisly_check( 'Frais avances : un texte a la place du montant est refuse', is_wp_error( $colisly_adv_txt ) && 'colisly_invalid_fees' === $colisly_adv_txt->get_error_code() );
+
+$colisly_adv_none = COLISLY_Parcels::create( array( 'client_id' => $client_id, 'weight' => 1.0, 'advanced_fees' => '', 'advanced_fees_label' => 'oublie' ) );
+$colisly_adv_none = COLISLY_Parcels::get( (int) $colisly_adv_none );
+colisly_check( 'Frais avances : rien de paye, rien d enregistre, libelle compris', 0.0 === (float) $colisly_adv_none->advanced_fees && '' === (string) $colisly_adv_none->advanced_fees_label );
+colisly_check( 'Frais avances : aucun texte quand rien n a ete avance', '' === COLISLY_Parcels::advanced_fees_text( $colisly_adv_none ) );
+
+$colisly_adv_id = COLISLY_Parcels::create( array( 'client_id' => $client_id, 'weight' => 1.0, 'allow_grouping' => 1, 'advanced_fees' => '12,50' ) );
+$colisly_adv    = COLISLY_Parcels::get( (int) $colisly_adv_id );
+colisly_check( 'Frais avances : montant enregistre, virgule acceptee', 12.5 === (float) $colisly_adv->advanced_fees );
+colisly_check( 'Frais avances : sans libelle, ce sont des droits de douane', 'Customs duties' === COLISLY_Parcels::advanced_fees_label( $colisly_adv ) && '' === (string) $colisly_adv->advanced_fees_label );
+colisly_check( 'Frais avances : texte pret a afficher', false !== strpos( COLISLY_Parcels::advanced_fees_text( $colisly_adv ), 'Customs duties advanced' ) && false !== strpos( COLISLY_Parcels::advanced_fees_text( $colisly_adv ), '12' ) );
+
+colisly_check( 'Frais avances : correction du montant et du libelle', true === COLISLY_Parcels::update( (int) $colisly_adv_id, array( 'advanced_fees' => '20', 'advanced_fees_label' => 'Import VAT' ) ) );
+$colisly_adv = COLISLY_Parcels::get( (int) $colisly_adv_id );
+colisly_check( 'Frais avances : la correction est enregistree', 20.0 === (float) $colisly_adv->advanced_fees && 'Import VAT' === $colisly_adv->advanced_fees_label );
+$colisly_adv_hist = $wpdb->get_var( $wpdb->prepare( "SELECT message FROM {$wpdb->prefix}colisly_history WHERE parcel_id = %d AND event = 'parcel_updated' ORDER BY id DESC LIMIT 1", (int) $colisly_adv_id ) );
+colisly_check( 'Frais avances : la correction est dans l historique', false !== strpos( (string) $colisly_adv_hist, 'fees advanced' ) );
+colisly_check( 'Frais avances : correction sans changement ne laisse pas de trace', true === COLISLY_Parcels::update( (int) $colisly_adv_id, array( 'advanced_fees' => '20', 'advanced_fees_label' => 'Import VAT' ) ) && (string) $colisly_adv_hist === (string) $wpdb->get_var( $wpdb->prepare( "SELECT message FROM {$wpdb->prefix}colisly_history WHERE parcel_id = %d AND event = 'parcel_updated' ORDER BY id DESC LIMIT 1", (int) $colisly_adv_id ) ) );
+colisly_check( 'Frais avances : remis a zero, le libelle s efface', true === COLISLY_Parcels::update( (int) $colisly_adv_id, array( 'advanced_fees' => '' ) ) && '' === (string) COLISLY_Parcels::get( (int) $colisly_adv_id )->advanced_fees_label );
+COLISLY_Parcels::update( (int) $colisly_adv_id, array( 'advanced_fees' => '20', 'advanced_fees_label' => 'Import VAT' ) );
+
+// Espace client : le montant sous le numero du colis, dans la liste et sur
+// le formulaire de demande.
+// Le formulaire de demande ne s affiche qu avec une adresse complete ; le
+// client de test en recoit une en France, et la rend ensuite.
+$colisly_adv_user = (int) COLISLY_Clients::get( $client_id )->user_id;
+$colisly_adv_meta = array( 'shipping_first_name' => 'Jean', 'shipping_last_name' => 'Dupont', 'shipping_address_1' => '4 rue des Lilas', 'shipping_city' => 'Lyon', 'shipping_postcode' => '69001', 'shipping_country' => 'FR' );
+$colisly_adv_prev = array();
+foreach ( $colisly_adv_meta as $colisly_adv_key => $colisly_adv_val ) {
+	$colisly_adv_prev[ $colisly_adv_key ] = get_user_meta( $colisly_adv_user, $colisly_adv_key, true );
+	update_user_meta( $colisly_adv_user, $colisly_adv_key, $colisly_adv_val );
+}
+wp_set_current_user( $colisly_adv_user );
+ob_start();
+COLISLY_Account::render_parcels();
+$colisly_adv_front = (string) ob_get_clean();
+colisly_check( 'Frais avances : visibles dans « Mes colis »', false !== strpos( $colisly_adv_front, 'Import VAT advanced' ) );
+ob_start();
+COLISLY_Account::render_request();
+$colisly_adv_req = (string) ob_get_clean();
+colisly_check( 'Frais avances : dans l estimation de la demande d expedition', false !== strpos( $colisly_adv_req, 'data-advanced="20"' ) && false !== strpos( $colisly_adv_req, 'Import VAT advanced' ) );
+colisly_check( 'Frais avances : la note de l estimation les nomme', false !== strpos( $colisly_adv_req, 'parcels + fees advanced + storage fees + transport' ) );
+wp_set_current_user( 0 );
+foreach ( $colisly_adv_prev as $colisly_adv_key => $colisly_adv_val ) {
+	if ( '' === $colisly_adv_val ) {
+		delete_user_meta( $colisly_adv_user, $colisly_adv_key );
+	} else {
+		update_user_meta( $colisly_adv_user, $colisly_adv_key, $colisly_adv_val );
+	}
+}
+
+// Commande : une ligne a part, au cout reel, sans taxe.
+$colisly_adv_ship = COLISLY_Shipments::request( $client_id, array( (int) $colisly_adv_id ), 'colissimo' );
+colisly_check( 'Frais avances : la demande d expedition passe', is_int( $colisly_adv_ship ) );
+$colisly_adv_ship  = COLISLY_Shipments::get( (int) $colisly_adv_ship );
+$colisly_adv_order = wc_get_order( (int) $colisly_adv_ship->order_id );
+$colisly_adv_line  = null;
+foreach ( $colisly_adv_order->get_fees() as $colisly_adv_fee ) {
+	if ( false !== strpos( $colisly_adv_fee->get_name(), 'Import VAT advanced on parcel ' . $colisly_adv->reference ) ) {
+		$colisly_adv_line = $colisly_adv_fee;
+	}
+}
+colisly_check( 'Frais avances : ligne a part sur la commande, nommee', null !== $colisly_adv_line );
+colisly_check( 'Frais avances : au cout reel', $colisly_adv_line && 20.0 === (float) $colisly_adv_line->get_total() );
+colisly_check( 'Frais avances : sans taxe', $colisly_adv_line && 'none' === $colisly_adv_line->get_tax_status() );
+colisly_check( 'Frais avances : comptes dans le total de l expedition', abs( (float) $colisly_adv_ship->total_price - (float) $colisly_adv_order->get_total() ) < 0.001 && (float) $colisly_adv_ship->total_price >= 20.0 + (float) $colisly_adv->price );
+$colisly_adv_parcel_line = null;
+foreach ( $colisly_adv_order->get_fees() as $colisly_adv_fee ) {
+	if ( 0 === strpos( $colisly_adv_fee->get_name(), 'Parcel ' . $colisly_adv->reference ) ) {
+		$colisly_adv_parcel_line = $colisly_adv_fee;
+	}
+}
+colisly_check( 'Frais avances : la ligne colis elle-meme n a pas bouge', $colisly_adv_parcel_line && abs( (float) $colisly_adv->price - (float) $colisly_adv_parcel_line->get_total() ) < 0.001 );
+$colisly_adv_locked = COLISLY_Parcels::update( (int) $colisly_adv_id, array( 'advanced_fees' => '99' ) );
+colisly_check( 'Frais avances : plus modifiables une fois la commande creee', is_wp_error( $colisly_adv_locked ) && 'colisly_parcel_locked' === $colisly_adv_locked->get_error_code() );
+COLISLY_Shipments::set_status( (int) $colisly_adv_ship->id, 'cancelled' );
+
+// E-mail de reception : le montant et la phrase qui dit qu il a ete paye
+// pour le compte du client.
+$colisly_adv_tpl = file_get_contents( COLISLY_PLUGIN_DIR . 'templates/emails/colisly-parcel-received.php' );
+$colisly_adv_txt = file_get_contents( COLISLY_PLUGIN_DIR . 'templates/emails/plain/colisly-parcel-received.php' );
+colisly_check( 'Garde : l e-mail de reception annonce les frais avances, HTML et texte', false !== strpos( $colisly_adv_tpl, 'advanced_fees_label( $parcel )' ) && false !== strpos( $colisly_adv_txt, 'advanced_fees_text( $parcel )' ) );
+$colisly_adv_form = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-parcels.php' );
+colisly_check( 'Garde : le formulaire de reception a le champ, a la creation et a la correction', 2 === substr_count( $colisly_adv_form, "'advanced_fees_label' => isset( \$_POST['advanced_fees_label'] )" ) && false !== strpos( $colisly_adv_form, 'name="advanced_fees"' ) );
+$colisly_adv_box = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-orders.php' );
+colisly_check( 'Garde : l encart de commande montre les frais avances', false !== strpos( $colisly_adv_box, 'colisly-order-advanced' ) );
+$colisly_adv_fjs = file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/front.js' );
+colisly_check( 'Garde : l estimation en direct compte les frais avances', false !== strpos( $colisly_adv_fjs, "'data-advanced'" ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------
