@@ -1,0 +1,521 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Colisly readme\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Parcel Forwarding & Package Consolidation for WooCommerce"
+msgstr "Réexpédition de colis et groupage pour WooCommerce"
+
+msgid "Run a package forwarding business on WooCommerce: parcel intake, storage fees, consolidation, reshipping and a client portal."
+msgstr "Gérez une activité de réexpédition de colis sur WooCommerce : réception, frais de stockage, groupage, réexpédition et espace client."
+
+msgid "Description"
+msgstr "Description"
+
+msgid "Colisly turns a WooCommerce store into a working package forwarding platform. Each client gets a reference and an address to shop with. Parcels arriving at your warehouse are logged, held, charged for storage past the free period, grouped on request and reshipped as a single shipment, paid through your own checkout."
+msgstr "Colisly transforme une boutique WooCommerce en une véritable plateforme de réexpédition de colis. Chaque client reçoit une référence et une adresse à laquelle se faire livrer. Les colis qui arrivent dans votre entrepôt sont enregistrés, conservés, facturés au stockage une fois la franchise écoulée, regroupés à la demande puis réexpédiés en un seul envoi, payé sur votre propre tunnel de commande."
+
+msgid "It runs on your hosting, with your carrier contracts and your prices. Nothing leaves your database."
+msgstr "L'extension tourne sur votre hébergement, avec vos contrats transporteurs et vos prix. Rien ne sort de votre base de données."
+
+msgid "Who it is for"
+msgstr "À qui elle s'adresse"
+
+msgid "Anyone starting a package forwarding or reshipping service and looking for the software side of it"
+msgstr "À quiconque lance un service de réexpédition ou de groupage de colis et en cherche la partie logicielle"
+
+msgid "Existing forwarders still running the warehouse on a spreadsheet and an inbox"
+msgstr "Aux réexpéditeurs en activité qui pilotent encore l'entrepôt avec un tableur et une boîte mail"
+
+msgid "Freight forwarders and consolidators who need a customer-facing portal rather than an ERP"
+msgstr "Aux transitaires et groupeurs qui ont besoin d'un espace client plutôt que d'un ERP"
+
+msgid "Shops that receive, hold and reship parcels for customers living abroad"
+msgstr "Aux boutiques qui reçoivent, conservent et réexpédient des colis pour des clients résidant à l'étranger"
+
+msgid "Commercial package forwarding software in this category is sold as one-time licences running into four figures, or as monthly SaaS holding your client data. Colisly is free and GPL."
+msgstr "Les logiciels commerciaux de cette catégorie se vendent en licence unique à quatre chiffres, ou en abonnement mensuel qui héberge vos données clients. Colisly est gratuite et sous licence GPL."
+
+msgid "Operations"
+msgstr "Exploitation"
+
+msgid "Client records with unique references (CL000001), multi-criteria search, and a free storage period set per your policy (15 days by default)"
+msgstr "Fiches clients avec référence unique (CL000001), recherche multi-critères et franchise de stockage définie selon votre politique (15 jours par défaut)"
+
+msgid "Parcel intake with generated numbers (COL000001), weight, dimensions, photos, internal notes and per-parcel carrier restrictions"
+msgstr "Réception des colis avec numéro généré (COL000001), poids, dimensions, photos, notes internes et restrictions de transporteur colis par colis"
+
+msgid "Duties and taxes paid to take delivery of a parcel recorded on it and billed back at cost on the shipment order"
+msgstr "Droits et taxes payés pour prendre livraison d'un colis notés dessus et refacturés au coût réel sur la commande d'expédition"
+
+msgid "Storage fees calculated automatically once the free period ends"
+msgstr "Frais de stockage calculés automatiquement dès la fin de la franchise"
+
+msgid "Consolidation: several parcels held in stock grouped into one outgoing shipment, which is what the trade rests on"
+msgstr "Groupage : plusieurs colis en stock réunis en une seule expédition, ce qui est le fondement même du métier"
+
+msgid "Weight-based pricing tiers and carrier tariffs you define yourself, so any carrier or negotiated contract can be used"
+msgstr "Paliers de tarification au poids et tarifs transporteurs que vous définissez vous-même, pour utiliser n'importe quel transporteur ou contrat négocié"
+
+msgid "Client side"
+msgstr "Côté client"
+
+msgid "A dedicated area in the WooCommerce My Account page listing parcels, shipments and documents"
+msgstr "Un espace dédié dans la page Mon compte de WooCommerce, listant les colis, les expéditions et les documents"
+
+msgid "Internal fields stay internal: your notes, your dimensions and your cost prices are never exposed"
+msgstr "Les champs internes restent internes : vos notes, vos dimensions et vos prix de revient ne sont jamais exposés"
+
+msgid "A shipment request becomes a native WooCommerce order with itemised handling, storage and carrier lines, paid at your usual checkout with your usual gateways"
+msgstr "Une demande d'expédition devient une commande WooCommerce native, détaillée en lignes de manutention, de stockage et de transport, réglée sur votre tunnel habituel avec vos moyens de paiement habituels"
+
+msgid "Private document storage with authenticated downloads, for customs declarations, commercial invoices and proof of delivery"
+msgstr "Stockage de documents privés avec téléchargement authentifié, pour les déclarations en douane, les factures commerciales et les preuves de livraison"
+
+msgid "Practical points"
+msgstr "Points pratiques"
+
+msgid "Complete French translation included"
+msgstr "Traduction française complète incluse"
+
+msgid "Personal data export and erasure through the native WordPress privacy tools"
+msgstr "Export et effacement des données personnelles via les outils de confidentialité natifs de WordPress"
+
+msgid "Hooks and filters throughout, so the workflow can be extended"
+msgstr "Hooks et filtres tout au long du parcours, pour étendre le fonctionnement"
+
+msgid "Automatic data migration between versions, and optional data removal on uninstall"
+msgstr "Migration automatique des données entre versions, et suppression des données à la désinstallation en option"
+
+msgid "A typical use is a service reshipping from mainland France towards the French overseas territories, but nothing in the plugin is tied to a country, a currency or a carrier."
+msgstr "Un usage typique est un service de réexpédition depuis la France métropolitaine vers les départements et territoires d'outre-mer, mais rien dans l'extension n'est lié à un pays, à une devise ou à un transporteur."
+
+msgid "Installation"
+msgstr "Installation"
+
+msgid "Upload the `colisly` folder to `/wp-content/plugins/`, or install it from the Plugins screen."
+msgstr "Envoyez le dossier `colisly` dans `/wp-content/plugins/`, ou installez l'extension depuis l'écran Extensions."
+
+msgid "Activate the plugin. WooCommerce must be installed and active."
+msgstr "Activez l'extension. WooCommerce doit être installée et active."
+
+msgid "Go to \"Colisly → Settings\" to configure the pricing tiers, storage fees and carriers."
+msgstr "Rendez-vous dans « Colisly → Réglages » pour configurer les paliers de tarification, les frais de stockage et les transporteurs."
+
+msgid "Create a client record from \"Colisly → Clients\", then register parcels from \"Colisly → New parcel\"."
+msgstr "Créez une fiche client depuis « Colisly → Clients », puis enregistrez des colis depuis « Colisly → Nouveau colis »."
+
+msgid "Frequently Asked Questions"
+msgstr "Foire aux questions"
+
+msgid "Can I start a package forwarding business with WordPress?"
+msgstr "Puis-je lancer une activité de réexpédition de colis avec WordPress ?"
+
+msgid "Yes, and that is what Colisly is built for. The plugin covers the operational side: client accounts and references, parcel intake, storage fees, consolidation, shipment requests and billing. You supply the warehouse address, the carrier contracts and your pricing."
+msgstr "Oui, et c'est exactement ce pour quoi Colisly est conçue. L'extension couvre le volet opérationnel : comptes et références clients, réception des colis, frais de stockage, groupage, demandes d'expédition et facturation. Vous apportez l'adresse de l'entrepôt, les contrats transporteurs et vos tarifs."
+
+msgid "How is this different from paid package forwarding software?"
+msgstr "En quoi est-ce différent d'un logiciel payant de réexpédition ?"
+
+msgid "Proprietary platforms in this category are sold as one-time licences running into four figures, or as a monthly subscription where your client records live on someone else's server. Colisly is free, GPL, and runs on your own hosting next to your existing WooCommerce store."
+msgstr "Les plateformes propriétaires de cette catégorie se vendent en licence unique à quatre chiffres, ou par abonnement mensuel où vos fiches clients vivent sur le serveur de quelqu'un d'autre. Colisly est gratuite, sous licence GPL, et tourne sur votre propre hébergement, à côté de votre boutique WooCommerce existante."
+
+msgid "I run my forwarding service on a spreadsheet. What changes?"
+msgstr "Je gère ma réexpédition sur un tableur. Qu'est-ce qui change ?"
+
+msgid "That is where most users come from. The spreadsheet becomes searchable client records, parcel numbers that generate themselves, storage fees that calculate themselves, and a client area that answers \"where is my parcel\" without an email."
+msgstr "C'est de là que vient la majorité des utilisateurs. Le tableur devient des fiches clients cherchables, des numéros de colis qui se génèrent seuls, des frais de stockage qui se calculent seuls, et un espace client qui répond à « où est mon colis » sans e-mail."
+
+msgid "Which carriers are supported?"
+msgstr "Quels transporteurs sont pris en charge ?"
+
+msgid "Any of them. Carrier tariffs and weight tiers are defined by you rather than pulled from a fixed integration, which matters in this trade because the margin usually sits in a negotiated or regional contract, not in a public API."
+msgstr "Tous. Les tarifs transporteurs et les paliers de poids sont définis par vous plutôt que tirés d'une intégration figée, ce qui compte dans ce métier car la marge se loge le plus souvent dans un contrat négocié ou régional, pas dans une API publique."
+
+msgid "Can several parcels be consolidated into one shipment?"
+msgstr "Peut-on regrouper plusieurs colis en une seule expédition ?"
+
+msgid "Yes, and it is the core of the workflow. The client picks the parcels held in stock, requests one shipment, and the plugin builds a single WooCommerce order combining handling, storage and carrier charges. A parcel can also be flagged as one that must travel alone."
+msgstr "Oui, et c'est le cœur du fonctionnement. Le client choisit les colis en stock, demande une expédition, et l'extension construit une commande WooCommerce unique combinant manutention, stockage et transport. Un colis peut aussi être signalé comme devant voyager seul."
+
+msgid "How do clients pay?"
+msgstr "Comment les clients paient-ils ?"
+
+msgid "Through your existing checkout. A shipment request creates a native WooCommerce order, so your payment gateways, taxes and order emails apply with nothing new to configure."
+msgstr "Par votre tunnel de commande existant. Une demande d'expédition crée une commande WooCommerce native : vos moyens de paiement, vos taxes et vos e-mails de commande s'appliquent, sans rien de nouveau à configurer."
+
+msgid "Do I need WooCommerce?"
+msgstr "WooCommerce est-elle nécessaire ?"
+
+msgid "Yes. WooCommerce provides the account, order and payment layer that Colisly builds on."
+msgstr "Oui. WooCommerce fournit la couche compte, commande et paiement sur laquelle Colisly s'appuie."
+
+msgid "Can the customer change the grouping permission?"
+msgstr "Le client peut-il modifier l'autorisation de groupage ?"
+
+msgid "No. Whether a parcel may be grouped is decided at reception by the operator, since it depends on the contents and the carrier. Grouping is allowed by default. The client chooses which of the groupable parcels to include in a shipment request."
+msgstr "Non. L'autorisation de regrouper un colis est décidée à la réception par l'opérateur, car elle dépend du contenu et du transporteur. Le groupage est autorisé par défaut. Le client choisit lesquels des colis regroupables inclure dans une demande d'expédition."
+
+msgid "How are storage fees computed?"
+msgstr "Comment les frais de stockage sont-ils calculés ?"
+
+msgid "Each parcel is stored free for a configurable period, 15 days by default. Past that, the fee set in the settings applies and is added automatically to the shipment order."
+msgstr "Chaque colis est stocké gratuitement pendant une durée configurable, 15 jours par défaut. Au-delà, le tarif défini dans les réglages s'applique et s'ajoute automatiquement à la commande d'expédition."
+
+msgid "Are documents private?"
+msgstr "Les documents sont-ils privés ?"
+
+msgid "Yes. Documents are stored outside the public uploads flow and downloaded through an authenticated request, so only the client they belong to can retrieve them. Documents not shared with the client stay internal."
+msgstr "Oui. Les documents sont stockés hors du flux public des fichiers envoyés et téléchargés via une requête authentifiée, de sorte que seul le client concerné peut les récupérer. Les documents non partagés avec le client restent internes."
+
+msgid "Is the plugin GDPR-ready?"
+msgstr "L'extension est-elle conforme au RGPD ?"
+
+msgid "Yes. Colisly plugs into the native WordPress personal data tools, and the export covers everything the eraser deletes, including internal notes and unshared documents."
+msgstr "Oui. Colisly se branche sur les outils natifs de données personnelles de WordPress, et l'export couvre tout ce que l'effacement supprime, y compris les notes internes et les documents non partagés."
+
+msgid "Is any data removed on uninstall?"
+msgstr "Des données sont-elles supprimées à la désinstallation ?"
+
+msgid "Only if you ask for it. Data removal on uninstall is opt-in from the settings, and it also clears the plugin capability and its options."
+msgstr "Uniquement si vous le demandez. La suppression des données à la désinstallation s'active dans les réglages, et elle retire également le droit propre à l'extension ainsi que ses options."
+
+msgid "Screenshots"
+msgstr "Captures d'écran"
+
+msgid "Clients list with multi-criteria search."
+msgstr "Liste des clients avec recherche multi-critères."
+
+msgid "Client record: indicators and tabs (parcels, shipments, documents, history)."
+msgstr "Fiche client : indicateurs et onglets (colis, expéditions, documents, historique)."
+
+msgid "Parcel creation form with live client search and the client's current stock."
+msgstr "Formulaire de création de colis, avec recherche client en direct et stock actuel du client."
+
+msgid "Customer \"My parcels\" screen in the WooCommerce My Account area."
+msgstr "Écran « Mes colis » du client, dans l'espace Mon compte de WooCommerce."
+
+msgid "Settings: free storage days, storage fee, weight-based pricing tiers and carrier tariffs."
+msgstr "Réglages : jours de stockage gratuits, frais de stockage, paliers de tarification au poids et tarifs transporteurs."
+
+msgid "Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo."
+msgstr "Tranches de poids par transporteur, pour les transporteurs qui publient une grille plutôt qu'un tarif au kilo."
+
+msgid "New: fees advanced on delivery. Since customs reforms removed the duty exemption on low-value parcels, cartons increasingly reach the warehouse with duties and import VAT to pay before the carrier hands them over. The forwarder pays to get the parcel and had nowhere to write it down. The reception form now has a \"Fees advanced on delivery\" amount, with a short label defaulting to \"Customs duties\" so a carrier surcharge or a redelivery fee fits too. The amount shows on the parcel in the client's account, in the reception e-mail with a line saying it was paid on their behalf, and on the shipment order as its own untaxed line, \"Customs duties advanced on parcel COL000123\", so the client pays it back at cost together with the shipment. It can be corrected as long as the parcel is in stock. Adds two columns to the parcels table; the migration runs by itself on update."
+msgstr "Nouveau : frais avancés à la livraison. Depuis la réforme douanière qui a supprimé la franchise de droits sur les petits envois, les cartons arrivent de plus en plus souvent à l'entrepôt avec des droits et une TVA à l'import à régler avant que le transporteur ne les remette. Le réexpéditeur paie pour récupérer le colis et n'avait nulle part où le noter. Le formulaire de réception a désormais un champ « Frais avancés à la livraison », avec un libellé court, « Droits de douane » par défaut, pour qu'une surtaxe transporteur ou une représentation y tiennent aussi. Le montant apparaît sur le colis dans l'espace client, dans l'e-mail de réception avec une ligne précisant qu'il a été payé pour son compte, et sur la commande d'expédition comme ligne à part, sans taxe, « Droits de douane avancés sur le colis COL000123 », pour que le client le rembourse au coût réel avec l'expédition. Il se corrige tant que le colis est en stock. Deux colonnes ajoutées à la table des colis, migration automatique à la mise à jour."
+
+msgid "The parcel label now fits the forwarder's printer. Its size is set in the settings, 62 × 30 mm by default, the common small label, and the type scales with it so the reference stays the biggest thing on it. The label carries the reference, the client, the reception date and the internal comment; the weight, dimensions and tracking number are printed only when ticked, since a small label has no room for them."
+msgstr "L'étiquette de colis s'adapte désormais à l'imprimante du réexpéditeur. Sa taille se règle dans les réglages, 62 × 30 mm par défaut, la petite étiquette courante, et les caractères suivent pour que la référence reste ce qu'il y a de plus gros dessus. L'étiquette porte la référence, le client, la date de réception et le commentaire interne ; le poids, les dimensions et le numéro de suivi ne s'impriment que si vous les cochez, une petite étiquette n'ayant pas la place."
+
+msgid "Fixed: on the settings screen, ticking one of the customs \"Ask the client for\" boxes also switched the two others on or off behind the scenes, since the three shared a cell. Each box now only drives its own setting; the new label boxes rely on the same fix."
+msgstr "Correction : dans les réglages, cocher l'une des cases « Demander au client » des douanes changeait aussi les deux autres en coulisse, les trois partageant une même cellule. Chaque case ne commande plus que son propre réglage ; les nouvelles cases de l'étiquette s'appuient sur la même correction."
+
+msgid "New: a printable label for every parcel. Its reference only exists once the parcel is saved, so the operator could not label the carton while typing and reached for a separate label program and a per-client counter instead. Saving a parcel now lands on it with the reference in large type, a \"Print the label\" button and a \"New parcel for this client\" link; a \"Label\" link sits on every parcel row of the client record and the parcels list. The label carries the reference, the client's name and reference, the reception date, the weight and dimensions, the tracking number and the internal comment, on a plain page sized for a label printer."
+msgstr "Nouveau : une étiquette imprimable pour chaque colis. Sa référence n'existe qu'une fois le colis enregistré, l'opérateur ne pouvait donc pas étiqueter le carton pendant la saisie et se rabattait sur un logiciel à part et un compteur par client. L'enregistrement d'un colis atterrit désormais dessus, référence en grand, bouton « Imprimer l'étiquette » et lien « Nouveau colis pour ce client » ; un lien « Étiquette » figure sur chaque ligne de colis de la fiche client et de la liste des colis. L'étiquette porte la référence, le nom et la référence du client, la date de réception, le poids et les dimensions, le numéro de suivi et le commentaire interne, sur une page nue au format d'une imprimante d'étiquettes."
+
+msgid "New: Spanish translation, shipped with the plugin like the French one. Every string the plugin says, 393 of them, including the account tab slugs, which stay plain ASCII. A validated language pack from translate.wordpress.org takes over by itself the day it exists."
+msgstr "Nouveau : traduction espagnole, livrée avec l'extension comme la française. Toutes les chaînes de l'extension, 393, y compris les adresses des onglets du compte, qui restent en ASCII simple. Un pack de langue validé sur translate.wordpress.org prend le relais tout seul le jour où il existe."
+
+msgid "The French translation ships with the plugin. Language packs from translate.wordpress.org only exist once volunteers have validated the strings, and they get to popular plugins first; until then French sites saw the plugin in English. The bundled catalogue is used whenever no language pack exists, and hands over to the pack by itself the day it does. 393 strings, everything the plugin says."
+msgstr "La traduction française est livrée avec l'extension. Les packs de langue de translate.wordpress.org n'existent qu'une fois les chaînes validées par des bénévoles, qui passent d'abord sur les extensions les plus utilisées ; en attendant, les sites français voyaient l'extension en anglais. Le catalogue livré est utilisé tant qu'aucun pack de langue n'existe, et lui cède la place tout seul le jour où il arrive. 393 chaînes, tout ce que dit l'extension."
+
+msgid "The Colisly panel on the WooCommerce order now shows each parcel's internal comment. That is where the operator notes the shelf, the bin or the state of the carton at reception, which is exactly what is needed to find the parcel once the order is paid. Still never shown to the client."
+msgstr "L'encart Colisly de la commande WooCommerce montre désormais le commentaire interne de chaque colis. C'est là que l'opérateur note l'étagère, le bac ou l'état du carton à la réception, exactement ce qu'il faut pour retrouver le colis une fois la commande payée. Toujours invisible pour le client."
+
+msgid "The client's \"My parcels\" tab now shows the stock first, with everything that already left or never will behind a second tab, \"Shipped or unavailable\", each with its count. Both tabs, and \"My shipments\", are paged twenty rows at a time. A client who has been sending parcels for a year has hundreds of them, and only the ones still in the warehouse are of any use day to day; listing all of them on one page made the tab unreadable exactly for the clients who use it most."
+msgstr "L'onglet « Mes colis » du client montre désormais le stock d'abord, et tout ce qui est déjà parti ou ne partira jamais derrière un second onglet, « Expédiés ou indisponibles », chacun avec son nombre. Les deux onglets, et « Mes expéditions », sont paginés par vingt lignes. Un client qui envoie depuis un an a des centaines de colis, et seuls ceux encore en entrepôt lui servent au quotidien ; tout lister sur une page rendait l'onglet illisible précisément pour les clients qui s'en servent le plus."
+
+msgid "New: a Colisly panel on the WooCommerce order a shipment created. The forwarder works from WooCommerce > Orders, where payment shows up, but everything about the shipment lived on the client record. The order now shows the shipment, its carrier and destination, each parcel with its weight, dimensions and tracking number, what it declares with the total value, the purchase invoices the client attached, and the customs form to print, with a link to the client record. Works with both order storages. An ordinary shop order is untouched."
+msgstr "Nouveau : un encart Colisly sur la commande WooCommerce créée par une expédition. Le réexpéditeur travaille depuis WooCommerce > Commandes, là où le paiement apparaît, mais tout ce qui concerne l'expédition vivait sur la fiche client. La commande montre désormais l'expédition, son transporteur et sa destination, chaque colis avec son poids, ses dimensions et son numéro de suivi, ce qu'il déclare avec la valeur totale, les factures d'achat jointes par le client, et le formulaire douanier à imprimer, avec un lien vers la fiche client. Fonctionne avec les deux stockages de commandes. Une commande ordinaire de la boutique n'est pas touchée."
+
+msgid "Fixed: the carriers table in the settings was squeezed into fields two characters wide since 1.14.0 added its three limit columns, a width cap that suited seven columns being kept for ten. The table now takes the width it needs and scrolls sideways when the screen has less."
+msgstr "Corrigé : le tableau des transporteurs dans les réglages était écrasé en champs de deux caractères depuis que la 1.14.0 lui a ajouté ses trois colonnes de limites, une largeur maximale prévue pour sept colonnes ayant été gardée pour dix. Le tableau prend maintenant la largeur qu'il lui faut et défile latéralement quand l'écran en a moins."
+
+msgid "New: carrier limits. Each carrier can carry a maximum weight, a maximum length and a maximum girth (length plus twice the width plus twice the height), the figures carriers publish and refuse beyond at the counter. The weight applies to the whole shipment, since grouped parcels leave in one carton; the dimensions to each parcel, on those entered at reception. A carrier the ticked parcels exceed is greyed out in the client's list, and a request that would force it is refused naming the parcel and the limit. A parcel whose dimensions were never entered is not refused on a measurement nobody took. All three are optional and empty by default."
+msgstr "Nouveau : limites des transporteurs. Chaque transporteur peut porter un poids maximum, une longueur maximum et un développé maximum (longueur plus deux fois la largeur plus deux fois la hauteur), les chiffres que les transporteurs publient et au-delà desquels ils refusent au guichet. Le poids s'applique à l'expédition entière, les colis regroupés partant dans un seul carton ; les dimensions à chaque colis, sur celles saisies à la réception. Un transporteur que les colis cochés dépassent est grisé dans la liste du client, et une demande qui le forcerait est refusée en nommant le colis et la limite. Un colis dont les dimensions n'ont jamais été saisies n'est pas refusé sur une mesure que personne n'a prise. Les trois sont facultatives et vides par défaut."
+
+msgid "The weight bracket page reads in the order it applies: each carrier shows its zone grids first, then a grid titled \"all other destinations\", with a note saying to leave it empty when every destination served is in a zone. Nothing changes in how prices are computed; the page only says what it does."
+msgstr "La page des tranches de poids se lit dans l'ordre où elle s'applique : chaque transporteur montre d'abord ses grilles de zones, puis une grille intitulée « toutes les autres destinations », avec une note disant de la laisser vide quand toutes les destinations desservies sont dans une zone. Rien ne change dans le calcul des prix ; la page dit seulement ce qu'elle fait."
+
+msgid "Fixed: a carrier enabled but never priced was offered to clients at 0.00 and the order went through at that price, the fallback formula with an empty base and an empty price per kg being simply zero. A carrier with no rate for the client's destination is no longer offered, a request that would force it is refused naming the carrier, and the settings warn about enabled carriers that have no rate anywhere. A bracket explicitly set to zero still counts as a price: a forwarder who includes transport in his service typed it on purpose."
+msgstr "Corrigé : un transporteur activé mais jamais tarifé était proposé aux clients à 0,00 et la commande passait à ce prix, la formule de repli avec une base vide et un prix au kilo vide valant simplement zéro. Un transporteur sans tarif pour la destination du client n'est plus proposé, une demande qui le forcerait est refusée en nommant le transporteur, et les réglages signalent les transporteurs activés qui n'ont aucun tarif. Un palier explicitement à zéro reste un tarif : un réexpéditeur qui inclut le transport dans sa prestation l'a tapé exprès."
+
+msgid "New: purchase invoices for customs. Customs outside the EU ask for the commercial invoice next to the declaration, and only the client has it. He attaches it to each parcel, on the shipment request or on the customs tab, PDF or image, several if needed. The forwarder finds the invoices on the parcel and on the shipment, the printed customs form states how many are attached, and the client reads them back from his documents. Stored in the private directory like every other document, served only through the authenticated download, covered by the privacy export and eraser."
+msgstr "Nouveau : factures d'achat pour la douane. Hors UE, la douane réclame la facture commerciale à côté de la déclaration, et seul le client l'a. Il la joint à chaque colis, sur la demande d'expédition ou sur l'onglet douane, en PDF ou en image, plusieurs si besoin. Le réexpéditeur retrouve les factures sur le colis et sur l'expédition, le formulaire douanier imprimé indique combien sont jointes, et le client les relit depuis ses documents. Rangées dans le dossier privé comme tout document, servies uniquement par le téléchargement authentifié, couvertes par l'export et l'effacement RGPD."
+
+msgid "Every carrier now shows what it would charge for the parcels ticked, right in the carrier list, so the client compares before choosing rather than trying them one by one. The figure follows the same brackets, zones and volumetric rule as the checkout."
+msgstr "Chaque transporteur affiche désormais ce qu'il facturerait pour les colis cochés, directement dans la liste des transporteurs, pour que le client compare avant de choisir au lieu de les essayer un par un. Le montant suit les mêmes tranches, zones et règle volumétrique que le paiement."
+
+msgid "A declared line must carry a value. Customs assess duty on it, so a line without one declared nothing they could use; it is now refused with the parcel and the contents named, on the request as on the customs tab. The form asks for the value as soon as the contents are filled."
+msgstr "Une ligne déclarée doit porter une valeur. La douane taxe dessus, une ligne sans valeur ne déclarait donc rien d'utilisable ; elle est maintenant refusée en nommant le colis et le contenu, sur la demande comme sur l'onglet douane. Le formulaire réclame la valeur dès que le contenu est rempli."
+
+msgid "Two columns and one index are added to the documents table on update."
+msgstr "Deux colonnes et un index sont ajoutés à la table des documents à la mise à jour."
+
+msgid "A customer without a client record yet can be picked straight from the parcel creation form. The search now offers the shop's registered users alongside the clients, marked as new, and the record is created with the first parcel. Until now every new customer had to be created by hand on the Clients tab before his first parcel could be booked in, which is not where the operator is standing when the parcel arrives. The Clients tab keeps its manual creation for whoever wants a record ahead of time."
+msgstr "Un client sans fiche peut être choisi directement depuis le formulaire de création de colis. La recherche propose désormais les comptes inscrits sur la boutique à côté des clients, signalés comme nouveaux, et la fiche est créée avec le premier colis. Jusqu'ici chaque nouveau client devait être créé à la main dans l'onglet Clients avant que son premier colis puisse être enregistré, ce qui n'est pas là où se trouve l'opérateur quand le colis arrive. L'onglet Clients garde sa création manuelle pour qui veut une fiche à l'avance."
+
+msgid "Fixed: the client search, on the parcel creation form and on the parcels list, read the WordPress first and last name only. A customer created by WooCommerce, at checkout or from its Customers screen, carries a billing name and usually no WordPress name at all, so the operator typed the name he saw on every order and found nobody, while the account sat in the Clients tab. The search now matches the billing and delivery names, the company, the phone and the login, and a first name and last name typed together find the client whichever order they come in."
+msgstr "Corrigé : la recherche de clients, sur le formulaire de création de colis et sur la liste des colis, ne lisait que le prénom et le nom WordPress. Un client créé par WooCommerce, à la commande ou depuis son écran Clients, porte un nom de facturation et le plus souvent aucun nom WordPress : l'opérateur tapait le nom qu'il voyait sur chaque commande et ne trouvait personne, alors que le compte figurait bien dans l'onglet Clients. La recherche couvre maintenant les noms de facturation et de livraison, la société, le téléphone et l'identifiant, et un prénom et un nom tapés ensemble trouvent le client dans n'importe quel ordre."
+
+msgid "Clients are named by their billing name when WordPress only knows them by their login, on the Clients tab, the parcels list and the search results alike. \"fabrice-1\" is not a name anybody recognises."
+msgstr "Les clients sont nommés par leur nom de facturation quand WordPress ne les connaît que par leur identifiant, dans l'onglet Clients, la liste des colis et les résultats de recherche. « fabrice-1 » n'est le nom de personne."
+
+msgid "Fixed: the declaration form offered a single blank line whatever the limit set in the settings. A cap of three lines was a promise the form never kept, since the client could only ever declare one item per submission, and on the shipment request there is no second submission. A cap now gives the client exactly that many lines; without a cap he gets a few and a button for the rest."
+msgstr "Corrigé : le formulaire de déclaration n'offrait qu'une seule ligne vierge, quelle que soit la limite réglée dans les réglages. Une limite de trois lignes était une promesse que le formulaire ne tenait jamais, puisque le client ne pouvait déclarer qu'un article par envoi, et que sur la demande d'expédition il n'y a pas de second envoi. Une limite donne désormais au client exactement ce nombre de lignes ; sans limite, il en obtient quelques-unes et un bouton pour le reste."
+
+msgid "The quantity, the unit weight and the country of origin can each be turned off. They are what a real CN23 form needs line by line, but a forwarder who only wants to know what a parcel holds before copying it onto his carrier's own form needs none of the three, and three columns filled for nothing are three columns filled badly. All three stay asked by default, so a site collecting them keeps collecting them."
+msgstr "La quantité, le poids unitaire et le pays d'origine peuvent chacun être retirés. Ce sont les colonnes qu'un vrai formulaire CN23 réclame ligne par ligne, mais un réexpéditeur qui veut seulement savoir ce que contient un colis avant de le recopier sur le formulaire de son transporteur n'en a aucun besoin, et trois colonnes remplies pour rien sont trois colonnes remplies n'importe comment. Les trois restent demandées par défaut : un site qui les collecte continue de les collecter."
+
+msgid "The shipment request now shows the delivery address the parcels are actually reshipped to, and a request can no longer be sent while that address is incomplete, with the missing lines named. The form used to ask for a destination country and nothing else, so a request could reach the forwarder with no street to deliver to, and an account that only ever filled a billing address produced an order carrying no destination at all."
+msgstr "La demande d'expédition affiche désormais l'adresse de livraison vers laquelle les colis partent réellement, et une demande ne peut plus être envoyée tant que cette adresse est incomplète, les lignes manquantes étant nommées. Le formulaire ne demandait qu'un pays de destination et rien d'autre : une demande pouvait donc arriver chez le réexpéditeur sans aucune rue où livrer, et un compte n'ayant jamais rempli qu'une adresse de facturation produisait une commande sans destination du tout."
+
+msgid "The destination is the address itself rather than a separate menu beside it. The two could disagree, the transport being priced for one country while the label was printed for another, and only the label was true."
+msgstr "La destination est l'adresse elle-même plutôt qu'un menu séparé à côté. Les deux pouvaient se contredire, le transport étant tarifé pour un pays pendant que l'étiquette était imprimée pour un autre, et seule l'étiquette disait vrai."
+
+msgid "A client can withdraw his own shipment request as long as it is unpaid. It used to be a dead end: the request sat in the orders to pay with nothing on offer but paying it. Withdrawing puts the parcels back in stock and cancels the unpaid order with them."
+msgstr "Un client peut retirer sa propre demande d'expédition tant qu'elle n'est pas payée. C'était jusqu'ici une impasse : la demande restait dans les commandes à régler sans rien d'autre à faire que la payer. Le retrait remet les colis en stock et annule la commande impayée avec eux."
+
+msgid "Zone countries can be picked by name from the list of countries the shop knows, and the codes already in the field are spelled out underneath, unrecognised ones flagged. Two-letter codes are what a carrier grid is keyed on, but nobody is expected to know that YT is Mayotte."
+msgstr "Les pays d'une zone se choisissent par leur nom dans la liste des pays connus de la boutique, et les codes déjà présents dans le champ sont rappelés en toutes lettres en dessous, les codes non reconnus étant signalés. Les codes à deux lettres sont ce sur quoi une grille de transporteur est indexée, mais personne n'est censé savoir que YT est Mayotte."
+
+msgid "The customs declaration on the request form now appears only when the destination actually requires one, instead of for every client as soon as a single zone asked for declarations."
+msgstr "La déclaration douanière sur le formulaire de demande n'apparaît plus que lorsque la destination en exige réellement une, au lieu de s'afficher pour tous les clients dès qu'une seule zone réclamait des déclarations."
+
+msgid "The declaration is filled where it belongs, on the shipment request, for the parcels being sent. The separate tab stays for clients who prefer to declare each parcel as it arrives; both write the same thing."
+msgstr "La déclaration se remplit là où elle a sa place, sur la demande d'expédition, pour les colis qui partent. L'onglet séparé demeure pour les clients qui préfèrent déclarer chaque colis à son arrivée ; les deux écrivent la même chose."
+
+msgid "The contents field can be turned into a menu: fill a list of categories in the settings and clients pick from it instead of typing. Empty by default, so nothing is imposed, and no trade's vocabulary ships with the plugin. The number of lines a parcel may declare can be capped to what your carrier forms hold, uncapped by default."
+msgstr "Le champ « contenu » peut devenir un menu : renseignez une liste de catégories dans les réglages et les clients y choisissent au lieu de saisir. Vide par défaut, donc rien n'est imposé, et le vocabulaire d'aucun métier n'est livré avec l'extension. Le nombre de lignes qu'un colis peut déclarer se plafonne à ce que vos formulaires transporteurs acceptent, sans limite par défaut."
+
+msgid "The operator reads the whole declaration on the shipment itself, gathered across its parcels with the total declared value, which is the sheet to copy onto a carrier's own form."
+msgstr "L'opérateur lit la déclaration entière sur l'expédition elle-même, regroupée sur tous ses colis avec la valeur totale déclarée : c'est la feuille à recopier sur le formulaire du transporteur."
+
+msgid "New: customs declarations. Reshipping outside the customs territory needs the contents of each parcel declared, item by item, and until now the forwarder had to collect that by e-mail. The client now declares his parcels from a Customs declaration tab in his account: description, quantity, unit weight, unit value and country of origin per line. A shipment to a destination that requires one is refused while a selected parcel is still undeclared, with the parcel named."
+msgstr "Nouveau : les déclarations douanières. Réexpédier hors du territoire douanier impose de déclarer le contenu de chaque colis, article par article, et le réexpéditeur devait jusqu'ici le collecter par e-mail. Le client déclare désormais ses colis depuis un onglet « Déclaration douanière » de son compte : désignation, quantité, poids unitaire, valeur unitaire et pays d'origine par ligne. Une expédition vers une destination qui l'exige est refusée tant qu'un colis sélectionné n'est pas déclaré, en le nommant."
+
+msgid "Which destinations require a declaration is set on the zones, not guessed. Reshipping from mainland France to Guadeloupe needs one, since the overseas departments sit outside the EU VAT territory, while reshipping to Belgium needs none; a country code cannot tell those apart. Tick the customs column on the zones concerned and nothing changes for anyone who does not."
+msgstr "Les destinations concernées se marquent sur les zones, elles ne sont pas devinées. Réexpédier de métropole vers la Guadeloupe en exige une, les départements d'outre-mer étant hors du territoire de TVA de l'UE, alors que réexpédier vers la Belgique n'en exige aucune : un code pays ne permet pas de les distinguer. Cochez la colonne douane sur les zones concernées, et rien ne change pour qui ne le fait pas."
+
+msgid "The operator prints the declaration from the parcel list or the client record: sender, recipient, one line per item with its tariff number and origin, the totals a customs form asks for, and the certification to sign. It warns when the declared contents weigh more than the parcel itself, which customs would stop on."
+msgstr "L'opérateur imprime la déclaration depuis la liste des colis ou la fiche client : expéditeur, destinataire, une ligne par article avec sa position tarifaire et son origine, les totaux qu'un formulaire douanier réclame, et la certification à signer. Elle avertit lorsque le contenu déclaré pèse plus que le colis lui-même, ce sur quoi la douane s'arrêterait."
+
+msgid "The declaration is personal data: it is disclosed in the privacy export and removed by the eraser, like everything else the plugin holds."
+msgstr "La déclaration est une donnée personnelle : elle figure dans l'export de confidentialité et l'effaceur la supprime, comme tout le reste."
+
+msgid "New: carriers can be billed on volumetric weight. Express carriers price bulk rather than mass, so a carrier can now be marked volumetric with its own divisor, 5000 by default. The transport is then billed on whichever is greater, the real weight or length x width x height divided by the divisor, parcel by parcel. That is how the carriers themselves compute it: billing the volumetric weight instead of the real one would charge a dense 20 kg box in a small carton as 1.6 kg. A parcel whose dimensions were never entered is billed on its real weight rather than on a volume of nothing."
+msgstr "Nouveau : les transporteurs peuvent être facturés au poids volumétrique. Les transporteurs express facturent l'encombrement plutôt que la masse : un transporteur peut désormais être marqué volumétrique, avec son propre diviseur (5000 par défaut). Le transport est alors facturé sur le plus grand des deux, le poids réel ou longueur x largeur x hauteur divisé par le diviseur, colis par colis. C'est ainsi que les transporteurs calculent eux-mêmes : facturer le volumétrique à la place du réel ferait passer un carton dense de 20 kg dans 20x20x20 pour 1,6 kg. Un colis dont les dimensions n'ont jamais été saisies est facturé sur son poids réel plutôt que sur un volume nul."
+
+msgid "New: destination zones. A forwarder does not charge the same to reship to mainland France, to the overseas departments and to Madagascar, and a single grid per carrier could never hold real tariffs. Zones group destination countries, and each carrier gets a weight bracket grid per zone. The client picks the destination when requesting a shipment, starting from the shipping address on his account, and the live estimate follows it. A country in no zone, or a zone a carrier was never priced for, keeps that carrier's default grid, so nothing changes for a site that does not use zones."
+msgstr "Nouveau : zones de destination. Un réexpéditeur ne facture pas le même transport vers la métropole, vers l'outre-mer et vers Madagascar, et une grille unique par transporteur ne pouvait donc pas porter de vrais tarifs. Les zones regroupent les pays de destination, et chaque transporteur reçoit une grille de tranches de poids par zone. Le client choisit la destination au moment de sa demande, à partir de l'adresse de livraison de son compte, et l'estimation en direct la suit. Un pays sans zone, ou une zone pour laquelle un transporteur n'a pas été tarifé, conserve la grille par défaut de ce transporteur : rien ne change pour un site qui n'utilise pas les zones."
+
+msgid "New: optional shipment insurance. Cover levels are set in the settings, a cover amount and what it costs, and the client picks one when requesting a shipment. It appears as its own line on the WooCommerce order and in the client's shipment list. The price is always read back from the settings rather than taken from the form, so a posted amount can never decide what is billed. No cover level configured means no insurance is offered at all, which is how every existing site starts."
+msgstr "Nouveau : assurance facultative des expéditions. Les niveaux de couverture se définissent dans les réglages (un montant couvert et son prix), et le client en choisit un au moment de sa demande d'expédition. L'assurance apparaît sur une ligne dédiée de la commande WooCommerce ainsi que dans la liste des expéditions du client. Le prix est toujours relu dans les réglages et jamais pris dans le formulaire : un montant posté ne peut donc pas décider de ce qui est facturé. Aucun niveau configuré signifie aucune assurance proposée, ce qui est l'état de départ de tous les sites existants."
+
+msgid "New: a parcel already in stock can be corrected. Reception happens at the counter, often in a hurry, and until now a wrong weight or a mistyped tracking number had no way back: only the status could be changed. Since the weight sets the price, a typo was billed as it stood. Tracking number, weight, dimensions, photo, internal comment, grouping and allowed carriers are all editable, and correcting the weight recomputes the price."
+msgstr "Nouveau : un colis déjà en stock peut être corrigé. La réception se fait au comptoir, souvent vite, et jusqu'ici un poids faux ou un numéro de suivi mal tapé n'avait aucun retour en arrière : seul le statut était modifiable. Le poids fixant le tarif, la faute se facturait telle quelle. Numéro de suivi, poids, dimensions, photo, commentaire interne, groupage et transporteurs autorisés sont désormais modifiables, et corriger le poids recalcule le tarif."
+
+msgid "Editing stops the moment the parcel leaves stock. A parcel sitting in a shipment the client may already have paid is refused rather than silently repriced, and its client can never be changed after reception. Every correction is written to the client history, naming what changed."
+msgstr "La modification s'arrête dès que le colis quitte le stock. Un colis engagé dans une expédition que le client a peut-être déjà réglée est refusé plutôt que retarifé en silence, et son client ne peut plus changer après la réception. Chaque correction est inscrite dans l'historique du client, en nommant ce qui a changé."
+
+msgid "The carrier table now says when its two prices apply: they are labelled beyond brackets, and a line under the heading states that a carrier is normally priced with a bracket grid and that these two are the fallback. Read on their own they looked like the only carrier pricing there was."
+msgstr "Le tableau des transporteurs indique désormais quand ses deux prix s'appliquent : ils sont libellés « au-delà des tranches », et une ligne sous le titre précise qu'un transporteur se tarife normalement avec une grille et que ces deux prix ne sont qu'un recours. Lus seuls, ils passaient pour la seule tarification transporteur existante."
+
+msgid "Fix: the estimate shown to the client on the shipment request ignored the weight brackets added in 1.6.9 and fell back to base price + price per kg. A shipment the checkout billed 45 was announced at 17. The estimate now applies the same rule as the server, and a carrier priced by bracket no longer advertises a price per kg it never charges."
+msgstr "Correction : l'estimation affichée au client sur la demande d'expédition ignorait les tranches de poids ajoutées en 1.6.9 et retombait sur prix de base + tarif au kilo. Une expédition facturée 45 € au tunnel de paiement était annoncée à 17 €. L'estimation applique désormais la même règle que le serveur, et un transporteur tarifé par tranche n'affiche plus un tarif au kilo qu'il n'applique jamais."
+
+msgid "Fix: on the shipment request screen the parcel table lost its labels. The stacking added in 1.6.8 hides the table header, and each cell is meant to carry its own label instead; this table was the one that did not. Clients saw a bare checkbox followed by three unexplained values. The two other account tables were already correct, which is why it was missed."
+msgstr "Correction : sur l'écran de demande d'expédition, le tableau des colis avait perdu ses libellés. L'empilement ajouté en 1.6.8 masque l'en-tête du tableau, chaque cellule devant alors porter son propre libellé ; ce tableau était le seul à ne pas le faire. Les clients voyaient une case à cocher nue suivie de trois valeurs sans explication. Les deux autres tableaux de l'espace client étaient déjà corrects, ce qui explique l'oubli."
+
+msgid "New: each carrier can be given its own grid of weight brackets. Carriers rarely bill per kilo, they publish a grid, and a 6 kg parcel at 45 EUR next to a 15 kg one at 150 EUR fits on no straight line. The first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. A carrier left without a grid keeps billing base price + price per kg exactly as before, so nothing changes on existing sites."
+msgstr "Nouveau : chaque transporteur peut recevoir sa propre grille de tranches de poids. Les transporteurs facturent rarement au kilo, ils publient une grille, et un colis de 6 kg à 45 € à côté d'un de 15 kg à 150 € ne tient sur aucune droite. La première tranche dont le poids maximal est supérieur ou égal au poids de l'expédition fixe le prix. Un transporteur laissé sans grille continue d'être facturé au prix de base + tarif au kilo exactement comme avant : rien ne change sur les sites existants."
+
+msgid "Beyond the last bracket the price falls back to base price + price per kg, but it can now only ever charge more than the last bracket, never less. A grid stopping at 15 kg used to make a 16 kg shipment cheaper than a 15 kg one."
+msgstr "Au-delà de la dernière tranche, le tarif retombe sur prix de base + tarif au kilo, mais il ne peut désormais que dépasser la dernière tranche, jamais descendre en dessous. Une grille s'arrêtant à 15 kg rendait auparavant une expédition de 16 kg moins chère qu'une de 15 kg."
+
+msgid "Fix: the settings tables grew by exactly one blank row per save, so filling in six weight brackets meant saving six times, and nothing on screen said a seventh row was possible at all. Both tables, and every carrier grid, now have an Add a row button."
+msgstr "Correction : les tableaux de réglages ne gagnaient qu'une seule ligne vide par enregistrement. Renseigner six tranches imposait donc six enregistrements, et rien à l'écran n'indiquait qu'une septième ligne était seulement possible. Les deux tableaux, ainsi que chaque grille de transporteur, disposent maintenant d'un bouton « Ajouter une ligne »."
+
+msgid "Fix: in the customer account, the parcels and shipments tables were wider than the account column of most themes, so the last column sat off-screen behind a horizontal scrollbar nobody thinks to look for. WooCommerce only stacks these tables under a 768px viewport, but what constrains them is the column, not the window: at a 1600px viewport the six parcel columns still had to fit in 680px. They now stack on the container's own width."
+msgstr "Correction : dans l'espace client, les tableaux des colis et des expéditions étaient plus larges que la colonne de contenu de la plupart des thèmes, si bien que la dernière colonne se retrouvait hors écran, derrière une barre de défilement horizontale que personne ne pense à chercher. WooCommerce n'empile ces tableaux que sous 768 px de fenêtre, or ce qui les contraint c'est la colonne, pas la fenêtre : avec une fenêtre de 1600 px, les six colonnes devaient encore tenir dans 680 px. L'empilement se déclenche désormais sur la largeur du conteneur lui-même."
+
+msgid "New screenshot of the settings screen in the plugin directory listing."
+msgstr "Nouvelle capture de l'écran des réglages sur la fiche du répertoire."
+
+msgid "Fix: a parcel created without stating a grouping decision was stored as \"must be shipped alone\", against both the column default and the reception form, where grouping is allowed. Grouping is what the whole trade rests on, so the omission now means allowed."
+msgstr "Correction : un colis créé sans que la décision de groupage soit précisée était enregistré en « doit être expédié seul », à rebours de la valeur par défaut de la colonne comme du formulaire de réception, où le groupage est autorisé. Le groupage est le fondement même du métier : l'omission vaut désormais autorisation."
+
+msgid "Privacy: the personal data export now covers what the eraser deletes. Internal notes on the client record, the internal comment on each parcel and the documents that are not shared with the client were being erased on request but never disclosed on access."
+msgstr "Confidentialité : l'export des données personnelles couvre maintenant tout ce que l'effacement supprime. Les notes internes de la fiche client, le commentaire interne de chaque colis et les documents non partagés avec le client étaient effacés sur demande sans jamais être communiqués en cas de demande d'accès."
+
+msgid "Fix: refusing an action returned HTTP 500, which reads as a server failure to hosts and monitoring. It now returns 403."
+msgstr "Correction : le refus d'une action renvoyait un code HTTP 500, que les hébergeurs et les outils de supervision interprètent comme une panne du serveur. Le code renvoyé est désormais 403."
+
+msgid "Fix: the client list printed every page number. It now collapses long ranges and shows the number of records."
+msgstr "Correction : la liste des clients affichait tous les numéros de page. Les longues séries sont maintenant repliées et le nombre de fiches est indiqué."
+
+msgid "Fix: uninstalling with data removal enabled left the colisly_manage capability on every role and one option behind."
+msgstr "Correction : la désinstallation avec suppression des données laissait le droit colisly_manage sur chaque rôle ainsi qu'une option résiduelle."
+
+msgid "New: a Settings shortcut on the plugins screen."
+msgstr "Nouveau : un raccourci Réglages sur l'écran des extensions."
+
+msgid "New: a warning on the plugin screens when the store is in coming soon mode or has no payment method enabled, since shipment requests end on the WooCommerce payment page and would otherwise fail with no explanation."
+msgstr "Nouveau : un avertissement sur les écrans de l'extension lorsque la boutique est en mode « bientôt disponible » ou qu'aucun moyen de paiement n'est actif. Les demandes d'expédition se terminent sur la page de paiement WooCommerce et échouaient jusqu'ici sans la moindre explication."
+
+msgid "Fix: adding a client who already has a record announced a creation that did not happen."
+msgstr "Correction : ajouter un client possédant déjà une fiche annonçait une création qui n'avait pas eu lieu."
+
+msgid "Fix: a pricing tier capped at zero was accepted and silently moved every parcel to the next tier. It is now dropped like an empty row."
+msgstr "Correction : un palier de tarification plafonné à zéro était accepté et décalait silencieusement chaque colis vers le palier suivant. Il est désormais écarté comme une ligne vide."
+
+msgid "Fix: on narrow screens the parcel dimensions wrapped between a label and its field."
+msgstr "Correction : sur les écrans étroits, les dimensions du colis passaient à la ligne entre un libellé et son champ."
+
+msgid "The allowed carriers help text now states that leaving none checked places no restriction."
+msgstr "Le texte d'aide des transporteurs autorisés précise maintenant que n'en cocher aucun n'applique aucune restriction."
+
+msgid "= 1.19.0 = Duties and taxes paid to take delivery of a parcel can now be recorded on it and are billed back at cost on the shipment order. Two columns added to the parcels table, migrated automatically."
+msgstr "= 1.19.0 = Les droits et taxes payés pour prendre livraison d'un colis se notent dessus et sont refacturés au coût réel sur la commande d'expédition. Deux colonnes ajoutées à la table des colis, migrées automatiquement."
+
+msgid "Duties and taxes paid to take delivery of a parcel can now be recorded on\nit and are billed back at cost on the shipment order. Two columns added to\nthe parcels table, migrated automatically."
+msgstr "= 1.19.0 = Les droits et taxes payés pour prendre livraison d'un colis se notent dessus et sont refacturés au coût réel sur la commande d'expédition. Deux colonnes ajoutées à la table des colis, migrées automatiquement."
+
+msgid "= 1.18.1 = The parcel label takes the size of your printer's labels, 62 × 30 mm by default, and prints only what finds the parcel. No database change."
+msgstr "= 1.18.1 = L'étiquette de colis prend la taille de vos étiquettes, 62 × 30 mm par défaut, et n'imprime que ce qui retrouve le colis. Aucun changement de base de données."
+
+msgid "The parcel label takes the size of your printer's labels, 62 × 30 mm by\ndefault, and prints only what finds the parcel. No database change."
+msgstr "= 1.18.1 = L'étiquette de colis prend la taille de vos étiquettes, 62 × 30 mm par défaut, et n'imprime que ce qui retrouve le colis. Aucun changement de base de données."
+
+msgid "= 1.18.0 = A printable label for every parcel, offered right after saving it. No database change."
+msgstr "= 1.18.0 = Une étiquette imprimable pour chaque colis, proposée juste après son enregistrement. Aucun changement de base de données."
+
+msgid "A printable label for every parcel, offered right after saving it. No\ndatabase change."
+msgstr "= 1.18.0 = Une étiquette imprimable pour chaque colis, proposée juste après son enregistrement. Aucun changement de base de données."
+
+msgid "= 1.17.0 = Spanish translation shipped with the plugin. No database change."
+msgstr "= 1.17.0 = Traduction espagnole livrée avec l'extension. Aucun changement de base de données."
+
+msgid "= 1.16.2 = The French translation ships with the plugin, so French sites no longer wait for the language pack. No database change."
+msgstr "= 1.16.2 = La traduction française est livrée avec l'extension : les sites français n'attendent plus le pack de langue. Aucun changement de base de données."
+
+msgid "The French translation ships with the plugin, so French sites no longer wait\nfor the language pack. No database change."
+msgstr "= 1.16.2 = La traduction française est livrée avec l'extension : les sites français n'attendent plus le pack de langue. Aucun changement de base de données."
+
+msgid "= 1.16.1 = The order panel shows each parcel's internal comment. No database change."
+msgstr "= 1.16.1 = L'encart de commande montre le commentaire interne de chaque colis. Aucun changement de base de données."
+
+msgid "= 1.16.0 = The client's parcels tab shows the stock first and pages the rest. No database change."
+msgstr "= 1.16.0 = L'onglet des colis du client montre le stock d'abord et pagine le reste. Aucun changement de base de données."
+
+msgid "The client's parcels tab shows the stock first and pages the rest. No\ndatabase change."
+msgstr "= 1.16.0 = L'onglet des colis du client montre le stock d'abord et pagine le reste. Aucun changement de base de données."
+
+msgid "= 1.15.0 = The WooCommerce order of a shipment now shows its parcels, declaration, invoices and customs form. No database change."
+msgstr "= 1.15.0 = La commande WooCommerce d'une expédition montre désormais ses colis, sa déclaration, ses factures et son formulaire douanier. Aucun changement de base de données."
+
+msgid "The WooCommerce order of a shipment now shows its parcels, declaration,\ninvoices and customs form. No database change."
+msgstr "= 1.15.0 = La commande WooCommerce d'une expédition montre désormais ses colis, sa déclaration, ses factures et son formulaire douanier. Aucun changement de base de données."
+
+msgid "= 1.14.1 = Fixes the squeezed carriers table in the settings. No database change."
+msgstr "= 1.14.1 = Corrige le tableau des transporteurs écrasé dans les réglages. Aucun changement de base de données."
+
+msgid "= 1.14.0 = Carriers can carry weight and dimension limits, and the bracket page reads in the order it applies. No database change."
+msgstr "= 1.14.0 = Les transporteurs peuvent porter des limites de poids et de dimensions, et la page des tranches se lit dans l'ordre où elle s'applique. Aucun changement de base de données."
+
+msgid "Carriers can carry weight and dimension limits, and the bracket page reads\nin the order it applies. No database change."
+msgstr "= 1.14.0 = Les transporteurs peuvent porter des limites de poids et de dimensions, et la page des tranches se lit dans l'ordre où elle s'applique. Aucun changement de base de données."
+
+msgid "= 1.13.1 = A carrier with no rate for a destination is no longer offered at 0.00. No database change."
+msgstr "= 1.13.1 = Un transporteur sans tarif pour une destination n'est plus proposé à 0,00. Aucun changement de base de données."
+
+msgid "A carrier with no rate for a destination is no longer offered at 0.00. No\ndatabase change."
+msgstr "= 1.13.1 = Un transporteur sans tarif pour une destination n'est plus proposé à 0,00. Aucun changement de base de données."
+
+msgid "= 1.13.0 = Clients can attach purchase invoices for customs, every carrier shows its price in the list, and a declared line must carry a value. Two columns are added to the documents table on update."
+msgstr "= 1.13.0 = Les clients peuvent joindre leurs factures d'achat pour la douane, chaque transporteur affiche son prix dans la liste, et une ligne déclarée doit porter une valeur. Deux colonnes sont ajoutées à la table des documents à la mise à jour."
+
+msgid "Clients can attach purchase invoices for customs, every carrier shows its\nprice in the list, and a declared line must carry a value. Two columns are\nadded to the documents table on update."
+msgstr "= 1.13.0 = Les clients peuvent joindre leurs factures d'achat pour la douane, chaque transporteur affiche son prix dans la liste, et une ligne déclarée doit porter une valeur. Deux colonnes sont ajoutées à la table des documents à la mise à jour."
+
+msgid "= 1.12.0 = New customers can be picked directly on the parcel form; their client record is created with their first parcel. No database change."
+msgstr "= 1.12.0 = Les nouveaux clients se choisissent directement sur le formulaire de colis ; leur fiche est créée avec leur premier colis. Aucun changement de base de données."
+
+msgid "New customers can be picked directly on the parcel form; their client record\nis created with their first parcel. No database change."
+msgstr "= 1.12.0 = Les nouveaux clients se choisissent directement sur le formulaire de colis ; leur fiche est créée avec leur premier colis. Aucun changement de base de données."
+
+msgid "= 1.11.1 = The client search now finds customers by their billing name, company, phone and login, and names them by their billing name when WordPress only knows their login. No database change."
+msgstr "= 1.11.1 = La recherche de clients trouve désormais les clients par leur nom de facturation, leur société, leur téléphone et leur identifiant, et les nomme par leur nom de facturation quand WordPress ne connaît que leur identifiant. Aucun changement de base de données."
+
+msgid "The client search now finds customers by their billing name, company, phone\nand login, and names them by their billing name when WordPress only knows\ntheir login. No database change."
+msgstr "= 1.11.1 = La recherche de clients trouve désormais les clients par leur nom de facturation, leur société, leur téléphone et leur identifiant, et les nomme par leur nom de facturation quand WordPress ne connaît que leur identifiant. Aucun changement de base de données."
+
+msgid "= 1.11.0 = Fixes a declaration form that offered one line whatever the limit set, and lets the quantity, unit weight and country of origin be turned off. No database change."
+msgstr "= 1.11.0 = Corrige un formulaire de déclaration qui n'offrait qu'une ligne quelle que soit la limite réglée, et permet de retirer la quantité, le poids unitaire et le pays d'origine. Aucun changement de base de données."
+
+msgid "Fixes a declaration form that offered one line whatever the limit set, and lets\nthe quantity, unit weight and country of origin be turned off. No database\nchange."
+msgstr "= 1.11.0 = Corrige un formulaire de déclaration qui n'offrait qu'une ligne quelle que soit la limite réglée, et permet de retirer la quantité, le poids unitaire et le pays d'origine. Aucun changement de base de données."
+
+msgid "= 1.10.0 = The shipment request shows and requires a complete delivery address, clients can withdraw an unpaid request themselves, and zone countries are picked by name. No database change."
+msgstr "= 1.10.0 = La demande d'expédition affiche et exige une adresse de livraison complète, les clients peuvent retirer eux-mêmes une demande impayée, et les pays d'une zone se choisissent par leur nom. Aucun changement de base de données."
+
+msgid "The shipment request shows and requires a complete delivery address, clients\ncan withdraw an unpaid request themselves, and zone countries are picked by\nname. No database change."
+msgstr "= 1.10.0 = La demande d'expédition affiche et exige une adresse de livraison complète, les clients peuvent retirer eux-mêmes une demande impayée, et les pays d'une zone se choisissent par leur nom. Aucun changement de base de données."
+
+msgid "= 1.9.1 = The customs declaration is now filled on the shipment request, the contents field can be a menu of your own categories, and the declaration is readable on the shipment. No database change."
+msgstr "= 1.9.1 = La déclaration douanière se remplit désormais sur la demande d'expédition, le champ « contenu » peut devenir un menu de vos propres catégories, et la déclaration est lisible sur l'expédition. Aucun changement de base de données."
+
+msgid "The customs declaration is now filled on the shipment request, the contents\nfield can be a menu of your own categories, and the declaration is readable on\nthe shipment. No database change."
+msgstr "= 1.9.1 = La déclaration douanière se remplit désormais sur la demande d'expédition, le champ « contenu » peut devenir un menu de vos propres catégories, et la déclaration est lisible sur l'expédition. Aucun changement de base de données."
+
+msgid "= 1.9.0 = Clients can now declare the contents of their parcels for customs, and the declaration prints as a form. One table is added on update. Nothing changes until a zone is marked as requiring a declaration."
+msgstr "= 1.9.0 = Les clients peuvent désormais déclarer le contenu de leurs colis pour la douane, et la déclaration s'imprime sous forme de formulaire. Une table est ajoutée lors de la mise à jour. Rien ne change tant qu'aucune zone n'est marquée comme exigeant une déclaration."
+
+msgid "Clients can now declare the contents of their parcels for customs, and the\ndeclaration prints as a form. One table is added on update. Nothing changes\nuntil a zone is marked as requiring a declaration."
+msgstr "= 1.9.0 = Les clients peuvent désormais déclarer le contenu de leurs colis pour la douane, et la déclaration s'imprime sous forme de formulaire. Une table est ajoutée lors de la mise à jour. Rien ne change tant qu'aucune zone n'est marquée comme exigeant une déclaration."
+
+msgid "= 1.8.0 = Carriers can now be priced per destination zone. Existing grids keep applying everywhere. One column is added to the shipments table on update."
+msgstr "= 1.8.0 = Les transporteurs peuvent désormais être tarifés par zone de destination. Les grilles existantes continuent de s'appliquer partout. Une colonne est ajoutée à la table des expéditions lors de la mise à jour."
+
+msgid "Carriers can now be priced per destination zone. Existing grids keep applying\neverywhere. One column is added to the shipments table on update."
+msgstr "= 1.8.0 = Les transporteurs peuvent désormais être tarifés par zone de destination. Les grilles existantes continuent de s'appliquer partout. Une colonne est ajoutée à la table des expéditions lors de la mise à jour."
+
+msgid "= 1.7.0 = Parcels in stock can now be corrected after reception, and shipments can be insured. Two columns are added to the shipments table on update; existing shipments keep their data and show no insurance."
+msgstr "= 1.7.0 = Les colis en stock peuvent désormais être corrigés après réception, et les expéditions peuvent être assurées. Deux colonnes sont ajoutées à la table des expéditions lors de la mise à jour ; les expéditions existantes conservent leurs données et s'affichent sans assurance."
+
+msgid "Parcels in stock can now be corrected after reception, and shipments can be\ninsured. Two columns are added to the shipments table on update; existing\nshipments keep their data and show no insurance."
+msgstr "= 1.7.0 = Les colis en stock peuvent désormais être corrigés après réception, et les expéditions peuvent être assurées. Deux colonnes sont ajoutées à la table des expéditions lors de la mise à jour ; les expéditions existantes conservent leurs données et s'affichent sans assurance."
+
+msgid "= 1.6.10 = Restores the labels on the shipment request table, lost in 1.6.8 on themes with a narrow content column. No database change."
+msgstr "= 1.6.10 = Rétablit les libellés du tableau de demande d'expédition, perdus en 1.6.8 sur les thèmes à colonne de contenu étroite. Aucun changement de base de données."
+
+msgid "Restores the labels on the shipment request table, lost in 1.6.8 on themes with\na narrow content column. No database change."
+msgstr "= 1.6.10 = Rétablit les libellés du tableau de demande d'expédition, perdus en 1.6.8 sur les thèmes à colonne de contenu étroite. Aucun changement de base de données."
+
+msgid "= 1.6.9 = Carriers can now be priced by weight bracket rather than per kilo. Existing carriers are untouched. No database change."
+msgstr "= 1.6.9 = Les transporteurs peuvent désormais être tarifés par tranche de poids plutôt qu'au kilo. Les transporteurs existants ne sont pas modifiés. Aucun changement de base de données."
+
+msgid "Carriers can now be priced by weight bracket rather than per kilo. Existing\ncarriers are untouched. No database change."
+msgstr "= 1.6.9 = Les transporteurs peuvent désormais être tarifés par tranche de poids plutôt qu'au kilo. Les transporteurs existants ne sont pas modifiés. Aucun changement de base de données."
+
+msgid "= 1.6.8 = Fixes a column left off-screen in the customer account on themes with a narrow content column. No database change."
+msgstr "= 1.6.8 = Corrige une colonne hors écran dans l'espace client sur les thèmes à colonne de contenu étroite. Aucun changement de base de données."
+
+msgid "Fixes a column left off-screen in the customer account on themes with a narrow\ncontent column. No database change."
+msgstr "= 1.6.8 = Corrige une colonne hors écran dans l'espace client sur les thèmes à colonne de contenu étroite. Aucun changement de base de données."
+
+msgid "= 1.6.7 = Privacy export completeness and three fixes found in a second audit. No database change."
+msgstr "= 1.6.7 = Export de données personnelles complété et trois corrections relevées lors d'un second audit. Aucun changement de base de données."
+
+msgid "= 1.6.6 = Usability fixes found during a full walkthrough. No database change."
+msgstr "= 1.6.6 = Corrections d'ergonomie relevées lors d'un parcours complet. Aucun changement de base de données."
+
+msgid "Changelog"
+msgstr "Journal des modifications"
+
+msgid "Upgrade Notice"
+msgstr "Note de mise à jour"
