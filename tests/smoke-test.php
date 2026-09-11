@@ -1940,7 +1940,7 @@ COLISLY_Settings::update( $colisly_lim_settings );
 $colisly_lim_src = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/frontend/class-colisly-account.php' );
 colisly_check( 'Garde : le formulaire grise les transporteurs trop petits pour un colis', false !== strpos( $colisly_lim_src, 'self::carriers_for_parcel( $parcel )' ) && false !== strpos( $colisly_lim_src, 'data-max-weight=' ) );
 $colisly_lim_set = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-settings.php' );
-colisly_check( 'Garde : les grilles de zone precedent la grille par defaut', strpos( $colisly_lim_set, 'foreach ( COLISLY_Zones::all() as $zone ) :' ) < strpos( $colisly_lim_set, "'%s — all other destinations'" ) );
+colisly_check( 'Garde : les grilles de zone precedent la grille par defaut', strpos( $colisly_lim_set, 'foreach ( COLISLY_Zones::all() as $zone ) :' ) < strpos( $colisly_lim_set, "'%s, all other destinations'" ) );
 
 /*
  * Encart Colisly sur la commande WooCommerce.

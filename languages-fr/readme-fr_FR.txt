@@ -1,5 +1,5 @@
 ================================================================================
- Traduction française de readme.txt — Colisly
+ Traduction française de readme.txt : Colisly
  À déposer sur https://translate.wordpress.org/projects/wp-plugins/colisly/
  dans le sous-projet « Stable Readme (latest release) », locale fr_FR.
  Version de référence : 1.6.9
@@ -197,6 +197,14 @@ l'extension ainsi que ses options.
 ================================================================================
 == Journal des modifications ==
 ================================================================================
+
+= 1.20.2 =
+* Rédaction : les tirets longs qui servaient de séparateurs dans l'interface,
+  « CL000001, Jean Dupont », « Colissimo, 16,40 € », disparaissent au profit
+  de virgules, de deux-points ou d'un point médian ; les cellules vides
+  affichent un tiret court. Douze chaînes changent, leurs traductions française
+  et espagnole sont livrées à jour avec l'extension. Aucun changement de
+  fonctionnement.
 
 = 1.20.1 =
 * Correction : sur les listes de colis et de clients, le champ de recherche
@@ -588,6 +596,9 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.20.2 =
+Rédaction seulement. Aucun changement de base de données.
 
 = 1.20.1 =
 Correction d'affichage sur les listes de colis et de clients. Aucun changement

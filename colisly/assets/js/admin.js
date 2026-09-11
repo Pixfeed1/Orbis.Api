@@ -1,5 +1,5 @@
 /**
- * Colisly Parcel Forwarding — admin scripts.
+ * Colisly Parcel Forwarding, admin scripts.
  *
  * Handles the client record tabs, the live client search on the parcel
  * creation form and the carriers settings checkboxes.
@@ -168,7 +168,7 @@
 
 	function renderStock( client ) {
 		var i18n = window.colislyAdmin.i18n;
-		var label = client.reference ? esc( client.reference ) + ' — ' + esc( client.name ) : esc( client.name );
+		var label = client.reference ? esc( client.reference ) + ' · ' + esc( client.name ) : esc( client.name );
 		var html = '<h3>' + label + ' : ' + client.in_stock + ' ' + esc( i18n.inStock ) + '</h3>';
 
 		html += '<table class="wp-list-table widefat fixed striped colisly-stock-table"><thead><tr>';
@@ -181,7 +181,7 @@
 			client.parcels.forEach( function ( parcel ) {
 				html += '<tr><td>' + esc( parcel.reference ) + '</td><td>' + esc( parcel.weight ) + '</td><td>' +
 					esc( parcel.allow_grouping ? i18n.yes : i18n.no ) + '</td><td>' +
-					esc( parcel.internal_note || '—' ) + '</td></tr>';
+					esc( parcel.internal_note || '–' ) + '</td></tr>';
 			} );
 		}
 
@@ -205,7 +205,7 @@
 
 			// A customer without a record yet is offered like any other, and
 			// says so: his reference does not exist before his first parcel.
-			var title = client.is_new ? client.name + ' — ' + window.colislyAdmin.i18n.newClient : client.reference + ' — ' + client.name;
+			var title = client.is_new ? client.name + ' · ' + window.colislyAdmin.i18n.newClient : client.reference + ' · ' + client.name;
 
 			$item.append( $( '<span class="colisly-result-ref" />' ).text( title ) );
 			$item.append( $( '<span class="colisly-result-meta" />' ).text( client.email + ( client.phone ? ' · ' + client.phone : '' ) ) );

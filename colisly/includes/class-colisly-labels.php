@@ -125,7 +125,7 @@ class COLISLY_Labels {
 					<?php
 					echo esc_html( sprintf( /* translators: %s: reception date. */ __( 'Received %s', 'colisly' ), COLISLY_Format::date( $parcel->received_at ) ) );
 					if ( $format['weight'] ) {
-						echo esc_html( ' — ' . number_format_i18n( (float) $parcel->weight, 3 ) . ' kg' . ( $dims ? ' — ' . $dims : '' ) );
+						echo esc_html( ' · ' . number_format_i18n( (float) $parcel->weight, 3 ) . ' kg' . ( $dims ? ' · ' . $dims : '' ) );
 					}
 					?>
 				</p>

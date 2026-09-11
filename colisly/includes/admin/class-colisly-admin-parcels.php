@@ -104,11 +104,11 @@ class COLISLY_Admin_Parcels {
 									</td>
 									<td>
 										<a href="<?php echo esc_url( $client_url ); ?>">
-											<?php echo esc_html( $parcel->client_reference . ' — ' . COLISLY_Clients::name( $parcel ) ); ?>
+											<?php echo esc_html( $parcel->client_reference . ' · ' . COLISLY_Clients::name( $parcel ) ); ?>
 										</a>
 									</td>
 									<td><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
-									<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
+									<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '–' ); ?></td>
 									<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
 									<td>
 										<?php echo esc_html( COLISLY_Format::price( (float) $parcel->price ) ); ?>
@@ -216,7 +216,7 @@ class COLISLY_Admin_Parcels {
 								class="regular-text"
 								placeholder="<?php esc_attr_e( 'Reference (CL000001), name or e-mail…', 'colisly' ); ?>"
 								autocomplete="off"
-								value="<?php echo esc_attr( $client ? $client->reference . ' — ' . COLISLY_Clients::name( $client ) : '' ); ?>"
+								value="<?php echo esc_attr( $client ? $client->reference . ' · ' . COLISLY_Clients::name( $client ) : '' ); ?>"
 								<?php echo $editing_parcel ? 'readonly' : ''; ?>
 							/>
 							<input type="hidden" name="client_id" id="colisly-client-id" value="<?php echo esc_attr( $client ? (string) $client->id : '' ); ?>" />
@@ -259,7 +259,7 @@ class COLISLY_Admin_Parcels {
 												<td><?php echo esc_html( $parcel->reference ); ?></td>
 												<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
 												<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No', 'colisly' ); ?></td>
-												<td><?php echo esc_html( $parcel->internal_note ? $parcel->internal_note : '—' ); ?></td>
+												<td><?php echo esc_html( $parcel->internal_note ? $parcel->internal_note : '–' ); ?></td>
 											</tr>
 										<?php endforeach; ?>
 									<?php endif; ?>

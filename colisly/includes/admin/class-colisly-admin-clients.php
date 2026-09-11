@@ -75,7 +75,7 @@ class COLISLY_Admin_Clients {
 						'id'               => 'colisly-new-client-user',
 						'show'             => 'display_name_with_login',
 						'number'           => 200,
-						'show_option_none' => __( '— Select —', 'colisly' ),
+						'show_option_none' => __( 'Select…', 'colisly' ),
 					)
 				);
 				?>
@@ -162,7 +162,7 @@ class COLISLY_Admin_Clients {
 				<?php
 				printf(
 					/* translators: 1: client reference, 2: client name. */
-					esc_html__( 'Client record %1$s — %2$s', 'colisly' ),
+					esc_html__( 'Client record %1$s, %2$s', 'colisly' ),
 					esc_html( $client->reference ),
 					esc_html( COLISLY_Clients::name( $client ) )
 				);
@@ -205,11 +205,11 @@ class COLISLY_Admin_Clients {
 					<span class="colisly-indicator-label"><?php esc_html_e( 'Storage fees due', 'colisly' ); ?></span>
 				</div>
 				<div class="colisly-indicator">
-					<span class="colisly-indicator-value"><?php echo esc_html( $indicators['last_reception'] ? COLISLY_Format::date( $indicators['last_reception'] ) : '—' ); ?></span>
+					<span class="colisly-indicator-value"><?php echo esc_html( $indicators['last_reception'] ? COLISLY_Format::date( $indicators['last_reception'] ) : '–' ); ?></span>
 					<span class="colisly-indicator-label"><?php esc_html_e( 'Last reception', 'colisly' ); ?></span>
 				</div>
 				<div class="colisly-indicator">
-					<span class="colisly-indicator-value"><?php echo esc_html( $indicators['last_shipment'] ? COLISLY_Format::date( $indicators['last_shipment'] ) : '—' ); ?></span>
+					<span class="colisly-indicator-value"><?php echo esc_html( $indicators['last_shipment'] ? COLISLY_Format::date( $indicators['last_shipment'] ) : '–' ); ?></span>
 					<span class="colisly-indicator-label"><?php esc_html_e( 'Last shipment', 'colisly' ); ?></span>
 				</div>
 			</div>
@@ -339,7 +339,7 @@ class COLISLY_Admin_Clients {
 										<?php endforeach; ?>
 									</td>
 								<td><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
-								<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
+								<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '–' ); ?></td>
 								<td><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
 								<td>
 									<?php echo esc_html( COLISLY_Format::price( (float) $parcel->price ) ); ?>
@@ -349,12 +349,12 @@ class COLISLY_Admin_Clients {
 								</td>
 								<td><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No', 'colisly' ); ?></td>
 								<td><?php echo esc_html( COLISLY_Format::price( COLISLY_Storage::fees_for_parcel( $parcel ) ) ); ?></td>
-								<td><?php echo esc_html( $parcel->internal_note ? $parcel->internal_note : '—' ); ?></td>
+								<td><?php echo esc_html( $parcel->internal_note ? $parcel->internal_note : '–' ); ?></td>
 								<td>
 									<?php if ( ! empty( $parcel->photo_path ) ) : ?>
 										<a href="<?php echo esc_url( COLISLY_Downloads::photo_url( $parcel ) ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'View', 'colisly' ); ?></a>
 									<?php else : ?>
-										—
+										–
 									<?php endif; ?>
 								</td>
 								<?php if ( $with_action ) : ?>
@@ -448,11 +448,11 @@ class COLISLY_Admin_Clients {
 													esc_html(
 														sprintf(
 															/* translators: 1: contents, 2: quantity, 3: total value of the line, 4: country of origin. */
-															__( '%1$s x%2$d — %3$s — origin %4$s', 'colisly' ),
+															__( '%1$s x%2$d, %3$s, origin %4$s', 'colisly' ),
 															$colisly_ci->description,
 															(int) $colisly_ci->quantity,
 															COLISLY_Format::price( (int) $colisly_ci->quantity * (float) $colisly_ci->unit_value ),
-															$colisly_ci->origin_country ? $colisly_ci->origin_country : '—'
+															$colisly_ci->origin_country ? $colisly_ci->origin_country : '–'
 														)
 													)
 												);
@@ -502,7 +502,7 @@ class COLISLY_Admin_Clients {
 										</a>
 										(<?php echo esc_html( wc_get_order_status_name( $order->get_status() ) ); ?>)
 									<?php else : ?>
-										—
+										–
 									<?php endif; ?>
 								</td>
 								<td>
@@ -559,7 +559,7 @@ class COLISLY_Admin_Clients {
 									<?php if ( ! empty( $document->file_path ) ) : ?>
 										<a href="<?php echo esc_url( COLISLY_Downloads::document_url( $document ) ); ?>"><?php esc_html_e( 'Download', 'colisly' ); ?></a>
 									<?php else : ?>
-										—
+										–
 									<?php endif; ?>
 								</td>
 							</tr>
@@ -599,7 +599,7 @@ class COLISLY_Admin_Clients {
 								<td><?php echo esc_html( COLISLY_Format::date( $entry->created_at, true ) ); ?></td>
 								<td><code><?php echo esc_html( $entry->event ); ?></code></td>
 								<td><?php echo esc_html( (string) $entry->message ); ?></td>
-								<td><?php echo esc_html( $author ? $author->display_name : '—' ); ?></td>
+								<td><?php echo esc_html( $author ? $author->display_name : '–' ); ?></td>
 							</tr>
 						<?php endforeach; ?>
 					<?php endif; ?>

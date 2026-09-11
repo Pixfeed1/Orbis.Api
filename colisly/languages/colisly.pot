@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.20.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.20.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-11T09:05:03+00:00\n"
+"POT-Creation-Date: 2026-09-11T15:13:56+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: colisly\n"
@@ -92,7 +92,7 @@ msgstr ""
 #: includes/admin/class-colisly-admin-clients.php:78
 #: includes/frontend/class-colisly-account.php:669
 #: includes/frontend/class-colisly-account.php:947
-msgid "— Select —"
+msgid "Select…"
 msgstr ""
 
 #: includes/admin/class-colisly-admin-clients.php:82
@@ -150,7 +150,7 @@ msgstr ""
 #: includes/admin/class-colisly-admin-clients.php:165
 #: includes/admin/class-colisly-admin-orders.php:133
 #, php-format
-msgid "Client record %1$s — %2$s"
+msgid "Client record %1$s, %2$s"
 msgstr ""
 
 #. translators: %s: parcel reference.
@@ -412,7 +412,7 @@ msgstr ""
 #: includes/admin/class-colisly-admin-clients.php:451
 #: includes/admin/class-colisly-admin-orders.php:184
 #, php-format
-msgid "%1$s x%2$d — %3$s — origin %4$s"
+msgid "%1$s x%2$d, %3$s, origin %4$s"
 msgstr ""
 
 #. translators: %s: total declared value.
@@ -742,7 +742,7 @@ msgid "Parcel status updated."
 msgstr ""
 
 #: includes/admin/class-colisly-admin-settings.php:30
-msgid "Settings — Colisly Parcel Forwarding"
+msgid "Colisly settings"
 msgstr ""
 
 #. translators: %s: comma separated carrier names.
@@ -956,7 +956,7 @@ msgstr ""
 #. translators: 1: carrier name, 2: zone name.
 #: includes/admin/class-colisly-admin-settings.php:301
 #, php-format
-msgid "%1$s — zone %2$s"
+msgid "%1$s, zone %2$s"
 msgstr ""
 
 #: includes/admin/class-colisly-admin-settings.php:329
@@ -967,7 +967,7 @@ msgstr ""
 #. translators: %s: carrier name.
 #: includes/admin/class-colisly-admin-settings.php:337
 #, php-format
-msgid "%s — all other destinations"
+msgid "%s, all other destinations"
 msgstr ""
 
 #: includes/admin/class-colisly-admin-settings.php:342
@@ -1204,7 +1204,7 @@ msgstr ""
 #. translators: 1: parcel reference, 2: tracking number.
 #: includes/class-colisly-customs.php:435
 #, php-format
-msgid "Parcel %1$s — tracking %2$s"
+msgid "Parcel %1$s, tracking %2$s"
 msgstr ""
 
 #. translators: %d: number of invoices.
@@ -1934,7 +1934,7 @@ msgid "Include in the shipment"
 msgstr ""
 
 #: includes/frontend/class-colisly-account.php:629
-msgid "No — this parcel must be shipped alone"
+msgid "No, this parcel must be shipped alone"
 msgstr ""
 
 #: includes/frontend/class-colisly-account.php:644
@@ -1960,7 +1960,7 @@ msgstr ""
 #. translators: 1: carrier name, 2: base price, 3: price per kg.
 #: includes/frontend/class-colisly-account.php:731
 #, php-format
-msgid "%1$s — %2$s + %3$s/kg"
+msgid "%1$s: %2$s + %3$s/kg"
 msgstr ""
 
 #: includes/frontend/class-colisly-account.php:744
@@ -1974,7 +1974,7 @@ msgstr ""
 #. translators: 1: covered amount, 2: price of the cover.
 #: includes/frontend/class-colisly-account.php:752
 #, php-format
-msgid "Covered up to %1$s — %2$s"
+msgid "Covered up to %1$s: %2$s"
 msgstr ""
 
 #: includes/frontend/class-colisly-account.php:763
@@ -1982,11 +1982,11 @@ msgid "Estimated total:"
 msgstr ""
 
 #: includes/frontend/class-colisly-account.php:777
-msgid "(parcels + fees advanced + storage fees + transport — confirmed on the payment page)"
+msgid "(parcels + fees advanced + storage fees + transport, confirmed on the payment page)"
 msgstr ""
 
 #: includes/frontend/class-colisly-account.php:778
-msgid "(parcels + storage fees + transport — confirmed on the payment page)"
+msgid "(parcels + storage fees + transport, confirmed on the payment page)"
 msgstr ""
 
 #: includes/frontend/class-colisly-account.php:792

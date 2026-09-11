@@ -432,13 +432,13 @@ class COLISLY_Customs {
 				<?php
 				printf(
 					/* translators: 1: parcel reference, 2: tracking number. */
-					esc_html__( 'Parcel %1$s — tracking %2$s', 'colisly' ),
+					esc_html__( 'Parcel %1$s, tracking %2$s', 'colisly' ),
 					esc_html( $parcel->reference ),
-					esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' )
+					esc_html( $parcel->tracking_number ? $parcel->tracking_number : '–' )
 				);
 				$invoice_count = count( self::invoices( (int) $parcel->id ) );
 				if ( $invoice_count ) {
-					echo ' — ';
+					echo ' · ';
 					printf(
 						/* translators: %d: number of invoices. */
 						esc_html( _n( '%d purchase invoice attached', '%d purchase invoices attached', $invoice_count, 'colisly' ) ),
@@ -477,8 +477,8 @@ class COLISLY_Customs {
 							<td class="num"><?php echo esc_html( (string) (int) $item->quantity ); ?></td>
 							<td class="num"><?php echo esc_html( number_format_i18n( (int) $item->quantity * (float) $item->unit_weight, 3 ) ); ?></td>
 							<td class="num"><?php echo esc_html( COLISLY_Format::price( (int) $item->quantity * (float) $item->unit_value ) ); ?></td>
-							<td><?php echo esc_html( $item->hs_code ? $item->hs_code : '—' ); ?></td>
-							<td><?php echo esc_html( $item->origin_country ? $item->origin_country : '—' ); ?></td>
+							<td><?php echo esc_html( $item->hs_code ? $item->hs_code : '–' ); ?></td>
+							<td><?php echo esc_html( $item->origin_country ? $item->origin_country : '–' ); ?></td>
 						</tr>
 					<?php endforeach; ?>
 					<?php if ( ! $items ) : ?>

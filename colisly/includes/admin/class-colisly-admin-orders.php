@@ -125,12 +125,12 @@ class COLISLY_Admin_Orders {
 		<div class="colisly-order-panel">
 			<p>
 				<strong><?php echo esc_html( $shipment->reference ); ?></strong>
-				<?php echo esc_html( ' — ' . COLISLY_Shipments::status_label( $shipment->status ) . ' — ' . COLISLY_Carriers::name( $shipment->carrier ) ); ?>
+				<?php echo esc_html( ' · ' . COLISLY_Shipments::status_label( $shipment->status ) . ' · ' . COLISLY_Carriers::name( $shipment->carrier ) ); ?>
 				<?php if ( $shipment->destination_country ) : ?>
-					<?php echo esc_html( ' — ' . $shipment->destination_country ); ?>
+					<?php echo esc_html( ' · ' . $shipment->destination_country ); ?>
 				<?php endif; ?>
 				<?php if ( $client ) : ?>
-					· <a href="<?php echo esc_url( $client_url ); ?>"><?php echo esc_html( sprintf( /* translators: 1: client reference, 2: client name. */ __( 'Client record %1$s — %2$s', 'colisly' ), $client->reference, COLISLY_Clients::name( $client ) ) ); ?></a>
+					· <a href="<?php echo esc_url( $client_url ); ?>"><?php echo esc_html( sprintf( /* translators: 1: client reference, 2: client name. */ __( 'Client record %1$s, %2$s', 'colisly' ), $client->reference, COLISLY_Clients::name( $client ) ) ); ?></a>
 				<?php endif; ?>
 			</p>
 
@@ -145,9 +145,9 @@ class COLISLY_Admin_Orders {
 				<div class="colisly-order-parcel">
 					<p>
 						<strong><?php echo esc_html( $parcel->reference ); ?></strong>
-						<?php echo esc_html( ' — ' . number_format_i18n( (float) $parcel->weight, 3 ) . ' kg' . ( $dims ? ' — ' . $dims : '' ) ); ?>
+						<?php echo esc_html( ' · ' . number_format_i18n( (float) $parcel->weight, 3 ) . ' kg' . ( $dims ? ' · ' . $dims : '' ) ); ?>
 						<?php if ( $parcel->tracking_number ) : ?>
-							<?php echo esc_html( ' — ' . $parcel->tracking_number ); ?>
+							<?php echo esc_html( ' · ' . $parcel->tracking_number ); ?>
 						<?php endif; ?>
 						<?php if ( $items ) : ?>
 							· <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=colisly_customs_form&parcel=' . (int) $parcel->id ), 'colisly_customs_form_' . (int) $parcel->id ) ); ?>" target="_blank"><?php esc_html_e( 'Customs form', 'colisly' ); ?></a>
@@ -181,11 +181,11 @@ class COLISLY_Admin_Orders {
 									echo esc_html(
 										sprintf(
 											/* translators: 1: contents, 2: quantity, 3: total value of the line, 4: country of origin. */
-											__( '%1$s x%2$d — %3$s — origin %4$s', 'colisly' ),
+											__( '%1$s x%2$d, %3$s, origin %4$s', 'colisly' ),
 											$item->description,
 											(int) $item->quantity,
 											COLISLY_Format::price( $line_value ),
-											$item->origin_country ? $item->origin_country : '—'
+											$item->origin_country ? $item->origin_country : '–'
 										)
 									);
 									?>

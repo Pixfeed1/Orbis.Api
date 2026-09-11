@@ -288,7 +288,7 @@ class COLISLY_Account {
 								<?php endif; ?>
 							</td>
 							<td data-title="<?php esc_attr_e( 'Reception date', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Format::date( $parcel->received_at ) ); ?></td>
-							<td class="colisly-col-tracking" data-title="<?php esc_attr_e( 'Tracking number', 'colisly' ); ?>"><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
+							<td class="colisly-col-tracking" data-title="<?php esc_attr_e( 'Tracking number', 'colisly' ); ?>"><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '–' ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Weight (kg)', 'colisly' ); ?>"><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Status', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Parcels::status_label( $parcel->status ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Grouping allowed', 'colisly' ); ?>"><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No', 'colisly' ); ?></td>
@@ -441,7 +441,7 @@ class COLISLY_Account {
 							<td data-title="<?php esc_attr_e( 'Carrier', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Carriers::name( $shipment->carrier ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Parcels', 'colisly' ); ?>"><?php echo esc_html( implode( ', ', $refs ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Weight (kg)', 'colisly' ); ?>"><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
-							<td data-title="<?php esc_attr_e( 'Insured for', 'colisly' ); ?>"><?php echo (float) $shipment->insured_value > 0 ? esc_html( COLISLY_Format::price( (float) $shipment->insured_value ) ) : '—'; ?></td>
+							<td data-title="<?php esc_attr_e( 'Insured for', 'colisly' ); ?>"><?php echo (float) $shipment->insured_value > 0 ? esc_html( COLISLY_Format::price( (float) $shipment->insured_value ) ) : '–'; ?></td>
 							<td data-title="<?php esc_attr_e( 'Total', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Format::price( (float) $shipment->total_price ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Status', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Shipments::status_label( $shipment->status ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Actions', 'colisly' ); ?>">
@@ -626,7 +626,7 @@ class COLISLY_Account {
 									<?php endif; ?>
 								</td>
 								<td data-title="<?php esc_attr_e( 'Weight (kg)', 'colisly' ); ?>"><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
-								<td data-title="<?php esc_attr_e( 'Grouping allowed', 'colisly' ); ?>"><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No — this parcel must be shipped alone', 'colisly' ); ?></td>
+								<td data-title="<?php esc_attr_e( 'Grouping allowed', 'colisly' ); ?>"><?php echo $parcel->allow_grouping ? esc_html__( 'Yes', 'colisly' ) : esc_html__( 'No, this parcel must be shipped alone', 'colisly' ); ?></td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
@@ -666,7 +666,7 @@ class COLISLY_Account {
 			<p>
 				<label for="colisly-carrier"><?php esc_html_e( 'Preferred carrier:', 'colisly' ); ?></label>
 				<select name="colisly_carrier" id="colisly-carrier" required>
-					<option value=""><?php esc_html_e( '— Select —', 'colisly' ); ?></option>
+					<option value=""><?php esc_html_e( 'Select…', 'colisly' ); ?></option>
 					<?php foreach ( $offered as $carrier ) : ?>
 						<?php
 						$base = isset( $carrier['price_base'] ) ? (float) $carrier['price_base'] : 0;
@@ -728,7 +728,7 @@ class COLISLY_Account {
 							} else {
 								printf(
 									/* translators: 1: carrier name, 2: base price, 3: price per kg. */
-									esc_html__( '%1$s — %2$s + %3$s/kg', 'colisly' ),
+									esc_html__( '%1$s: %2$s + %3$s/kg', 'colisly' ),
 									esc_html( $carrier['name'] ),
 									esc_html( COLISLY_Format::price( $base ) ),
 									esc_html( COLISLY_Format::price( $rate ) )
@@ -749,7 +749,7 @@ class COLISLY_Account {
 								<?php
 								printf(
 									/* translators: 1: covered amount, 2: price of the cover. */
-									esc_html__( 'Covered up to %1$s — %2$s', 'colisly' ),
+									esc_html__( 'Covered up to %1$s: %2$s', 'colisly' ),
 									esc_html( COLISLY_Format::price( $level['cover'] ) ),
 									esc_html( COLISLY_Format::price( $level['price'] ) )
 								);
@@ -774,8 +774,8 @@ class COLISLY_Account {
 						}
 					}
 					echo $colisly_has_advanced
-						? esc_html__( '(parcels + fees advanced + storage fees + transport — confirmed on the payment page)', 'colisly' )
-						: esc_html__( '(parcels + storage fees + transport — confirmed on the payment page)', 'colisly' );
+						? esc_html__( '(parcels + fees advanced + storage fees + transport, confirmed on the payment page)', 'colisly' )
+						: esc_html__( '(parcels + storage fees + transport, confirmed on the payment page)', 'colisly' );
 					?>
 				</span>
 			</p>
@@ -944,7 +944,7 @@ class COLISLY_Account {
 							<td data-title="<?php esc_attr_e( 'Contents', 'colisly' ); ?>">
 								<?php if ( $categories ) : ?>
 									<select name="<?php echo esc_attr( $name ); ?>[description]" aria-label="<?php esc_attr_e( 'Contents', 'colisly' ); ?>">
-										<option value=""><?php esc_html_e( '— Select —', 'colisly' ); ?></option>
+										<option value=""><?php esc_html_e( 'Select…', 'colisly' ); ?></option>
 										<?php foreach ( $categories as $category ) : ?>
 											<option value="<?php echo esc_attr( $category ); ?>" <?php selected( $category, $item->description ); ?>><?php echo esc_html( $category ); ?></option>
 										<?php endforeach; ?>

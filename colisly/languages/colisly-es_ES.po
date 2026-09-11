@@ -1,7 +1,7 @@
 # Spanish translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.20.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.20.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -46,8 +46,8 @@ msgstr "Añadir un cliente"
 msgid "WordPress user"
 msgstr "Usuario de WordPress"
 
-msgid "— Select —"
-msgstr "— Seleccionar —"
+msgid "Select…"
+msgstr "Seleccionar…"
 
 msgid "Create the client record"
 msgstr "Crear la ficha de cliente"
@@ -76,8 +76,8 @@ msgstr "No se han encontrado clientes."
 msgid "Client not found."
 msgstr "Cliente no encontrado."
 
-msgid "Client record %1$s — %2$s"
-msgstr "Ficha de cliente %1$s — %2$s"
+msgid "Client record %1$s, %2$s"
+msgstr "Ficha de cliente %1$s, %2$s"
 
 msgid "New parcel"
 msgstr "Nuevo paquete"
@@ -202,8 +202,8 @@ msgstr "Pedido"
 msgid "No shipments."
 msgstr "No hay envíos."
 
-msgid "%1$s x%2$d — %3$s — origin %4$s"
-msgstr "%1$s x%2$d — %3$s — origen %4$s"
+msgid "%1$s x%2$d, %3$s, origin %4$s"
+msgstr "%1$s x%2$d, %3$s, origen %4$s"
 
 msgid "Total declared: %s"
 msgstr "Total declarado: %s"
@@ -405,8 +405,8 @@ msgstr "Paquete %s guardado. Su precio se ha calculado automáticamente."
 msgid "Parcel status updated."
 msgstr "Estado del paquete actualizado."
 
-msgid "Settings — Colisly Parcel Forwarding"
-msgstr "Ajustes — Colisly Parcel Forwarding"
+msgid "Colisly settings"
+msgstr "Ajustes de Colisly"
 
 msgid "This carrier is enabled but has no rate at all, so clients are not offered it: %s. Give it a weight bracket grid, or a base price and a price per kg."
 msgid_plural "These carriers are enabled but have no rate at all, so clients are not offered them: %s. Give them a weight bracket grid, or a base price and a price per kg."
@@ -530,14 +530,14 @@ msgstr "Los transportistas suelen publicar una tabla de tramos de peso en lugar 
 msgid "Add a carrier and save to configure its brackets. A zone you have just created appears here after saving too."
 msgstr "Añada un transportista y guarde para configurar sus tramos. Una zona recién creada también aparece aquí después de guardar."
 
-msgid "%1$s — zone %2$s"
-msgstr "%1$s — zona %2$s"
+msgid "%1$s, zone %2$s"
+msgstr "%1$s, zona %2$s"
 
 msgid "Add a bracket"
 msgstr "Añadir un tramo"
 
-msgid "%s — all other destinations"
-msgstr "%s — todos los demás destinos"
+msgid "%s, all other destinations"
+msgstr "%s, todos los demás destinos"
 
 msgid "Applies to any destination in no zone, or in a zone this carrier has no grid for. Leave empty if every destination you serve is in a zone above."
 msgstr "Se aplica a cualquier destino sin zona, o en una zona para la que este transportista no tiene tabla. Déjela vacía si todos los destinos que sirve están en una zona de arriba."
@@ -667,8 +667,8 @@ msgstr "Declaración de aduana %s"
 msgid "Print"
 msgstr "Imprimir"
 
-msgid "Parcel %1$s — tracking %2$s"
-msgstr "Paquete %1$s — seguimiento %2$s"
+msgid "Parcel %1$s, tracking %2$s"
+msgstr "Paquete %1$s, seguimiento %2$s"
 
 msgid "%d purchase invoice attached"
 msgid_plural "%d purchase invoices attached"
@@ -1088,8 +1088,8 @@ msgstr "Seleccione los paquetes que desea enviar:"
 msgid "Include in the shipment"
 msgstr "Incluir en el envío"
 
-msgid "No — this parcel must be shipped alone"
-msgstr "No — este paquete debe enviarse solo"
+msgid "No, this parcel must be shipped alone"
+msgstr "No, este paquete debe enviarse solo"
 
 msgid "Delivered to"
 msgstr "Entregado en"
@@ -1106,8 +1106,8 @@ msgstr "Todavía no hay ningún transportista con tarifa para su destino. Pónga
 msgid "Preferred carrier:"
 msgstr "Transportista preferido:"
 
-msgid "%1$s — %2$s + %3$s/kg"
-msgstr "%1$s — %2$s + %3$s/kg"
+msgid "%1$s: %2$s + %3$s/kg"
+msgstr "%1$s: %2$s + %3$s/kg"
 
 msgid "Insurance:"
 msgstr "Seguro:"
@@ -1115,14 +1115,14 @@ msgstr "Seguro:"
 msgid "No insurance"
 msgstr "Sin seguro"
 
-msgid "Covered up to %1$s — %2$s"
-msgstr "Cubierto hasta %1$s — %2$s"
+msgid "Covered up to %1$s: %2$s"
+msgstr "Cubierto hasta %1$s: %2$s"
 
 msgid "Estimated total:"
 msgstr "Total estimado:"
 
-msgid "(parcels + storage fees + transport — confirmed on the payment page)"
-msgstr "(paquetes + gastos de almacenamiento + transporte — se confirma en la página de pago)"
+msgid "(parcels + storage fees + transport, confirmed on the payment page)"
+msgstr "(paquetes + gastos de almacenamiento + transporte, se confirma en la página de pago)"
 
 msgid "Required for some destinations. Declare the contents of the parcels you are sending; a parcel left undeclared will be refused if its destination asks for one."
 msgstr "Obligatorio para algunos destinos. Declare el contenido de los paquetes que envía; un paquete sin declarar será rechazado si su destino lo exige."
@@ -1291,8 +1291,8 @@ msgstr "%1$s adelantados: %2$s"
 msgid "Paid on your behalf to take delivery of the parcel, added at cost to your next shipment order."
 msgstr "Pagados por su cuenta para recibir el paquete, añadidos a precio de coste a su próximo pedido de envío."
 
-msgid "(parcels + fees advanced + storage fees + transport — confirmed on the payment page)"
-msgstr "(paquetes + gastos adelantados + gastos de almacenamiento + transporte — se confirma en la página de pago)"
+msgid "(parcels + fees advanced + storage fees + transport, confirmed on the payment page)"
+msgstr "(paquetes + gastos adelantados + gastos de almacenamiento + transporte, se confirma en la página de pago)"
 
 msgid "Warehouse"
 msgstr "Almacén"

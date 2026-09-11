@@ -25,7 +25,7 @@ class COLISLY_Format {
 		$timestamp = strtotime( $datetime . ' UTC' );
 
 		if ( ! $timestamp ) {
-			return '—';
+			return '–';
 		}
 
 		$format = get_option( 'date_format' );

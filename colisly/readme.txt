@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.20.1
+Stable tag: 1.20.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -119,6 +119,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.20.2 =
+* Wording: the long dashes used as separators throughout the interface, "CL000001, Jean Dupont", "Colissimo, 16.40 €", are gone, replaced by commas, colons or a middle dot; empty cells now show a short dash. Twelve strings change, so their French and Spanish translations ship updated with the plugin. No functional change.
 
 = 1.20.1 =
 * Fixed: on the parcels and clients lists, the search box floated to the right as WordPress does by default, and the table flowed beside it, squeezed into half the screen with the filters hanging in the other half. The filters now sit above the table, which takes the full width; the "fees advanced" line under a price no longer breaks word by word.
@@ -235,6 +238,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.20.2 =
+Wording only. No database change.
 
 = 1.20.1 =
 Display fix on the parcels and clients lists. No database change.

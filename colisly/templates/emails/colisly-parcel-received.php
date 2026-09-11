@@ -37,7 +37,7 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 	</tr>
 	<tr>
 		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Tracking number', 'colisly' ); ?></th>
-		<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '—' ); ?></td>
+		<td><?php echo esc_html( $parcel->tracking_number ? $parcel->tracking_number : '–' ); ?></td>
 	</tr>
 	<tr>
 		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Weight', 'colisly' ); ?></th>

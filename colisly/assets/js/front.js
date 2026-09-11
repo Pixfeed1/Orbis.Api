@@ -1,5 +1,5 @@
 /**
- * Colisly Parcel Forwarding — front scripts.
+ * Colisly Parcel Forwarding, front scripts.
  *
  * Live estimate on the shipment request form: parcels + storage fees +
  * carrier tariff (base + per-kg). The server remains the authority; this is
@@ -166,7 +166,7 @@
 
 			var name = option.getAttribute( 'data-name' ) || label;
 
-			option.textContent = name + ' — ' + formatPrice( carrierPrice( option, chargeableWeight( option, selected ) ) );
+			option.textContent = name + ' · ' + formatPrice( carrierPrice( option, chargeableWeight( option, selected ) ) );
 		} );
 	}
 

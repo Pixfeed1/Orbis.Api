@@ -27,7 +27,7 @@ class COLISLY_Admin_Settings {
 		$settings = COLISLY_Settings::all();
 		?>
 		<div class="wrap colisly-wrap">
-			<h1><?php esc_html_e( 'Settings — Colisly Parcel Forwarding', 'colisly' ); ?></h1>
+			<h1><?php esc_html_e( 'Colisly settings', 'colisly' ); ?></h1>
 			<?php COLISLY_Admin::maybe_notice(); ?>
 			<?php
 			// An enabled carrier nobody priced is not offered to clients, so
@@ -298,7 +298,7 @@ class COLISLY_Admin_Settings {
 							<?php
 							printf(
 								/* translators: 1: carrier name, 2: zone name. */
-								esc_html__( '%1$s — zone %2$s', 'colisly' ),
+								esc_html__( '%1$s, zone %2$s', 'colisly' ),
 								esc_html( $carrier['name'] ),
 								esc_html( $zone['name'] )
 							);
@@ -334,7 +334,7 @@ class COLISLY_Admin_Settings {
 						<?php
 						printf(
 							/* translators: %s: carrier name. */
-							esc_html__( '%s — all other destinations', 'colisly' ),
+							esc_html__( '%s, all other destinations', 'colisly' ),
 							esc_html( $carrier['name'] )
 						);
 						?>

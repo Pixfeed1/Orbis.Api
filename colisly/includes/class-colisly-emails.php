@@ -141,7 +141,7 @@ class COLISLY_Emails {
 			__( "Hello,\n\nWe have received your parcel %1\$s (weight: %2\$s kg, tracking number: %3\$s).\n\nIt is now available in your account, under “My parcels”. You benefit from %4\$d days of free storage.\n\nBest regards", 'colisly' ),
 			$parcel->reference,
 			number_format_i18n( (float) $parcel->weight, 3 ),
-			$parcel->tracking_number ? $parcel->tracking_number : '—',
+			$parcel->tracking_number ? $parcel->tracking_number : '–',
 			(int) COLISLY_Settings::get( 'free_storage_days', 15 )
 		);
 
