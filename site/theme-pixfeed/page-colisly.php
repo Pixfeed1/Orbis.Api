@@ -31,7 +31,12 @@ $pixfeed_colisly_seo = array(
 // Analytics) sont chargés : le CSS du thème redessinerait la page.
 $pixfeed_colisly_strip = static function () {
 	$keep = static function ( $handle ) {
-		return 0 === strpos( $handle, 'pixfeed-colisly' ) || false !== strpos( $handle, 'googlesitekit' ) || false !== strpos( $handle, 'google_gtagjs' );
+		// Les nôtres, la mesure d’audience, et la barre d’administration
+		// pour les personnes connectées.
+		return 0 === strpos( $handle, 'pixfeed-colisly' )
+			|| false !== strpos( $handle, 'googlesitekit' )
+			|| false !== strpos( $handle, 'google_gtagjs' )
+			|| in_array( $handle, array( 'admin-bar', 'dashicons', 'hoverintent-js' ), true );
 	};
 	foreach ( (array) wp_styles()->queue as $handle ) {
 		if ( ! $keep( $handle ) ) {
