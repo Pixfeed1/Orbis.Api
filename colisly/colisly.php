@@ -3,7 +3,7 @@
  * Plugin Name:       Colisly Parcel Forwarding
  * Plugin URI:        https://wordpress.org/plugins/colisly/
  * Description:       Client and parcel management for a parcel receiving, storage, grouping and forwarding business, natively integrated with WooCommerce.
- * Version:           1.19.0
+ * Version:           1.20.0
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Requires Plugins:  woocommerce
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
 
-define( 'COLISLY_VERSION', '1.19.0' );
+define( 'COLISLY_VERSION', '1.20.0' );
 define( 'COLISLY_PLUGIN_FILE', __FILE__ );
 define( 'COLISLY_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'COLISLY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -47,6 +47,7 @@ require_once COLISLY_PLUGIN_DIR . 'includes/class-colisly-documents.php';
 require_once COLISLY_PLUGIN_DIR . 'includes/class-colisly-emails.php';
 require_once COLISLY_PLUGIN_DIR . 'includes/class-colisly-ajax.php';
 require_once COLISLY_PLUGIN_DIR . 'includes/class-colisly-privacy.php';
+require_once COLISLY_PLUGIN_DIR . 'includes/class-colisly-shortcodes.php';
 require_once COLISLY_PLUGIN_DIR . 'includes/class-colisly-plugin.php';
 
 register_activation_hook( __FILE__, array( 'COLISLY_Install', 'activate' ) );

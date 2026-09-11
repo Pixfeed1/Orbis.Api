@@ -136,16 +136,62 @@ class COLISLY_Account {
 	 */
 	public static function enqueue_assets() {
 		if ( function_exists( 'is_account_page' ) && is_account_page() ) {
-			wp_enqueue_style( 'colisly-front', COLISLY_PLUGIN_URL . 'assets/css/front.css', array(), COLISLY_VERSION );
-			wp_enqueue_script( 'colisly-front', COLISLY_PLUGIN_URL . 'assets/js/front.js', array(), COLISLY_VERSION, true );
-			wp_localize_script(
-				'colisly-front',
-				'colislyFront',
-				array(
-					'currencySymbol' => function_exists( 'get_woocommerce_currency_symbol' ) ? html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOTES, 'UTF-8' ) : '€',
-				)
-			);
+			self::enqueue_front();
 		}
+	}
+
+	/**
+	 * Loads the account stylesheet and script, on the account page or on
+	 * any page carrying one of the shortcodes.
+	 *
+	 * @return void
+	 */
+	public static function enqueue_front() {
+		wp_enqueue_style( 'colisly-front', COLISLY_PLUGIN_URL . 'assets/css/front.css', array(), COLISLY_VERSION );
+		wp_enqueue_script( 'colisly-front', COLISLY_PLUGIN_URL . 'assets/js/front.js', array(), COLISLY_VERSION, true );
+		wp_localize_script(
+			'colisly-front',
+			'colislyFront',
+			array(
+				'currencySymbol' => function_exists( 'get_woocommerce_currency_symbol' ) ? html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOTES, 'UTF-8' ) : '€',
+				'copied'         => __( 'Copied', 'colisly' ),
+				'copy'           => __( 'Copy the address', 'colisly' ),
+			)
+		);
+	}
+
+	/**
+	 * The client's delivery address, ready to copy into a shop's checkout.
+	 *
+	 * The first thing a forwarding client needs is the address to shop
+	 * with, and it used to be nowhere: the reference sat alone at the top
+	 * of the parcels tab and each forwarder e-mailed the warehouse address
+	 * by hand. Shown on the parcels tab and through the
+	 * [colisly_shipping_address] shortcode.
+	 *
+	 * @param object $client Client row.
+	 * @return string HTML.
+	 */
+	public static function address_block( $client ) {
+		$lines = COLISLY_Clients::shipping_lines( $client );
+
+		ob_start();
+		?>
+		<div class="colisly-my-address">
+			<p class="colisly-my-address-title"><?php esc_html_e( 'Your delivery address', 'colisly' ); ?></p>
+			<address class="colisly-my-address-lines">
+				<?php foreach ( $lines as $i => $line ) : ?>
+					<?php if ( $i > 0 ) : ?><br /><?php endif; ?>
+					<?php echo 0 === $i ? '<strong>' . esc_html( $line ) . '</strong>' : esc_html( $line ); ?>
+				<?php endforeach; ?>
+			</address>
+			<p class="colisly-my-address-actions">
+				<button type="button" class="button colisly-copy" data-colisly-copy="<?php echo esc_attr( implode( "\n", $lines ) ); ?>"><?php esc_html_e( 'Copy the address', 'colisly' ); ?></button>
+				<span class="colisly-note"><?php echo esc_html( sprintf( /* translators: %s: client reference. */ __( 'Give this address to the shops you order from. Your reference %s must appear on every parcel.', 'colisly' ), $client->reference ) ); ?></span>
+			</p>
+		</div>
+		<?php
+		return (string) ob_get_clean();
 	}
 
 	/**
@@ -179,11 +225,7 @@ class COLISLY_Account {
 			return;
 		}
 
-		printf(
-			'<p>%s <code>%s</code></p>',
-			esc_html__( 'Your client reference:', 'colisly' ),
-			esc_html( $client->reference )
-		);
+		echo self::address_block( $client ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped while built.
 
 		// The stock is what the client acts on; what already left, or never
 		// will, is kept behind a second tab so the first stays readable after

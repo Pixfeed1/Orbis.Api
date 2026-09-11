@@ -2281,6 +2281,35 @@ colisly_check( 'Garde : l encart de commande montre les frais avances', false !=
 $colisly_adv_fjs = file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/front.js' );
 colisly_check( 'Garde : l estimation en direct compte les frais avances', false !== strpos( $colisly_adv_fjs, "'data-advanced'" ) );
 
+// ---------------------------------------------------------------------------
+// 1.20.0 : l adresse de livraison du client, prete a copier.
+// ---------------------------------------------------------------------------
+$colisly_addr_settings = COLISLY_Settings::all();
+$colisly_addr_client   = COLISLY_Clients::get( $client_id );
+COLISLY_Settings::update( array_merge( $colisly_addr_settings, array( 'warehouse_address' => '' ) ) );
+$colisly_addr_lines = COLISLY_Clients::shipping_lines( $colisly_addr_client );
+colisly_check( 'Adresse client : sans entrepot, nom et reference seuls', 1 === count( $colisly_addr_lines ) && $colisly_addr_lines[0] === trim( COLISLY_Clients::name( $colisly_addr_client ) . ' ' . $colisly_addr_client->reference ) );
+COLISLY_Settings::update( array_merge( $colisly_addr_settings, array( 'warehouse_address' => "12 rue de l'Entrepot\r\n\r\n75011 Paris  \nFrance" ) ) );
+$colisly_addr_lines = COLISLY_Clients::shipping_lines( $colisly_addr_client );
+colisly_check( 'Adresse client : nom + reference puis les lignes de l entrepot, sans ligne vide', array( trim( COLISLY_Clients::name( $colisly_addr_client ) . ' ' . $colisly_addr_client->reference ), "12 rue de l'Entrepot", '75011 Paris', 'France' ) === $colisly_addr_lines );
+$colisly_addr_html = COLISLY_Account::address_block( $colisly_addr_client );
+colisly_check( 'Adresse client : l encart porte le titre, la reference en gras et le bouton copier', false !== strpos( $colisly_addr_html, 'Your delivery address' ) && false !== strpos( $colisly_addr_html, '<strong>' . esc_html( $colisly_addr_lines[0] ) . '</strong>' ) && false !== strpos( $colisly_addr_html, 'data-colisly-copy="' . esc_attr( implode( "\n", $colisly_addr_lines ) ) . '"' ) );
+colisly_check( 'Adresse client : le rappel cite la reference', false !== strpos( $colisly_addr_html, 'Your reference ' . $colisly_addr_client->reference . ' must appear' ) );
+wp_set_current_user( (int) $colisly_addr_client->user_id );
+ob_start(); COLISLY_Account::render_parcels(); $colisly_addr_tab = (string) ob_get_clean();
+colisly_check( 'Adresse client : l onglet Mes colis s ouvre dessus', false !== strpos( $colisly_addr_tab, 'colisly-my-address' ) && false !== strpos( $colisly_addr_tab, '75011 Paris' ) );
+colisly_check( 'Code court : la reference seule', '<span class="colisly-client-reference">' . $colisly_addr_client->reference . '</span>' === do_shortcode( '[colisly_client_reference]' ) );
+colisly_check( 'Code court : l adresse complete', false !== strpos( do_shortcode( '[colisly_shipping_address]' ), esc_html( "12 rue de l'Entrepot" ) ) );
+colisly_check( 'Code court : le script du bouton copier est charge', wp_script_is( 'colisly-front', 'enqueued' ) );
+wp_set_current_user( 0 );
+colisly_check( 'Code court : visiteur non connecte, rien pour la reference', '' === do_shortcode( '[colisly_client_reference]' ) );
+colisly_check( 'Code court : visiteur non connecte, un lien de connexion pour l adresse', false !== strpos( do_shortcode( '[colisly_shipping_address]' ), 'wp-login.php' ) && false === strpos( do_shortcode( '[colisly_shipping_address]' ), 'Entrepot' ) );
+COLISLY_Settings::update( $colisly_addr_settings );
+$colisly_addr_js = file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/front.js' );
+colisly_check( 'Garde : le bouton copier passe par le presse-papiers avec repli sur la selection', false !== strpos( $colisly_addr_js, 'navigator.clipboard.writeText' ) && false !== strpos( $colisly_addr_js, 'selectNodeContents' ) );
+$colisly_addr_set = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-settings.php' );
+colisly_check( 'Garde : l adresse de l entrepot se regle et se nettoie', false !== strpos( $colisly_addr_set, 'name="warehouse_address"' ) && false !== strpos( $colisly_addr_set, "sanitize_textarea_field( wp_unslash( \$_POST['warehouse_address'] ) )" ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

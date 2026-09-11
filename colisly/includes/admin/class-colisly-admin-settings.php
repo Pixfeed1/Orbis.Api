@@ -53,6 +53,18 @@ class COLISLY_Admin_Settings {
 				<?php wp_nonce_field( 'colisly_save_settings' ); ?>
 				<input type="hidden" name="action" value="colisly_save_settings" />
 
+				<h2><?php esc_html_e( 'Warehouse', 'colisly' ); ?></h2>
+				<p class="description"><?php esc_html_e( 'The address your clients give to the shops they order from. Each client sees it in their account under their own name and reference, ready to copy, so the parcel reaches the right shelf.', 'colisly' ); ?></p>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><label for="colisly-warehouse-address"><?php esc_html_e( 'Warehouse address', 'colisly' ); ?></label></th>
+						<td>
+							<textarea id="colisly-warehouse-address" name="warehouse_address" rows="4" class="large-text" placeholder="<?php esc_attr_e( "12 rue de l'Entrepôt\n75011 Paris\nFrance", 'colisly' ); ?>"><?php echo esc_textarea( (string) $settings['warehouse_address'] ); ?></textarea>
+							<p class="description"><?php esc_html_e( 'One line per address line, without the client name: it is added above, followed by the client reference. Leave empty and the account only shows the reference.', 'colisly' ); ?></p>
+						</td>
+					</tr>
+				</table>
+
 				<h2><?php esc_html_e( 'Storage', 'colisly' ); ?></h2>
 				<table class="form-table" role="presentation">
 					<tr>
@@ -595,6 +607,7 @@ class COLISLY_Admin_Settings {
 
 		$settings = COLISLY_Settings::all();
 
+		$settings['warehouse_address']   = isset( $_POST['warehouse_address'] ) ? sanitize_textarea_field( wp_unslash( $_POST['warehouse_address'] ) ) : '';
 		$settings['free_storage_days']   = isset( $_POST['free_storage_days'] ) ? absint( $_POST['free_storage_days'] ) : 15;
 		$settings['storage_fee_per_day'] = isset( $_POST['storage_fee_per_day'] ) ? max( 0, (float) $_POST['storage_fee_per_day'] ) : 0;
 		$settings['price_base']          = isset( $_POST['price_base'] ) ? max( 0, (float) $_POST['price_base'] ) : 0;

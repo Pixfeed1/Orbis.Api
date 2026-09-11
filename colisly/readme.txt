@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.19.0
+Stable tag: 1.20.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -38,6 +38,7 @@ Commercial package forwarding software in this category is sold as one-time lice
 = Client side =
 
 * A dedicated area in the WooCommerce My Account page listing parcels, shipments and documents
+* The client's delivery address, name plus reference plus your warehouse, ready to copy into any shop's checkout, in the account and through a shortcode
 * Internal fields stay internal: your notes, your dimensions and your cost prices are never exposed
 * A shipment request becomes a native WooCommerce order with itemised handling, storage and carrier lines, paid at your usual checkout with your usual gateways
 * Private document storage with authenticated downloads, for customs declarations, commercial invoices and proof of delivery
@@ -118,6 +119,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.20.0 =
+* New: the client's delivery address. The first thing a forwarding client needs is the address to give the shops they order from, their own name followed by their reference and then the warehouse, and it was nowhere: the reference sat alone at the top of the parcels tab and every forwarder e-mailed the warehouse address by hand. The warehouse address is now a setting, and the parcels tab opens on a "Your delivery address" block, name and reference in bold, warehouse lines under it, with a "Copy the address" button and a reminder that the reference must appear on every parcel. Two shortcodes put the same thing on any page of the site: [colisly_shipping_address] for the whole block, [colisly_client_reference] for the reference alone; a visitor who is not logged in gets a login link instead. No database change.
 
 = 1.19.0 =
 * New: fees advanced on delivery. Since customs reforms removed the duty exemption on low-value parcels, cartons increasingly reach the warehouse with duties and import VAT to pay before the carrier hands them over. The forwarder pays to get the parcel and had nowhere to write it down. The reception form now has a "Fees advanced on delivery" amount, with a short label defaulting to "Customs duties" so a carrier surcharge or a redelivery fee fits too. The amount shows on the parcel in the client's account, in the reception e-mail with a line saying it was paid on their behalf, and on the shipment order as its own untaxed line, "Customs duties advanced on parcel COL000123", so the client pays it back at cost together with the shipment. It can be corrected as long as the parcel is in stock. Adds two columns to the parcels table; the migration runs by itself on update.
@@ -228,6 +232,11 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.20.0 =
+Clients now see their delivery address, name plus reference plus your
+warehouse, ready to copy, in their account and through a shortcode. Set
+the warehouse address in the settings. No database change.
 
 = 1.19.0 =
 Duties and taxes paid to take delivery of a parcel can now be recorded on

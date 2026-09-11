@@ -1,7 +1,7 @@
 # Spanish translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.19.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.20.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -1012,9 +1012,6 @@ msgstr "Solicitud de envío"
 msgid "No client record is linked to your account yet."
 msgstr "Todavía no hay ninguna ficha de cliente vinculada a su cuenta."
 
-msgid "Your client reference:"
-msgstr "Su referencia de cliente:"
-
 msgid "No parcels yet."
 msgstr "Todavía no hay paquetes."
 
@@ -1296,3 +1293,33 @@ msgstr "Pagados por su cuenta para recibir el paquete, añadidos a precio de cos
 
 msgid "(parcels + fees advanced + storage fees + transport — confirmed on the payment page)"
 msgstr "(paquetes + gastos adelantados + gastos de almacenamiento + transporte — se confirma en la página de pago)"
+
+msgid "Warehouse"
+msgstr "Almacén"
+
+msgid "The address your clients give to the shops they order from. Each client sees it in their account under their own name and reference, ready to copy, so the parcel reaches the right shelf."
+msgstr "La dirección que sus clientes dan a las tiendas donde compran. Cada cliente la ve en su cuenta con su propio nombre y referencia, lista para copiar, para que el paquete llegue a la estantería correcta."
+
+msgid "Warehouse address"
+msgstr "Dirección del almacén"
+
+msgid "12 rue de l'Entrepôt\n75011 Paris\nFrance"
+msgstr "Calle del Almacén 12\n28001 Madrid\nEspaña"
+
+msgid "One line per address line, without the client name: it is added above, followed by the client reference. Leave empty and the account only shows the reference."
+msgstr "Una línea por cada línea de dirección, sin el nombre del cliente: se añade encima, seguido de su referencia. Déjelo vacío y la cuenta solo muestra la referencia."
+
+msgid "Log in to see your delivery address."
+msgstr "Inicie sesión para ver su dirección de entrega."
+
+msgid "Copied"
+msgstr "Copiado"
+
+msgid "Copy the address"
+msgstr "Copiar la dirección"
+
+msgid "Your delivery address"
+msgstr "Su dirección de entrega"
+
+msgid "Give this address to the shops you order from. Your reference %s must appear on every parcel."
+msgstr "Dé esta dirección a las tiendas donde compra. Su referencia %s debe aparecer en cada paquete."

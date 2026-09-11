@@ -66,6 +66,7 @@ final class COLISLY_Plugin {
 		COLISLY_Downloads::init();
 		COLISLY_Orders::init();
 		COLISLY_Privacy::init();
+		COLISLY_Shortcodes::init();
 
 		if ( is_admin() ) {
 			require_once COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin.php';

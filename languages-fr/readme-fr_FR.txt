@@ -62,6 +62,9 @@ Colisly est gratuite et sous licence GPL.
 
 * Un espace dédié dans la page Mon compte de WooCommerce, listant les colis, les
   expéditions et les documents
+* L'adresse de livraison du client, nom, référence et entrepôt, prête à copier
+  dans le tunnel de commande de n'importe quelle boutique, dans le compte et
+  via un code court
 * Les champs internes restent internes : vos notes, vos dimensions et vos prix
   de revient ne sont jamais exposés
 * Une demande d'expédition devient une commande WooCommerce native, détaillée en
@@ -194,6 +197,21 @@ l'extension ainsi que ses options.
 ================================================================================
 == Journal des modifications ==
 ================================================================================
+
+= 1.20.0 =
+* Nouveau : l'adresse de livraison du client. La première chose dont un client
+  a besoin, c'est l'adresse à donner aux boutiques où il commande, son nom
+  suivi de sa référence puis l'entrepôt, et elle n'était nulle part : la
+  référence trônait seule en haut de l'onglet des colis et chaque
+  réexpéditeur envoyait l'adresse de l'entrepôt à la main. L'adresse de
+  l'entrepôt est désormais un réglage, et l'onglet des colis s'ouvre sur un
+  encart « Votre adresse de livraison », nom et référence en gras, lignes de
+  l'entrepôt dessous, avec un bouton « Copier l'adresse » et le rappel que la
+  référence doit figurer sur chaque colis. Deux codes courts posent la même
+  chose sur n'importe quelle page du site : [colisly_shipping_address] pour
+  l'encart complet, [colisly_client_reference] pour la référence seule ; un
+  visiteur non connecté reçoit un lien de connexion à la place. Aucun
+  changement de base de données.
 
 = 1.19.0 =
 * Nouveau : frais avancés à la livraison. Depuis la réforme douanière qui a
@@ -562,6 +580,11 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.20.0 =
+Les clients voient désormais leur adresse de livraison, nom, référence et
+entrepôt, prête à copier, dans leur compte et via un code court. Renseignez
+l'adresse de l'entrepôt dans les réglages. Aucun changement de base de données.
 
 = 1.19.0 =
 Les droits et taxes payés pour prendre livraison d'un colis se notent dessus

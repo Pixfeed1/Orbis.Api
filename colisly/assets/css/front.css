@@ -118,6 +118,38 @@
  * Parcels view tabs: two links, the current one underlined, so the split
  * between the stock and the rest reads as a choice and not as a menu.
  */
+/* The address to shop with: the one block a client copies every week. */
+.colisly-my-address {
+	background: rgba(0, 0, 0, .035);
+	border-left: 4px solid currentColor;
+	border-radius: 6px;
+	margin: 0 0 1.5em;
+	padding: 1em 1.25em;
+}
+
+.colisly-my-address-title {
+	font-weight: 600;
+	margin: 0 0 .5em;
+}
+
+.colisly-my-address-lines {
+	font-style: normal;
+	line-height: 1.5;
+	margin: 0 0 .75em;
+}
+
+.colisly-my-address-actions {
+	align-items: center;
+	display: flex;
+	flex-wrap: wrap;
+	gap: .5em 1em;
+	margin: 0;
+}
+
+.colisly-copy.is-copied {
+	opacity: .7;
+}
+
 .colisly-view-tabs {
 	display: flex;
 	flex-wrap: wrap;

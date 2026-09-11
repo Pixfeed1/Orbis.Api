@@ -28,6 +28,7 @@ class COLISLY_Settings {
 	 */
 	public static function defaults() {
 		return array(
+			'warehouse_address'       => '',
 			'free_storage_days'       => 15,
 			'storage_fee_per_day'     => 1.0,
 			'price_base'              => 5.0,

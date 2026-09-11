@@ -219,6 +219,58 @@
 } )();
 
 /**
+ * "Copy the address": the client pastes it into a shop's checkout.
+ *
+ * Clipboard access needs a secure context; when it is refused the text
+ * is selected instead, so a manual copy still works.
+ */
+( function () {
+	'use strict';
+
+	document.addEventListener( 'click', function ( event ) {
+		var button = event.target.closest ? event.target.closest( '[data-colisly-copy]' ) : null;
+
+		if ( ! button ) {
+			return;
+		}
+
+		var text = button.getAttribute( 'data-colisly-copy' );
+		var labels = window.colislyFront || {};
+		var done = function () {
+			button.textContent = labels.copied || 'Copied';
+			button.classList.add( 'is-copied' );
+			window.setTimeout( function () {
+				button.textContent = labels.copy || 'Copy the address';
+				button.classList.remove( 'is-copied' );
+			}, 2000 );
+		};
+
+		if ( navigator.clipboard && navigator.clipboard.writeText ) {
+			navigator.clipboard.writeText( text ).then( done, function () {
+				selectAddress( button );
+			} );
+		} else {
+			selectAddress( button );
+		}
+	} );
+
+	function selectAddress( button ) {
+		var block = button.closest( '.colisly-my-address' );
+		var lines = block ? block.querySelector( '.colisly-my-address-lines' ) : null;
+
+		if ( ! lines || ! window.getSelection ) {
+			return;
+		}
+
+		var range = document.createRange();
+		range.selectNodeContents( lines );
+		var selection = window.getSelection();
+		selection.removeAllRanges();
+		selection.addRange( range );
+	}
+}() );
+
+/**
  * Confirmation before a client withdraws his own shipment request.
  *
  * Its own closure: the estimate above bails out on any page without the

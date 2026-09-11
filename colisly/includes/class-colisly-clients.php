@@ -321,6 +321,37 @@ class COLISLY_Clients {
 	 *                       enough otherwise.
 	 * @return string
 	 */
+	/**
+	 * The delivery address a client gives to the shops they order from.
+	 *
+	 * A forwarder lives on parcels that carry the right name: the client's
+	 * own, followed by the reference that finds the record at reception,
+	 * then the warehouse lines from the settings. Without a warehouse
+	 * address set, the name and reference alone are still what to write on
+	 * the parcel.
+	 *
+	 * @param object $client Client row.
+	 * @return string[] Address lines, first one "Name CL000001".
+	 */
+	public static function shipping_lines( $client ) {
+		$lines = array( trim( self::name( $client ) . ' ' . $client->reference ) );
+
+		foreach ( preg_split( '/\r\n|\r|\n/', (string) COLISLY_Settings::get( 'warehouse_address', '' ) ) as $line ) {
+			$line = trim( $line );
+			if ( '' !== $line ) {
+				$lines[] = $line;
+			}
+		}
+
+		/**
+		 * Filters the delivery address lines shown to a client.
+		 *
+		 * @param string[] $lines  Address lines.
+		 * @param object   $client Client row.
+		 */
+		return apply_filters( 'colisly_client_shipping_lines', $lines, $client );
+	}
+
 	public static function name( $client ) {
 		$user_id = isset( $client->user_id ) ? (int) $client->user_id : 0;
 		$display = isset( $client->display_name ) ? trim( (string) $client->display_name ) : '';
