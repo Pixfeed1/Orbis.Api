@@ -1247,7 +1247,7 @@ msgid "Label height (mm)"
 msgstr "Hauteur de l’étiquette (mm)"
 
 msgid "Width × height. 62 × 30 mm by default, the common small label; 100 × 62 mm for a large one."
-msgstr "Largeur × hauteur. 62 × 30 mm par défaut pour le petite étiquette courante ; 100 × 62 mm pour un grand."
+msgstr "Largeur × hauteur. 62 × 30 mm par défaut pour la petite étiquette courante ; 100 × 62 mm pour une grande."
 
 msgid "Also print"
 msgstr "Imprimer également"

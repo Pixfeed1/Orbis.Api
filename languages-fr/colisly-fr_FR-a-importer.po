@@ -74,7 +74,7 @@ msgid "Give this address to the shops you order from. Your reference %s must app
 msgstr "Donnez cette adresse aux boutiques où vous commandez. Votre référence %s doit figurer sur chaque colis."
 
 msgid "Width × height. 62 × 30 mm by default, the common small label; 100 × 62 mm for a large one."
-msgstr "Largeur × hauteur. 62 × 30 mm par défaut pour le petite étiquette courante ; 100 × 62 mm pour un grand."
+msgstr "Largeur × hauteur. 62 × 30 mm par défaut pour la petite étiquette courante ; 100 × 62 mm pour une grande."
 
 msgid "The label printed when a parcel is booked in. Every label printer has its own format, so give the size of your labels in millimetres; the reference, the client and the reception date always fit, and the internal comment when there is one. Add the weight and the tracking number only if your labels have room for them."
 msgstr "L’étiquette imprimée lors de l’enregistrement d’un colis. Chaque imprimante d’étiquettes ayant son propre format, indiquez la taille de vos étiquettes en millimètres ; la référence, le client et la date de réception y figurent toujours, ainsi que le commentaire interne lorsqu’il y en a un. Ajoutez le poids et le numéro de suivi uniquement si vos étiquettes disposent de suffisamment de place."
