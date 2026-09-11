@@ -67,6 +67,9 @@ msgstr "Côté client"
 msgid "A dedicated area in the WooCommerce My Account page listing parcels, shipments and documents"
 msgstr "Un espace dédié dans la page Mon compte de WooCommerce, listant les colis, les expéditions et les documents"
 
+msgid "The client's delivery address, name plus reference plus your warehouse, ready to copy into any shop's checkout, in the account and through a shortcode"
+msgstr "L'adresse de livraison du client, nom, référence et entrepôt, prête à copier dans le tunnel de commande de n'importe quelle boutique, dans le compte et via un code court"
+
 msgid "Internal fields stay internal: your notes, your dimensions and your cost prices are never exposed"
 msgstr "Les champs internes restent internes : vos notes, vos dimensions et vos prix de revient ne sont jamais exposés"
 
@@ -204,6 +207,15 @@ msgstr "Réglages : jours de stockage gratuits, frais de stockage, paliers de ta
 
 msgid "Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo."
 msgstr "Tranches de poids par transporteur, pour les transporteurs qui publient une grille plutôt qu'un tarif au kilo."
+
+msgid "Wording: the long dashes used as separators throughout the interface, \"CL000001, Jean Dupont\", \"Colissimo, 16.40 €\", are gone, replaced by commas, colons or a middle dot; empty cells now show a short dash. Twelve strings change, so their French and Spanish translations ship updated with the plugin. No functional change."
+msgstr "Rédaction : les tirets longs qui servaient de séparateurs dans l'interface, « CL000001, Jean Dupont », « Colissimo, 16,40 € », disparaissent au profit de virgules, de deux-points ou d'un point médian ; les cellules vides affichent un tiret court. Douze chaînes changent, leurs traductions française et espagnole sont livrées à jour avec l'extension. Aucun changement de fonctionnement."
+
+msgid "Fixed: on the parcels and clients lists, the search box floated to the right as WordPress does by default, and the table flowed beside it, squeezed into half the screen with the filters hanging in the other half. The filters now sit above the table, which takes the full width; the \"fees advanced\" line under a price no longer breaks word by word."
+msgstr "Correction : sur les listes de colis et de clients, le champ de recherche flottait à droite comme WordPress le fait par défaut, et le tableau venait se ranger à côté, écrasé sur une moitié d'écran avec les filtres suspendus dans l'autre. Les filtres sont désormais au-dessus du tableau, qui prend toute la largeur ; la ligne « frais avancés » sous un prix ne se casse plus mot par mot."
+
+msgid "New: the client's delivery address. The first thing a forwarding client needs is the address to give the shops they order from, their own name followed by their reference and then the warehouse, and it was nowhere: the reference sat alone at the top of the parcels tab and every forwarder e-mailed the warehouse address by hand. The warehouse address is now a setting, and the parcels tab opens on a \"Your delivery address\" block, name and reference in bold, warehouse lines under it, with a \"Copy the address\" button and a reminder that the reference must appear on every parcel. Two shortcodes put the same thing on any page of the site: [colisly_shipping_address] for the whole block, [colisly_client_reference] for the reference alone; a visitor who is not logged in gets a login link instead. No database change."
+msgstr "Nouveau : l'adresse de livraison du client. La première chose dont un client a besoin, c'est l'adresse à donner aux boutiques où il commande, son nom suivi de sa référence puis l'entrepôt, et elle n'était nulle part : la référence trônait seule en haut de l'onglet des colis et chaque réexpéditeur envoyait l'adresse de l'entrepôt à la main. L'adresse de l'entrepôt est désormais un réglage, et l'onglet des colis s'ouvre sur un encart « Votre adresse de livraison », nom et référence en gras, lignes de l'entrepôt dessous, avec un bouton « Copier l'adresse » et le rappel que la référence doit figurer sur chaque colis. Deux codes courts posent la même chose sur n'importe quelle page du site : [colisly_shipping_address] pour l'encart complet, [colisly_client_reference] pour la référence seule ; un visiteur non connecté reçoit un lien de connexion à la place. Aucun changement de base de données."
 
 msgid "New: fees advanced on delivery. Since customs reforms removed the duty exemption on low-value parcels, cartons increasingly reach the warehouse with duties and import VAT to pay before the carrier hands them over. The forwarder pays to get the parcel and had nowhere to write it down. The reception form now has a \"Fees advanced on delivery\" amount, with a short label defaulting to \"Customs duties\" so a carrier surcharge or a redelivery fee fits too. The amount shows on the parcel in the client's account, in the reception e-mail with a line saying it was paid on their behalf, and on the shipment order as its own untaxed line, \"Customs duties advanced on parcel COL000123\", so the client pays it back at cost together with the shipment. It can be corrected as long as the parcel is in stock. Adds two columns to the parcels table; the migration runs by itself on update."
 msgstr "Nouveau : frais avancés à la livraison. Depuis la réforme douanière qui a supprimé la franchise de droits sur les petits envois, les cartons arrivent de plus en plus souvent à l'entrepôt avec des droits et une TVA à l'import à régler avant que le transporteur ne les remette. Le réexpéditeur paie pour récupérer le colis et n'avait nulle part où le noter. Le formulaire de réception a désormais un champ « Frais avancés à la livraison », avec un libellé court, « Droits de douane » par défaut, pour qu'une surtaxe transporteur ou une représentation y tiennent aussi. Le montant apparaît sur le colis dans l'espace client, dans l'e-mail de réception avec une ligne précisant qu'il a été payé pour son compte, et sur la commande d'expédition comme ligne à part, sans taxe, « Droits de douane avancés sur le colis COL000123 », pour que le client le rembourse au coût réel avec l'expédition. Il se corrige tant que le colis est en stock. Deux colonnes ajoutées à la table des colis, migration automatique à la mise à jour."
@@ -378,6 +390,18 @@ msgstr "Correction : sur les écrans étroits, les dimensions du colis passaient
 
 msgid "The allowed carriers help text now states that leaving none checked places no restriction."
 msgstr "Le texte d'aide des transporteurs autorisés précise maintenant que n'en cocher aucun n'applique aucune restriction."
+
+msgid "= 1.20.2 = Wording only. No database change."
+msgstr "= 1.20.2 = Rédaction seulement. Aucun changement de base de données."
+
+msgid "= 1.20.1 = Display fix on the parcels and clients lists. No database change."
+msgstr "= 1.20.1 = Correction d'affichage sur les listes de colis et de clients. Aucun changement de base de données."
+
+msgid "= 1.20.0 = Clients now see their delivery address, name plus reference plus your warehouse, ready to copy, in their account and through a shortcode. Set the warehouse address in the settings. No database change."
+msgstr "= 1.20.0 = Les clients voient désormais leur adresse de livraison, nom, référence et entrepôt, prête à copier, dans leur compte et via un code court. Renseignez l'adresse de l'entrepôt dans les réglages. Aucun changement de base de données."
+
+msgid "Clients now see their delivery address, name plus reference plus your\nwarehouse, ready to copy, in their account and through a shortcode. Set\nthe warehouse address in the settings. No database change."
+msgstr "= 1.20.0 = Les clients voient désormais leur adresse de livraison, nom, référence et entrepôt, prête à copier, dans leur compte et via un code court. Renseignez l'adresse de l'entrepôt dans les réglages. Aucun changement de base de données."
 
 msgid "= 1.19.0 = Duties and taxes paid to take delivery of a parcel can now be recorded on it and are billed back at cost on the shipment order. Two columns added to the parcels table, migrated automatically."
 msgstr "= 1.19.0 = Les droits et taxes payés pour prendre livraison d'un colis se notent dessus et sont refacturés au coût réel sur la commande d'expédition. Deux colonnes ajoutées à la table des colis, migrées automatiquement."
