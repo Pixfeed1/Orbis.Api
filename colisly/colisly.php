@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Colisly Parcel Forwarding
- * Plugin URI:        https://wordpress.org/plugins/colisly/
+ * Plugin URI:        https://pixfeed.net/colisly-extension-woocommerce-de-reexpedition-de-colis/
  * Description:       Client and parcel management for a parcel receiving, storage, grouping and forwarding business, natively integrated with WooCommerce.
  * Version:           1.20.2
  * Requires at least: 6.2
