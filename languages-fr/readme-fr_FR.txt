@@ -198,6 +198,14 @@ l'extension ainsi que ses options.
 == Journal des modifications ==
 ================================================================================
 
+= 1.20.1 =
+* Correction : sur les listes de colis et de clients, le champ de recherche
+  flottait à droite comme WordPress le fait par défaut, et le tableau venait
+  se ranger à côté, écrasé sur une moitié d'écran avec les filtres suspendus
+  dans l'autre. Les filtres sont désormais au-dessus du tableau, qui prend
+  toute la largeur ; la ligne « frais avancés » sous un prix ne se casse plus
+  mot par mot.
+
 = 1.20.0 =
 * Nouveau : l'adresse de livraison du client. La première chose dont un client
   a besoin, c'est l'adresse à donner aux boutiques où il commande, son nom
@@ -580,6 +588,10 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.20.1 =
+Correction d'affichage sur les listes de colis et de clients. Aucun changement
+de base de données.
 
 = 1.20.0 =
 Les clients voient désormais leur adresse de livraison, nom, référence et

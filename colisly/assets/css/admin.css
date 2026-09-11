@@ -48,6 +48,11 @@
 
 .colisly-search-form .search-box {
 	display: flex;
+	flex-wrap: wrap;
+	/* WordPress floats its search boxes to the right; the table below then
+	   flowed beside it, squeezed to half the screen with the filters
+	   hanging in the empty half. The form stays in the flow, above. */
+	float: none;
 	gap: 8px;
 	margin: 12px 0;
 }
@@ -88,6 +93,7 @@
 /* Fees advanced, printed under the parcel price in the lists. */
 .colisly-advanced {
 	color: #50575e;
+	white-space: nowrap;
 }
 
 .colisly-order-advanced {

@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.20.0
+Stable tag: 1.20.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -120,6 +120,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 == Changelog ==
 
+= 1.20.1 =
+* Fixed: on the parcels and clients lists, the search box floated to the right as WordPress does by default, and the table flowed beside it, squeezed into half the screen with the filters hanging in the other half. The filters now sit above the table, which takes the full width; the "fees advanced" line under a price no longer breaks word by word.
+
 = 1.20.0 =
 * New: the client's delivery address. The first thing a forwarding client needs is the address to give the shops they order from, their own name followed by their reference and then the warehouse, and it was nowhere: the reference sat alone at the top of the parcels tab and every forwarder e-mailed the warehouse address by hand. The warehouse address is now a setting, and the parcels tab opens on a "Your delivery address" block, name and reference in bold, warehouse lines under it, with a "Copy the address" button and a reminder that the reference must appear on every parcel. Two shortcodes put the same thing on any page of the site: [colisly_shipping_address] for the whole block, [colisly_client_reference] for the reference alone; a visitor who is not logged in gets a login link instead. No database change.
 
@@ -232,6 +235,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.20.1 =
+Display fix on the parcels and clients lists. No database change.
 
 = 1.20.0 =
 Clients now see their delivery address, name plus reference plus your
