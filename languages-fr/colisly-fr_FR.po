@@ -10,7 +10,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: colisly build\n"
 
-
 msgid "Colisly Parcel Forwarding"
 msgstr "Colisly Parcel Forwarding"
 
@@ -162,7 +161,7 @@ msgid "Photo"
 msgstr "Photo"
 
 msgid "Status"
-msgstr "Statut"
+msgstr "État"
 
 msgid "No parcels."
 msgstr "Aucun colis."
@@ -225,10 +224,10 @@ msgid "Date"
 msgstr "Date"
 
 msgid "Event"
-msgstr "Événement"
+msgstr "Évènement"
 
 msgid "Details"
-msgstr "Détail"
+msgstr "Détails"
 
 msgid "By"
 msgstr "Par"
@@ -246,7 +245,7 @@ msgid "Document added."
 msgstr "Document ajouté."
 
 msgid "Shipment status updated."
-msgstr "Statut de l’expédition mis à jour."
+msgstr "État de l’expédition mis à jour."
 
 msgid "Parcels"
 msgstr "Colis"
@@ -258,7 +257,7 @@ msgid "Parcel number, tracking, client…"
 msgstr "N° colis, suivi, client…"
 
 msgid "All statuses"
-msgstr "Tous les statuts"
+msgstr "Tous les états"
 
 msgid "Filter"
 msgstr "Filtrer"
@@ -303,7 +302,7 @@ msgid "required"
 msgstr "obligatoire"
 
 msgid "Dimensions (cm, visible to administrators only)"
-msgstr "Dimensions (cm, visibles uniquement par les administrateurs)"
+msgstr "Dimensions (cm, visibles uniquement par les administrateurs et administratrices)"
 
 msgid "Length"
 msgstr "Longueur"
@@ -315,7 +314,7 @@ msgid "Height"
 msgstr "Hauteur"
 
 msgid "Photo of the parcel at reception (optional)"
-msgstr "Photo du colis à la réception (facultatif)"
+msgstr "Photo du colis à la réception (facultative)"
 
 msgid "Internal comment (never visible to the client)"
 msgstr "Commentaire interne (jamais visible par le client)"
@@ -348,7 +347,7 @@ msgid "Parcel %s saved. Its price has been computed automatically."
 msgstr "Colis %s enregistré. Le tarif a été calculé automatiquement."
 
 msgid "Parcel status updated."
-msgstr "Statut du colis mis à jour."
+msgstr "État du colis mis à jour."
 
 msgid "Colisly settings"
 msgstr "Réglages de Colisly"
@@ -387,7 +386,7 @@ msgid "A disabled carrier is no longer offered, neither at parcel reception nor 
 msgstr "Un transporteur désactivé n’est plus proposé, ni à la réception des colis, ni aux clients."
 
 msgid "Slug"
-msgstr "Identifiant"
+msgstr "Slug"
 
 msgid "Base price"
 msgstr "Prix de base"
@@ -420,7 +419,7 @@ msgid "Notify the client when a parcel is received"
 msgstr "Prévenir le client à la réception d’un colis"
 
 msgid "Notify the administrator when a shipment is requested"
-msgstr "Prévenir l’administrateur lors d’une demande d’expédition"
+msgstr "Prévenir l’administrateur ou l’administratrice lors d’une demande d’expédition"
 
 msgid "Send the WooCommerce invoice (with payment link) when a shipment is requested"
 msgstr "Envoyer la facture WooCommerce (avec lien de paiement) lors d’une demande d’expédition"
@@ -467,43 +466,17 @@ msgstr "Photo introuvable."
 msgid "[%1$s] Your parcel %2$s has been received"
 msgstr "[%1$s] Votre colis %2$s a bien été réceptionné"
 
-msgid ""
-"Hello,\n"
-"\n"
-"We have received your parcel %1$s (weight: %2$s kg, tracking number: %3$s).\n"
-"\n"
-"It is now available in your account, under “My parcels”. You benefit from %4$d days of free storage.\n"
-"\n"
-"Best regards"
-msgstr ""
-"Bonjour,\n"
-"\n"
-"Nous avons bien réceptionné votre colis %1$s (poids : %2$s kg, n° de suivi : %3$s).\n"
-"\n"
-"Il est désormais disponible dans votre espace client, rubrique « Mes colis ». Vous bénéficiez de %4$d jours de stockage gratuit.\n"
-"\n"
-"Cordialement"
+msgid "Hello,\n\nWe have received your parcel %1$s (weight: %2$s kg, tracking number: %3$s).\n\nIt is now available in your account, under “My parcels”. You benefit from %4$d days of free storage.\n\nBest regards"
+msgstr "Bonjour,\n\nNous avons bien réceptionné votre colis %1$s (poids : %2$s kg, n° de suivi : %3$s).\n\nIl est désormais disponible dans votre espace client, rubrique « Mes colis ». Vous bénéficiez de %4$d jours de stockage gratuit.\n\nCordialement"
 
 msgid "New shipment request %1$s (client %2$s)"
 msgstr "Nouvelle demande d’expédition %1$s (client %2$s)"
 
-msgid ""
-"A new shipment request %1$s has just been created by client %2$s.\n"
-"\n"
-"Number of parcels: %3$d\n"
-"Preferred carrier: %4$s\n"
-"\n"
-"Log in to the administration to process it."
-msgstr ""
-"Une nouvelle demande d’expédition %1$s vient d’être créée par le client %2$s.\n"
-"\n"
-"Nombre de colis : %3$d\n"
-"Transporteur souhaité : %4$s\n"
-"\n"
-"Connectez-vous à l’administration pour la traiter."
+msgid "A new shipment request %1$s has just been created by client %2$s.\n\nNumber of parcels: %3$d\nPreferred carrier: %4$s\n\nLog in to the administration to process it."
+msgstr "Une nouvelle demande d’expédition %1$s vient d’être créée par le client %2$s.\n\nNombre de colis : %3$d\nTransporteur souhaité : %4$s\n\nConnectez-vous à l’administration pour la traiter."
 
 msgid "No file uploaded."
-msgstr "Aucun fichier envoyé."
+msgstr "Aucun fichier n’a été téléversé."
 
 msgid "The protected storage directory could not be created."
 msgstr "Impossible de créer le répertoire de stockage protégé."
@@ -568,16 +541,16 @@ msgid "Parcel %1$s received (%2$s kg, price %3$s)."
 msgstr "Colis %1$s reçu (%2$s kg, tarif %3$s)."
 
 msgid "Invalid parcel status."
-msgstr "Statut de colis invalide."
+msgstr "État du colis invalide."
 
 msgid "Parcel not found."
 msgstr "Colis introuvable."
 
 msgid "The status could not be updated."
-msgstr "Impossible de mettre à jour le statut."
+msgstr "Impossible de mettre à jour l’état."
 
 msgid "Parcel %1$s: status “%2$s” → “%3$s”."
-msgstr "Colis %1$s : statut « %2$s » → « %3$s »."
+msgstr "Colis %1$s : état « %2$s » → « %3$s »."
 
 msgctxt "shipment status"
 msgid "Requested"
@@ -628,13 +601,13 @@ msgid "Shipment request %1$s created (%2$d parcels, carrier %3$s)."
 msgstr "Demande d’expédition %1$s créée (%2$d colis, transporteur %3$s)."
 
 msgid "Invalid shipment status."
-msgstr "Statut d’expédition invalide."
+msgstr "État de l’expédition invalide."
 
 msgid "Shipment not found."
 msgstr "Expédition introuvable."
 
 msgid "Shipment %1$s: status “%2$s” → “%3$s”."
-msgstr "Expédition %1$s : statut « %2$s » → « %3$s »."
+msgstr "Expédition %1$s : état « %2$s » → « %3$s »."
 
 msgid "Parcel received (Colisly Parcel Forwarding)"
 msgstr "Colis réceptionné (Colisly Parcel Forwarding)"
@@ -860,7 +833,6 @@ msgstr "Ajouter une tranche"
 msgid "Carrier weight brackets"
 msgstr "Tranches de poids par transporteur"
 
-
 msgid "Include in the shipment"
 msgstr "Inclure dans l’expédition"
 
@@ -874,7 +846,7 @@ msgid "Save the changes"
 msgstr "Enregistrer les modifications"
 
 msgid "This parcel is already engaged in a shipment and can no longer be edited. Only its status can be changed."
-msgstr "Ce colis est déjà engagé dans une expédition et ne peut plus être modifié. Seul son statut reste modifiable."
+msgstr "Ce colis est déjà engagé dans une expédition et ne peut plus être modifié. Seul son état peut encore être modifié."
 
 msgid "The client of a parcel cannot be changed after reception."
 msgstr "Le client d’un colis ne peut plus être changé après la réception."
@@ -883,7 +855,7 @@ msgid "Parcel %s updated. Its price has been recomputed from the weight."
 msgstr "Colis %s modifié. Son tarif a été recalculé à partir du poids."
 
 msgid "Parcel %1$s corrected: %2$s."
-msgstr "Colis %1$s corrigé : %2$s."
+msgstr "Colis %1$s corrigé : %2$s."
 
 msgid "weight %1$s kg to %2$s kg, price %3$s to %4$s"
 msgstr "poids %1$s kg vers %2$s kg, tarif %3$s vers %4$s"
@@ -916,7 +888,7 @@ msgid "Insurance"
 msgstr "Assurance"
 
 msgid "Insurance:"
-msgstr "Assurance :"
+msgstr "Assurance :"
 
 msgid "Insured for"
 msgstr "Assuré pour"
@@ -937,7 +909,7 @@ msgid "Insurance (cover %s)"
 msgstr "Assurance (couverture %s)"
 
 msgid "Cover levels offered to the client when requesting a shipment: how much the parcel is covered for, and what that costs. Leave the table empty and no insurance is offered at all."
-msgstr "Niveaux de couverture proposés au client lors d’une demande d’expédition : à hauteur de quel montant le colis est couvert, et ce que cela coûte. Laissez le tableau vide et aucune assurance n’est proposée."
+msgstr "Niveaux de couverture proposés au client lors d’une demande d’expédition : à hauteur de quel montant le colis est couvert, et ce que cela coûte. Laissez le tableau vide et aucune assurance n’est proposée."
 
 msgid "Destination zones"
 msgstr "Zones de destination"
@@ -964,21 +936,19 @@ msgid "Add a carrier and save to configure its brackets. A zone you have just cr
 msgstr "Ajoutez un transporteur et enregistrez pour configurer ses tranches. Une zone que vous venez de créer apparaît elle aussi ici après enregistrement."
 
 msgid "Volumetric: express carriers price bulk rather than mass. Tick the box and the transport is billed on whichever is greater, the real weight or length x width x height divided by the divisor, parcel by parcel. A parcel whose dimensions were not entered is billed on its real weight."
-msgstr "Volumétrique : les transporteurs express facturent l’encombrement plutôt que la masse. Cochez la case et le transport est facturé sur le plus grand des deux, le poids réel ou longueur x largeur x hauteur divisé par le diviseur, colis par colis. Un colis dont les dimensions n’ont pas été saisies est facturé sur son poids réel."
+msgstr "Volumétrique : les transporteurs express facturent l’encombrement plutôt que la masse. Cochez la case et le transport est facturé sur le plus grand des deux, le poids réel ou longueur x largeur x hauteur divisé par le diviseur, colis par colis. Un colis dont les dimensions n’ont pas été saisies est facturé sur son poids réel."
 
 msgid "Customs declaration"
-msgstr "Déclaration douanière"
+msgstr "Déclaration en douane"
 
 msgid "Customs form"
-msgstr "Formulaire de douane"
-
+msgstr "Formulaire douanier"
 
 msgid "Quantity"
 msgstr "Quantité"
 
 msgid "Unit weight (kg)"
 msgstr "Poids unitaire (kg)"
-
 
 msgid "Country of origin"
 msgstr "Pays d’origine"
@@ -1005,7 +975,7 @@ msgid "Value"
 msgstr "Valeur"
 
 msgid "HS tariff number"
-msgstr "Position tarifaire SH"
+msgstr "Numéro tarifaire SH"
 
 msgid "Gross weight of the parcel (kg)"
 msgstr "Poids brut du colis (kg)"
@@ -1035,13 +1005,13 @@ msgid "Parcel %s is going to a destination that requires a customs declaration. 
 msgstr "Le colis %s part vers une destination qui exige une déclaration douanière. Déclarez son contenu avant de demander l’expédition."
 
 msgid "Tick the customs column for the zones that need a declaration of the contents. The plugin cannot work this out on its own: reshipping from mainland France to Guadeloupe needs one, since the overseas departments sit outside the EU VAT territory, while reshipping to Belgium needs none. The client then declares what each parcel holds before it can leave."
-msgstr "Cochez la colonne douane pour les zones qui exigent une déclaration du contenu. L’extension ne peut pas le deviner seule : réexpédier de métropole vers la Guadeloupe en exige une, les départements d’outre-mer étant hors du territoire de TVA de l’UE, alors que réexpédier vers la Belgique n’en exige aucune. Le client déclare alors le contenu de chaque colis avant qu’il puisse partir."
+msgstr "Cochez la colonne douane pour les zones qui exigent une déclaration du contenu. L’extension ne peut pas le deviner seule : réexpédier de métropole vers la Guadeloupe en exige une, les départements d’outre-mer étant hors du territoire de TVA de l’UE, alors que réexpédier vers la Belgique n’en exige aucune. Le client déclare alors le contenu de chaque colis avant qu’il puisse partir."
 
 msgid "I certify that the particulars given in this declaration are correct and that this item does not contain any dangerous article or article prohibited by legislation or by postal or customs regulations."
 msgstr "Je certifie que les renseignements donnés dans la présente déclaration sont exacts et que cet envoi ne contient aucun objet dangereux ou interdit par la législation ou la réglementation postale ou douanière."
 
 msgid "Warning: the declared contents weigh %1$s kg, more than the parcel itself (%2$s kg). Check the declaration before shipping."
-msgstr "Attention : le contenu déclaré pèse %1$s kg, soit plus que le colis lui-même (%2$s kg). Vérifiez la déclaration avant expédition."
+msgstr "Avertissement : le contenu déclaré pèse %1$s kg, soit plus que le colis lui-même (%2$s kg). Vérifiez la déclaration avant expédition."
 
 msgctxt "My Account endpoint slug"
 msgid "customs-declaration"
@@ -1049,8 +1019,8 @@ msgstr "declaration-douaniere"
 
 msgid "Customs declaration of parcel %1$s updated: %2$d line."
 msgid_plural "Customs declaration of parcel %1$s updated: %2$d lines."
-msgstr[0] "Déclaration douanière du colis %1$s mise à jour : %2$d ligne."
-msgstr[1] "Déclaration douanière du colis %1$s mise à jour : %2$d lignes."
+msgstr[0] "Déclaration douanière du colis %1$s mise à jour : %2$d ligne."
+msgstr[1] "Déclaration douanière du colis %1$s mise à jour : %2$d lignes."
 
 msgid "Contents"
 msgstr "Contenu"
@@ -1065,7 +1035,7 @@ msgid "Clothing&#10;Shoes&#10;Books"
 msgstr "Vêtements&#10;Chaussures&#10;Livres"
 
 msgid "Total declared: %s"
-msgstr "Total déclaré : %s"
+msgstr "Total déclaré : %s"
 
 msgid "%1$s x%2$d, %3$s, origin %4$s"
 msgstr "%1$s x%2$d, %3$s, origine %4$s"
@@ -1074,7 +1044,7 @@ msgid "One category per line. Leave empty and clients describe the contents in t
 msgstr "Une catégorie par ligne. Laissez vide et les clients décrivent le contenu avec leurs propres mots, ce qu’un formulaire douanier réclame. Remplissez-la et le champ devient un menu de vos catégories, plus rapide à remplir et homogène d’un client à l’autre."
 
 msgid "Required for some destinations. Declare the contents of the parcels you are sending; a parcel left undeclared will be refused if its destination asks for one."
-msgstr "Exigée pour certaines destinations. Déclarez le contenu des colis que vous envoyez ; un colis laissé sans déclaration sera refusé si sa destination en exige une."
+msgstr "Obligatoire pour certaines destinations. Déclarez le contenu des colis que vous envoyez ; un colis laissé sans déclaration sera refusé si sa destination en exige une."
 
 msgid "A carrier does not charge the same to reship next door and to the other side of the world. Group your destinations here, then price each carrier per zone below. Pick the countries by name from the list, or type their two-letter codes separated by commas; the names of the codes you entered are spelled out under the field. A country you do not list keeps the carrier default grid."
 msgstr "Un transporteur ne facture pas la même chose pour réexpédier à côté et à l’autre bout du monde. Regroupez vos destinations ici, puis tarifez chaque transporteur par zone ci-dessous. Choisissez les pays par leur nom dans la liste, ou saisissez leurs codes à deux lettres séparés par des virgules ; les noms des codes saisis sont rappelés sous le champ. Un pays que vous ne listez pas conserve la grille par défaut du transporteur."
@@ -1125,7 +1095,7 @@ msgid "Ask the client for"
 msgstr "Demander au client"
 
 msgid "The contents and the value are always asked, since a declaration without them declares nothing. The other three are what a real CN23 form needs, line by line. Untick them if you only want to know what a parcel holds before copying it onto your carrier's own form: three columns a client fills for nothing are three columns he fills badly."
-msgstr "Le contenu et la valeur sont toujours demandés, une déclaration qui en manque ne déclare rien. Les trois autres sont ce qu’un vrai formulaire CN23 réclame, ligne par ligne. Décochez-les si vous voulez seulement savoir ce que contient un colis avant de le recopier sur le formulaire de votre transporteur : trois colonnes qu’un client remplit pour rien sont trois colonnes qu’il remplit mal."
+msgstr "Le contenu et la valeur sont toujours demandés, une déclaration qui en manque ne déclare rien. Les trois autres sont ce qu’un vrai formulaire CN23 réclame, ligne par ligne. Décochez-les si vous voulez seulement savoir ce que contient un colis avant de le recopier sur le formulaire de votre transporteur : trois colonnes qu’un client remplit pour rien sont trois colonnes qu’il remplit mal."
 
 msgid "Add a line"
 msgstr "Ajouter une ligne"
@@ -1170,8 +1140,8 @@ msgstr "Déclaration enregistrée."
 
 msgid "This carrier is enabled but has no rate at all, so clients are not offered it: %s. Give it a weight bracket grid, or a base price and a price per kg."
 msgid_plural "These carriers are enabled but have no rate at all, so clients are not offered them: %s. Give them a weight bracket grid, or a base price and a price per kg."
-msgstr[0] "Ce transporteur est activé mais n’a aucun tarif, les clients ne se le voient donc pas proposer : %s. Donnez-lui une grille de tranches de poids, ou un prix de base et un prix au kilo."
-msgstr[1] "Ces transporteurs sont activés mais n’ont aucun tarif, les clients ne se les voient donc pas proposer : %s. Donnez-leur une grille de tranches de poids, ou un prix de base et un prix au kilo."
+msgstr[0] "Ce transporteur est activé mais n’a aucun tarif, les clients ne se le voient donc pas proposer : %s. Donnez-lui une grille de tranches de poids, ou un prix de base et un prix au kilo."
+msgstr[1] "Ces transporteurs sont activés mais n’ont aucun tarif, les clients ne se les voient donc pas proposer : %s. Donnez-leur une grille de tranches de poids, ou un prix de base et un prix au kilo."
 
 msgid "%s has no rate for this destination. Choose another carrier or get in touch with us."
 msgstr "%s n’a pas de tarif pour cette destination. Choisissez un autre transporteur ou contactez-nous."
@@ -1180,22 +1150,22 @@ msgid "No carrier is priced for your destination yet. Please get in touch with u
 msgstr "Aucun transporteur n’est encore tarifé pour votre destination. Merci de nous contacter."
 
 msgid "Most carriers should be priced with a weight bracket grid, filled in under “Carrier weight brackets” below. The two prices in this table are optional: they only apply to a carrier with no grid, and beyond the last bracket of a carrier that has one. Leave them empty if you price by grid."
-msgstr "La plupart des transporteurs se tarifent par une grille de tranches de poids, à remplir sous « Tranches de poids des transporteurs » ci-dessous. Les deux prix de ce tableau sont facultatifs : ils ne s’appliquent qu’à un transporteur sans grille, et au-delà de la dernière tranche d’un transporteur qui en a une. Laissez-les vides si vous tarifez par grille."
+msgstr "La plupart des transporteurs se tarifent par une grille de tranches de poids, à remplir sous « Tranches de poids des transporteurs » ci-dessous. Les deux prix de ce tableau sont facultatifs : ils ne s’appliquent qu’à un transporteur sans grille, et au-delà de la dernière tranche d’un transporteur qui en a une. Laissez-les vides si vous tarifez par grille."
 
 msgid "Limits: what the carrier physically takes. Maximum weight applies to the whole shipment, since grouped parcels leave in one carton; maximum length and girth (length plus twice the width plus twice the height, in cm) apply to each parcel. Leave empty for no limit. A parcel or shipment beyond a limit cannot be requested with that carrier."
-msgstr "Limites : ce que le transporteur prend physiquement. Le poids maximum s’applique à l’expédition entière, les colis regroupés partant dans un seul carton ; la longueur et le développé maximum (longueur plus deux fois la largeur plus deux fois la hauteur, en cm) s’appliquent à chaque colis. Laissez vide pour aucune limite. Un colis ou une expédition au-delà d’une limite ne peut pas être demandé avec ce transporteur."
+msgstr "Limites : ce que le transporteur prend physiquement. Le poids maximum s’applique à l’expédition entière, les colis regroupés partant dans un seul carton ; la longueur et le développé maximum (longueur plus deux fois la largeur plus deux fois la hauteur, en cm) s’appliquent à chaque colis. Laissez vide pour aucune limite. Un colis ou une expédition au-delà d’une limite ne peut pas être demandé avec ce transporteur."
 
 msgid "Max weight (kg)"
-msgstr "Poids max (kg)"
+msgstr "Poids maximal (kg)"
 
 msgid "Max length (cm)"
-msgstr "Longueur max (cm)"
+msgstr "Longueur maximale (cm)"
 
 msgid "Max girth (cm)"
-msgstr "Développé max (cm)"
+msgstr "Circonférence maximale (cm)"
 
 msgid "Carriers usually publish a grid of weight brackets rather than a price per kilo: the first bracket whose maximum weight is greater than or equal to the shipment weight sets the price. Each carrier gets one grid per destination zone, then a grid for all other destinations. Leave that last one empty if every destination you serve is in a zone: the carrier is then simply not offered elsewhere. Beyond the last bracket the base price + price per kg formula applies, but it can only ever charge more than the last bracket, never less."
-msgstr "Les transporteurs publient en général une grille de tranches de poids plutôt qu’un prix au kilo : la première tranche dont le poids maximal est supérieur ou égal au poids de l’expédition fixe le prix. Chaque transporteur a une grille par zone de destination, puis une grille pour toutes les autres destinations. Laissez cette dernière vide si toutes les destinations que vous desservez sont dans une zone : le transporteur n’est alors simplement pas proposé ailleurs. Au-delà de la dernière tranche, la formule prix de base + prix au kilo s’applique, mais elle ne peut jamais facturer moins que la dernière tranche."
+msgstr "Les transporteurs publient en général une grille de tranches de poids plutôt qu’un prix au kilo : la première tranche dont le poids maximal est supérieur ou égal au poids de l’expédition fixe le prix. Chaque transporteur a une grille par zone de destination, puis une grille pour toutes les autres destinations. Laissez cette dernière vide si toutes les destinations que vous desservez sont dans une zone : le transporteur n’est alors simplement pas proposé ailleurs. Au-delà de la dernière tranche, la formule prix de base + prix au kilo s’applique, mais elle ne peut jamais facturer moins que la dernière tranche."
 
 msgid "%s, all other destinations"
 msgstr "%s, toutes les autres destinations"
@@ -1204,13 +1174,13 @@ msgid "Applies to any destination in no zone, or in a zone this carrier has no g
 msgstr "S’applique à toute destination hors zone, ou dans une zone pour laquelle ce transporteur n’a pas de grille. Laissez vide si toutes les destinations que vous desservez sont dans une zone ci-dessus."
 
 msgid "Parcel %1$s is too long for %2$s: %3$s cm, limit %4$s cm."
-msgstr "Le colis %1$s est trop long pour %2$s : %3$s cm, limite %4$s cm."
+msgstr "Le colis %1$s est trop long pour %2$s : %3$s cm, limite %4$s cm."
 
 msgid "Parcel %1$s is too big for %2$s: length plus twice the width and height is %3$s cm, limit %4$s cm."
-msgstr "Le colis %1$s est trop grand pour %2$s : longueur plus deux fois la largeur et la hauteur fait %3$s cm, limite %4$s cm."
+msgstr "Le colis %1$s est trop grand pour %2$s : longueur plus deux fois la largeur et la hauteur fait %3$s cm, limite %4$s cm."
 
 msgid "%1$s does not take shipments over %3$s kg; this one weighs %2$s kg. Choose another carrier or split the shipment."
-msgstr "%1$s ne prend pas les expéditions de plus de %3$s kg ; celle-ci pèse %2$s kg. Choisissez un autre transporteur ou séparez l’expédition."
+msgstr "%1$s ne prend pas les expéditions de plus de %3$s kg ; celle-ci pèse %2$s kg. Choisissez un autre transporteur ou séparez l’expédition."
 
 msgid "Colisly shipment"
 msgstr "Expédition Colisly"
@@ -1232,7 +1202,7 @@ msgstr[0] "Expédié ou indisponible (%d)"
 msgstr[1] "Expédiés ou indisponibles (%d)"
 
 msgid "No parcel has left yet."
-msgstr "Aucun colis n’est encore parti."
+msgstr "Aucun colis n’a encore été expédié."
 
 msgid "No parcel in stock at the moment."
 msgstr "Aucun colis en stock pour le moment."
@@ -1247,7 +1217,7 @@ msgid "Next"
 msgstr "Suivant"
 
 msgid "Internal comment: %s"
-msgstr "Commentaire interne : %s"
+msgstr "Commentaire interne : %s"
 
 msgid "Print the label"
 msgstr "Imprimer l’étiquette"
@@ -1265,10 +1235,10 @@ msgid "Tracking %s"
 msgstr "Suivi %s"
 
 msgid "Parcel labels"
-msgstr "Étiquettes colis"
+msgstr "Étiquettes de colis"
 
 msgid "The label printed when a parcel is booked in. Every label printer has its own format, so give the size of your labels in millimetres; the reference, the client and the reception date always fit, and the internal comment when there is one. Add the weight and the tracking number only if your labels have room for them."
-msgstr "L’étiquette imprimée à la réception d’un colis. Chaque imprimante d’étiquettes a son format : indiquez la taille de vos étiquettes en millimètres ; la référence, le client et la date de réception tiennent toujours, ainsi que le commentaire interne quand il y en a un. N’ajoutez le poids et le numéro de suivi que si vos étiquettes ont la place."
+msgstr "L’étiquette imprimée lors de l’enregistrement d’un colis. Chaque imprimante d’étiquettes ayant son propre format, indiquez la taille de vos étiquettes en millimètres ; la référence, le client et la date de réception y figurent toujours, ainsi que le commentaire interne lorsqu’il y en a un. Ajoutez le poids et le numéro de suivi uniquement si vos étiquettes disposent de suffisamment de place."
 
 msgid "Label size (mm)"
 msgstr "Taille de l’étiquette (mm)"
@@ -1277,10 +1247,10 @@ msgid "Label height (mm)"
 msgstr "Hauteur de l’étiquette (mm)"
 
 msgid "Width × height. 62 × 30 mm by default, the common small label; 100 × 62 mm for a large one."
-msgstr "Largeur × hauteur. 62 × 30 mm par défaut, la petite étiquette la plus courante ; 100 × 62 mm pour une grande."
+msgstr "Largeur × hauteur. 62 × 30 mm par défaut pour le petite étiquette courante ; 100 × 62 mm pour un grand."
 
 msgid "Also print"
-msgstr "Imprimer aussi"
+msgstr "Imprimer également"
 
 msgid "Weight and dimensions"
 msgstr "Poids et dimensions"
@@ -1292,16 +1262,16 @@ msgid "Fees advanced on delivery"
 msgstr "Frais avancés à la livraison"
 
 msgid "What the fees were for"
-msgstr "Nature des frais"
+msgstr "Motif des frais"
 
 msgid "Customs duties"
 msgstr "Droits de douane"
 
 msgid "Customs duties, import VAT or a carrier surcharge paid to take delivery of the parcel. The client sees the amount in their account and it is billed back at cost, as its own line, on the shipment order. Leave empty when nothing was paid."
-msgstr "Droits de douane, TVA à l’import ou surtaxe transporteur payés pour prendre livraison du colis. Le client voit le montant dans son espace et il lui est refacturé au coût réel, sur une ligne à part, sur la commande d’expédition. Laissez vide si rien n’a été payé."
+msgstr "Droits de douane, TVA à l’importation ou supplément du transporteur payés afin de réceptionner le colis. Le client voit le montant dans son compte et celui-ci est refacturé au coût réel sur une ligne distincte de la commande d’expédition. Laissez vide si aucun montant n’a été payé."
 
 msgid "%1$s advanced on parcel %2$s"
-msgstr "%1$s avancés sur le colis %2$s"
+msgstr "%1$s avancés pour le colis %2$s"
 
 msgid "fees advanced %1$s to %2$s"
 msgstr "frais avancés de %1$s à %2$s"
@@ -1310,16 +1280,16 @@ msgid "fees advanced"
 msgstr "frais avancés"
 
 msgid "The fees advanced must be an amount."
-msgstr "Les frais avancés doivent être un montant."
+msgstr "Les frais avancés doivent être un montant valide."
 
 msgid "The fees advanced cannot be negative."
 msgstr "Les frais avancés ne peuvent pas être négatifs."
 
 msgid "%1$s advanced: %2$s"
-msgstr "%1$s avancés : %2$s"
+msgstr "%1$s avancés : %2$s"
 
 msgid "Paid on your behalf to take delivery of the parcel, added at cost to your next shipment order."
-msgstr "Payés pour votre compte pour prendre livraison du colis, ajoutés au coût réel à votre prochaine commande d’expédition."
+msgstr "Frais payés en votre nom pour la réception du colis, puis refacturés au coût réel sur votre prochaine commande d’expédition."
 
 msgid "(parcels + fees advanced + storage fees + transport, confirmed on the payment page)"
 msgstr "(colis + frais avancés + frais de stockage + transport, confirmé sur la page de paiement)"
@@ -1328,7 +1298,7 @@ msgid "Warehouse"
 msgstr "Entrepôt"
 
 msgid "The address your clients give to the shops they order from. Each client sees it in their account under their own name and reference, ready to copy, so the parcel reaches the right shelf."
-msgstr "L’adresse que vos clients donnent aux boutiques où ils commandent. Chaque client la voit dans son espace sous son propre nom et sa référence, prête à copier, pour que le colis arrive sur la bonne étagère."
+msgstr "L’adresse que vos clients donnent aux boutiques où ils commandent. Chaque client la voit dans son compte, sous son propre nom et sa référence, prête à copier, pour que le colis arrive sur la bonne étagère."
 
 msgid "Warehouse address"
 msgstr "Adresse de l’entrepôt"
@@ -1337,7 +1307,7 @@ msgid "12 rue de l'Entrepôt\n75011 Paris\nFrance"
 msgstr "12 rue de l’Entrepôt\n75011 Paris\nFrance"
 
 msgid "One line per address line, without the client name: it is added above, followed by the client reference. Leave empty and the account only shows the reference."
-msgstr "Une ligne par ligne d’adresse, sans le nom du client : il est ajouté au-dessus, suivi de sa référence. Laissez vide et l’espace client n’affiche que la référence."
+msgstr "Une ligne par ligne d’adresse, sans le nom du client : il est ajouté au-dessus, suivi de sa référence. Laissez vide et le compte n’affiche que la référence."
 
 msgid "Log in to see your delivery address."
 msgstr "Connectez-vous pour voir votre adresse de livraison."
