@@ -1,18 +1,104 @@
 <?php
 /**
- * Page Colisly : gabarit autonome, indépendant du thème.
+ * Template Name: Colisly (plein écran)
  *
- * @package Pixfeed_Colisly_Page
+ * Page de présentation de Colisly. Utilisée automatiquement par la page
+ * dont l’identifiant est « colisly », ou choisie dans « Modèle » pour une
+ * autre page. Plein écran : ni en-tête ni pied de page du thème, mais
+ * wp_head() et wp_footer() sont appelés, donc Yoast et Site Kit fonctionnent.
+ *
+ * Fichiers liés : css/colisly.css, colisly/img/, colisly/video/.
+ *
+ * @package Pixfeed
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$u   = plugin_dir_url( __FILE__ );
-$ver = defined( 'PIXFEED_COLISLY_PAGE_VERSION' ) ? PIXFEED_COLISLY_PAGE_VERSION : '1.0.0';
+$u   = get_stylesheet_directory_uri() . '/colisly/';
+$ver = file_exists( get_stylesheet_directory() . '/css/colisly.css' ) ? (string) filemtime( get_stylesheet_directory() . '/css/colisly.css' ) : '1';
 $url = get_permalink();
-$og  = $u . 'assets/img/hero-poster-l.jpg';
+$og  = $u . 'img/hero-poster-l.jpg';
+
+$pixfeed_colisly_seo = array(
+	'title'       => 'Colisly, extension WooCommerce de réexpédition de colis | Pixfeed',
+	'description' => 'Colisly transforme une boutique WooCommerce en plateforme de réexpédition de colis : réception, stockage, groupage, réexpédition et espace client. Extension WordPress gratuite, GPL.',
+	'image'       => $og,
+);
+
+// Seuls nos styles et les scripts de mesure d’audience (Site Kit, Google
+// Analytics) sont chargés : le CSS du thème redessinerait la page.
+$pixfeed_colisly_strip = static function () {
+	$keep = static function ( $handle ) {
+		return 0 === strpos( $handle, 'pixfeed-colisly' ) || false !== strpos( $handle, 'googlesitekit' ) || false !== strpos( $handle, 'google_gtagjs' );
+	};
+	foreach ( (array) wp_styles()->queue as $handle ) {
+		if ( ! $keep( $handle ) ) {
+			wp_dequeue_style( $handle );
+		}
+	}
+	foreach ( (array) wp_scripts()->queue as $handle ) {
+		if ( ! $keep( $handle ) ) {
+			wp_dequeue_script( $handle );
+		}
+	}
+};
+add_action(
+	'wp_enqueue_scripts',
+	static function () use ( $ver, $pixfeed_colisly_strip ) {
+		wp_enqueue_style( 'pixfeed-colisly-fonts', 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500;600&display=swap', array(), null ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion
+		wp_enqueue_style( 'pixfeed-colisly-page', get_stylesheet_directory_uri() . '/css/colisly.css', array(), $ver );
+		$pixfeed_colisly_strip();
+	},
+	999
+);
+add_action( 'wp_print_styles', $pixfeed_colisly_strip, 999 );
+add_action( 'wp_print_scripts', $pixfeed_colisly_strip, 999 );
+add_action( 'wp_print_footer_scripts', $pixfeed_colisly_strip, 1 );
+remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+remove_action( 'wp_print_styles', 'print_emoji_styles' );
+remove_action( 'wp_head', 'wp_generator' );
+remove_action( 'wp_head', 'wp_enqueue_global_styles', 1 );
+remove_action( 'wp_footer', 'wp_enqueue_global_styles', 1 );
+remove_action( 'wp_body_open', 'wp_global_styles_render_svg_filters' );
+
+// Titre de l’onglet quand Yoast n’est pas là pour le fournir.
+add_filter(
+	'pre_get_document_title',
+	static function () use ( $pixfeed_colisly_seo ) {
+		return $pixfeed_colisly_seo['title'];
+	},
+	20
+);
+
+// Avec Yoast : ses champs sont préremplis une fois, puis modifiables dans
+// l’encart Yoast de la page. Sans Yoast : les balises sont écrites ici.
+if ( defined( 'WPSEO_VERSION' ) ) {
+	$pixfeed_colisly_id = get_queried_object_id();
+	if ( $pixfeed_colisly_id && '' === (string) get_post_meta( $pixfeed_colisly_id, '_yoast_wpseo_metadesc', true ) ) {
+		update_post_meta( $pixfeed_colisly_id, '_yoast_wpseo_title', $pixfeed_colisly_seo['title'] );
+		update_post_meta( $pixfeed_colisly_id, '_yoast_wpseo_metadesc', $pixfeed_colisly_seo['description'] );
+		update_post_meta( $pixfeed_colisly_id, '_yoast_wpseo_opengraph-image', $pixfeed_colisly_seo['image'] );
+		update_post_meta( $pixfeed_colisly_id, '_yoast_wpseo_opengraph-title', 'Colisly, la réexpédition de colis dans WooCommerce' );
+	}
+} else {
+	add_action(
+		'wp_head',
+		static function () use ( $pixfeed_colisly_seo, $url ) {
+			echo '<meta name="description" content="' . esc_attr( $pixfeed_colisly_seo['description'] ) . '">' . "\n";
+			echo '<link rel="canonical" href="' . esc_url( $url ) . '">' . "\n";
+			echo '<meta property="og:type" content="website">' . "\n";
+			echo '<meta property="og:locale" content="fr_FR">' . "\n";
+			echo '<meta property="og:title" content="Colisly, la réexpédition de colis dans WooCommerce">' . "\n";
+			echo '<meta property="og:description" content="' . esc_attr( $pixfeed_colisly_seo['description'] ) . '">' . "\n";
+			echo '<meta property="og:url" content="' . esc_url( $url ) . '">' . "\n";
+			echo '<meta property="og:image" content="' . esc_url( $pixfeed_colisly_seo['image'] ) . '">' . "\n";
+			echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
+		},
+		2
+	);
+}
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -21,7 +107,7 @@ $og  = $u . 'assets/img/hero-poster-l.jpg';
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="icon" href="<?php echo esc_url( $u . 'assets/img/icon.svg' ); ?>" type="image/svg+xml">
+<link rel="icon" href="<?php echo esc_url( $u . 'img/icon.svg' ); ?>" type="image/svg+xml">
 <?php wp_head(); ?>
 <script type="application/ld+json">
 <?php
@@ -46,8 +132,8 @@ echo wp_json_encode(
 			'@type'        => 'VideoObject',
 			'name'         => 'Colisly en 40 secondes',
 			'description'  => 'Réception d’un colis, étiquette, puis le client choisit ses colis, voit le prix et paie.',
-			'thumbnailUrl' => $u . 'assets/img/poster-entrepot.jpg',
-			'contentUrl'   => $u . 'assets/video/entrepot.mp4',
+			'thumbnailUrl' => $u . 'img/poster-entrepot.jpg',
+			'contentUrl'   => $u . 'video/entrepot.mp4',
 			'uploadDate'   => '2026-09-11',
 			'duration'     => 'PT40S',
 		),
@@ -76,7 +162,7 @@ echo wp_json_encode(
 <main class="wrap" id="top">
   <section class="hero">
     <div class="hero-video" id="entrepot">
-      <video id="bg" class="hero-bg" muted loop playsinline autoplay preload="auto" poster="<?php echo esc_url( $u . 'assets/img/hero-poster-l.jpg' ); ?>" aria-hidden="true" tabindex="-1"></video>
+      <video id="bg" class="hero-bg" muted loop playsinline autoplay preload="auto" poster="<?php echo esc_url( $u . 'img/hero-poster-l.jpg' ); ?>" aria-hidden="true" tabindex="-1"></video>
       <div class="hero-copy">
         <p class="eyebrow eyebrow-light">Extension WordPress et WooCommerce, gratuite</p>
         <h1>Votre entrepôt de réexpédition, dans WooCommerce.</h1>
@@ -102,7 +188,7 @@ echo wp_json_encode(
           <button class="chapter" role="tab" type="button" data-i="1" aria-selected="false">Côté client</button>
         </div>
       </div>
-      <video id="v" playsinline muted preload="none" poster="<?php echo esc_url( $u . 'assets/img/poster-entrepot.jpg' ); ?>" src="<?php echo esc_url( $u . 'assets/video/entrepot.mp4' ); ?>" aria-label="Démonstration de Colisly"></video>
+      <video id="v" playsinline muted preload="none" poster="<?php echo esc_url( $u . 'img/poster-entrepot.jpg' ); ?>" src="<?php echo esc_url( $u . 'video/entrepot.mp4' ); ?>" aria-label="Démonstration de Colisly"></video>
       <div class="screen-foot">
         <span id="vcap">Réception d’un colis, étiquette, liste du stock</span>
         <div class="bar"><i id="vbar"></i></div>
@@ -147,15 +233,15 @@ echo wp_json_encode(
     <div class="shot">
       <figure class="browser" style="margin:0">
         <div class="browser-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url">votre-site.fr/wp-admin › Colisly › Nouveau colis</span></div>
-        <button type="button" class="zoom" data-lightbox data-caption="Bloc Informations du colis : numéro de suivi, poids, dimensions, frais avancés, commentaire interne"><img src="<?php echo esc_url( $u . 'assets/img/s-reception-infos.jpg' ); ?>" alt="Bloc Informations du colis : numéro de suivi, poids, dimensions, frais avancés, commentaire interne" width="2000" height="1252" loading="lazy"></button>
+        <button type="button" class="zoom" data-lightbox data-caption="Bloc Informations du colis : numéro de suivi, poids, dimensions, frais avancés, commentaire interne"><img src="<?php echo esc_url( $u . 'img/s-reception-infos.jpg' ); ?>" alt="Bloc Informations du colis : numéro de suivi, poids, dimensions, frais avancés, commentaire interne" width="2000" height="1252" loading="lazy"></button>
       </figure>
       <figure class="browser" style="margin:0">
         <div class="browser-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url">Colis enregistré</span></div>
-        <button type="button" class="zoom" data-lightbox data-caption="Panneau Colis enregistré : référence en grand, Imprimer l’étiquette, Nouveau colis pour ce client"><img src="<?php echo esc_url( $u . 'assets/img/s-reception-enregistre.jpg' ); ?>" alt="Panneau Colis enregistré : référence en grand, Imprimer l’étiquette, Nouveau colis pour ce client" width="1996" height="260" loading="lazy"></button>
+        <button type="button" class="zoom" data-lightbox data-caption="Panneau Colis enregistré : référence en grand, Imprimer l’étiquette, Nouveau colis pour ce client"><img src="<?php echo esc_url( $u . 'img/s-reception-enregistre.jpg' ); ?>" alt="Panneau Colis enregistré : référence en grand, Imprimer l’étiquette, Nouveau colis pour ce client" width="1996" height="260" loading="lazy"></button>
       </figure>
       <div class="label-real">
         <p class="eyebrow">L’étiquette, à taille réelle</p>
-        <img src="<?php echo esc_url( $u . 'assets/img/etiquette.jpg' ); ?>" alt="Étiquette de colis 62 × 30 mm : référence, client, date de réception, commentaire" width="940" height="456">
+        <img src="<?php echo esc_url( $u . 'img/etiquette.jpg' ); ?>" alt="Étiquette de colis 62 × 30 mm : référence, client, date de réception, commentaire" width="940" height="456">
         <small>62 × 30&nbsp;mm sur votre écran, la petite étiquette des imprimantes thermiques. Taille et contenu réglables.</small>
       </div>
     </div>
@@ -176,11 +262,11 @@ echo wp_json_encode(
     <div class="shot">
       <figure class="browser" style="margin:0">
         <div class="browser-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url">votre-site.fr/mon-compte/mes-colis</span></div>
-        <button type="button" class="zoom" data-lightbox data-caption="Encart Votre adresse de livraison : nom et référence, adresse de l’entrepôt, bouton Copier l’adresse"><img src="<?php echo esc_url( $u . 'assets/img/s-client-adresse.jpg' ); ?>" alt="Encart Votre adresse de livraison : nom et référence, adresse de l’entrepôt, bouton Copier l’adresse" width="1224" height="700" loading="lazy"></button>
+        <button type="button" class="zoom" data-lightbox data-caption="Encart Votre adresse de livraison : nom et référence, adresse de l’entrepôt, bouton Copier l’adresse"><img src="<?php echo esc_url( $u . 'img/s-client-adresse.jpg' ); ?>" alt="Encart Votre adresse de livraison : nom et référence, adresse de l’entrepôt, bouton Copier l’adresse" width="1224" height="700" loading="lazy"></button>
       </figure>
       <figure class="browser" style="margin:0">
         <div class="browser-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url">votre-site.fr/mon-compte/demande-expedition</span></div>
-        <button type="button" class="zoom" data-lightbox data-caption="Transporteur souhaité avec son prix, assurance, total estimé"><img src="<?php echo esc_url( $u . 'assets/img/s-client-estimation.jpg' ); ?>" alt="Transporteur souhaité avec son prix, assurance, total estimé" width="1320" height="498" loading="lazy"></button>
+        <button type="button" class="zoom" data-lightbox data-caption="Transporteur souhaité avec son prix, assurance, total estimé"><img src="<?php echo esc_url( $u . 'img/s-client-estimation.jpg' ); ?>" alt="Transporteur souhaité avec son prix, assurance, total estimé" width="1320" height="498" loading="lazy"></button>
       </figure>
     </div>
   </section>
@@ -199,11 +285,11 @@ echo wp_json_encode(
     <div class="shot">
       <figure class="browser" style="margin:0">
         <div class="browser-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url">votre-site.fr/wp-admin › WooCommerce › Commande #1384</span></div>
-        <button type="button" class="zoom" data-lightbox data-caption="Lignes de la commande : colis, droits de douane avancés sur le colis, Colissimo, total"><img src="<?php echo esc_url( $u . 'assets/img/s-commande-lignes.jpg' ); ?>" alt="Lignes de la commande : colis, droits de douane avancés sur le colis, Colissimo, total" width="1400" height="1004" loading="lazy"></button>
+        <button type="button" class="zoom" data-lightbox data-caption="Lignes de la commande : colis, droits de douane avancés sur le colis, Colissimo, total"><img src="<?php echo esc_url( $u . 'img/s-commande-lignes.jpg' ); ?>" alt="Lignes de la commande : colis, droits de douane avancés sur le colis, Colissimo, total" width="1400" height="1004" loading="lazy"></button>
       </figure>
       <figure class="browser" style="margin:0">
         <div class="browser-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url">Encart Colisly sur la commande</span></div>
-        <button type="button" class="zoom" data-lightbox data-caption="Encart Colisly : expédition, colis, commentaire interne, déclaration"><img src="<?php echo esc_url( $u . 'assets/img/s-commande-encart.jpg' ); ?>" alt="Encart Colisly : expédition, colis, commentaire interne, déclaration" width="1400" height="546" loading="lazy"></button>
+        <button type="button" class="zoom" data-lightbox data-caption="Encart Colisly : expédition, colis, commentaire interne, déclaration"><img src="<?php echo esc_url( $u . 'img/s-commande-encart.jpg' ); ?>" alt="Encart Colisly : expédition, colis, commentaire interne, déclaration" width="1400" height="546" loading="lazy"></button>
       </figure>
     </div>
   </section>
@@ -222,7 +308,7 @@ echo wp_json_encode(
     <div class="shot">
       <figure class="browser" style="margin:0">
         <div class="browser-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url">votre-site.fr/wp-admin › Colisly › Réglages › Transporteurs</span></div>
-        <button type="button" class="zoom" data-lightbox data-caption="Tableau des transporteurs : base, prix au kilo, volumétrique, poids et dimensions maximum"><img src="<?php echo esc_url( $u . 'assets/img/s-transporteurs.jpg' ); ?>" alt="Tableau des transporteurs : base, prix au kilo, volumétrique, poids et dimensions maximum" width="2036" height="602" loading="lazy"></button>
+        <button type="button" class="zoom" data-lightbox data-caption="Tableau des transporteurs : base, prix au kilo, volumétrique, poids et dimensions maximum"><img src="<?php echo esc_url( $u . 'img/s-transporteurs.jpg' ); ?>" alt="Tableau des transporteurs : base, prix au kilo, volumétrique, poids et dimensions maximum" width="2036" height="602" loading="lazy"></button>
       </figure>
     </div>
   </section>
@@ -238,9 +324,9 @@ echo wp_json_encode(
     <p class="eyebrow" style="padding-top:40px">Au quotidien</p>
     <h2 style="margin-top:10px">Les écrans du gérant.</h2>
     <div class="gallery">
-      <div class="frame"><button type="button" class="zoom" data-lightbox data-caption="Clients, recherche multi-critères"><img src="<?php echo esc_url( $u . 'assets/img/s-clients.jpg' ); ?>" alt="Liste des clients avec recherche" width="1996" height="1240" loading="lazy"></button><div class="frame-cap">Clients, recherche multi-critères</div></div>
-      <div class="frame"><button type="button" class="zoom" data-lightbox data-caption="Fiche client, colis, expéditions, historique"><img src="<?php echo esc_url( $u . 'assets/img/s-fiche-client.jpg' ); ?>" alt="Fiche client avec indicateurs et onglets" width="1996" height="1120" loading="lazy"></button><div class="frame-cap">Fiche client, colis, expéditions, historique</div></div>
-      <div class="frame"><button type="button" class="zoom" data-lightbox data-caption="Colis en stock, statut changeable en ligne"><img src="<?php echo esc_url( $u . 'assets/img/s-colis.jpg' ); ?>" alt="Liste des colis avec statut et actions" width="1996" height="1240" loading="lazy"></button><div class="frame-cap">Colis en stock, statut changeable en ligne</div></div>
+      <div class="frame"><button type="button" class="zoom" data-lightbox data-caption="Clients, recherche multi-critères"><img src="<?php echo esc_url( $u . 'img/s-clients.jpg' ); ?>" alt="Liste des clients avec recherche" width="1996" height="1240" loading="lazy"></button><div class="frame-cap">Clients, recherche multi-critères</div></div>
+      <div class="frame"><button type="button" class="zoom" data-lightbox data-caption="Fiche client, colis, expéditions, historique"><img src="<?php echo esc_url( $u . 'img/s-fiche-client.jpg' ); ?>" alt="Fiche client avec indicateurs et onglets" width="1996" height="1120" loading="lazy"></button><div class="frame-cap">Fiche client, colis, expéditions, historique</div></div>
+      <div class="frame"><button type="button" class="zoom" data-lightbox data-caption="Colis en stock, statut changeable en ligne"><img src="<?php echo esc_url( $u . 'img/s-colis.jpg' ); ?>" alt="Liste des colis avec statut et actions" width="1996" height="1240" loading="lazy"></button><div class="frame-cap">Colis en stock, statut changeable en ligne</div></div>
     </div>
   </section>
 
@@ -341,17 +427,17 @@ echo wp_json_encode(
 (function () {
   var phone = window.matchMedia('(max-width: 760px)').matches;
   var bg = document.getElementById('bg');
-  bg.poster = phone ? "<?php echo esc_url( $u . 'assets/img/hero-poster-p.jpg' ); ?>" : "<?php echo esc_url( $u . 'assets/img/hero-poster-l.jpg' ); ?>";
+  bg.poster = phone ? "<?php echo esc_url( $u . 'img/hero-poster-p.jpg' ); ?>" : "<?php echo esc_url( $u . 'img/hero-poster-l.jpg' ); ?>";
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    bg.src = phone ? "<?php echo esc_url( $u . 'assets/video/hero-portrait.mp4' ); ?>" : "<?php echo esc_url( $u . 'assets/video/hero-landscape.mp4' ); ?>";
+    bg.src = phone ? "<?php echo esc_url( $u . 'video/hero-portrait.mp4' ); ?>" : "<?php echo esc_url( $u . 'video/hero-landscape.mp4' ); ?>";
     bg.play().catch(function () {});
   }
   var chapters = phone ? [
-    { src: "<?php echo esc_url( $u . 'assets/video/m-entrepot.mp4' ); ?>", poster: "<?php echo esc_url( $u . 'assets/img/m-poster-entrepot.jpg' ); ?>", cap: "Réception d’un colis et étiquette, sur téléphone" },
-    { src: "<?php echo esc_url( $u . 'assets/video/m-client.mp4' ); ?>", poster: "<?php echo esc_url( $u . 'assets/img/m-poster-client.jpg' ); ?>", cap: "Le client choisit ses colis, voit le prix, paie" }
+    { src: "<?php echo esc_url( $u . 'video/m-entrepot.mp4' ); ?>", poster: "<?php echo esc_url( $u . 'img/m-poster-entrepot.jpg' ); ?>", cap: "Réception d’un colis et étiquette, sur téléphone" },
+    { src: "<?php echo esc_url( $u . 'video/m-client.mp4' ); ?>", poster: "<?php echo esc_url( $u . 'img/m-poster-client.jpg' ); ?>", cap: "Le client choisit ses colis, voit le prix, paie" }
   ] : [
-    { src: "<?php echo esc_url( $u . 'assets/video/entrepot.mp4' ); ?>", poster: "<?php echo esc_url( $u . 'assets/img/poster-entrepot.jpg' ); ?>", cap: "Réception d’un colis, étiquette, liste du stock" },
-    { src: "<?php echo esc_url( $u . 'assets/video/client.mp4' ); ?>", poster: "<?php echo esc_url( $u . 'assets/img/poster-client.jpg' ); ?>", cap: "Le client choisit ses colis, voit le prix, paie" }
+    { src: "<?php echo esc_url( $u . 'video/entrepot.mp4' ); ?>", poster: "<?php echo esc_url( $u . 'img/poster-entrepot.jpg' ); ?>", cap: "Réception d’un colis, étiquette, liste du stock" },
+    { src: "<?php echo esc_url( $u . 'video/client.mp4' ); ?>", poster: "<?php echo esc_url( $u . 'img/poster-client.jpg' ); ?>", cap: "Le client choisit ses colis, voit le prix, paie" }
   ];
   if (phone) { document.getElementById('v').poster = chapters[0].poster; document.getElementById('v').src = chapters[0].src; document.getElementById('vcap').textContent = chapters[0].cap; }
   var v = document.getElementById('v'), cap = document.getElementById('vcap'), bar = document.getElementById('vbar'), play = document.getElementById('vplay');
