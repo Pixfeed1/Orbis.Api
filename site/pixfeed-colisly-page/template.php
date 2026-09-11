@@ -270,7 +270,7 @@ echo wp_json_encode(
       <p class="eyebrow">Sur mesure</p>
       <h3>Besoin d’une adaptation ?</h3>
       <p style="color:var(--ink-2)">Adresses de livraison multiples, reprise de vos données, intégration avec vos outils, hébergement et installation. Pixfeed réalise ces prestations sur devis.</p>
-      <a class="btn btn-sun" href="https://pixfeed.net/contact">Parler du projet</a>
+      <a class="btn btn-sun" href="https://pixfeed.net/venez-discuter-de-votre-projet/">Parler du projet</a>
     </div>
   </section>
 
