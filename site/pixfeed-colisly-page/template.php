@@ -269,7 +269,7 @@ echo wp_json_encode(
     <div class="price-side">
       <p class="eyebrow">Sur mesure</p>
       <h3>Besoin d’une adaptation ?</h3>
-      <p style="color:var(--ink-2)">Adresses de livraison multiples, reprise de vos données, intégration avec vos outils, hébergement et installation. Pixfeed réalise ces prestations sur devis.</p>
+      <p style="color:var(--ink-2)">Adresses de livraison multiples, reprise de vos données, intégration avec vos outils, hébergement et installation. <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Pixfeed</a> réalise ces prestations sur devis.</p>
       <a class="btn btn-sun" href="https://pixfeed.net/venez-discuter-de-votre-projet/">Parler du projet</a>
     </div>
   </section>
@@ -302,7 +302,7 @@ echo wp_json_encode(
   </div>
 
   <footer class="foot">
-    <span>Colisly, une extension Pixfeed. Licence GPL v2 ou ultérieure.</span>
+    <span>Colisly, une extension <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Pixfeed</a>, agence web. Licence GPL v2 ou ultérieure.</span>
     <span><a href="https://fr.wordpress.org/plugins/colisly/">wordpress.org</a> · <a href="https://wordpress.org/support/plugin/colisly/">Support</a></span>
   </footer>
 </main>
