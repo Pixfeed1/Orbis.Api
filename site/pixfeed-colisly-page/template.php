@@ -15,25 +15,14 @@ $url = get_permalink();
 $og  = $u . 'assets/img/hero-poster-l.jpg';
 ?>
 <!DOCTYPE html>
-<html lang="fr">
+<html <?php language_attributes(); ?>>
 <head>
-<meta charset="utf-8">
+<meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Colisly, extension WooCommerce de réexpédition de colis | Pixfeed</title>
-<meta name="description" content="Colisly transforme une boutique WooCommerce en plateforme de réexpédition de colis : réception, stockage, groupage, réexpédition et espace client. Extension WordPress gratuite, GPL.">
-<link rel="canonical" href="<?php echo esc_url( $url ); ?>">
-<meta property="og:type" content="website">
-<meta property="og:locale" content="fr_FR">
-<meta property="og:title" content="Colisly, la réexpédition de colis dans WooCommerce">
-<meta property="og:description" content="Réception des colis, stockage, groupage, réexpédition et espace client. Extension WordPress gratuite.">
-<meta property="og:url" content="<?php echo esc_url( $url ); ?>">
-<meta property="og:image" content="<?php echo esc_url( $og ); ?>">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="<?php echo esc_url( $u . 'assets/img/icon.svg' ); ?>" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500;600&display=swap">
-<link rel="stylesheet" href="<?php echo esc_url( $u . 'assets/css/page.css?ver=' . $ver ); ?>">
+<link rel="icon" href="<?php echo esc_url( $u . 'assets/img/icon.svg' ); ?>" type="image/svg+xml">
+<?php wp_head(); ?>
 <script type="application/ld+json">
 <?php
 echo wp_json_encode(
@@ -68,7 +57,8 @@ echo wp_json_encode(
 ?>
 </script>
 </head>
-<body>
+<body <?php body_class( 'pixfeed-colisly' ); ?>>
+<?php wp_body_open(); ?>
 
 
 <header class="wrap nav">
@@ -393,5 +383,6 @@ echo wp_json_encode(
 })();
 </script>
 
+<?php wp_footer(); ?>
 </body>
 </html>
