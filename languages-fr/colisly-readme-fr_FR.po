@@ -22,6 +22,9 @@ msgstr "Colisly transforme une boutique WooCommerce en une véritable plateforme
 msgid "It runs on your hosting, with your carrier contracts and your prices. Nothing leaves your database."
 msgstr "L'extension tourne sur votre hébergement, avec vos contrats transporteurs et vos prix. Rien ne sort de votre base de données."
 
+msgid "Presentation, screenshots and a video of the plugin in action: [pixfeed.net/colisly](https://pixfeed.net/colisly-extension-woocommerce-de-reexpedition-de-colis/)"
+msgstr "Présentation, captures d'écran et vidéo de l'extension en action : [pixfeed.net/colisly](https://pixfeed.net/colisly-extension-woocommerce-de-reexpedition-de-colis/)"
+
 msgid "Who it is for"
 msgstr "À qui elle s'adresse"
 
@@ -208,6 +211,9 @@ msgstr "Réglages : jours de stockage gratuits, frais de stockage, paliers de ta
 msgid "Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo."
 msgstr "Tranches de poids par transporteur, pour les transporteurs qui publient une grille plutôt qu'un tarif au kilo."
 
+msgid "The French catalogue shipped with the plugin now matches the translation validated by the fr_FR team on translate.wordpress.org, word for word, so a site with or without the language pack reads the same. The plugin's home page now points to its presentation page on pixfeed.net, linked from the readme too."
+msgstr "Le catalogue français livré avec l'extension reprend désormais mot pour mot la traduction validée par l'équipe fr_FR sur translate.wordpress.org : un site avec ou sans pack de langue affiche la même chose. La page d'accueil de l'extension pointe vers sa page de présentation sur pixfeed.net, liée aussi depuis le readme."
+
 msgid "Wording: the long dashes used as separators throughout the interface, \"CL000001, Jean Dupont\", \"Colissimo, 16.40 €\", are gone, replaced by commas, colons or a middle dot; empty cells now show a short dash. Twelve strings change, so their French and Spanish translations ship updated with the plugin. No functional change."
 msgstr "Rédaction : les tirets longs qui servaient de séparateurs dans l'interface, « CL000001, Jean Dupont », « Colissimo, 16,40 € », disparaissent au profit de virgules, de deux-points ou d'un point médian ; les cellules vides affichent un tiret court. Douze chaînes changent, leurs traductions française et espagnole sont livrées à jour avec l'extension. Aucun changement de fonctionnement."
 
@@ -390,6 +396,9 @@ msgstr "Correction : sur les écrans étroits, les dimensions du colis passaient
 
 msgid "The allowed carriers help text now states that leaving none checked places no restriction."
 msgstr "Le texte d'aide des transporteurs autorisés précise maintenant que n'en cocher aucun n'applique aucune restriction."
+
+msgid "= 1.20.3 = French catalogue aligned with the validated translation. No database change."
+msgstr "= 1.20.3 = Catalogue français aligné sur la traduction validée. Aucun changement de base de données."
 
 msgid "= 1.20.2 = Wording only. No database change."
 msgstr "= 1.20.2 = Rédaction seulement. Aucun changement de base de données."

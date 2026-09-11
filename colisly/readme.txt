@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.20.2
+Stable tag: 1.20.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,6 +16,8 @@ Run a package forwarding business on WooCommerce: parcel intake, storage fees, c
 Colisly turns a WooCommerce store into a working package forwarding platform. Each client gets a reference and an address to shop with. Parcels arriving at your warehouse are logged, held, charged for storage past the free period, grouped on request and reshipped as a single shipment, paid through your own checkout.
 
 It runs on your hosting, with your carrier contracts and your prices. Nothing leaves your database.
+
+Presentation, screenshots and a video of the plugin in action: [pixfeed.net/colisly](https://pixfeed.net/colisly-extension-woocommerce-de-reexpedition-de-colis/)
 
 = Who it is for =
 
@@ -119,6 +121,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.20.3 =
+* The French catalogue shipped with the plugin now matches the translation validated by the fr_FR team on translate.wordpress.org, word for word, so a site with or without the language pack reads the same. The plugin's home page now points to its presentation page on pixfeed.net, linked from the readme too.
 
 = 1.20.2 =
 * Wording: the long dashes used as separators throughout the interface, "CL000001, Jean Dupont", "Colissimo, 16.40 €", are gone, replaced by commas, colons or a middle dot; empty cells now show a short dash. Twelve strings change, so their French and Spanish translations ship updated with the plugin. No functional change.
@@ -238,6 +243,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.20.3 =
+French catalogue aligned with the validated translation. No database change.
 
 = 1.20.2 =
 Wording only. No database change.

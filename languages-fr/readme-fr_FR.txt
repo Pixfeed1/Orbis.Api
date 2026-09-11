@@ -29,6 +29,9 @@ tunnel de commande.
 L'extension tourne sur votre hébergement, avec vos contrats transporteurs et vos
 prix. Rien ne sort de votre base de données.
 
+Présentation, captures d'écran et vidéo de l'extension en action :
+[pixfeed.net/colisly](https://pixfeed.net/colisly-extension-woocommerce-de-reexpedition-de-colis/)
+
 = À qui elle s'adresse =
 
 * À quiconque lance un service de réexpédition ou de groupage de colis et en
@@ -197,6 +200,13 @@ l'extension ainsi que ses options.
 ================================================================================
 == Journal des modifications ==
 ================================================================================
+
+= 1.20.3 =
+* Le catalogue français livré avec l'extension reprend désormais mot pour mot la
+  traduction validée par l'équipe fr_FR sur translate.wordpress.org : un site
+  avec ou sans pack de langue affiche la même chose. La page d'accueil de
+  l'extension pointe vers sa page de présentation sur pixfeed.net, liée aussi
+  depuis le readme.
 
 = 1.20.2 =
 * Rédaction : les tirets longs qui servaient de séparateurs dans l'interface,
@@ -596,6 +606,10 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.20.3 =
+Catalogue français aligné sur la traduction validée. Aucun changement de base
+de données.
 
 = 1.20.2 =
 Rédaction seulement. Aucun changement de base de données.
