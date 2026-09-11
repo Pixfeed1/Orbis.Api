@@ -157,11 +157,11 @@ echo wp_json_encode(
     <div class="shot">
       <figure class="browser" style="margin:0">
         <div class="browser-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url">votre-site.fr/wp-admin › Colisly › Nouveau colis</span></div>
-        <button type="button" class="zoom" data-lightbox data-caption="Bloc Informations du colis : numéro de suivi, poids, dimensions, frais avancés, commentaire interne"><img src="<?php echo esc_url( $u . 'assets/img/s-reception-infos.jpg' ); ?>" alt="Bloc Informations du colis : numéro de suivi, poids, dimensions, frais avancés, commentaire interne"></button>
+        <button type="button" class="zoom" data-lightbox data-caption="Bloc Informations du colis : numéro de suivi, poids, dimensions, frais avancés, commentaire interne"><img src="<?php echo esc_url( $u . 'assets/img/s-reception-infos.jpg' ); ?>" alt="Bloc Informations du colis : numéro de suivi, poids, dimensions, frais avancés, commentaire interne" width="2000" height="1252" loading="lazy"></button>
       </figure>
       <figure class="browser" style="margin:0">
         <div class="browser-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url">Colis enregistré</span></div>
-        <button type="button" class="zoom" data-lightbox data-caption="Panneau Colis enregistré : référence en grand, Imprimer l’étiquette, Nouveau colis pour ce client"><img src="<?php echo esc_url( $u . 'assets/img/s-reception-enregistre.jpg' ); ?>" alt="Panneau Colis enregistré : référence en grand, Imprimer l’étiquette, Nouveau colis pour ce client"></button>
+        <button type="button" class="zoom" data-lightbox data-caption="Panneau Colis enregistré : référence en grand, Imprimer l’étiquette, Nouveau colis pour ce client"><img src="<?php echo esc_url( $u . 'assets/img/s-reception-enregistre.jpg' ); ?>" alt="Panneau Colis enregistré : référence en grand, Imprimer l’étiquette, Nouveau colis pour ce client" width="1996" height="260" loading="lazy"></button>
       </figure>
       <div class="label-real">
         <p class="eyebrow">L’étiquette, à taille réelle</p>
@@ -186,11 +186,11 @@ echo wp_json_encode(
     <div class="shot">
       <figure class="browser" style="margin:0">
         <div class="browser-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url">votre-site.fr/mon-compte/mes-colis</span></div>
-        <button type="button" class="zoom" data-lightbox data-caption="Encart Votre adresse de livraison : nom et référence, adresse de l’entrepôt, bouton Copier l’adresse"><img src="<?php echo esc_url( $u . 'assets/img/s-client-adresse.jpg' ); ?>" alt="Encart Votre adresse de livraison : nom et référence, adresse de l’entrepôt, bouton Copier l’adresse"></button>
+        <button type="button" class="zoom" data-lightbox data-caption="Encart Votre adresse de livraison : nom et référence, adresse de l’entrepôt, bouton Copier l’adresse"><img src="<?php echo esc_url( $u . 'assets/img/s-client-adresse.jpg' ); ?>" alt="Encart Votre adresse de livraison : nom et référence, adresse de l’entrepôt, bouton Copier l’adresse" width="1224" height="700" loading="lazy"></button>
       </figure>
       <figure class="browser" style="margin:0">
         <div class="browser-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url">votre-site.fr/mon-compte/demande-expedition</span></div>
-        <button type="button" class="zoom" data-lightbox data-caption="Transporteur souhaité avec son prix, assurance, total estimé"><img src="<?php echo esc_url( $u . 'assets/img/s-client-estimation.jpg' ); ?>" alt="Transporteur souhaité avec son prix, assurance, total estimé"></button>
+        <button type="button" class="zoom" data-lightbox data-caption="Transporteur souhaité avec son prix, assurance, total estimé"><img src="<?php echo esc_url( $u . 'assets/img/s-client-estimation.jpg' ); ?>" alt="Transporteur souhaité avec son prix, assurance, total estimé" width="1320" height="498" loading="lazy"></button>
       </figure>
     </div>
   </section>
@@ -209,11 +209,11 @@ echo wp_json_encode(
     <div class="shot">
       <figure class="browser" style="margin:0">
         <div class="browser-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url">votre-site.fr/wp-admin › WooCommerce › Commande #1384</span></div>
-        <button type="button" class="zoom" data-lightbox data-caption="Lignes de la commande : colis, droits de douane avancés sur le colis, Colissimo, total"><img src="<?php echo esc_url( $u . 'assets/img/s-commande-lignes.jpg' ); ?>" alt="Lignes de la commande : colis, droits de douane avancés sur le colis, Colissimo, total"></button>
+        <button type="button" class="zoom" data-lightbox data-caption="Lignes de la commande : colis, droits de douane avancés sur le colis, Colissimo, total"><img src="<?php echo esc_url( $u . 'assets/img/s-commande-lignes.jpg' ); ?>" alt="Lignes de la commande : colis, droits de douane avancés sur le colis, Colissimo, total" width="1400" height="1004" loading="lazy"></button>
       </figure>
       <figure class="browser" style="margin:0">
         <div class="browser-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url">Encart Colisly sur la commande</span></div>
-        <button type="button" class="zoom" data-lightbox data-caption="Encart Colisly : expédition, colis, commentaire interne, déclaration"><img src="<?php echo esc_url( $u . 'assets/img/s-commande-encart.jpg' ); ?>" alt="Encart Colisly : expédition, colis, commentaire interne, déclaration"></button>
+        <button type="button" class="zoom" data-lightbox data-caption="Encart Colisly : expédition, colis, commentaire interne, déclaration"><img src="<?php echo esc_url( $u . 'assets/img/s-commande-encart.jpg' ); ?>" alt="Encart Colisly : expédition, colis, commentaire interne, déclaration" width="1400" height="546" loading="lazy"></button>
       </figure>
     </div>
   </section>
@@ -232,7 +232,7 @@ echo wp_json_encode(
     <div class="shot">
       <figure class="browser" style="margin:0">
         <div class="browser-bar"><span class="dots"><span></span><span></span><span></span></span><span class="url">votre-site.fr/wp-admin › Colisly › Réglages › Transporteurs</span></div>
-        <button type="button" class="zoom" data-lightbox data-caption="Tableau des transporteurs : base, prix au kilo, volumétrique, poids et dimensions maximum"><img src="<?php echo esc_url( $u . 'assets/img/s-transporteurs.jpg' ); ?>" alt="Tableau des transporteurs : base, prix au kilo, volumétrique, poids et dimensions maximum"></button>
+        <button type="button" class="zoom" data-lightbox data-caption="Tableau des transporteurs : base, prix au kilo, volumétrique, poids et dimensions maximum"><img src="<?php echo esc_url( $u . 'assets/img/s-transporteurs.jpg' ); ?>" alt="Tableau des transporteurs : base, prix au kilo, volumétrique, poids et dimensions maximum" width="2036" height="602" loading="lazy"></button>
       </figure>
     </div>
   </section>
@@ -248,9 +248,9 @@ echo wp_json_encode(
     <p class="eyebrow" style="padding-top:40px">Au quotidien</p>
     <h2 style="margin-top:10px">Les écrans du gérant.</h2>
     <div class="gallery">
-      <div class="frame"><button type="button" class="zoom" data-lightbox data-caption="Clients, recherche multi-critères"><img src="<?php echo esc_url( $u . 'assets/img/s-clients.jpg' ); ?>" alt="Liste des clients avec recherche"></button><div class="frame-cap">Clients, recherche multi-critères</div></div>
-      <div class="frame"><button type="button" class="zoom" data-lightbox data-caption="Fiche client, colis, expéditions, historique"><img src="<?php echo esc_url( $u . 'assets/img/s-fiche-client.jpg' ); ?>" alt="Fiche client avec indicateurs et onglets"></button><div class="frame-cap">Fiche client, colis, expéditions, historique</div></div>
-      <div class="frame"><button type="button" class="zoom" data-lightbox data-caption="Colis en stock, statut changeable en ligne"><img src="<?php echo esc_url( $u . 'assets/img/s-colis.jpg' ); ?>" alt="Liste des colis avec statut et actions"></button><div class="frame-cap">Colis en stock, statut changeable en ligne</div></div>
+      <div class="frame"><button type="button" class="zoom" data-lightbox data-caption="Clients, recherche multi-critères"><img src="<?php echo esc_url( $u . 'assets/img/s-clients.jpg' ); ?>" alt="Liste des clients avec recherche" width="1996" height="1240" loading="lazy"></button><div class="frame-cap">Clients, recherche multi-critères</div></div>
+      <div class="frame"><button type="button" class="zoom" data-lightbox data-caption="Fiche client, colis, expéditions, historique"><img src="<?php echo esc_url( $u . 'assets/img/s-fiche-client.jpg' ); ?>" alt="Fiche client avec indicateurs et onglets" width="1996" height="1120" loading="lazy"></button><div class="frame-cap">Fiche client, colis, expéditions, historique</div></div>
+      <div class="frame"><button type="button" class="zoom" data-lightbox data-caption="Colis en stock, statut changeable en ligne"><img src="<?php echo esc_url( $u . 'assets/img/s-colis.jpg' ); ?>" alt="Liste des colis avec statut et actions" width="1996" height="1240" loading="lazy"></button><div class="frame-cap">Colis en stock, statut changeable en ligne</div></div>
     </div>
   </section>
 
