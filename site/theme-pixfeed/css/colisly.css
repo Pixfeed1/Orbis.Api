@@ -18,7 +18,7 @@
 }
 * { box-sizing: border-box; }
 body { background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; margin: 0; -webkit-font-smoothing: antialiased; }
-img, video { max-width: 100%; display: block; }
+img, video { max-width: 100%; height: auto; display: block; }
 a { color: var(--brand-deep); }
 :focus-visible { outline: 3px solid var(--sun); outline-offset: 3px; }
 .wrap { margin-inline: auto; max-width: 1180px; padding-inline: 20px; }
