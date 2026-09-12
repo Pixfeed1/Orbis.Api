@@ -167,7 +167,7 @@ echo wp_json_encode(
 <main class="wrap" id="top">
   <section class="hero">
     <div class="hero-video" id="entrepot">
-      <video id="bg" class="hero-bg" muted loop playsinline autoplay preload="auto" poster="<?php echo esc_url( $u . 'img/hero-poster-l.jpg' ); ?>" aria-hidden="true" tabindex="-1"></video>
+      <video id="bg" class="hero-bg" muted loop playsinline autoplay preload="auto" poster="<?php echo esc_url( $u . 'img/hero-poster-l.jpg' ); ?>" src="<?php echo esc_url( $u . 'video/hero-landscape.mp4' ); ?>" aria-hidden="true" tabindex="-1"></video>
       <div class="hero-copy">
         <p class="eyebrow eyebrow-light">Extension WordPress et WooCommerce, gratuite</p>
         <h1>Votre entrepôt de réexpédition, dans WooCommerce.</h1>
@@ -431,10 +431,15 @@ echo wp_json_encode(
 <script>
 (function () {
   var phone = window.matchMedia('(max-width: 760px)').matches;
+  // La vidéo de fond est déjà dans le HTML, version large. Le script ne fait
+  // que basculer sur la version verticale au téléphone, ou l’arrêter si
+  // l’appareil demande moins d’animations.
   var bg = document.getElementById('bg');
-  bg.poster = phone ? "<?php echo esc_url( $u . 'img/hero-poster-p.jpg' ); ?>" : "<?php echo esc_url( $u . 'img/hero-poster-l.jpg' ); ?>";
-  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    bg.src = phone ? "<?php echo esc_url( $u . 'video/hero-portrait.mp4' ); ?>" : "<?php echo esc_url( $u . 'video/hero-landscape.mp4' ); ?>";
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    bg.removeAttribute('autoplay'); bg.pause(); bg.removeAttribute('src'); bg.load();
+  } else if (phone) {
+    bg.poster = "<?php echo esc_url( $u . 'img/hero-poster-p.jpg' ); ?>";
+    bg.src = "<?php echo esc_url( $u . 'video/hero-portrait.mp4' ); ?>";
     bg.play().catch(function () {});
   }
   var chapters = phone ? [
