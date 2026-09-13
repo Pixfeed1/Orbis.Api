@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.23.0
+Stable tag: 1.24.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,7 +30,8 @@ Commercial package forwarding software in this category is sold as one-time lice
 
 = Operations =
 
-* Client records with unique references (CL000001), multi-criteria search, and a free storage period set per your policy (15 days by default)
+* Client records with unique references (CL000001), multi-criteria search, a filter on the clients who owe storage fees, and a CSV export of the list
+* A free storage period set per your policy (15 days by default)
 * Parcel intake with generated numbers (COL000001), weight, dimensions, photos, internal notes and per-parcel carrier restrictions
 * Duties and taxes paid to take delivery of a parcel recorded on it and billed back at cost on the shipment order
 * Storage fees calculated automatically once the free period ends
@@ -134,6 +135,10 @@ Yes. Give the promotion a code in the settings and a "Promotion code" box appear
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.24.0 =
+* The clients list now shows what each client owes in storage fees, with a filter, "Clients with storage fees due", to list only those. A forwarder announcing a promotion on storage had no way to find who it concerned short of opening every record.
+* New: "Export to CSV" on the clients list. It carries the search and the filter of the screen and exports every matching client, all pages: reference, name, e-mail, phone, parcels in stock, stored weight, storage fees due, creation date. UTF-8 with a byte order mark so Excel reads the accents, columns separated the way the site's language expects, cells that cannot run as formulas. The file is what a mailing tool or a spreadsheet needs; Colisly itself sends no mass e-mail, on purpose. No database change.
 
 = 1.23.0 =
 * Discounts now say what they apply to. Each of the three, the personal rate on the client record, the promotion and the loyalty discount, is a percentage of the handling fees, of the storage fees, or of both, so a forwarder can offer free storage for a month without touching the handling fees, or the other way round. Since two discounts no longer always share a base, the rule for picking one becomes the one that takes the most off, still alone, still never adding up; on a tie the personal rate goes first. The order line names the base when it is not the handling fees, "Promotion 100% on storage fees".

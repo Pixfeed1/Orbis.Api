@@ -32,6 +32,7 @@ class COLISLY_Admin {
 		add_action( 'admin_post_colisly_create_client', array( 'COLISLY_Admin_Clients', 'handle_create' ) );
 		add_action( 'admin_post_colisly_update_client', array( 'COLISLY_Admin_Clients', 'handle_update' ) );
 		add_action( 'admin_post_colisly_add_document', array( 'COLISLY_Admin_Clients', 'handle_add_document' ) );
+		add_action( 'admin_post_colisly_export_clients', array( 'COLISLY_Admin_Clients', 'handle_export' ) );
 		add_action( 'admin_post_colisly_create_parcel', array( 'COLISLY_Admin_Parcels', 'handle_create' ) );
 		add_action( 'admin_post_colisly_update_parcel', array( 'COLISLY_Admin_Parcels', 'handle_update' ) );
 		add_action( 'admin_post_colisly_customs_form', array( 'COLISLY_Admin_Parcels', 'handle_customs_form' ) );

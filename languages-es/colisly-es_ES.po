@@ -1,7 +1,7 @@
 # Spanish translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.23.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.24.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -1440,3 +1440,18 @@ msgstr "Se aplica el que más descuenta; los descuentos nunca se suman."
 
 msgid "(%1$s: -%2$s)"
 msgstr "(%1$s: -%2$s)"
+
+msgid "Filter clients"
+msgstr "Filtrar clientes"
+
+msgid "All clients"
+msgstr "Todos los clientes"
+
+msgid "Clients with storage fees due"
+msgstr "Clientes con gastos de almacenamiento pendientes"
+
+msgid "Export to CSV"
+msgstr "Exportar a CSV"
+
+msgid "Stored weight (kg)"
+msgstr "Peso almacenado (kg)"

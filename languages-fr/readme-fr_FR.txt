@@ -49,8 +49,10 @@ Colisly est gratuite et sous licence GPL.
 
 = Exploitation =
 
-* Fiches clients avec référence unique (CL000001), recherche multi-critères et
-  franchise de stockage définie selon votre politique (15 jours par défaut)
+* Fiches clients avec référence unique (CL000001), recherche multi-critères, un
+  filtre sur les clients qui doivent des frais de stockage, et un export CSV
+  de la liste
+* Franchise de stockage définie selon votre politique (15 jours par défaut)
 * Réception des colis avec numéro généré (COL000001), poids, dimensions, photos,
   notes internes et restrictions de transporteur colis par colis
 * Droits et taxes payés pour prendre livraison d'un colis notés dessus et
@@ -238,6 +240,22 @@ code est vérifié par le serveur et n'apparaît jamais dans la page.
 ================================================================================
 == Journal des modifications ==
 ================================================================================
+
+= 1.24.0 =
+* La liste des clients montre maintenant ce que chaque client doit en frais
+  de stockage, avec un filtre, « Clients avec des frais de stockage dus »,
+  pour ne lister qu'eux. Un réexpéditeur qui annonce une promotion sur le
+  stockage n'avait aucun moyen de trouver qui elle concernait, sinon ouvrir
+  chaque fiche.
+* Nouveau : « Exporter en CSV » sur la liste des clients. Il reprend la
+  recherche et le filtre de l'écran et exporte tous les clients
+  correspondants, toutes pages confondues : référence, nom, e-mail,
+  téléphone, colis en stock, poids stocké, frais de stockage dus, date de
+  création. UTF-8 avec marque d'ordre des octets pour qu'Excel lise les
+  accents, colonnes séparées comme la langue du site l'attend, cellules qui
+  ne peuvent pas s'exécuter comme des formules. Le fichier est ce qu'un
+  outil d'e-mailing ou un tableur attend ; Colisly n'envoie pas d'e-mail en
+  masse, volontairement. Aucun changement de base de données.
 
 = 1.23.0 =
 * Les remises disent maintenant sur quoi elles portent. Chacune des trois, le

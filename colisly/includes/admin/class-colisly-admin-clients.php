@@ -41,13 +41,32 @@ class COLISLY_Admin_Clients {
 	 */
 	private static function render_list() {
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- read-only filters.
-		$term  = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
-		$paged = isset( $_GET['paged'] ) ? max( 1, absint( $_GET['paged'] ) ) : 1;
+		$term   = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
+		$paged  = isset( $_GET['paged'] ) ? max( 1, absint( $_GET['paged'] ) ) : 1;
+		$filter = isset( $_GET['filter'] ) && 'storage' === $_GET['filter'] ? 'storage' : '';
 		// phpcs:enable
 
 		$per_page = 20;
-		$clients  = COLISLY_Clients::paged_list( $term, $per_page, $paged );
-		$total    = COLISLY_Clients::count( $term );
+		$clients  = COLISLY_Clients::paged_list( $term, $per_page, $paged, $filter );
+		$total    = COLISLY_Clients::count( $term, $filter );
+
+		// The export carries the search and the filter of the screen: what
+		// is listed is what is exported, all pages of it. add_query_arg()
+		// leaves values as they are, so a "+" in a search term would have
+		// come back as a space: the term is encoded here.
+		$export_url = wp_nonce_url(
+			add_query_arg(
+				array_filter(
+					array(
+						'action' => 'colisly_export_clients',
+						's'      => rawurlencode( $term ),
+						'filter' => $filter,
+					)
+				),
+				admin_url( 'admin-post.php' )
+			),
+			'colisly_export_clients'
+		);
 		?>
 		<div class="wrap colisly-wrap">
 			<h1 class="wp-heading-inline"><?php esc_html_e( 'Clients', 'colisly' ); ?></h1>
@@ -59,7 +78,13 @@ class COLISLY_Admin_Clients {
 				<p class="search-box">
 					<label class="screen-reader-text" for="colisly-client-search"><?php esc_html_e( 'Search clients', 'colisly' ); ?></label>
 					<input type="search" id="colisly-client-search" name="s" value="<?php echo esc_attr( $term ); ?>" placeholder="<?php esc_attr_e( 'Reference, name, e-mail, phone…', 'colisly' ); ?>" />
+					<label class="screen-reader-text" for="colisly-client-filter"><?php esc_html_e( 'Filter clients', 'colisly' ); ?></label>
+					<select id="colisly-client-filter" name="filter">
+						<option value=""><?php esc_html_e( 'All clients', 'colisly' ); ?></option>
+						<option value="storage" <?php selected( $filter, 'storage' ); ?>><?php esc_html_e( 'Clients with storage fees due', 'colisly' ); ?></option>
+					</select>
 					<button type="submit" class="button"><?php esc_html_e( 'Search', 'colisly' ); ?></button>
+					<a class="button" href="<?php echo esc_url( $export_url ); ?>"><?php esc_html_e( 'Export to CSV', 'colisly' ); ?></a>
 				</p>
 			</form>
 
@@ -91,12 +116,13 @@ class COLISLY_Admin_Clients {
 							<th><?php esc_html_e( 'E-mail', 'colisly' ); ?></th>
 							<th><?php esc_html_e( 'Phone', 'colisly' ); ?></th>
 							<th><?php esc_html_e( 'Parcels in stock', 'colisly' ); ?></th>
+							<th><?php esc_html_e( 'Storage fees due', 'colisly' ); ?></th>
 							<th><?php esc_html_e( 'Created on', 'colisly' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php if ( empty( $clients ) ) : ?>
-							<tr><td colspan="6"><?php esc_html_e( 'No clients found.', 'colisly' ); ?></td></tr>
+							<tr><td colspan="7"><?php esc_html_e( 'No clients found.', 'colisly' ); ?></td></tr>
 						<?php else : ?>
 							<?php foreach ( $clients as $client ) : ?>
 								<?php
@@ -113,7 +139,9 @@ class COLISLY_Admin_Clients {
 									<td><a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( COLISLY_Clients::name( $client ) ); ?></a></td>
 									<td><?php echo esc_html( $client->user_email ); ?></td>
 									<td><?php echo esc_html( $client->phone ); ?></td>
-									<td><?php echo esc_html( number_format_i18n( count( COLISLY_Parcels::in_stock_for_client( (int) $client->id ) ) ) ); ?></td>
+									<?php $colisly_stock = COLISLY_Clients::stock_summary( (int) $client->id ); ?>
+									<td><?php echo esc_html( number_format_i18n( $colisly_stock['parcels'] ) ); ?></td>
+									<td><?php echo $colisly_stock['storage_fees'] > 0 ? '<strong>' . esc_html( COLISLY_Format::price( $colisly_stock['storage_fees'] ) ) . '</strong>' : '–'; ?></td>
 									<td><?php echo esc_html( COLISLY_Format::date( $client->created_at ) ); ?></td>
 								</tr>
 							<?php endforeach; ?>
@@ -122,7 +150,7 @@ class COLISLY_Admin_Clients {
 				</table>
 			</div>
 
-			<?php self::pagination( $total, $per_page, $paged, compact( 'term' ) ); ?>
+			<?php self::pagination( $total, $per_page, $paged, compact( 'term', 'filter' ) ); ?>
 		</div>
 		<?php
 	}
@@ -704,6 +732,83 @@ class COLISLY_Admin_Clients {
 	}
 
 	/**
+	 * Sends the client list as a CSV file.
+	 *
+	 * Separated the way the site's spreadsheets expect: a semicolon where the
+	 * locale writes decimals with a comma, since Excel there splits on the
+	 * semicolon and would otherwise show the whole line in one cell.
+	 *
+	 * @return void
+	 */
+	public static function handle_export() {
+		if ( ! current_user_can( 'colisly_manage' ) ) {
+			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
+		}
+
+		check_admin_referer( 'colisly_export_clients' );
+
+		$term   = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
+		$filter = isset( $_GET['filter'] ) && 'storage' === $_GET['filter'] ? 'storage' : '';
+
+		$export = COLISLY_Clients::export_rows( $term, $filter );
+
+		nocache_headers();
+		header( 'Content-Type: text/csv; charset=utf-8' );
+		header( 'Content-Disposition: attachment; filename="colisly-clients-' . gmdate( 'Y-m-d' ) . '.csv"' );
+
+		echo self::csv( $export['headers'], $export['rows'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- CSV, escaped by csv().
+		exit;
+	}
+
+	/**
+	 * Builds the CSV text: UTF-8 with a byte order mark so Excel reads the
+	 * accents, one header line, and cells that cannot run as formulas.
+	 *
+	 * @param string[] $headers Column titles.
+	 * @param array[]  $rows    Rows of plain values.
+	 * @return string
+	 */
+	public static function csv( $headers, $rows ) {
+		$separator = self::csv_separator();
+		$lines     = array();
+
+		foreach ( array_merge( array( $headers ), $rows ) as $row ) {
+			$cells = array();
+			foreach ( $row as $cell ) {
+				$cell = (string) $cell;
+				// A cell starting like a formula would run in a spreadsheet
+				// opened without a second thought; a leading apostrophe keeps
+				// it text there and is invisible everywhere else.
+				if ( '' !== $cell && false !== strpos( '=+-@', $cell[0] ) ) {
+					$cell = "'" . $cell;
+				}
+				$cells[] = '"' . str_replace( '"', '""', $cell ) . '"';
+			}
+			$lines[] = implode( $separator, $cells );
+		}
+
+		return "\xEF\xBB\xBF" . implode( "\r\n", $lines ) . "\r\n";
+	}
+
+	/**
+	 * The column separator the site's locale expects in a CSV.
+	 *
+	 * @return string
+	 */
+	public static function csv_separator() {
+		global $wp_locale;
+
+		$decimal = $wp_locale && isset( $wp_locale->number_format['decimal_point'] ) ? $wp_locale->number_format['decimal_point'] : '.';
+
+		/**
+		 * Filters the column separator of the CSV exports.
+		 *
+		 * @param string $separator ';' where decimals use a comma, ',' elsewhere.
+		 */
+		return apply_filters( 'colisly_csv_separator', ',' === $decimal ? ';' : ',' );
+	}
+
+	/**
 	 * Handles the "add document" form.
 	 *
 	 * @return void
@@ -779,8 +884,9 @@ class COLISLY_Admin_Clients {
 		$base = add_query_arg(
 			array_filter(
 				array(
-					'page' => 'colisly-clients',
-					's'    => isset( $extra['term'] ) ? $extra['term'] : '',
+					'page'   => 'colisly-clients',
+					's'      => isset( $extra['term'] ) ? rawurlencode( $extra['term'] ) : '',
+					'filter' => isset( $extra['filter'] ) ? $extra['filter'] : '',
 				)
 			),
 			admin_url( 'admin.php' )

@@ -46,8 +46,11 @@ msgstr "Les logiciels commerciaux de cette catégorie se vendent en licence uniq
 msgid "Operations"
 msgstr "Exploitation"
 
-msgid "Client records with unique references (CL000001), multi-criteria search, and a free storage period set per your policy (15 days by default)"
-msgstr "Fiches clients avec référence unique (CL000001), recherche multi-critères et franchise de stockage définie selon votre politique (15 jours par défaut)"
+msgid "Client records with unique references (CL000001), multi-criteria search, a filter on the clients who owe storage fees, and a CSV export of the list"
+msgstr "Fiches clients avec référence unique (CL000001), recherche multi-critères, un filtre sur les clients qui doivent des frais de stockage, et un export CSV de la liste"
+
+msgid "A free storage period set per your policy (15 days by default)"
+msgstr "Franchise de stockage définie selon votre politique (15 jours par défaut)"
 
 msgid "Parcel intake with generated numbers (COL000001), weight, dimensions, photos, internal notes and per-parcel carrier restrictions"
 msgstr "Réception des colis avec numéro généré (COL000001), poids, dimensions, photos, notes internes et restrictions de transporteur colis par colis"
@@ -231,6 +234,12 @@ msgstr "Réglages : jours de stockage gratuits, frais de stockage, paliers de ta
 
 msgid "Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo."
 msgstr "Tranches de poids par transporteur, pour les transporteurs qui publient une grille plutôt qu'un tarif au kilo."
+
+msgid "The clients list now shows what each client owes in storage fees, with a filter, \"Clients with storage fees due\", to list only those. A forwarder announcing a promotion on storage had no way to find who it concerned short of opening every record."
+msgstr "La liste des clients montre maintenant ce que chaque client doit en frais de stockage, avec un filtre, « Clients avec des frais de stockage dus », pour ne lister qu'eux. Un réexpéditeur qui annonce une promotion sur le stockage n'avait aucun moyen de trouver qui elle concernait, sinon ouvrir chaque fiche."
+
+msgid "New: \"Export to CSV\" on the clients list. It carries the search and the filter of the screen and exports every matching client, all pages: reference, name, e-mail, phone, parcels in stock, stored weight, storage fees due, creation date. UTF-8 with a byte order mark so Excel reads the accents, columns separated the way the site's language expects, cells that cannot run as formulas. The file is what a mailing tool or a spreadsheet needs; Colisly itself sends no mass e-mail, on purpose. No database change."
+msgstr "Nouveau : « Exporter en CSV » sur la liste des clients. Il reprend la recherche et le filtre de l'écran et exporte tous les clients correspondants, toutes pages confondues : référence, nom, e-mail, téléphone, colis en stock, poids stocké, frais de stockage dus, date de création. UTF-8 avec marque d'ordre des octets pour qu'Excel lise les accents, colonnes séparées comme la langue du site l'attend, cellules qui ne peuvent pas s'exécuter comme des formules. Le fichier est ce qu'un outil d'e-mailing ou un tableur attend ; Colisly n'envoie pas d'e-mail en masse, volontairement. Aucun changement de base de données."
 
 msgid "Discounts now say what they apply to. Each of the three, the personal rate on the client record, the promotion and the loyalty discount, is a percentage of the handling fees, of the storage fees, or of both, so a forwarder can offer free storage for a month without touching the handling fees, or the other way round. Since two discounts no longer always share a base, the rule for picking one becomes the one that takes the most off, still alone, still never adding up; on a tie the personal rate goes first. The order line names the base when it is not the handling fees, \"Promotion 100% on storage fees\"."
 msgstr "Les remises disent maintenant sur quoi elles portent. Chacune des trois, le taux personnel de la fiche client, la promotion et la remise fidélité, est un pourcentage des frais de gestion, des frais de stockage, ou des deux, de sorte qu'un réexpéditeur peut offrir le stockage pendant un mois sans toucher aux frais de gestion, ou l'inverse. Comme deux remises n'ont plus toujours la même base, la règle pour en retenir une devient celle qui déduit le plus, toujours seule, toujours sans cumul ; à égalité, le taux personnel passe en premier. La ligne de commande nomme la base quand ce n'est pas la gestion, « Promotion 100 % sur le stockage »."

@@ -150,22 +150,34 @@ class COLISLY_Clients {
 	/**
 	 * Returns the search SQL fragments (joins, where, parameters).
 	 *
-	 * @param string $term Search term (may be empty).
+	 * @param string $term   Search term (may be empty).
+	 * @param string $filter Optional filter: 'storage' keeps only the clients
+	 *                       with storage fees due.
 	 * @return array { joins: string, where: string, params: array }
 	 */
-	private static function search_sql( $term ) {
+	private static function search_sql( $term, $filter = '' ) {
 		global $wpdb;
 
 		$joins = "FROM {$wpdb->prefix}colisly_clients c
 			INNER JOIN {$wpdb->users} u ON u.ID = c.user_id";
-		$where  = '';
+		$where  = array();
 		$params = array();
 
 		if ( '' !== $term ) {
-			$match  = self::match_sql( $term );
-			$where  = ' WHERE ' . $match['where'];
-			$params = $match['params'];
+			$match   = self::match_sql( $term );
+			$where[] = $match['where'];
+			$params  = $match['params'];
 		}
+
+		// A client owes storage as soon as one parcel still in the warehouse
+		// has been there longer than the free period. Decided in SQL, so the
+		// filter costs the same on ten clients as on ten thousand.
+		if ( 'storage' === $filter ) {
+			$where[]  = "EXISTS (SELECT 1 FROM {$wpdb->prefix}colisly_parcels p WHERE p.client_id = c.id AND p.status = 'available' AND p.received_at < %s)";
+			$params[] = gmdate( 'Y-m-d H:i:s', time() - ( (int) COLISLY_Settings::get( 'free_storage_days', 15 ) + 1 ) * DAY_IN_SECONDS );
+		}
+
+		$where = empty( $where ) ? '' : ' WHERE ' . implode( ' AND ', $where );
 
 		return array(
 			'joins'  => $joins,
@@ -393,13 +405,14 @@ class COLISLY_Clients {
 	 * Counts the clients matching an optional search term (SQL COUNT, so it
 	 * scales to large client bases).
 	 *
-	 * @param string $term Search term.
+	 * @param string $term   Search term.
+	 * @param string $filter Optional filter, see search_sql().
 	 * @return int
 	 */
-	public static function count( $term = '' ) {
+	public static function count( $term = '', $filter = '' ) {
 		global $wpdb;
 
-		$sql = self::search_sql( trim( (string) $term ) );
+		$sql = self::search_sql( trim( (string) $term ), $filter );
 
 		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- fragments contain only literals and placeholders; values go through $wpdb->prepare().
 		$query = "SELECT COUNT(DISTINCT c.id) {$sql['joins']}{$sql['where']}";
@@ -415,12 +428,13 @@ class COLISLY_Clients {
 	 * @param string $term     Optional search term.
 	 * @param int    $per_page Items per page.
 	 * @param int    $paged    Page number (1-based).
+	 * @param string $filter   Optional filter, see search_sql().
 	 * @return object[]
 	 */
-	public static function paged_list( $term = '', $per_page = 20, $paged = 1 ) {
+	public static function paged_list( $term = '', $per_page = 20, $paged = 1, $filter = '' ) {
 		global $wpdb;
 
-		$sql    = self::search_sql( trim( (string) $term ) );
+		$sql    = self::search_sql( trim( (string) $term ), $filter );
 		$params = $sql['params'];
 
 		$params[] = (int) $per_page;
@@ -435,6 +449,71 @@ class COLISLY_Clients {
 			)
 		);
 		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+	}
+
+	/**
+	 * What a client holds in the warehouse right now, and what it costs him.
+	 *
+	 * @param int $client_id Client ID.
+	 * @return array { parcels: int, weight: float, storage_fees: float }
+	 */
+	public static function stock_summary( $client_id ) {
+		$in_stock = COLISLY_Parcels::in_stock_for_client( (int) $client_id );
+		$weight   = 0.0;
+
+		foreach ( $in_stock as $parcel ) {
+			$weight += (float) $parcel->weight;
+		}
+
+		return array(
+			'parcels'      => count( $in_stock ),
+			'weight'       => round( $weight, 3 ),
+			'storage_fees' => COLISLY_Storage::fees_for_parcels( $in_stock ),
+		);
+	}
+
+	/**
+	 * The client list as rows of plain values, for a CSV export.
+	 *
+	 * Same search and filter as the screen, every matching client rather
+	 * than one page of them. What a mailing or a spreadsheet needs and the
+	 * screen could not give: the e-mails of the clients who owe storage.
+	 *
+	 * @param string $term   Search term.
+	 * @param string $filter Optional filter, see search_sql().
+	 * @return array { headers: string[], rows: array[] }
+	 */
+	public static function export_rows( $term = '', $filter = '' ) {
+		$headers = array(
+			__( 'Reference', 'colisly' ),
+			__( 'Name', 'colisly' ),
+			__( 'E-mail', 'colisly' ),
+			__( 'Phone', 'colisly' ),
+			__( 'Parcels in stock', 'colisly' ),
+			__( 'Stored weight (kg)', 'colisly' ),
+			__( 'Storage fees due', 'colisly' ),
+			__( 'Created on', 'colisly' ),
+		);
+
+		$rows = array();
+		foreach ( self::paged_list( $term, 100000, 1, $filter ) as $client ) {
+			$stock  = self::stock_summary( (int) $client->id );
+			$rows[] = array(
+				$client->reference,
+				self::name( $client ),
+				$client->user_email,
+				$client->phone,
+				$stock['parcels'],
+				number_format( $stock['weight'], 3, '.', '' ),
+				number_format( $stock['storage_fees'], 2, '.', '' ),
+				substr( (string) $client->created_at, 0, 10 ),
+			);
+		}
+
+		return array(
+			'headers' => $headers,
+			'rows'    => $rows,
+		);
 	}
 
 	/**

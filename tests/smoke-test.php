@@ -2586,6 +2586,63 @@ colisly_check( 'Garde : les reglages ont le perimetre et le code', false !== str
 $colisly_dc_cli = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-clients.php' );
 colisly_check( 'Garde : la fiche client a le perimetre', false !== strpos( $colisly_dc_cli, 'name="discount_scope"' ) && false !== strpos( $colisly_dc_cli, "'discount_scope' => isset( \$_POST['discount_scope'] )" ) );
 
+// ---------------------------------------------------------------------------
+// 1.24.0 : les clients qui doivent du stockage, et l export CSV de la liste.
+// ---------------------------------------------------------------------------
+if ( ! class_exists( 'COLISLY_Admin' ) ) {
+	require_once COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin.php';
+}
+if ( ! class_exists( 'COLISLY_Admin_Clients' ) ) {
+	require_once COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-clients.php';
+}
+$colisly_ex_days = (int) COLISLY_Settings::get( 'free_storage_days', 15 );
+$colisly_ex_email = 'export+' . time() . '@example.com';
+$colisly_ex_user = wp_insert_user( array( 'user_login' => 'client_export_' . wp_generate_password( 6, false ), 'user_email' => $colisly_ex_email, 'user_pass' => wp_generate_password(), 'first_name' => 'Zoé', 'last_name' => 'Export', 'role' => 'customer' ) );
+$colisly_ex_client = COLISLY_Clients::create( $colisly_ex_user, '+33600000000' );
+$colisly_ex_fresh  = COLISLY_Parcels::create( array( 'client_id' => $colisly_ex_client, 'weight' => 1.5, 'allow_grouping' => 1 ) );
+colisly_check( 'Stock : resume du client, un colis frais, pas de frais', array( 'parcels' => 1, 'weight' => 1.5, 'storage_fees' => 0.0 ) === COLISLY_Clients::stock_summary( $colisly_ex_client ) );
+colisly_check( 'Filtre stockage : un colis dans la franchise ne compte pas', 0 === COLISLY_Clients::count( $colisly_ex_email, 'storage' ) && 1 === COLISLY_Clients::count( $colisly_ex_email ) );
+$colisly_ex_old = COLISLY_Parcels::create( array( 'client_id' => $colisly_ex_client, 'weight' => 2, 'allow_grouping' => 1 ) );
+$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->prefix}colisly_parcels SET received_at = %s WHERE id = %d", gmdate( 'Y-m-d H:i:s', time() - ( $colisly_ex_days + 3 ) * DAY_IN_SECONDS ), (int) $colisly_ex_old ) );
+$colisly_ex_summary = COLISLY_Clients::stock_summary( $colisly_ex_client );
+colisly_check( 'Stock : deux colis, 3,5 kg, des frais dus', 2 === $colisly_ex_summary['parcels'] && 3.5 === $colisly_ex_summary['weight'] && $colisly_ex_summary['storage_fees'] > 0 && abs( $colisly_ex_summary['storage_fees'] - COLISLY_Storage::fees_for_parcel( COLISLY_Parcels::get( (int) $colisly_ex_old ) ) ) < 0.001 );
+colisly_check( 'Filtre stockage : un colis au-dela de la franchise fait entrer le client', 1 === COLISLY_Clients::count( $colisly_ex_email, 'storage' ) && 1 === count( COLISLY_Clients::paged_list( $colisly_ex_email, 20, 1, 'storage' ) ) );
+$colisly_ex_all = wp_list_pluck( COLISLY_Clients::paged_list( '', 100000, 1, 'storage' ), 'id' );
+$colisly_ex_sound = true;
+foreach ( COLISLY_Clients::paged_list( '', 100000, 1 ) as $colisly_ex_row ) {
+	$colisly_ex_due = COLISLY_Clients::stock_summary( (int) $colisly_ex_row->id )['storage_fees'] > 0;
+	if ( $colisly_ex_due !== in_array( $colisly_ex_row->id, $colisly_ex_all, false ) ) { // phpcs:ignore WordPress.PHP.StrictInArray.MissingTrueStrict -- ids come back as strings.
+		$colisly_ex_sound = false;
+	}
+}
+colisly_check( 'Filtre stockage : sur toute la base, le filtre SQL dit la meme chose que le calcul des frais', $colisly_ex_sound );
+COLISLY_Shipments::set_status( (int) COLISLY_Shipments::request( $colisly_ex_client, array( (int) $colisly_ex_old ), 'colissimo', 0, 'FR' ), 'cancelled' );
+COLISLY_Parcels::update( (int) $colisly_ex_old, array( 'status' => 'available' ) );
+// Export.
+$colisly_ex_export = COLISLY_Clients::export_rows( $colisly_ex_email, 'storage' );
+colisly_check( 'Export : huit colonnes nommees', array( 'Reference', 'Name', 'E-mail', 'Phone', 'Parcels in stock', 'Stored weight (kg)', 'Storage fees due', 'Created on' ) === $colisly_ex_export['headers'] );
+$colisly_ex_line = $colisly_ex_export['rows'][0];
+colisly_check( 'Export : la ligne du client, valeurs brutes', 1 === count( $colisly_ex_export['rows'] ) && COLISLY_Clients::get( $colisly_ex_client )->reference === $colisly_ex_line[0] && 'Zoé Export' === $colisly_ex_line[1] && '+33600000000' === $colisly_ex_line[3] && '2' === (string) $colisly_ex_line[4] && '3.500' === $colisly_ex_line[5] && number_format( $colisly_ex_summary['storage_fees'], 2, '.', '' ) === $colisly_ex_line[6] && 1 === preg_match( '/^\d{4}-\d{2}-\d{2}$/', $colisly_ex_line[7] ) );
+colisly_check( 'Export : sans filtre, toute la recherche', count( COLISLY_Clients::export_rows( '', '' )['rows'] ) === COLISLY_Clients::count() );
+$colisly_ex_csv = COLISLY_Admin_Clients::csv( array( 'A', 'B' ), array( array( 'x"y', '=1+1' ), array( '+33', 'é' ) ) );
+$colisly_ex_sep = COLISLY_Admin_Clients::csv_separator();
+colisly_check( 'CSV : BOM, guillemets doubles, formules neutralisees, retours Windows', "\xEF\xBB\xBF\"A\"{$colisly_ex_sep}\"B\"\r\n\"x\"\"y\"{$colisly_ex_sep}\"'=1+1\"\r\n\"'+33\"{$colisly_ex_sep}\"é\"\r\n" === $colisly_ex_csv );
+colisly_check( 'CSV : virgule en anglais, point-virgule quand la langue ecrit les decimales avec une virgule', ',' === $colisly_ex_sep );
+add_filter( 'colisly_csv_separator', static function () { return "\t"; } );
+colisly_check( 'CSV : le separateur se filtre', "\t" === COLISLY_Admin_Clients::csv_separator() );
+remove_all_filters( 'colisly_csv_separator' );
+// L ecran.
+wp_set_current_user( 1 );
+$_GET = array( 'page' => 'colisly-clients', 's' => $colisly_ex_email, 'filter' => 'storage' );
+ob_start(); COLISLY_Admin_Clients::render(); $colisly_ex_screen = (string) ob_get_clean();
+$_GET = array();
+wp_set_current_user( 0 );
+colisly_check( 'Ecran : filtre, colonne et bouton d export presents', false !== strpos( $colisly_ex_screen, 'name="filter"' ) && false !== strpos( $colisly_ex_screen, '<th>Storage fees due</th>' ) && false !== strpos( $colisly_ex_screen, 'Export to CSV' ) );
+colisly_check( 'Ecran : le client filtre s affiche avec ses frais en gras', false !== strpos( $colisly_ex_screen, 'Zoé Export' ) && false !== strpos( $colisly_ex_screen, '<strong>' . esc_html( COLISLY_Format::price( $colisly_ex_summary['storage_fees'] ) ) . '</strong>' ) );
+colisly_check( 'Ecran : le lien d export reprend recherche, filtre et jeton', 1 === preg_match( '/admin-post\.php\?action=colisly_export_clients&(?:amp;|#038;)?s=' . preg_quote( rawurlencode( $colisly_ex_email ), '/' ) . '&(?:amp;|#038;)?filter=storage&(?:amp;|#038;)?_wpnonce=/', $colisly_ex_screen ) );
+$colisly_ex_adm = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin.php' );
+colisly_check( 'Garde : l export est branche sur admin_post et verifie droit et jeton', false !== strpos( $colisly_ex_adm, "'admin_post_colisly_export_clients'" ) && false !== strpos( file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-clients.php' ), "check_admin_referer( 'colisly_export_clients' )" ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------
