@@ -438,10 +438,10 @@ class COLISLY_Clients {
 	}
 
 	/**
-	 * Updates the internal admin notes and phone of a client.
+	 * Updates the internal admin notes, phone and discount rate of a client.
 	 *
 	 * @param int   $client_id Client ID.
-	 * @param array $data      Fields: phone, admin_notes.
+	 * @param array $data      Fields: phone, admin_notes, discount_rate.
 	 * @return bool
 	 */
 	public static function update( $client_id, $data ) {
@@ -458,6 +458,12 @@ class COLISLY_Clients {
 		if ( isset( $data['admin_notes'] ) ) {
 			$fields['admin_notes'] = sanitize_textarea_field( $data['admin_notes'] );
 			$formats[]             = '%s';
+		}
+
+		// A personal percentage off the handling fees, 0 to 100.
+		if ( isset( $data['discount_rate'] ) ) {
+			$fields['discount_rate'] = COLISLY_Discounts::rate( $data['discount_rate'] );
+			$formats[]               = '%f';
 		}
 
 		return false !== $wpdb->update( self::table(), $fields, array( 'id' => (int) $client_id ), $formats, array( '%d' ) );

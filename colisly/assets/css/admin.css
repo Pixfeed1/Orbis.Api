@@ -96,6 +96,11 @@
 	white-space: nowrap;
 }
 
+.colisly-order-discount,
+.colisly-discount {
+	color: #1d7a3a;
+}
+
 .colisly-order-advanced {
 	font-weight: 600;
 	margin: 0 0 4px;

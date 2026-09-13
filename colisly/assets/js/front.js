@@ -180,12 +180,20 @@
 		}
 
 		var total = 0;
+		var handling = 0;
 
 		selected.forEach( function ( box ) {
-			total += parseFloat( box.getAttribute( 'data-price' ) || '0' );
+			handling += parseFloat( box.getAttribute( 'data-price' ) || '0' );
 			total += parseFloat( box.getAttribute( 'data-advanced' ) || '0' );
 			total += parseFloat( box.getAttribute( 'data-storage' ) || '0' );
 		} );
+
+		// Same rule as COLISLY_Discounts on the server: a percentage of the
+		// handling fees alone, rounded to the cent, never more than the fees.
+		var form = estimate.closest( 'form' );
+		var rate = parseFloat( ( form && form.getAttribute( 'data-discount-rate' ) ) || '0' );
+		var discount = rate > 0 ? Math.min( handling, Math.round( handling * rate ) / 100 ) : 0;
+		total += handling - discount;
 
 		total += carrierPrice( option, chargeableWeight( option, selected ) );
 

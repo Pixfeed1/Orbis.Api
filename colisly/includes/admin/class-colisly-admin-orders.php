@@ -173,6 +173,10 @@ class COLISLY_Admin_Orders {
 				<?php endif; ?>
 			</p>
 
+			<?php if ( isset( $shipment->discount ) && (float) $shipment->discount > 0 ) : ?>
+				<p class="colisly-order-discount"><?php echo esc_html( $shipment->discount_label . ' : -' . COLISLY_Format::price( (float) $shipment->discount ) ); ?></p>
+			<?php endif; ?>
+
 			<?php $colisly_carrier_lines = self::carrier_lines( $order ); ?>
 			<div class="colisly-order-copy">
 				<p class="colisly-order-copy-title"><?php esc_html_e( 'For the carrier’s website', 'colisly' ); ?></p>

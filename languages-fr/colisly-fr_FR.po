@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.21.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.22.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -1332,3 +1332,66 @@ msgstr "Copier"
 
 msgid "One value per line, in the order postage sites ask for them: name, address, postcode, city, country, phone, e-mail, weight."
 msgstr "Une valeur par ligne, dans l’ordre où les sites d’affranchissement les demandent : nom, adresse, code postal, ville, pays, téléphone, e-mail, poids."
+
+msgid "Discount on handling fees (%)"
+msgstr "Remise sur les frais de gestion (%)"
+
+msgid "A personal rate for this client, taken off the handling fees of every shipment. Transport, fees advanced, storage and insurance are never discounted. When a promotion or the loyalty discount gives more, the higher one applies: rates never add up."
+msgstr "Un taux personnel pour ce client, déduit des frais de gestion de chaque expédition. Transport, frais avancés, stockage et assurance ne sont jamais remisés. Quand une promotion ou la remise fidélité donne plus, la plus forte s’applique : les taux ne se cumulent jamais."
+
+msgid "In force today: %s."
+msgstr "En vigueur aujourd’hui : %s."
+
+msgid "Discounts"
+msgstr "Remises"
+
+msgid "Percentages taken off the handling fees, the price of the parcels themselves. Transport, fees advanced, storage and insurance are never discounted. A client can also carry a personal rate on his record; when several discounts could apply, the highest one applies alone, they never add up. The discount shows as its own line on the order."
+msgstr "Pourcentages déduits des frais de gestion, le prix des colis eux-mêmes. Transport, frais avancés, stockage et assurance ne sont jamais remisés. Un client peut aussi porter un taux personnel sur sa fiche ; quand plusieurs remises pourraient s’appliquer, la plus forte s’applique seule, elles ne se cumulent jamais. La remise apparaît en ligne à part sur la commande."
+
+msgid "Promotion for all clients (%)"
+msgstr "Promotion pour tous les clients (%)"
+
+msgid "0 for no promotion."
+msgstr "0 pour aucune promotion."
+
+msgid "Promotion dates"
+msgstr "Dates de la promotion"
+
+msgctxt "promotion start date"
+msgid "From"
+msgstr "Du"
+
+msgctxt "promotion end date"
+msgid "to"
+msgstr "au"
+
+msgid "Both dates included. Leave a date empty for a promotion with no start or no end."
+msgstr "Les deux dates incluses. Laissez une date vide pour une promotion sans début ou sans fin."
+
+msgid "Loyalty discount"
+msgstr "Remise fidélité"
+
+msgctxt "number of shipments done"
+msgid "From"
+msgstr "À partir de"
+
+msgid "shipments done, take off"
+msgstr "expéditions réalisées, déduire"
+
+msgid "Shipments done are those marked as shipped. 0 shipments or 0% switches the loyalty discount off."
+msgstr "Les expéditions réalisées sont celles marquées comme expédiées. 0 expédition ou 0 % désactive la remise fidélité."
+
+msgid "Promotion %s%%"
+msgstr "Promotion %s %%"
+
+msgid "Loyalty discount %s%%"
+msgstr "Remise fidélité %s %%"
+
+msgid "Client discount %s%%"
+msgstr "Remise client %s %%"
+
+msgid "Discount"
+msgstr "Remise"
+
+msgid "%s: taken off the handling fees of this shipment. Transport, fees advanced, storage and insurance are billed in full."
+msgstr "%s : déduite des frais de gestion de cette expédition. Transport, frais avancés, stockage et assurance sont facturés plein."

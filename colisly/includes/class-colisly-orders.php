@@ -231,6 +231,17 @@ class COLISLY_Orders {
 			$order->add_item( $fee );
 		}
 
+		// The discount granted at request time, as a negative line named after
+		// its reason, so the client reads on the order what he was told on the
+		// form. Taxed like the handling fees it reduces.
+		if ( (float) $shipment->discount > 0 ) {
+			$fee = new WC_Order_Item_Fee();
+			$fee->set_name( '' !== (string) $shipment->discount_label ? (string) $shipment->discount_label : __( 'Discount', 'colisly' ) );
+			$fee->set_tax_status( $tax_status );
+			$fee->set_total( '-' . (string) $shipment->discount );
+			$order->add_item( $fee );
+		}
+
 		// The chosen carrier appears as the native shipping line, priced from
 		// the carrier tariff (base + per-kg) configured in the settings.
 		$shipping_item = new WC_Order_Item_Shipping();

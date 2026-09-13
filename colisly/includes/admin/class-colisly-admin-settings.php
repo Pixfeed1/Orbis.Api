@@ -477,6 +477,38 @@ class COLISLY_Admin_Settings {
 				</table>
 				<p><button type="button" class="button colisly-add-row"><?php esc_html_e( 'Add a cover level', 'colisly' ); ?></button></p>
 
+				<h2><?php esc_html_e( 'Discounts', 'colisly' ); ?></h2>
+				<p class="description"><?php esc_html_e( 'Percentages taken off the handling fees, the price of the parcels themselves. Transport, fees advanced, storage and insurance are never discounted. A client can also carry a personal rate on his record; when several discounts could apply, the highest one applies alone, they never add up. The discount shows as its own line on the order.', 'colisly' ); ?></p>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><label for="colisly-promo-rate"><?php esc_html_e( 'Promotion for all clients (%)', 'colisly' ); ?></label></th>
+						<td>
+							<input type="number" id="colisly-promo-rate" name="promo_rate" min="0" max="100" step="0.01" value="<?php echo esc_attr( COLISLY_Discounts::format_rate( $settings['promo_rate'] ) ); ?>" class="small-text" /> %
+							<p class="description"><?php esc_html_e( '0 for no promotion.', 'colisly' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="colisly-promo-start"><?php esc_html_e( 'Promotion dates', 'colisly' ); ?></label></th>
+						<td>
+							<?php echo esc_html_x( 'From', 'promotion start date', 'colisly' ); ?>
+							<input type="date" id="colisly-promo-start" name="promo_start" value="<?php echo esc_attr( (string) $settings['promo_start'] ); ?>" />
+							<label for="colisly-promo-end"><?php echo esc_html_x( 'to', 'promotion end date', 'colisly' ); ?></label>
+							<input type="date" id="colisly-promo-end" name="promo_end" value="<?php echo esc_attr( (string) $settings['promo_end'] ); ?>" />
+							<p class="description"><?php esc_html_e( 'Both dates included. Leave a date empty for a promotion with no start or no end.', 'colisly' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><label for="colisly-loyalty-shipments"><?php esc_html_e( 'Loyalty discount', 'colisly' ); ?></label></th>
+						<td>
+							<?php echo esc_html_x( 'From', 'number of shipments done', 'colisly' ); ?>
+							<input type="number" id="colisly-loyalty-shipments" name="loyalty_shipments" min="0" step="1" value="<?php echo esc_attr( (string) (int) $settings['loyalty_shipments'] ); ?>" class="small-text" />
+							<label for="colisly-loyalty-rate"><?php esc_html_e( 'shipments done, take off', 'colisly' ); ?></label>
+							<input type="number" id="colisly-loyalty-rate" name="loyalty_rate" min="0" max="100" step="0.01" value="<?php echo esc_attr( COLISLY_Discounts::format_rate( $settings['loyalty_rate'] ) ); ?>" class="small-text" /> %
+							<p class="description"><?php esc_html_e( 'Shipments done are those marked as shipped. 0 shipments or 0% switches the loyalty discount off.', 'colisly' ); ?></p>
+						</td>
+					</tr>
+				</table>
+
 				<h2><?php esc_html_e( 'Orders', 'colisly' ); ?></h2>
 				<table class="form-table" role="presentation">
 					<tr>
@@ -598,6 +630,29 @@ class COLISLY_Admin_Settings {
 		return $grids;
 	}
 
+	/**
+	 * Keeps a date only when it is a real Y-m-d one, otherwise empties it.
+	 *
+	 * @param mixed $value Posted value.
+	 * @return string
+	 */
+	public static function sanitize_date( $value ) {
+		$value = sanitize_text_field( (string) $value );
+
+		if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $value ) ) {
+			return '';
+		}
+
+		list( $y, $m, $d ) = array_map( 'intval', explode( '-', $value ) );
+
+		return checkdate( $m, $d, $y ) ? $value : '';
+	}
+
+	/**
+	 * Handles the settings form submission.
+	 *
+	 * @return void
+	 */
 	public static function handle_save() {
 		if ( ! current_user_can( 'colisly_manage' ) ) {
 			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
@@ -722,6 +777,12 @@ class COLISLY_Admin_Settings {
 			$key              = 'label_show_' . $colisly_extra;
 			$settings[ $key ] = isset( $_POST[ $key ] ) && '1' === (string) wp_unslash( $_POST[ $key ] ) ? 1 : 0;
 		}
+
+		$settings['promo_rate']        = isset( $_POST['promo_rate'] ) ? COLISLY_Discounts::rate( sanitize_text_field( wp_unslash( $_POST['promo_rate'] ) ) ) : 0;
+		$settings['promo_start']       = isset( $_POST['promo_start'] ) ? self::sanitize_date( wp_unslash( $_POST['promo_start'] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised by sanitize_date().
+		$settings['promo_end']         = isset( $_POST['promo_end'] ) ? self::sanitize_date( wp_unslash( $_POST['promo_end'] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised by sanitize_date().
+		$settings['loyalty_shipments'] = isset( $_POST['loyalty_shipments'] ) ? absint( $_POST['loyalty_shipments'] ) : 0;
+		$settings['loyalty_rate']      = isset( $_POST['loyalty_rate'] ) ? COLISLY_Discounts::rate( sanitize_text_field( wp_unslash( $_POST['loyalty_rate'] ) ) ) : 0;
 
 		$settings['orders_taxable']          = empty( $_POST['orders_taxable'] ) ? 0 : 1;
 		$settings['notify_client_on_parcel'] = empty( $_POST['notify_client_on_parcel'] ) ? 0 : 1;

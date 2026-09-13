@@ -442,7 +442,12 @@ class COLISLY_Account {
 							<td data-title="<?php esc_attr_e( 'Parcels', 'colisly' ); ?>"><?php echo esc_html( implode( ', ', $refs ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Weight (kg)', 'colisly' ); ?>"><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Insured for', 'colisly' ); ?>"><?php echo (float) $shipment->insured_value > 0 ? esc_html( COLISLY_Format::price( (float) $shipment->insured_value ) ) : '–'; ?></td>
-							<td data-title="<?php esc_attr_e( 'Total', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Format::price( (float) $shipment->total_price ) ); ?></td>
+							<td data-title="<?php esc_attr_e( 'Total', 'colisly' ); ?>">
+								<?php echo esc_html( COLISLY_Format::price( (float) $shipment->total_price ) ); ?>
+								<?php if ( isset( $shipment->discount ) && (float) $shipment->discount > 0 ) : ?>
+									<br /><small class="colisly-discount"><?php echo esc_html( $shipment->discount_label . ' : -' . COLISLY_Format::price( (float) $shipment->discount ) ); ?></small>
+								<?php endif; ?>
+							</td>
 							<td data-title="<?php esc_attr_e( 'Status', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Shipments::status_label( $shipment->status ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Actions', 'colisly' ); ?>">
 								<?php if ( $order && $order->needs_payment() ) : ?>
@@ -586,7 +591,13 @@ class COLISLY_Account {
 			return;
 		}
 		?>
-		<form method="post" class="colisly-request-form" enctype="multipart/form-data">
+		<?php
+		// The discount the client will get, told before he asks rather than
+		// discovered on the order. The rate travels with the form so the live
+		// estimate takes it off the handling fees, and nothing else.
+		$colisly_discount = COLISLY_Discounts::for_client( $client );
+		?>
+		<form method="post" class="colisly-request-form" enctype="multipart/form-data" data-discount-rate="<?php echo esc_attr( (string) $colisly_discount['rate'] ); ?>">
 			<?php wp_nonce_field( 'colisly_request_shipment' ); ?>
 			<input type="hidden" name="colisly_action" value="request_shipment" />
 
@@ -757,6 +768,17 @@ class COLISLY_Account {
 							</option>
 						<?php endforeach; ?>
 					</select>
+				</p>
+			<?php endif; ?>
+			<?php if ( $colisly_discount['rate'] > 0 ) : ?>
+				<p class="colisly-discount-note">
+					<?php
+					printf(
+						/* translators: %s: name and rate of the discount, e.g. "Loyalty discount 10%". */
+						esc_html__( '%s: taken off the handling fees of this shipment. Transport, fees advanced, storage and insurance are billed in full.', 'colisly' ),
+						'<strong>' . esc_html( $colisly_discount['label'] ) . '</strong>'
+					);
+					?>
 				</p>
 			<?php endif; ?>
 			<p id="colisly-estimate" class="colisly-estimate" hidden>

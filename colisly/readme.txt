@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.21.0
+Stable tag: 1.22.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,6 +34,7 @@ Commercial package forwarding software in this category is sold as one-time lice
 * Parcel intake with generated numbers (COL000001), weight, dimensions, photos, internal notes and per-parcel carrier restrictions
 * Duties and taxes paid to take delivery of a parcel recorded on it and billed back at cost on the shipment order
 * Storage fees calculated automatically once the free period ends
+* Discounts on your handling fees only: a personal rate per client, a promotion for all clients between two dates, and a loyalty discount after a number of shipments; transport, duties, storage and insurance always billed in full
 * Consolidation: several parcels held in stock grouped into one outgoing shipment, which is what the trade rests on
 * Weight-based pricing tiers and carrier tariffs you define yourself, so any carrier or negotiated contract can be used
 
@@ -115,6 +116,10 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 A shipment order is a normal WooCommerce order with the client's delivery address in the standard fields, so any label plugin reads it. Weight is the one thing such plugins take from products, and a shipment order has none: with Colissimo Officiel, Colisly fills in the real weight of the shipment by itself; with other plugins, or on a carrier's website, copy it from the Colisly panel on the order, which lists the address and the weight ready to paste. The weight is also stored on the order as _colisly_total_weight for any tool that reads order meta.
 
+= Can I give a client a discount, or run a promotion? =
+
+Yes, on the handling fees only. WooCommerce coupons only discount products and a shipment order has none, so they do nothing there. Colisly has its own discounts: a personal rate on each client record, and in the settings a promotion for all clients between two dates and a loyalty discount once a client has had a number of shipments done. Each is a percentage of the handling fees; transport, fees advanced, storage and insurance are always billed in full. When several could apply, the highest one applies alone, and it shows on the order as its own line, named after its reason.
+
 == Screenshots ==
 
 1. Clients list with multi-criteria search.
@@ -125,6 +130,9 @@ A shipment order is a normal WooCommerce order with the client's delivery addres
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.22.0 =
+* New: discounts on the handling fees. A WooCommerce coupon does nothing on a shipment order, since coupons only discount products and a shipment order has none; and a promotion tool that did discount it would take its percentage off the transport too, money the forwarder pays out. Colisly now carries its own discounts, all as a percentage of the handling fees alone: a personal rate on the client record, a promotion for all clients between two dates in the settings, and a loyalty discount from a number of shipments done. Transport, fees advanced, storage and insurance are always billed in full. When several could apply, the highest one applies alone; they never add up. The client is told before requesting, the live estimate takes it off, and the order carries it as its own negative line named after its reason, "Loyalty discount 10%", fixed at request time so a promotion ending tomorrow does not change a price agreed today. Adds a column to the clients table and two to the shipments table; the migration runs by itself on update.
 
 = 1.21.0 =
 * Carrier labels from a shipment order. The order already carried the client's delivery address in the standard WooCommerce fields, so label plugins could print it, but they take the parcel weight from the products and a shipment order has none: the operator typed the weight on every label. With Colissimo Officiel, Colisly now hands over the real weight of the shipment, parcels plus the packaging weight set in Colissimo, unless a weight was typed by hand or a return label is being made. The weight is also stored on the order as _colisly_total_weight for any other tool. For forwarders who print their labels on the carrier's own website, on a per-weight account, the Colisly panel on the order now shows the delivery address and the weight one value per line, with a "Copy" button, in the order postage sites ask for them. No database change.

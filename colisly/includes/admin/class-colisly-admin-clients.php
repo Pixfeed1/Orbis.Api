@@ -247,6 +247,27 @@ class COLISLY_Admin_Clients {
 							<td><input type="text" class="regular-text" id="colisly-phone" name="phone" value="<?php echo esc_attr( $client->phone ); ?>" /></td>
 						</tr>
 						<tr>
+							<th scope="row"><label for="colisly-discount-rate"><?php esc_html_e( 'Discount on handling fees (%)', 'colisly' ); ?></label></th>
+							<td>
+								<input type="number" id="colisly-discount-rate" name="discount_rate" min="0" max="100" step="0.01" value="<?php echo esc_attr( COLISLY_Discounts::format_rate( COLISLY_Discounts::client_rate( $client ) ) ); ?>" class="small-text" /> %
+								<p class="description">
+									<?php esc_html_e( 'A personal rate for this client, taken off the handling fees of every shipment. Transport, fees advanced, storage and insurance are never discounted. When a promotion or the loyalty discount gives more, the higher one applies: rates never add up.', 'colisly' ); ?>
+									<?php
+									$colisly_discount = COLISLY_Discounts::for_client( $client );
+									if ( $colisly_discount['rate'] > 0 ) {
+										echo '<br /><strong>';
+										printf(
+											/* translators: %s: name and rate of the discount, e.g. "Loyalty discount 10%". */
+											esc_html__( 'In force today: %s.', 'colisly' ),
+											esc_html( $colisly_discount['label'] )
+										);
+										echo '</strong>';
+									}
+									?>
+								</p>
+							</td>
+						</tr>
+						<tr>
 							<th scope="row"><label for="colisly-admin-notes"><?php esc_html_e( 'Internal notes (never visible to the client)', 'colisly' ); ?></label></th>
 							<td><textarea id="colisly-admin-notes" name="admin_notes" rows="4" class="large-text"><?php echo esc_textarea( (string) $client->admin_notes ); ?></textarea></td>
 						</tr>
@@ -487,7 +508,12 @@ class COLISLY_Admin_Clients {
 								</td>
 								<td><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
 								<td><?php echo esc_html( COLISLY_Format::price( (float) $shipment->storage_fees ) ); ?></td>
-								<td><?php echo esc_html( COLISLY_Format::price( (float) $shipment->total_price ) ); ?></td>
+								<td>
+									<?php echo esc_html( COLISLY_Format::price( (float) $shipment->total_price ) ); ?>
+									<?php if ( isset( $shipment->discount ) && (float) $shipment->discount > 0 ) : ?>
+										<br /><small class="colisly-discount"><?php echo esc_html( $shipment->discount_label . ' : -' . COLISLY_Format::price( (float) $shipment->discount ) ); ?></small>
+									<?php endif; ?>
+								</td>
 								<td>
 									<?php $order = ! empty( $shipment->order_id ) && function_exists( 'wc_get_order' ) ? wc_get_order( (int) $shipment->order_id ) : null; ?>
 									<?php if ( $order ) : ?>
@@ -661,8 +687,9 @@ class COLISLY_Admin_Clients {
 		COLISLY_Clients::update(
 			$client_id,
 			array(
-				'phone'       => isset( $_POST['phone'] ) ? sanitize_text_field( wp_unslash( $_POST['phone'] ) ) : '',
-				'admin_notes' => isset( $_POST['admin_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['admin_notes'] ) ) : '',
+				'phone'         => isset( $_POST['phone'] ) ? sanitize_text_field( wp_unslash( $_POST['phone'] ) ) : '',
+				'admin_notes'   => isset( $_POST['admin_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['admin_notes'] ) ) : '',
+				'discount_rate' => isset( $_POST['discount_rate'] ) ? sanitize_text_field( wp_unslash( $_POST['discount_rate'] ) ) : '0',
 			)
 		);
 

@@ -165,6 +165,19 @@ class COLISLY_Shipments {
 		$insured_value   = $insurance ? $insurance['cover'] : 0.0;
 		$insurance_price = $insurance ? $insurance['price'] : 0.0;
 
+		// The discount in force for this client, taken off the handling fees
+		// alone: what the forwarder charges for his own work, never what he
+		// pays out to a carrier, a customs office or an insurer. Fixed here,
+		// at request time, so a promotion ending tomorrow does not change a
+		// price agreed today.
+		$handling_fees = 0.0;
+		foreach ( $parcels as $parcel ) {
+			$handling_fees += (float) $parcel->price;
+		}
+		$discount        = COLISLY_Discounts::for_client( $client );
+		$discount_amount = COLISLY_Discounts::amount( $handling_fees, $discount['rate'] );
+		$discount_label  = $discount_amount > 0 ? $discount['label'] : '';
+
 		$now = current_time( 'mysql', true );
 
 		$inserted = $wpdb->insert(
@@ -176,11 +189,13 @@ class COLISLY_Shipments {
 				'destination_country' => $country,
 				'status'              => 'requested',
 				'total_weight'        => round( $total_weight, 3 ),
-				'total_price'         => round( $total_price + $storage_fees + $carrier_price + $insurance_price, 2 ),
+				'total_price'         => round( $total_price + $storage_fees + $carrier_price + $insurance_price - $discount_amount, 2 ),
 				'storage_fees'        => $storage_fees,
 				'carrier_price'       => $carrier_price,
 				'insured_value'       => $insured_value,
 				'insurance_price'     => $insurance_price,
+				'discount'            => $discount_amount,
+				'discount_label'      => $discount_label,
 				'requested_at'        => $now,
 				'created_at'          => $now,
 				'updated_at'          => $now,

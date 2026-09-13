@@ -80,6 +80,11 @@
 	font-size: 0.9em;
 }
 
+.colisly-request-form .colisly-discount-note,
+.colisly-front-table .colisly-discount {
+	color: #1d7a3a;
+}
+
 .colisly-request-form .colisly-note {
 	color: #767676;
 	font-size: 0.9em;

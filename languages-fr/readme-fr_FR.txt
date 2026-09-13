@@ -56,6 +56,10 @@ Colisly est gratuite et sous licence GPL.
 * Droits et taxes payés pour prendre livraison d'un colis notés dessus et
   refacturés au coût réel sur la commande d'expédition
 * Frais de stockage calculés automatiquement dès la fin de la franchise
+* Remises sur vos seuls frais de gestion : un taux personnel par client, une
+  promotion pour tous les clients entre deux dates, et une remise fidélité
+  après un nombre d'expéditions ; transport, droits, stockage et assurance
+  toujours facturés plein
 * Groupage : plusieurs colis en stock réunis en une seule expédition, ce qui est
   le fondement même du métier
 * Paliers de tarification au poids et tarifs transporteurs que vous définissez
@@ -195,6 +199,18 @@ est aussi enregistré sur la commande sous _colisly_total_weight pour tout outil
 qui lit les métadonnées de commande.
 
 ================================================================================
+= Puis-je accorder une remise à un client, ou faire une promotion ? =
+
+Oui, sur les seuls frais de gestion. Les codes promo WooCommerce ne remisent que
+des produits et une commande d'expédition n'en a pas, ils n'y font donc rien.
+Colisly a ses propres remises : un taux personnel sur chaque fiche client, et
+dans les réglages une promotion pour tous les clients entre deux dates et une
+remise fidélité dès qu'un client a un certain nombre d'expéditions effectuées.
+Chacune est un pourcentage des frais de gestion ; transport, frais avancés,
+stockage et assurance sont toujours facturés plein. Quand plusieurs pourraient
+s'appliquer, la plus forte s'applique seule, et elle apparaît sur la commande
+en ligne à part, à son nom.
+
 == Captures d'écran ==
 ================================================================================
 
@@ -212,6 +228,25 @@ qui lit les métadonnées de commande.
 ================================================================================
 == Journal des modifications ==
 ================================================================================
+
+= 1.22.0 =
+* Nouveau : remises sur les frais de gestion. Un code promo WooCommerce ne
+  fait rien sur une commande d'expédition, puisque les codes promo ne remisent
+  que des produits et qu'une commande d'expédition n'en a pas ; et un outil de
+  promotion qui la remiserait prendrait aussi son pourcentage sur le
+  transport, de l'argent que le réexpéditeur débourse. Colisly porte
+  désormais ses propres remises, toutes en pourcentage des seuls frais de
+  gestion : un taux personnel sur la fiche client, une promotion pour tous les
+  clients entre deux dates dans les réglages, et une remise fidélité à partir
+  d'un nombre d'expéditions effectuées. Transport, frais avancés, stockage et
+  assurance sont toujours facturés plein. Quand plusieurs pourraient
+  s'appliquer, la plus forte s'applique seule ; elles ne se cumulent jamais.
+  Le client est prévenu avant de demander, l'estimation en direct la déduit,
+  et la commande la porte en ligne négative à son nom, « Remise fidélité
+  10 % », fixée au moment de la demande pour qu'une promotion qui finit demain
+  ne change pas un prix convenu aujourd'hui. Ajoute une colonne à la table des
+  clients et deux à celle des expéditions ; la migration se fait seule à la
+  mise à jour.
 
 = 1.21.0 =
 * Étiquettes transporteur depuis une commande d'expédition. La commande portait
