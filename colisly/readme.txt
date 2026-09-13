@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.20.3
+Stable tag: 1.21.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -111,6 +111,10 @@ Yes. Colisly plugs into the native WordPress personal data tools, and the export
 
 Only if you ask for it. Data removal on uninstall is opt-in from the settings, and it also clears the plugin capability and its options.
 
+= How do I print the carrier label for a shipment? =
+
+A shipment order is a normal WooCommerce order with the client's delivery address in the standard fields, so any label plugin reads it. Weight is the one thing such plugins take from products, and a shipment order has none: with Colissimo Officiel, Colisly fills in the real weight of the shipment by itself; with other plugins, type it from the Colisly panel on the order. The weight is also stored on the order as _colisly_total_weight for any tool that reads order meta.
+
 == Screenshots ==
 
 1. Clients list with multi-criteria search.
@@ -121,6 +125,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.21.0 =
+* Carrier labels from a shipment order. The order already carried the client's delivery address in the standard WooCommerce fields, so label plugins could print it, but they take the parcel weight from the products and a shipment order has none: the operator typed the weight on every label. With Colissimo Officiel, Colisly now hands over the real weight of the shipment, parcels plus the packaging weight set in Colissimo, unless a weight was typed by hand or a return label is being made. The weight is also stored on the order as _colisly_total_weight for any other tool. No database change.
 
 = 1.20.3 =
 * The French catalogue shipped with the plugin now matches the translation validated by the fr_FR team on translate.wordpress.org, word for word, so a site with or without the language pack reads the same. The plugin's home page now points to its presentation page on pixfeed.net, linked from the readme too.
@@ -243,6 +250,9 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 * The allowed carriers help text now states that leaving none checked places no restriction.
 
 == Upgrade Notice ==
+
+= 1.21.0 =
+Colissimo Officiel labels get the real shipment weight. No database change.
 
 = 1.20.3 =
 French catalogue aligned with the validated translation. No database change.

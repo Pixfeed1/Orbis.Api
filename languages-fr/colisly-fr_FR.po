@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.20.3\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.21.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -13,8 +13,8 @@ msgstr ""
 msgid "Colisly Parcel Forwarding"
 msgstr "Colisly Parcel Forwarding"
 
-msgid "https://wordpress.org/plugins/colisly/"
-msgstr "https://wordpress.org/plugins/colisly/"
+msgid "https://pixfeed.net/colisly-extension-woocommerce-de-reexpedition-de-colis/"
+msgstr "https://pixfeed.net/colisly-extension-woocommerce-de-reexpedition-de-colis/"
 
 msgid "Client and parcel management for a parcel receiving, storage, grouping and forwarding business, natively integrated with WooCommerce."
 msgstr "Gestion des clients et des colis pour une activité de réception, stockage, regroupement et expédition de colis, intégrée nativement à WooCommerce."

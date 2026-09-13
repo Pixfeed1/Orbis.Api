@@ -36,6 +36,63 @@ class COLISLY_Orders {
 		add_action( 'woocommerce_order_status_processing', array( __CLASS__, 'order_paid' ) );
 		add_action( 'woocommerce_order_status_completed', array( __CLASS__, 'order_paid' ) );
 		add_action( 'woocommerce_order_status_cancelled', array( __CLASS__, 'order_cancelled' ) );
+
+		// Label plugins take the parcel weight from the products, and a
+		// shipment order has none. Colissimo Officiel filters its label
+		// weight; the real weight of the shipment is handed to it there.
+		add_filter( 'lpc_payload_letter_parcel_weight', array( __CLASS__, 'colissimo_label_weight' ), 10, 3 );
+	}
+
+	/**
+	 * Weight of the shipment, in kg, for a label plugin that asks.
+	 *
+	 * @param WC_Order|int $order Order or order ID.
+	 * @return float 0 when the order is not a shipment order.
+	 */
+	public static function shipment_weight( $order ) {
+		$order = is_object( $order ) ? $order : wc_get_order( (int) $order );
+		if ( ! $order ) {
+			return 0.0;
+		}
+
+		$shipment_id = self::shipment_id_from_order( $order );
+		$shipment    = $shipment_id ? COLISLY_Shipments::get( $shipment_id ) : null;
+
+		return $shipment ? (float) $shipment->total_weight : 0.0;
+	}
+
+	/**
+	 * Gives Colissimo Officiel the real weight of a shipment order.
+	 *
+	 * With no product line, that plugin only knows its packaging weight,
+	 * and the operator had to type the parcels' weight on every label. When
+	 * the weight it computed is nothing but that packaging, the shipment
+	 * weight is added to it. A weight typed by hand on the label form is
+	 * larger than that and is left alone; so is a return label.
+	 *
+	 * @param string|float $weight       Weight in kg as computed by the label plugin.
+	 * @param string       $order_number Order number.
+	 * @param bool         $is_return    Whether a return label is being generated.
+	 * @return string|float
+	 */
+	public static function colissimo_label_weight( $weight, $order_number, $is_return = false ) {
+		if ( $is_return || ! self::available() ) {
+			return $weight;
+		}
+
+		$shipment_weight = self::shipment_weight( (int) $order_number );
+		if ( $shipment_weight <= 0 ) {
+			return $weight;
+		}
+
+		$packaging = (float) get_option( 'lpc_packaging_weight', '0' );
+		$packaging = $packaging > 0 && function_exists( 'wc_get_weight' ) ? (float) wc_get_weight( $packaging, 'kg' ) : 0.0;
+
+		if ( (float) $weight > $packaging + 0.011 ) {
+			return $weight;
+		}
+
+		return number_format( $shipment_weight + $packaging, 2, '.', '' );
 	}
 
 	/**
@@ -184,6 +241,9 @@ class COLISLY_Orders {
 
 		$order->update_meta_data( '_colisly_shipment_id', (int) $shipment->id );
 		$order->update_meta_data( '_colisly_shipment_reference', $shipment->reference );
+		// The weight of what actually ships, in kg, for whatever tool reads
+		// order meta: a shipment order has no product to carry it.
+		$order->update_meta_data( '_colisly_total_weight', (string) $shipment->total_weight );
 		$order->add_order_note(
 			sprintf(
 				/* translators: %s: shipment reference. */

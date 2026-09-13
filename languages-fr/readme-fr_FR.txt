@@ -182,6 +182,17 @@ Uniquement si vous le demandez. La suppression des données à la désinstallati
 s'active dans les réglages, et elle retire également le droit propre à
 l'extension ainsi que ses options.
 
+= Comment imprimer l'étiquette transporteur d'une expédition ? =
+
+Une commande d'expédition est une commande WooCommerce normale, avec l'adresse
+de livraison du client dans les champs standard, donc n'importe quel module
+d'étiquettes la lit. Le poids est la seule chose que ces modules prennent sur
+les produits, et une commande d'expédition n'en a pas : avec Colissimo
+Officiel, Colisly renseigne lui-même le poids réel de l'expédition ; avec les
+autres modules, saisissez-le depuis l'encart Colisly de la commande. Le poids
+est aussi enregistré sur la commande sous _colisly_total_weight pour tout outil
+qui lit les métadonnées de commande.
+
 ================================================================================
 == Captures d'écran ==
 ================================================================================
@@ -200,6 +211,18 @@ l'extension ainsi que ses options.
 ================================================================================
 == Journal des modifications ==
 ================================================================================
+
+= 1.21.0 =
+* Étiquettes transporteur depuis une commande d'expédition. La commande portait
+  déjà l'adresse de livraison du client dans les champs standard de
+  WooCommerce, les modules d'étiquettes pouvaient donc l'imprimer, mais ils
+  prennent le poids du colis sur les produits et une commande d'expédition n'en
+  a pas : l'opérateur tapait le poids à chaque étiquette. Avec Colissimo
+  Officiel, Colisly transmet désormais le poids réel de l'expédition, colis
+  plus poids d'emballage réglé dans Colissimo, sauf si un poids a été saisi à
+  la main ou s'il s'agit d'une étiquette de retour. Le poids est aussi
+  enregistré sur la commande sous _colisly_total_weight pour tout autre outil.
+  Aucun changement de base de données.
 
 = 1.20.3 =
 * Le catalogue français livré avec l'extension reprend désormais mot pour mot la
@@ -606,6 +629,10 @@ l'extension ainsi que ses options.
 ================================================================================
 == Note de mise à jour ==
 ================================================================================
+
+= 1.21.0 =
+Les étiquettes Colissimo Officiel reçoivent le poids réel de l'expédition.
+Aucun changement de base de données.
 
 = 1.20.3 =
 Catalogue français aligné sur la traduction validée. Aucun changement de base

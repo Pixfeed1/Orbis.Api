@@ -2310,6 +2310,27 @@ colisly_check( 'Garde : le bouton copier passe par le presse-papiers avec repli 
 $colisly_addr_set = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-settings.php' );
 colisly_check( 'Garde : l adresse de l entrepot se regle et se nettoie', false !== strpos( $colisly_addr_set, 'name="warehouse_address"' ) && false !== strpos( $colisly_addr_set, "sanitize_textarea_field( wp_unslash( \$_POST['warehouse_address'] ) )" ) );
 
+// ---------------------------------------------------------------------------
+// 1.21.0 : le poids reel de l expedition pour les etiquettes Colissimo.
+// ---------------------------------------------------------------------------
+$colisly_lw_parcel = COLISLY_Parcels::create( array( 'client_id' => $client_id, 'weight' => 3.25, 'allow_grouping' => 1 ) );
+$colisly_lw_ship   = COLISLY_Shipments::request( $client_id, array( (int) $colisly_lw_parcel ), 'colissimo' );
+$colisly_lw_ship   = COLISLY_Shipments::get( (int) $colisly_lw_ship );
+$colisly_lw_order  = wc_get_order( (int) $colisly_lw_ship->order_id );
+colisly_check( 'Poids etiquette : la commande porte le poids de l expedition', '3.250' === (string) $colisly_lw_order->get_meta( '_colisly_total_weight' ) );
+colisly_check( 'Poids etiquette : lu depuis la commande', 3.25 === COLISLY_Orders::shipment_weight( $colisly_lw_order ) );
+delete_option( 'lpc_packaging_weight' );
+colisly_check( 'Poids etiquette : Colissimo sans produit recoit le poids reel', '3.25' === apply_filters( 'lpc_payload_letter_parcel_weight', '0.01', $colisly_lw_order->get_order_number(), false ) );
+// L emballage est saisi dans l unite de la boutique, Colissimo le convertit en kg.
+update_option( 'lpc_packaging_weight', '0.2' );
+$colisly_lw_pack = (float) wc_get_weight( 0.2, 'kg' );
+colisly_check( 'Poids etiquette : l emballage regle dans Colissimo s ajoute', number_format( 3.25 + $colisly_lw_pack, 2, '.', '' ) === apply_filters( 'lpc_payload_letter_parcel_weight', number_format( $colisly_lw_pack, 2, '.', '' ), $colisly_lw_order->get_order_number(), false ) );
+colisly_check( 'Poids etiquette : un poids saisi a la main est respecte', '5.00' === apply_filters( 'lpc_payload_letter_parcel_weight', '5.00', $colisly_lw_order->get_order_number(), false ) );
+colisly_check( 'Poids etiquette : une etiquette de retour n est pas touchee', '0.20' === apply_filters( 'lpc_payload_letter_parcel_weight', '0.20', $colisly_lw_order->get_order_number(), true ) );
+colisly_check( 'Poids etiquette : une commande ordinaire n est pas touchee', '0.20' === apply_filters( 'lpc_payload_letter_parcel_weight', '0.20', '999999', false ) );
+delete_option( 'lpc_packaging_weight' );
+COLISLY_Shipments::set_status( (int) $colisly_lw_ship->id, 'cancelled' );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

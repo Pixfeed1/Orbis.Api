@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.20.2\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.21.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-11T15:13:56+00:00\n"
+"POT-Creation-Date: 2026-09-13T09:36:19+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: colisly\n"
@@ -24,7 +24,7 @@ msgstr ""
 
 #. Plugin URI of the plugin
 #: colisly.php
-msgid "https://wordpress.org/plugins/colisly/"
+msgid "https://pixfeed.net/colisly-extension-woocommerce-de-reexpedition-de-colis/"
 msgstr ""
 
 #. Description of the plugin
@@ -291,7 +291,7 @@ msgstr ""
 
 #: includes/admin/class-colisly-admin-clients.php:312
 #: includes/admin/class-colisly-admin-clients.php:411
-#: includes/class-colisly-orders.php:156
+#: includes/class-colisly-orders.php:213
 msgid "Storage fees"
 msgstr ""
 
@@ -1357,12 +1357,12 @@ msgstr ""
 msgid "Tracking %s"
 msgstr ""
 
-#: includes/class-colisly-orders.php:78
+#: includes/class-colisly-orders.php:135
 msgid "WooCommerce is not available."
 msgstr ""
 
 #. translators: 1: parcel reference, 2: weight in kg.
-#: includes/class-colisly-orders.php:118
+#: includes/class-colisly-orders.php:175
 #: includes/frontend/class-colisly-account.php:798
 #: includes/frontend/class-colisly-account.php:1113
 #, php-format
@@ -1370,37 +1370,37 @@ msgid "Parcel %1$s (%2$s kg)"
 msgstr ""
 
 #. translators: 1: what the fees were for, 2: parcel reference.
-#: includes/class-colisly-orders.php:136
+#: includes/class-colisly-orders.php:193
 #, php-format
 msgid "%1$s advanced on parcel %2$s"
 msgstr ""
 
 #. translators: %s: insured value.
-#: includes/class-colisly-orders.php:168
+#: includes/class-colisly-orders.php:225
 #, php-format
 msgid "Insurance (cover %s)"
 msgstr ""
 
 #. translators: %s: shipment reference.
-#: includes/class-colisly-orders.php:190
+#: includes/class-colisly-orders.php:250
 #, php-format
 msgid "Order created for shipment request %s."
 msgstr ""
 
 #. translators: 1: order number, 2: shipment reference.
-#: includes/class-colisly-orders.php:216
+#: includes/class-colisly-orders.php:276
 #, php-format
 msgid "WooCommerce order #%1$s created for shipment %2$s."
 msgstr ""
 
 #. translators: %s: shipment reference.
-#: includes/class-colisly-orders.php:328
+#: includes/class-colisly-orders.php:388
 #, php-format
 msgid "Shipment %s shipped."
 msgstr ""
 
 #. translators: %s: shipment reference.
-#: includes/class-colisly-orders.php:330
+#: includes/class-colisly-orders.php:390
 #, php-format
 msgid "Shipment %s cancelled."
 msgstr ""
