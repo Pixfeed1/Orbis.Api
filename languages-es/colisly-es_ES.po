@@ -1,7 +1,7 @@
 # Spanish translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.22.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.23.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -1333,26 +1333,14 @@ msgstr "Copiar"
 msgid "One value per line, in the order postage sites ask for them: name, address, postcode, city, country, phone, e-mail, weight."
 msgstr "Un valor por línea, en el orden en que lo piden los sitios de franqueo: nombre, dirección, código postal, ciudad, país, teléfono, correo electrónico, peso."
 
-msgid "Discount on handling fees (%)"
-msgstr "Descuento sobre los gastos de gestión (%)"
-
-msgid "A personal rate for this client, taken off the handling fees of every shipment. Transport, fees advanced, storage and insurance are never discounted. When a promotion or the loyalty discount gives more, the higher one applies: rates never add up."
-msgstr "Un porcentaje personal para este cliente, descontado de los gastos de gestión de cada envío. Transporte, gastos adelantados, almacenamiento y seguro nunca se descuentan. Cuando una promoción o el descuento de fidelidad dan más, se aplica el mayor: los porcentajes nunca se suman."
-
 msgid "In force today: %s."
 msgstr "En vigor hoy: %s."
 
 msgid "Discounts"
 msgstr "Descuentos"
 
-msgid "Percentages taken off the handling fees, the price of the parcels themselves. Transport, fees advanced, storage and insurance are never discounted. A client can also carry a personal rate on his record; when several discounts could apply, the highest one applies alone, they never add up. The discount shows as its own line on the order."
-msgstr "Porcentajes descontados de los gastos de gestión, el precio de los propios paquetes. Transporte, gastos adelantados, almacenamiento y seguro nunca se descuentan. Un cliente también puede tener un porcentaje personal en su ficha; cuando varios descuentos podrían aplicarse, se aplica solo el mayor, nunca se suman. El descuento aparece como línea propia en el pedido."
-
 msgid "Promotion for all clients (%)"
 msgstr "Promoción para todos los clientes (%)"
-
-msgid "0 for no promotion."
-msgstr "0 para ninguna promoción."
 
 msgid "Promotion dates"
 msgstr "Fechas de la promoción"
@@ -1393,5 +1381,62 @@ msgstr "Descuento de cliente %s%%"
 msgid "Discount"
 msgstr "Descuento"
 
-msgid "%s: taken off the handling fees of this shipment. Transport, fees advanced, storage and insurance are billed in full."
-msgstr "%s: descontado de los gastos de gestión de este envío. Transporte, gastos adelantados, almacenamiento y seguro se facturan íntegros."
+msgid "Personal discount"
+msgstr "Descuento personal"
+
+msgid "on"
+msgstr "sobre"
+
+msgid "A personal rate for this client, taken off every shipment. Transport, fees advanced and insurance are never discounted. When a promotion or the loyalty discount takes more off, that one applies instead: discounts never add up."
+msgstr "Un porcentaje personal para este cliente, descontado de cada envío. Transporte, gastos adelantados y seguro nunca se descuentan. Cuando una promoción o el descuento de fidelidad descuentan más, se aplica ese en su lugar: los descuentos nunca se suman."
+
+msgid "Percentages taken off what you charge for your own work: the handling fees, the price of the parcels themselves, or the storage fees, or both. Transport, fees advanced and insurance are never discounted. A client can also carry a personal rate on his record; when several discounts could apply, the one that takes the most off applies alone, they never add up. The discount shows as its own line on the order."
+msgstr "Porcentajes descontados de lo que usted cobra por su propio trabajo: los gastos de gestión, el precio de los propios paquetes, o los gastos de almacenamiento, o ambos. Transporte, gastos adelantados y seguro nunca se descuentan. Un cliente también puede tener un porcentaje personal en su ficha; cuando varios descuentos podrían aplicarse, se aplica solo el que más descuenta, nunca se suman. El descuento aparece como línea propia en el pedido."
+
+msgid "0 for no promotion. 100% on storage fees, for instance, makes storage free for the length of the promotion."
+msgstr "0 para ninguna promoción. 100% sobre los gastos de almacenamiento, por ejemplo, hace el almacenamiento gratuito mientras dure la promoción."
+
+msgid "Promotion code"
+msgstr "Código promocional"
+
+msgid "Optional. Empty, the promotion applies to every client by itself. Filled, a \"Promotion code\" box appears on the shipment request form and only the clients who type this code get it. Upper or lower case makes no difference."
+msgstr "Opcional. Vacío, la promoción se aplica por sí sola a todos los clientes. Relleno, aparece una casilla «Código promocional» en el formulario de solicitud de envío y solo los clientes que escriben este código la obtienen. Mayúsculas o minúsculas, da igual."
+
+msgid "This code is not valid."
+msgstr "Este código no es válido."
+
+msgid "Code accepted: %s."
+msgstr "Código aceptado: %s."
+
+msgid "Handling fees"
+msgstr "Gastos de gestión"
+
+msgid "Handling and storage fees"
+msgstr "Gastos de gestión y de almacenamiento"
+
+msgid "%s on storage fees"
+msgstr "%s sobre el almacenamiento"
+
+msgid "%s on handling and storage fees"
+msgstr "%s sobre la gestión y el almacenamiento"
+
+msgid "Checking…"
+msgstr "Comprobando…"
+
+msgid "The code could not be checked. Please try again."
+msgstr "No se pudo comprobar el código. Inténtelo de nuevo."
+
+msgid "Promotion code:"
+msgstr "Código promocional:"
+
+msgid "Apply"
+msgstr "Aplicar"
+
+msgid "%s: taken off this shipment. Transport, fees advanced and insurance are billed in full."
+msgstr "%s: descontado de este envío. Transporte, gastos adelantados y seguro se facturan íntegros."
+
+msgid "The one that takes the most off applies; discounts never add up."
+msgstr "Se aplica el que más descuenta; los descuentos nunca se suman."
+
+msgid "(%1$s: -%2$s)"
+msgstr "(%1$s: -%2$s)"

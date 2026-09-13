@@ -478,13 +478,19 @@ class COLISLY_Admin_Settings {
 				<p><button type="button" class="button colisly-add-row"><?php esc_html_e( 'Add a cover level', 'colisly' ); ?></button></p>
 
 				<h2><?php esc_html_e( 'Discounts', 'colisly' ); ?></h2>
-				<p class="description"><?php esc_html_e( 'Percentages taken off the handling fees, the price of the parcels themselves. Transport, fees advanced, storage and insurance are never discounted. A client can also carry a personal rate on his record; when several discounts could apply, the highest one applies alone, they never add up. The discount shows as its own line on the order.', 'colisly' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Percentages taken off what you charge for your own work: the handling fees, the price of the parcels themselves, or the storage fees, or both. Transport, fees advanced and insurance are never discounted. A client can also carry a personal rate on his record; when several discounts could apply, the one that takes the most off applies alone, they never add up. The discount shows as its own line on the order.', 'colisly' ); ?></p>
 				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row"><label for="colisly-promo-rate"><?php esc_html_e( 'Promotion for all clients (%)', 'colisly' ); ?></label></th>
 						<td>
 							<input type="number" id="colisly-promo-rate" name="promo_rate" min="0" max="100" step="0.01" value="<?php echo esc_attr( COLISLY_Discounts::format_rate( $settings['promo_rate'] ) ); ?>" class="small-text" /> %
-							<p class="description"><?php esc_html_e( '0 for no promotion.', 'colisly' ); ?></p>
+							<label for="colisly-promo-scope"><?php esc_html_e( 'on', 'colisly' ); ?></label>
+							<select id="colisly-promo-scope" name="promo_scope">
+								<?php foreach ( COLISLY_Discounts::scopes() as $colisly_scope => $colisly_scope_label ) : ?>
+									<option value="<?php echo esc_attr( $colisly_scope ); ?>" <?php selected( COLISLY_Discounts::scope( $settings['promo_scope'] ), $colisly_scope ); ?>><?php echo esc_html( $colisly_scope_label ); ?></option>
+								<?php endforeach; ?>
+							</select>
+							<p class="description"><?php esc_html_e( '0 for no promotion. 100% on storage fees, for instance, makes storage free for the length of the promotion.', 'colisly' ); ?></p>
 						</td>
 					</tr>
 					<tr>
@@ -498,12 +504,25 @@ class COLISLY_Admin_Settings {
 						</td>
 					</tr>
 					<tr>
+						<th scope="row"><label for="colisly-promo-code"><?php esc_html_e( 'Promotion code', 'colisly' ); ?></label></th>
+						<td>
+							<input type="text" id="colisly-promo-code" name="promo_code" value="<?php echo esc_attr( (string) $settings['promo_code'] ); ?>" class="regular-text" autocomplete="off" />
+							<p class="description"><?php esc_html_e( 'Optional. Empty, the promotion applies to every client by itself. Filled, a "Promotion code" box appears on the shipment request form and only the clients who type this code get it. Upper or lower case makes no difference.', 'colisly' ); ?></p>
+						</td>
+					</tr>
+					<tr>
 						<th scope="row"><label for="colisly-loyalty-shipments"><?php esc_html_e( 'Loyalty discount', 'colisly' ); ?></label></th>
 						<td>
 							<?php echo esc_html_x( 'From', 'number of shipments done', 'colisly' ); ?>
 							<input type="number" id="colisly-loyalty-shipments" name="loyalty_shipments" min="0" step="1" value="<?php echo esc_attr( (string) (int) $settings['loyalty_shipments'] ); ?>" class="small-text" />
 							<label for="colisly-loyalty-rate"><?php esc_html_e( 'shipments done, take off', 'colisly' ); ?></label>
 							<input type="number" id="colisly-loyalty-rate" name="loyalty_rate" min="0" max="100" step="0.01" value="<?php echo esc_attr( COLISLY_Discounts::format_rate( $settings['loyalty_rate'] ) ); ?>" class="small-text" /> %
+							<label for="colisly-loyalty-scope"><?php esc_html_e( 'on', 'colisly' ); ?></label>
+							<select id="colisly-loyalty-scope" name="loyalty_scope">
+								<?php foreach ( COLISLY_Discounts::scopes() as $colisly_scope => $colisly_scope_label ) : ?>
+									<option value="<?php echo esc_attr( $colisly_scope ); ?>" <?php selected( COLISLY_Discounts::scope( $settings['loyalty_scope'] ), $colisly_scope ); ?>><?php echo esc_html( $colisly_scope_label ); ?></option>
+								<?php endforeach; ?>
+							</select>
 							<p class="description"><?php esc_html_e( 'Shipments done are those marked as shipped. 0 shipments or 0% switches the loyalty discount off.', 'colisly' ); ?></p>
 						</td>
 					</tr>
@@ -779,6 +798,9 @@ class COLISLY_Admin_Settings {
 		}
 
 		$settings['promo_rate']        = isset( $_POST['promo_rate'] ) ? COLISLY_Discounts::rate( sanitize_text_field( wp_unslash( $_POST['promo_rate'] ) ) ) : 0;
+		$settings['promo_scope']       = isset( $_POST['promo_scope'] ) ? COLISLY_Discounts::scope( wp_unslash( $_POST['promo_scope'] ) ) : 'handling'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised by scope().
+		$settings['promo_code']        = isset( $_POST['promo_code'] ) ? COLISLY_Discounts::normalize_code( wp_unslash( $_POST['promo_code'] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised by normalize_code().
+		$settings['loyalty_scope']     = isset( $_POST['loyalty_scope'] ) ? COLISLY_Discounts::scope( wp_unslash( $_POST['loyalty_scope'] ) ) : 'handling'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised by scope().
 		$settings['promo_start']       = isset( $_POST['promo_start'] ) ? self::sanitize_date( wp_unslash( $_POST['promo_start'] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised by sanitize_date().
 		$settings['promo_end']         = isset( $_POST['promo_end'] ) ? self::sanitize_date( wp_unslash( $_POST['promo_end'] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised by sanitize_date().
 		$settings['loyalty_shipments'] = isset( $_POST['loyalty_shipments'] ) ? absint( $_POST['loyalty_shipments'] ) : 0;

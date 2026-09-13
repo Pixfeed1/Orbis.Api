@@ -56,10 +56,10 @@ Colisly est gratuite et sous licence GPL.
 * Droits et taxes payés pour prendre livraison d'un colis notés dessus et
   refacturés au coût réel sur la commande d'expédition
 * Frais de stockage calculés automatiquement dès la fin de la franchise
-* Remises sur vos seuls frais de gestion : un taux personnel par client, une
-  promotion pour tous les clients entre deux dates, et une remise fidélité
-  après un nombre d'expéditions ; transport, droits, stockage et assurance
-  toujours facturés plein
+* Remises sur vos seuls frais, gestion ou stockage : un taux personnel par
+  client, une promotion pour tous les clients entre deux dates avec code
+  optionnel, et une remise fidélité après un nombre d'expéditions ;
+  transport, droits et assurance toujours facturés plein
 * Groupage : plusieurs colis en stock réunis en une seule expédition, ce qui est
   le fondement même du métier
 * Paliers de tarification au poids et tarifs transporteurs que vous définissez
@@ -201,15 +201,25 @@ qui lit les métadonnées de commande.
 ================================================================================
 = Puis-je accorder une remise à un client, ou faire une promotion ? =
 
-Oui, sur les seuls frais de gestion. Les codes promo WooCommerce ne remisent que
-des produits et une commande d'expédition n'en a pas, ils n'y font donc rien.
+Oui, sur vos seuls frais. Les codes promo WooCommerce ne remisent que des
+produits et une commande d'expédition n'en a pas, ils n'y font donc rien.
 Colisly a ses propres remises : un taux personnel sur chaque fiche client, et
 dans les réglages une promotion pour tous les clients entre deux dates et une
-remise fidélité dès qu'un client a un certain nombre d'expéditions effectuées.
-Chacune est un pourcentage des frais de gestion ; transport, frais avancés,
-stockage et assurance sont toujours facturés plein. Quand plusieurs pourraient
-s'appliquer, la plus forte s'applique seule, et elle apparaît sur la commande
-en ligne à part, à son nom.
+remise fidélité dès qu'un client a un certain nombre d'expéditions réalisées.
+Chacune est un pourcentage des frais de gestion, des frais de stockage, ou des
+deux, à votre choix : 100 % sur le stockage entre deux dates rend le stockage
+gratuit pendant ce temps. Transport, frais avancés et assurance sont toujours
+facturés plein. Quand plusieurs pourraient s'appliquer, celle qui déduit le
+plus s'applique seule, et elle apparaît sur la commande en ligne à part, à son
+nom.
+
+= La promotion peut-elle exiger un code ? =
+
+Oui. Donnez un code à la promotion dans les réglages et une case « Code promo »
+apparaît sur le formulaire de demande d'expédition : seuls les clients qui le
+saisissent ont la promotion, et l'estimation se met à jour dès que le code est
+accepté. Laissez le code vide et la promotion s'applique à tous d'elle-même. Le
+code est vérifié par le serveur et n'apparaît jamais dans la page.
 
 == Captures d'écran ==
 ================================================================================
@@ -228,6 +238,25 @@ en ligne à part, à son nom.
 ================================================================================
 == Journal des modifications ==
 ================================================================================
+
+= 1.23.0 =
+* Les remises disent maintenant sur quoi elles portent. Chacune des trois, le
+  taux personnel de la fiche client, la promotion et la remise fidélité, est
+  un pourcentage des frais de gestion, des frais de stockage, ou des deux, de
+  sorte qu'un réexpéditeur peut offrir le stockage pendant un mois sans
+  toucher aux frais de gestion, ou l'inverse. Comme deux remises n'ont plus
+  toujours la même base, la règle pour en retenir une devient celle qui
+  déduit le plus, toujours seule, toujours sans cumul ; à égalité, le taux
+  personnel passe en premier. La ligne de commande nomme la base quand ce
+  n'est pas la gestion, « Promotion 100 % sur le stockage ».
+* Nouveau : un code promo. Donnez un code à la promotion dans les réglages et
+  une case « Code promo » apparaît sur le formulaire de demande d'expédition ;
+  seuls les clients qui le saisissent ont la promotion, et l'estimation en
+  direct se met à jour dès que le code est accepté. Le code est vérifié par le
+  serveur, comparé sans tenir compte de la casse, et jamais écrit dans la
+  page. Laissé vide, la promotion s'applique à tous d'elle-même, comme avant.
+  Ajoute une colonne à la table des clients ; la migration se fait seule à la
+  mise à jour.
 
 = 1.22.0 =
 * Nouveau : remises sur les frais de gestion. Un code promo WooCommerce ne

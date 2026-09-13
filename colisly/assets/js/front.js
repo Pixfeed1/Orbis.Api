@@ -18,9 +18,57 @@
 	var select = form.querySelector( '#colisly-carrier' );
 	var estimate = document.getElementById( 'colisly-estimate' );
 	var amount = document.getElementById( 'colisly-estimate-amount' );
+	var discountLine = document.getElementById( 'colisly-estimate-discount' );
 
 	if ( ! select || ! estimate || ! amount ) {
 		return;
+	}
+
+	// The discounts the client could get, as the server listed them. A
+	// promotion behind a code joins the list once the code is accepted.
+	var discounts = [];
+	try {
+		discounts = JSON.parse( form.getAttribute( 'data-discounts' ) || '[]' ) || [];
+	} catch ( e ) {
+		discounts = [];
+	}
+
+	/**
+	 * Same rule as COLISLY_Discounts::best on the server: each discount is a
+	 * percentage of the fees it names, rounded to the cent and never more than
+	 * those fees; the one taking the most off applies alone, the first on a tie.
+	 */
+	function bestDiscount( handling, storage ) {
+		var best = { amount: 0, label: '' };
+
+		discounts.forEach( function ( d ) {
+			var base = 'storage' === d.scope ? storage : ( 'both' === d.scope ? handling + storage : handling );
+			var taken = Math.min( base, Math.round( base * parseFloat( d.rate || '0' ) ) / 100 );
+
+			if ( taken > best.amount ) {
+				best = { amount: taken, label: d.label };
+			}
+		} );
+
+		return best;
+	}
+
+	function showDiscountNames() {
+		var note = document.getElementById( 'colisly-discount-note' );
+		var names = document.getElementById( 'colisly-discount-names' );
+		var several = document.getElementById( 'colisly-discount-several' );
+
+		if ( ! note || ! names ) {
+			return;
+		}
+
+		names.textContent = discounts.map( function ( d ) {
+			return d.label;
+		} ).join( ', ' );
+		note.hidden = 0 === discounts.length;
+		if ( several ) {
+			several.hidden = discounts.length < 2;
+		}
 	}
 
 	function formatPrice( value ) {
@@ -181,19 +229,22 @@
 
 		var total = 0;
 		var handling = 0;
+		var storage = 0;
 
 		selected.forEach( function ( box ) {
 			handling += parseFloat( box.getAttribute( 'data-price' ) || '0' );
+			storage += parseFloat( box.getAttribute( 'data-storage' ) || '0' );
 			total += parseFloat( box.getAttribute( 'data-advanced' ) || '0' );
-			total += parseFloat( box.getAttribute( 'data-storage' ) || '0' );
 		} );
 
-		// Same rule as COLISLY_Discounts on the server: a percentage of the
-		// handling fees alone, rounded to the cent, never more than the fees.
-		var form = estimate.closest( 'form' );
-		var rate = parseFloat( ( form && form.getAttribute( 'data-discount-rate' ) ) || '0' );
-		var discount = rate > 0 ? Math.min( handling, Math.round( handling * rate ) / 100 ) : 0;
-		total += handling - discount;
+		var discount = bestDiscount( handling, storage );
+		total += handling + storage - discount.amount;
+
+		if ( discountLine ) {
+			var pattern = ( window.colislyFront && window.colislyFront.discountLine ) || '(%1$s: -%2$s)';
+			discountLine.textContent = discount.amount > 0 ? pattern.replace( '%1$s', discount.label ).replace( '%2$s', formatPrice( discount.amount ) ) : '';
+			discountLine.hidden = ! ( discount.amount > 0 );
+		}
 
 		total += carrierPrice( option, chargeableWeight( option, selected ) );
 
@@ -224,6 +275,71 @@
 	updateCarrierPrices();
 
 	select.addEventListener( 'change', updateEstimate );
+
+	// The promotion code: checked by the server, never compared here, so the
+	// code is not in the page for anyone to read. An accepted code adds the
+	// promotion to the discounts and the estimate follows.
+	var codeInput = document.getElementById( 'colisly-promo-code' );
+	var codeButton = document.getElementById( 'colisly-promo-apply' );
+	var codeStatus = document.getElementById( 'colisly-promo-status' );
+	var labels = window.colislyFront || {};
+
+	function applyCode() {
+		if ( ! codeInput || ! labels.ajaxUrl ) {
+			return;
+		}
+
+		var body = new window.URLSearchParams();
+		body.append( 'action', 'colisly_check_code' );
+		body.append( 'nonce', labels.nonce || '' );
+		body.append( 'code', codeInput.value );
+
+		if ( codeStatus ) {
+			codeStatus.textContent = labels.codeChecking || '';
+			codeStatus.classList.remove( 'is-error', 'is-ok' );
+		}
+
+		window.fetch( labels.ajaxUrl, { method: 'POST', credentials: 'same-origin', body: body } )
+			.then( function ( response ) {
+				return response.json();
+			} )
+			.then( function ( result ) {
+				discounts = discounts.filter( function ( d ) {
+					return 'promo' !== d.kind;
+				} );
+
+				if ( result && result.success && result.data && result.data.discount ) {
+					discounts.push( result.data.discount );
+				}
+
+				if ( codeStatus ) {
+					codeStatus.textContent = result && result.data && result.data.message ? result.data.message : '';
+					codeStatus.classList.toggle( 'is-ok', !! ( result && result.success ) );
+					codeStatus.classList.toggle( 'is-error', ! ( result && result.success ) );
+				}
+
+				showDiscountNames();
+				updateEstimate();
+			} )
+			.catch( function () {
+				if ( codeStatus ) {
+					codeStatus.textContent = labels.codeError || '';
+					codeStatus.classList.add( 'is-error' );
+				}
+			} );
+	}
+
+	if ( codeButton ) {
+		codeButton.addEventListener( 'click', applyCode );
+	}
+	if ( codeInput ) {
+		codeInput.addEventListener( 'keydown', function ( event ) {
+			if ( 'Enter' === event.key ) {
+				event.preventDefault();
+				applyCode();
+			}
+		} );
+	}
 } )();
 
 /**

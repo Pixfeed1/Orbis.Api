@@ -247,19 +247,25 @@ class COLISLY_Admin_Clients {
 							<td><input type="text" class="regular-text" id="colisly-phone" name="phone" value="<?php echo esc_attr( $client->phone ); ?>" /></td>
 						</tr>
 						<tr>
-							<th scope="row"><label for="colisly-discount-rate"><?php esc_html_e( 'Discount on handling fees (%)', 'colisly' ); ?></label></th>
+							<th scope="row"><label for="colisly-discount-rate"><?php esc_html_e( 'Personal discount', 'colisly' ); ?></label></th>
 							<td>
 								<input type="number" id="colisly-discount-rate" name="discount_rate" min="0" max="100" step="0.01" value="<?php echo esc_attr( COLISLY_Discounts::format_rate( COLISLY_Discounts::client_rate( $client ) ) ); ?>" class="small-text" /> %
+								<label for="colisly-discount-scope"><?php esc_html_e( 'on', 'colisly' ); ?></label>
+								<select id="colisly-discount-scope" name="discount_scope">
+									<?php foreach ( COLISLY_Discounts::scopes() as $colisly_scope => $colisly_scope_label ) : ?>
+										<option value="<?php echo esc_attr( $colisly_scope ); ?>" <?php selected( COLISLY_Discounts::scope( isset( $client->discount_scope ) ? $client->discount_scope : 'handling' ), $colisly_scope ); ?>><?php echo esc_html( $colisly_scope_label ); ?></option>
+									<?php endforeach; ?>
+								</select>
 								<p class="description">
-									<?php esc_html_e( 'A personal rate for this client, taken off the handling fees of every shipment. Transport, fees advanced, storage and insurance are never discounted. When a promotion or the loyalty discount gives more, the higher one applies: rates never add up.', 'colisly' ); ?>
+									<?php esc_html_e( 'A personal rate for this client, taken off every shipment. Transport, fees advanced and insurance are never discounted. When a promotion or the loyalty discount takes more off, that one applies instead: discounts never add up.', 'colisly' ); ?>
 									<?php
-									$colisly_discount = COLISLY_Discounts::for_client( $client );
-									if ( $colisly_discount['rate'] > 0 ) {
+									$colisly_discounts = COLISLY_Discounts::candidates( $client );
+									if ( ! empty( $colisly_discounts ) ) {
 										echo '<br /><strong>';
 										printf(
-											/* translators: %s: name and rate of the discount, e.g. "Loyalty discount 10%". */
+											/* translators: %s: names and rates of the discounts, e.g. "Loyalty discount 10%". */
 											esc_html__( 'In force today: %s.', 'colisly' ),
-											esc_html( $colisly_discount['label'] )
+											esc_html( implode( ', ', wp_list_pluck( $colisly_discounts, 'label' ) ) )
 										);
 										echo '</strong>';
 									}
@@ -687,9 +693,10 @@ class COLISLY_Admin_Clients {
 		COLISLY_Clients::update(
 			$client_id,
 			array(
-				'phone'         => isset( $_POST['phone'] ) ? sanitize_text_field( wp_unslash( $_POST['phone'] ) ) : '',
-				'admin_notes'   => isset( $_POST['admin_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['admin_notes'] ) ) : '',
-				'discount_rate' => isset( $_POST['discount_rate'] ) ? sanitize_text_field( wp_unslash( $_POST['discount_rate'] ) ) : '0',
+				'phone'          => isset( $_POST['phone'] ) ? sanitize_text_field( wp_unslash( $_POST['phone'] ) ) : '',
+				'admin_notes'    => isset( $_POST['admin_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['admin_notes'] ) ) : '',
+				'discount_rate'  => isset( $_POST['discount_rate'] ) ? sanitize_text_field( wp_unslash( $_POST['discount_rate'] ) ) : '0',
+				'discount_scope' => isset( $_POST['discount_scope'] ) ? sanitize_key( wp_unslash( $_POST['discount_scope'] ) ) : 'handling',
 			)
 		);
 

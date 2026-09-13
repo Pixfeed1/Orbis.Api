@@ -56,9 +56,11 @@ class COLISLY_Shipments {
 	 * @param string       $country         Destination ISO country code. Empty
 	 *                                      falls back to the client's shipping
 	 *                                      address.
+	 * @param string       $promo_code      Promotion code typed by the client,
+	 *                                      if the promotion asks for one.
 	 * @return int|WP_Error Shipment ID on success.
 	 */
-	public static function request( $client_id, $parcel_ids, $carrier, $insurance_cover = 0, $country = '' ) {
+	public static function request( $client_id, $parcel_ids, $carrier, $insurance_cover = 0, $country = '', $promo_code = '' ) {
 		global $wpdb;
 
 		$client = COLISLY_Clients::get( $client_id );
@@ -165,8 +167,8 @@ class COLISLY_Shipments {
 		$insured_value   = $insurance ? $insurance['cover'] : 0.0;
 		$insurance_price = $insurance ? $insurance['price'] : 0.0;
 
-		// The discount in force for this client, taken off the handling fees
-		// alone: what the forwarder charges for his own work, never what he
+		// The discount for this client, taken off the handling or storage
+		// fees: what the forwarder charges for his own work, never what he
 		// pays out to a carrier, a customs office or an insurer. Fixed here,
 		// at request time, so a promotion ending tomorrow does not change a
 		// price agreed today.
@@ -174,8 +176,8 @@ class COLISLY_Shipments {
 		foreach ( $parcels as $parcel ) {
 			$handling_fees += (float) $parcel->price;
 		}
-		$discount        = COLISLY_Discounts::for_client( $client );
-		$discount_amount = COLISLY_Discounts::amount( $handling_fees, $discount['rate'] );
+		$discount        = COLISLY_Discounts::best( $client, $handling_fees, $storage_fees, $promo_code );
+		$discount_amount = (float) $discount['amount'];
 		$discount_label  = $discount_amount > 0 ? $discount['label'] : '';
 
 		$now = current_time( 'mysql', true );

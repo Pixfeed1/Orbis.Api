@@ -21,6 +21,51 @@ class COLISLY_Ajax {
 	 */
 	public static function init() {
 		add_action( 'wp_ajax_colisly_search_clients', array( __CLASS__, 'search_clients' ) );
+		add_action( 'wp_ajax_colisly_check_code', array( __CLASS__, 'check_code' ) );
+	}
+
+	/**
+	 * Tells a client whether the promotion code he typed unlocks the promotion.
+	 *
+	 * Checked here rather than in the page so the code is never in the
+	 * page's source. The answer is the promotion as a discount candidate,
+	 * for the live estimate; the request itself checks the code again when
+	 * the form is posted.
+	 *
+	 * @return void
+	 */
+	public static function check_code() {
+		check_ajax_referer( 'colisly_front', 'nonce' );
+
+		$client = is_user_logged_in() ? COLISLY_Clients::get_by_user( get_current_user_id() ) : null;
+		if ( ! $client ) {
+			wp_send_json_error( array( 'message' => __( 'Access denied.', 'colisly' ) ), 403 );
+		}
+
+		$code = isset( $_POST['code'] ) ? sanitize_text_field( wp_unslash( $_POST['code'] ) ) : '';
+
+		if ( '' === trim( $code ) || ! COLISLY_Discounts::promo_running() || ! COLISLY_Discounts::code_matches( $code ) ) {
+			wp_send_json_error( array( 'message' => __( 'This code is not valid.', 'colisly' ) ) );
+		}
+
+		$promo = null;
+		foreach ( COLISLY_Discounts::candidates( $client, $code ) as $candidate ) {
+			if ( 'promo' === $candidate['kind'] ) {
+				$promo = $candidate;
+			}
+		}
+
+		if ( ! $promo ) {
+			wp_send_json_error( array( 'message' => __( 'This code is not valid.', 'colisly' ) ) );
+		}
+
+		wp_send_json_success(
+			array(
+				'discount' => $promo,
+				/* translators: %s: name and rate of the promotion, e.g. "Promotion 10%". */
+				'message'  => sprintf( __( 'Code accepted: %s.', 'colisly' ), $promo['label'] ),
+			)
+		);
 	}
 
 	/**

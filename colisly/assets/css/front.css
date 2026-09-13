@@ -81,8 +81,19 @@
 }
 
 .colisly-request-form .colisly-discount-note,
-.colisly-front-table .colisly-discount {
+.colisly-request-form .colisly-discount,
+.colisly-front-table .colisly-discount,
+.colisly-request-form .colisly-promo-code .is-ok {
 	color: #1d7a3a;
+}
+
+.colisly-request-form .colisly-promo-code .is-error {
+	color: #b32d2e;
+}
+
+.colisly-request-form .colisly-promo-code input {
+	max-width: 12em;
+	text-transform: uppercase;
 }
 
 .colisly-request-form .colisly-note {

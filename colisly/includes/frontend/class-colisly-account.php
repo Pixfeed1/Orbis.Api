@@ -156,6 +156,12 @@ class COLISLY_Account {
 				'currencySymbol' => function_exists( 'get_woocommerce_currency_symbol' ) ? html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOTES, 'UTF-8' ) : '€',
 				'copied'         => __( 'Copied', 'colisly' ),
 				'copy'           => __( 'Copy the address', 'colisly' ),
+				'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
+				'nonce'          => wp_create_nonce( 'colisly_front' ),
+				'codeChecking'   => __( 'Checking…', 'colisly' ),
+				'codeError'      => __( 'The code could not be checked. Please try again.', 'colisly' ),
+				/* translators: 1: name of the discount, 2: amount taken off. */
+				'discountLine'   => __( '(%1$s: -%2$s)', 'colisly' ),
 			)
 		);
 	}
@@ -592,12 +598,16 @@ class COLISLY_Account {
 		}
 		?>
 		<?php
-		// The discount the client will get, told before he asks rather than
-		// discovered on the order. The rate travels with the form so the live
-		// estimate takes it off the handling fees, and nothing else.
-		$colisly_discount = COLISLY_Discounts::for_client( $client );
+		// The discounts the client could get, told before he asks rather than
+		// discovered on the order. They travel with the form so the live
+		// estimate applies the same rule as the server: the one taking the
+		// most off, on the fees it names, and nothing else. A promotion
+		// behind a code is not among them until the code is typed and
+		// checked; the code itself never reaches the page.
+		$colisly_discounts = COLISLY_Discounts::candidates( $client );
+		$colisly_asks_code = COLISLY_Discounts::promo_running() && '' !== COLISLY_Discounts::promo_code();
 		?>
-		<form method="post" class="colisly-request-form" enctype="multipart/form-data" data-discount-rate="<?php echo esc_attr( (string) $colisly_discount['rate'] ); ?>">
+		<form method="post" class="colisly-request-form" enctype="multipart/form-data" data-discounts="<?php echo esc_attr( wp_json_encode( array_values( $colisly_discounts ) ) ); ?>">
 			<?php wp_nonce_field( 'colisly_request_shipment' ); ?>
 			<input type="hidden" name="colisly_action" value="request_shipment" />
 
@@ -770,20 +780,28 @@ class COLISLY_Account {
 					</select>
 				</p>
 			<?php endif; ?>
-			<?php if ( $colisly_discount['rate'] > 0 ) : ?>
-				<p class="colisly-discount-note">
-					<?php
-					printf(
-						/* translators: %s: name and rate of the discount, e.g. "Loyalty discount 10%". */
-						esc_html__( '%s: taken off the handling fees of this shipment. Transport, fees advanced, storage and insurance are billed in full.', 'colisly' ),
-						'<strong>' . esc_html( $colisly_discount['label'] ) . '</strong>'
-					);
-					?>
+			<?php if ( $colisly_asks_code ) : ?>
+				<p class="colisly-promo-code">
+					<label for="colisly-promo-code"><?php esc_html_e( 'Promotion code:', 'colisly' ); ?></label>
+					<input type="text" name="colisly_promo_code" id="colisly-promo-code" autocomplete="off" />
+					<button type="button" class="button" id="colisly-promo-apply"><?php esc_html_e( 'Apply', 'colisly' ); ?></button>
+					<span id="colisly-promo-status" class="colisly-note" aria-live="polite"></span>
 				</p>
 			<?php endif; ?>
+			<p class="colisly-discount-note" id="colisly-discount-note" <?php echo empty( $colisly_discounts ) ? 'hidden' : ''; ?>>
+				<?php
+				printf(
+					/* translators: %s: names and rates of the discounts, e.g. "Loyalty discount 10%". */
+					esc_html__( '%s: taken off this shipment. Transport, fees advanced and insurance are billed in full.', 'colisly' ),
+					'<strong id="colisly-discount-names">' . esc_html( implode( ', ', wp_list_pluck( $colisly_discounts, 'label' ) ) ) . '</strong>'
+				);
+				?>
+				<span id="colisly-discount-several" <?php echo count( $colisly_discounts ) > 1 ? '' : 'hidden'; ?>><?php esc_html_e( 'The one that takes the most off applies; discounts never add up.', 'colisly' ); ?></span>
+			</p>
 			<p id="colisly-estimate" class="colisly-estimate" hidden>
 				<strong><?php esc_html_e( 'Estimated total:', 'colisly' ); ?></strong>
 				<span id="colisly-estimate-amount"></span>
+				<span id="colisly-estimate-discount" class="colisly-discount" hidden></span>
 				<span class="colisly-note">
 					<?php
 					// The note lists what the figure is made of, so it names
@@ -1273,7 +1291,9 @@ class COLISLY_Account {
 			}
 		}
 
-		$result = COLISLY_Shipments::request( (int) $client->id, $parcel_ids, $carrier, $insurance, $country );
+		$promo_code = isset( $_POST['colisly_promo_code'] ) ? sanitize_text_field( wp_unslash( $_POST['colisly_promo_code'] ) ) : '';
+
+		$result = COLISLY_Shipments::request( (int) $client->id, $parcel_ids, $carrier, $insurance, $country, $promo_code );
 
 		if ( is_wp_error( $result ) ) {
 			wp_safe_redirect( add_query_arg( 'colisly_error', rawurlencode( $result->get_error_message() ), $url ) );

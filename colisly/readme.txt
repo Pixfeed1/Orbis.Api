@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.22.0
+Stable tag: 1.23.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,7 +34,7 @@ Commercial package forwarding software in this category is sold as one-time lice
 * Parcel intake with generated numbers (COL000001), weight, dimensions, photos, internal notes and per-parcel carrier restrictions
 * Duties and taxes paid to take delivery of a parcel recorded on it and billed back at cost on the shipment order
 * Storage fees calculated automatically once the free period ends
-* Discounts on your handling fees only: a personal rate per client, a promotion for all clients between two dates, and a loyalty discount after a number of shipments; transport, duties, storage and insurance always billed in full
+* Discounts on your own fees only, handling or storage: a personal rate per client, a promotion for all clients between two dates with an optional code, and a loyalty discount after a number of shipments; transport, duties and insurance always billed in full
 * Consolidation: several parcels held in stock grouped into one outgoing shipment, which is what the trade rests on
 * Weight-based pricing tiers and carrier tariffs you define yourself, so any carrier or negotiated contract can be used
 
@@ -118,7 +118,11 @@ A shipment order is a normal WooCommerce order with the client's delivery addres
 
 = Can I give a client a discount, or run a promotion? =
 
-Yes, on the handling fees only. WooCommerce coupons only discount products and a shipment order has none, so they do nothing there. Colisly has its own discounts: a personal rate on each client record, and in the settings a promotion for all clients between two dates and a loyalty discount once a client has had a number of shipments done. Each is a percentage of the handling fees; transport, fees advanced, storage and insurance are always billed in full. When several could apply, the highest one applies alone, and it shows on the order as its own line, named after its reason.
+Yes, on your own fees only. WooCommerce coupons only discount products and a shipment order has none, so they do nothing there. Colisly has its own discounts: a personal rate on each client record, and in the settings a promotion for all clients between two dates and a loyalty discount once a client has had a number of shipments done. Each is a percentage of the handling fees, of the storage fees, or of both, as you choose: 100% on storage between two dates makes storage free for that time. Transport, fees advanced and insurance are always billed in full. When several could apply, the one that takes the most off applies alone, and it shows on the order as its own line, named after its reason.
+
+= Can the promotion require a code? =
+
+Yes. Give the promotion a code in the settings and a "Promotion code" box appears on the shipment request form: only the clients who type it get the promotion, and the estimate updates once the code is accepted. Leave the code empty and the promotion applies to everyone by itself. The code is checked on the server and never appears in the page.
 
 == Screenshots ==
 
@@ -130,6 +134,10 @@ Yes, on the handling fees only. WooCommerce coupons only discount products and a
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.23.0 =
+* Discounts now say what they apply to. Each of the three, the personal rate on the client record, the promotion and the loyalty discount, is a percentage of the handling fees, of the storage fees, or of both, so a forwarder can offer free storage for a month without touching the handling fees, or the other way round. Since two discounts no longer always share a base, the rule for picking one becomes the one that takes the most off, still alone, still never adding up; on a tie the personal rate goes first. The order line names the base when it is not the handling fees, "Promotion 100% on storage fees".
+* New: a promotion code. Give the promotion a code in the settings and a "Promotion code" box appears on the shipment request form; only the clients who type it get the promotion, and the live estimate updates once the code is accepted. The code is checked by the server, compared without regard to case, and never written in the page. Left empty, the promotion applies to everyone by itself, as before. Adds a column to the clients table; the migration runs by itself on update.
 
 = 1.22.0 =
 * New: discounts on the handling fees. A WooCommerce coupon does nothing on a shipment order, since coupons only discount products and a shipment order has none; and a promotion tool that did discount it would take its percentage off the transport too, money the forwarder pays out. Colisly now carries its own discounts, all as a percentage of the handling fees alone: a personal rate on the client record, a promotion for all clients between two dates in the settings, and a loyalty discount from a number of shipments done. Transport, fees advanced, storage and insurance are always billed in full. When several could apply, the highest one applies alone; they never add up. The client is told before requesting, the live estimate takes it off, and the order carries it as its own negative line named after its reason, "Loyalty discount 10%", fixed at request time so a promotion ending tomorrow does not change a price agreed today. Adds a column to the clients table and two to the shipments table; the migration runs by itself on update.

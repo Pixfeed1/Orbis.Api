@@ -182,6 +182,7 @@ CREATE TABLE {$wpdb->prefix}colisly_clients (
 	phone VARCHAR(50) NOT NULL DEFAULT '',
 	admin_notes TEXT NULL,
 	discount_rate DECIMAL(5,2) NOT NULL DEFAULT 0,
+	discount_scope VARCHAR(10) NOT NULL DEFAULT 'handling',
 	created_at DATETIME NOT NULL,
 	updated_at DATETIME NOT NULL,
 	PRIMARY KEY  (id),
