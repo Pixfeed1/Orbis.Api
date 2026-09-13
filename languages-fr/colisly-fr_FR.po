@@ -1323,3 +1323,12 @@ msgstr "Votre adresse de livraison"
 
 msgid "Give this address to the shops you order from. Your reference %s must appear on every parcel."
 msgstr "Donnez cette adresse aux boutiques où vous commandez. Votre référence %s doit figurer sur chaque colis."
+
+msgid "For the carrier’s website"
+msgstr "Pour le site du transporteur"
+
+msgid "Copy"
+msgstr "Copier"
+
+msgid "One value per line, in the order postage sites ask for them: name, address, postcode, city, country, phone, e-mail, weight."
+msgstr "Une valeur par ligne, dans l’ordre où les sites d’affranchissement les demandent : nom, adresse, code postal, ville, pays, téléphone, e-mail, poids."

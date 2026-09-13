@@ -1970,6 +1970,13 @@ colisly_check( 'Encart commande : total declare', false !== strpos( $colisly_ord
 colisly_check( 'Encart commande : lien vers la facture', false !== strpos( $colisly_ord_html, 'facture-amazon.pdf' ) && false !== strpos( $colisly_ord_html, 'colisly_download_document' ) );
 colisly_check( 'Encart commande : lien vers le formulaire douanier', false !== strpos( $colisly_ord_html, 'colisly_customs_form' ) );
 colisly_check( 'Encart commande : lien vers la fiche client', false !== strpos( $colisly_ord_html, 'page=colisly-clients' ) );
+$colisly_ord_lines = COLISLY_Admin_Orders::carrier_lines( $colisly_ord_order );
+colisly_check( 'Encart commande : bloc a copier pour le site du transporteur', false !== strpos( $colisly_ord_html, 'colisly-order-copy' ) && false !== strpos( $colisly_ord_html, 'data-colisly-copy="' ) );
+colisly_check( 'Encart commande : le bloc finit par le poids de l expedition', preg_match( '/^[0-9]+\.[0-9]{3} kg$/', end( $colisly_ord_lines ) ) === 1 && (float) end( $colisly_ord_lines ) === (float) $colisly_ord_ship->total_weight );
+colisly_check( 'Encart commande : aucune ligne vide a coller', ! in_array( '', $colisly_ord_lines, true ) );
+$colisly_ord_js = file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/admin.js' );
+$colisly_ord_php = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-orders.php' );
+colisly_check( 'Garde : le script est charge sur l ecran de commande pour le bouton copier', false !== strpos( $colisly_ord_php, "COLISLY_Admin::enqueue_assets( 'colisly-order' )" ) && false !== strpos( $colisly_ord_js, 'navigator.clipboard.writeText' ) );
 
 // Une commande ordinaire de la boutique n a rien a voir avec Colisly : l encart
 // n existe pas pour elle.
@@ -2313,10 +2320,22 @@ colisly_check( 'Garde : l adresse de l entrepot se regle et se nettoie', false !
 // ---------------------------------------------------------------------------
 // 1.21.0 : le poids reel de l expedition pour les etiquettes Colissimo.
 // ---------------------------------------------------------------------------
+$colisly_lw_user = (int) COLISLY_Clients::get( $client_id )->user_id;
+$colisly_lw_meta = array( 'shipping_first_name' => 'Jean', 'shipping_last_name' => 'Dupont', 'shipping_address_1' => '4 rue des Lilas', 'shipping_city' => 'Lyon', 'shipping_postcode' => '69001', 'shipping_country' => 'FR', 'shipping_phone' => '0600000000' );
+$colisly_lw_prev = array();
+foreach ( $colisly_lw_meta as $colisly_lw_k => $colisly_lw_v ) {
+	$colisly_lw_prev[ $colisly_lw_k ] = get_user_meta( $colisly_lw_user, $colisly_lw_k, true );
+	update_user_meta( $colisly_lw_user, $colisly_lw_k, $colisly_lw_v );
+}
 $colisly_lw_parcel = COLISLY_Parcels::create( array( 'client_id' => $client_id, 'weight' => 3.25, 'allow_grouping' => 1 ) );
 $colisly_lw_ship   = COLISLY_Shipments::request( $client_id, array( (int) $colisly_lw_parcel ), 'colissimo' );
 $colisly_lw_ship   = COLISLY_Shipments::get( (int) $colisly_lw_ship );
 $colisly_lw_order  = wc_get_order( (int) $colisly_lw_ship->order_id );
+foreach ( $colisly_lw_prev as $colisly_lw_k => $colisly_lw_v ) {
+	if ( '' === $colisly_lw_v ) { delete_user_meta( $colisly_lw_user, $colisly_lw_k ); } else { update_user_meta( $colisly_lw_user, $colisly_lw_k, $colisly_lw_v ); }
+}
+$colisly_lw_lines = COLISLY_Admin_Orders::carrier_lines( $colisly_lw_order );
+colisly_check( 'Bloc transporteur : nom, adresse, code postal, ville, pays en clair, telephone, poids, dans cet ordre', array( 'Jean Dupont', '4 rue des Lilas', '69001', 'Lyon', 'France', '0600000000' ) === array_slice( $colisly_lw_lines, 0, 6 ) && '3.250 kg' === end( $colisly_lw_lines ) );
 colisly_check( 'Poids etiquette : la commande porte le poids de l expedition', '3.250' === (string) $colisly_lw_order->get_meta( '_colisly_total_weight' ) );
 colisly_check( 'Poids etiquette : lu depuis la commande', 3.25 === COLISLY_Orders::shipment_weight( $colisly_lw_order ) );
 delete_option( 'lpc_packaging_weight' );

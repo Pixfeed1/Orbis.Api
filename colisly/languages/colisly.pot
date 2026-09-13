@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-13T09:36:19+00:00\n"
+"POT-Creation-Date: 2026-09-13T09:47:26+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: colisly\n"
@@ -148,7 +148,7 @@ msgstr ""
 
 #. translators: 1: client reference, 2: client name.
 #: includes/admin/class-colisly-admin-clients.php:165
-#: includes/admin/class-colisly-admin-orders.php:133
+#: includes/admin/class-colisly-admin-orders.php:172
 #, php-format
 msgid "Client record %1$s, %2$s"
 msgstr ""
@@ -331,7 +331,7 @@ msgid "Edit"
 msgstr ""
 
 #: includes/admin/class-colisly-admin-clients.php:334
-#: includes/admin/class-colisly-admin-orders.php:153
+#: includes/admin/class-colisly-admin-orders.php:202
 #: includes/admin/class-colisly-admin-parcels.php:102
 msgid "Customs form"
 msgstr ""
@@ -344,7 +344,7 @@ msgstr ""
 #. translators: %s: file name.
 #: includes/admin/class-colisly-admin-clients.php:338
 #: includes/admin/class-colisly-admin-clients.php:476
-#: includes/admin/class-colisly-admin-orders.php:203
+#: includes/admin/class-colisly-admin-orders.php:252
 #, php-format
 msgid "Invoice: %s"
 msgstr ""
@@ -410,14 +410,14 @@ msgstr ""
 
 #. translators: 1: contents, 2: quantity, 3: total value of the line, 4: country of origin.
 #: includes/admin/class-colisly-admin-clients.php:451
-#: includes/admin/class-colisly-admin-orders.php:184
+#: includes/admin/class-colisly-admin-orders.php:233
 #, php-format
 msgid "%1$s x%2$d, %3$s, origin %4$s"
 msgstr ""
 
 #. translators: %s: total declared value.
 #: includes/admin/class-colisly-admin-clients.php:465
-#: includes/admin/class-colisly-admin-orders.php:194
+#: includes/admin/class-colisly-admin-orders.php:243
 #, php-format
 msgid "Total declared: %s"
 msgstr ""
@@ -511,21 +511,34 @@ msgid_plural "%s clients"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/admin/class-colisly-admin-orders.php:59
+#: includes/admin/class-colisly-admin-orders.php:63
 msgid "Colisly shipment"
 msgstr ""
 
+#: includes/admin/class-colisly-admin-orders.php:178
+msgid "For the carrier’s website"
+msgstr ""
+
+#: includes/admin/class-colisly-admin-orders.php:181
+#: includes/admin/class-colisly-admin.php:140
+msgid "Copy"
+msgstr ""
+
+#: includes/admin/class-colisly-admin-orders.php:182
+msgid "One value per line, in the order postage sites ask for them: name, address, postcode, city, country, phone, e-mail, weight."
+msgstr ""
+
 #. translators: %s: internal comment.
-#: includes/admin/class-colisly-admin-orders.php:168
+#: includes/admin/class-colisly-admin-orders.php:217
 #, php-format
 msgid "Internal comment: %s"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-orders.php:197
+#: includes/admin/class-colisly-admin-orders.php:246
 msgid "No customs declaration for this parcel."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-orders.php:207
+#: includes/admin/class-colisly-admin-orders.php:256
 msgid "No purchase invoice attached."
 msgstr ""
 
@@ -1132,8 +1145,13 @@ msgstr ""
 msgid "new client, record created with the first parcel"
 msgstr ""
 
-#. translators: %s: comma separated list of unrecognised country codes.
 #: includes/admin/class-colisly-admin.php:141
+#: includes/frontend/class-colisly-account.php:157
+msgid "Copied"
+msgstr ""
+
+#. translators: %s: comma separated list of unrecognised country codes.
+#: includes/admin/class-colisly-admin.php:143
 #, php-format
 msgid "unrecognised: %s"
 msgstr ""
@@ -1797,10 +1815,6 @@ msgstr ""
 #: includes/frontend/class-colisly-account.php:118
 #: includes/frontend/class-colisly-account.php:537
 msgid "Shipment request"
-msgstr ""
-
-#: includes/frontend/class-colisly-account.php:157
-msgid "Copied"
 msgstr ""
 
 #: includes/frontend/class-colisly-account.php:158

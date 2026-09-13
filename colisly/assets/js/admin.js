@@ -255,3 +255,46 @@
 		}
 	} );
 } )( jQuery );
+
+/*
+ * "Copy" on the order panel: the address and weight go to the clipboard for
+ * the carrier's website. Without clipboard access the text is selected.
+ */
+( function () {
+	'use strict';
+
+	document.addEventListener( 'click', function ( event ) {
+		var button = event.target.closest ? event.target.closest( '[data-colisly-copy]' ) : null;
+
+		if ( ! button ) {
+			return;
+		}
+
+		var text = button.getAttribute( 'data-colisly-copy' );
+		var i18n = ( window.colislyAdmin && window.colislyAdmin.i18n ) || {};
+		var done = function () {
+			button.textContent = i18n.copied || 'Copied';
+			window.setTimeout( function () {
+				button.textContent = i18n.copy || 'Copy';
+			}, 2000 );
+		};
+		var select = function () {
+			var block = button.closest( '.colisly-order-copy' );
+			var lines = block ? block.querySelector( '.colisly-order-copy-lines' ) : null;
+			if ( ! lines || ! window.getSelection ) {
+				return;
+			}
+			var range = document.createRange();
+			range.selectNodeContents( lines );
+			var selection = window.getSelection();
+			selection.removeAllRanges();
+			selection.addRange( range );
+		};
+
+		if ( navigator.clipboard && navigator.clipboard.writeText ) {
+			navigator.clipboard.writeText( text ).then( done, select );
+		} else {
+			select();
+		}
+	} );
+}() );

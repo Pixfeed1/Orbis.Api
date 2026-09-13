@@ -189,7 +189,8 @@ de livraison du client dans les champs standard, donc n'importe quel module
 d'étiquettes la lit. Le poids est la seule chose que ces modules prennent sur
 les produits, et une commande d'expédition n'en a pas : avec Colissimo
 Officiel, Colisly renseigne lui-même le poids réel de l'expédition ; avec les
-autres modules, saisissez-le depuis l'encart Colisly de la commande. Le poids
+autres modules, ou sur le site d'un transporteur, copiez-le depuis l'encart
+Colisly de la commande, qui liste l'adresse et le poids prêts à coller. Le poids
 est aussi enregistré sur la commande sous _colisly_total_weight pour tout outil
 qui lit les métadonnées de commande.
 
@@ -222,6 +223,10 @@ qui lit les métadonnées de commande.
   plus poids d'emballage réglé dans Colissimo, sauf si un poids a été saisi à
   la main ou s'il s'agit d'une étiquette de retour. Le poids est aussi
   enregistré sur la commande sous _colisly_total_weight pour tout autre outil.
+  Pour les réexpéditeurs qui affranchissent sur le site du transporteur, avec
+  un compte au poids réel, l'encart Colisly de la commande affiche désormais
+  l'adresse de livraison et le poids, une valeur par ligne, avec un bouton
+  « Copier », dans l'ordre où les sites d'affranchissement les demandent.
   Aucun changement de base de données.
 
 = 1.20.3 =

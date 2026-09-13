@@ -54,6 +54,10 @@ class COLISLY_Admin_Orders {
 			return;
 		}
 
+		// The copy button needs the plugin script, which only loads on the
+		// plugin's own screens otherwise.
+		COLISLY_Admin::enqueue_assets( 'colisly-order' );
+
 		add_meta_box(
 			'colisly-shipment',
 			__( 'Colisly shipment', 'colisly' ),
@@ -98,6 +102,41 @@ class COLISLY_Admin_Orders {
 	}
 
 	/**
+	 * What a postage website asks for, one value per line, in its order.
+	 *
+	 * Forwarders on a per-weight contract print their labels on the
+	 * carrier's own website and retype the order. This is the same data,
+	 * ready to paste: name, address, postcode, city, country, phone,
+	 * e-mail, then the weight of the shipment.
+	 *
+	 * @param WC_Order $order Order.
+	 * @return string[]
+	 */
+	public static function carrier_lines( $order ) {
+		$country   = (string) $order->get_shipping_country();
+		$countries = function_exists( 'WC' ) && WC()->countries ? WC()->countries->get_countries() : array();
+		$lines     = array(
+			trim( $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name() ),
+			$order->get_shipping_company(),
+			$order->get_shipping_address_1(),
+			$order->get_shipping_address_2(),
+			$order->get_shipping_postcode(),
+			$order->get_shipping_city(),
+			$order->get_shipping_state(),
+			isset( $countries[ $country ] ) ? $countries[ $country ] : $country,
+			$order->get_shipping_phone() ? $order->get_shipping_phone() : $order->get_billing_phone(),
+			$order->get_billing_email(),
+		);
+
+		$weight = COLISLY_Orders::shipment_weight( $order );
+		if ( $weight > 0 ) {
+			$lines[] = number_format( $weight, 3, '.', '' ) . ' kg';
+		}
+
+		return array_values( array_filter( array_map( 'trim', array_map( 'strval', $lines ) ), 'strlen' ) );
+	}
+
+	/**
 	 * Builds the panel HTML for an order, empty when no shipment is behind it.
 	 *
 	 * @param WC_Order $order Order.
@@ -133,6 +172,16 @@ class COLISLY_Admin_Orders {
 					· <a href="<?php echo esc_url( $client_url ); ?>"><?php echo esc_html( sprintf( /* translators: 1: client reference, 2: client name. */ __( 'Client record %1$s, %2$s', 'colisly' ), $client->reference, COLISLY_Clients::name( $client ) ) ); ?></a>
 				<?php endif; ?>
 			</p>
+
+			<?php $colisly_carrier_lines = self::carrier_lines( $order ); ?>
+			<div class="colisly-order-copy">
+				<p class="colisly-order-copy-title"><?php esc_html_e( 'For the carrier’s website', 'colisly' ); ?></p>
+				<pre class="colisly-order-copy-lines"><?php echo esc_html( implode( "\n", $colisly_carrier_lines ) ); ?></pre>
+				<p>
+					<button type="button" class="button colisly-copy" data-colisly-copy="<?php echo esc_attr( implode( "\n", $colisly_carrier_lines ) ); ?>"><?php esc_html_e( 'Copy', 'colisly' ); ?></button>
+					<span class="description"><?php esc_html_e( 'One value per line, in the order postage sites ask for them: name, address, postcode, city, country, phone, e-mail, weight.', 'colisly' ); ?></span>
+				</p>
+			</div>
 
 			<?php foreach ( COLISLY_Shipments::parcels( (int) $shipment->id ) as $parcel ) : ?>
 				<?php

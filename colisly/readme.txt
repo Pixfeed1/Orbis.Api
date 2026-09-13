@@ -113,7 +113,7 @@ Only if you ask for it. Data removal on uninstall is opt-in from the settings, a
 
 = How do I print the carrier label for a shipment? =
 
-A shipment order is a normal WooCommerce order with the client's delivery address in the standard fields, so any label plugin reads it. Weight is the one thing such plugins take from products, and a shipment order has none: with Colissimo Officiel, Colisly fills in the real weight of the shipment by itself; with other plugins, type it from the Colisly panel on the order. The weight is also stored on the order as _colisly_total_weight for any tool that reads order meta.
+A shipment order is a normal WooCommerce order with the client's delivery address in the standard fields, so any label plugin reads it. Weight is the one thing such plugins take from products, and a shipment order has none: with Colissimo Officiel, Colisly fills in the real weight of the shipment by itself; with other plugins, or on a carrier's website, copy it from the Colisly panel on the order, which lists the address and the weight ready to paste. The weight is also stored on the order as _colisly_total_weight for any tool that reads order meta.
 
 == Screenshots ==
 
@@ -127,7 +127,7 @@ A shipment order is a normal WooCommerce order with the client's delivery addres
 == Changelog ==
 
 = 1.21.0 =
-* Carrier labels from a shipment order. The order already carried the client's delivery address in the standard WooCommerce fields, so label plugins could print it, but they take the parcel weight from the products and a shipment order has none: the operator typed the weight on every label. With Colissimo Officiel, Colisly now hands over the real weight of the shipment, parcels plus the packaging weight set in Colissimo, unless a weight was typed by hand or a return label is being made. The weight is also stored on the order as _colisly_total_weight for any other tool. No database change.
+* Carrier labels from a shipment order. The order already carried the client's delivery address in the standard WooCommerce fields, so label plugins could print it, but they take the parcel weight from the products and a shipment order has none: the operator typed the weight on every label. With Colissimo Officiel, Colisly now hands over the real weight of the shipment, parcels plus the packaging weight set in Colissimo, unless a weight was typed by hand or a return label is being made. The weight is also stored on the order as _colisly_total_weight for any other tool. For forwarders who print their labels on the carrier's own website, on a per-weight account, the Colisly panel on the order now shows the delivery address and the weight one value per line, with a "Copy" button, in the order postage sites ask for them. No database change.
 
 = 1.20.3 =
 * The French catalogue shipped with the plugin now matches the translation validated by the fr_FR team on translate.wordpress.org, word for word, so a site with or without the language pack reads the same. The plugin's home page now points to its presentation page on pixfeed.net, linked from the readme too.

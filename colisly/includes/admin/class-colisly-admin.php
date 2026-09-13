@@ -137,6 +137,8 @@ class COLISLY_Admin {
 					'noteCol'     => __( 'Internal comment', 'colisly' ),
 					'noParcels'   => __( 'No parcels in stock for this client.', 'colisly' ),
 					'newClient'   => __( 'new client, record created with the first parcel', 'colisly' ),
+					'copy'        => __( 'Copy', 'colisly' ),
+					'copied'      => __( 'Copied', 'colisly' ),
 					/* translators: %s: comma separated list of unrecognised country codes. */
 					'unknownCode' => __( 'unrecognised: %s', 'colisly' ),
 				),

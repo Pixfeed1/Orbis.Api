@@ -78,3 +78,12 @@ msgstr "Largeur × hauteur. 62 × 30 mm par défaut pour la petite étiquette co
 
 msgid "The label printed when a parcel is booked in. Every label printer has its own format, so give the size of your labels in millimetres; the reference, the client and the reception date always fit, and the internal comment when there is one. Add the weight and the tracking number only if your labels have room for them."
 msgstr "L’étiquette imprimée lors de l’enregistrement d’un colis. Chaque imprimante d’étiquettes ayant son propre format, indiquez la taille de vos étiquettes en millimètres ; la référence, le client et la date de réception y figurent toujours, ainsi que le commentaire interne lorsqu’il y en a un. Ajoutez le poids et le numéro de suivi uniquement si vos étiquettes disposent de suffisamment de place."
+
+msgid "For the carrier’s website"
+msgstr "Pour le site du transporteur"
+
+msgid "Copy"
+msgstr "Copier"
+
+msgid "One value per line, in the order postage sites ask for them: name, address, postcode, city, country, phone, e-mail, weight."
+msgstr "Une valeur par ligne, dans l’ordre où les sites d’affranchissement les demandent : nom, adresse, code postal, ville, pays, téléphone, e-mail, poids."
