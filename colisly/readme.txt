@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.24.0
+Stable tag: 1.25.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -61,7 +61,7 @@ A typical use is a service reshipping from mainland France towards the French ov
 1. Upload the `colisly` folder to `/wp-content/plugins/`, or install it from the Plugins screen.
 2. Activate the plugin. WooCommerce must be installed and active.
 3. Go to "Colisly → Settings" to configure the pricing tiers, storage fees and carriers.
-4. Create a client record from "Colisly → Clients", then register parcels from "Colisly → New parcel".
+4. Register parcels from "Colisly → New parcel". A customer gets his client record and reference the first time he opens his account, so he can shop with them before his first parcel; you can also create records yourself from "Colisly → Clients".
 
 == Frequently Asked Questions ==
 
@@ -135,6 +135,10 @@ Yes. Give the promotion a code in the settings and a "Promotion code" box appear
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.25.0 =
+* Fixed: a customer who had just registered found an empty account, "No client record is linked to your account yet", and no delivery address to shop with. The record, and the reference that goes on every order form, only existed once the operator had created it or booked a first parcel in, which is the wrong way round: the client needs the reference to get a first parcel sent. The record is now created the first time the customer opens a Colisly tab of his account, or a page carrying one of the shortcodes, so the address block with his reference is there from the start. Records created by the operator work as before.
+* The shipment weight stored on the order for label plugins is now always written with three decimals, whatever the database returns.
 
 = 1.24.0 =
 * The clients list now shows what each client owes in storage fees, with a filter, "Clients with storage fees due", to list only those. A forwarder announcing a promotion on storage had no way to find who it concerned short of opening every record.

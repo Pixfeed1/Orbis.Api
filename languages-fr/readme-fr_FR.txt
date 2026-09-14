@@ -104,8 +104,10 @@ n'est lié à un pays, à une devise ou à un transporteur.
 2. Activez l'extension. WooCommerce doit être installée et active.
 3. Rendez-vous dans « Colisly → Réglages » pour configurer les paliers de
    tarification, les frais de stockage et les transporteurs.
-4. Créez une fiche client depuis « Colisly → Clients », puis enregistrez des
-   colis depuis « Colisly → Nouveau colis ».
+4. Enregistrez des colis depuis « Colisly → Nouveau colis ». Un client
+   obtient sa fiche et sa référence la première fois qu'il ouvre son compte,
+   pour faire ses achats avec avant son premier colis ; vous pouvez aussi
+   créer des fiches vous-même depuis « Colisly → Clients ».
 
 ================================================================================
 == Foire aux questions ==
@@ -240,6 +242,21 @@ code est vérifié par le serveur et n'apparaît jamais dans la page.
 ================================================================================
 == Journal des modifications ==
 ================================================================================
+
+= 1.25.0 =
+* Corrigé : un client qui venait de s'inscrire trouvait un espace vide,
+  « Aucune fiche client n'est liée à votre compte », et aucune adresse de
+  livraison pour faire ses achats. La fiche, et la référence qui va sur
+  chaque bon de commande, n'existait qu'une fois créée par l'opérateur ou au
+  premier colis reçu, ce qui est à l'envers : le client a besoin de la
+  référence pour se faire envoyer un premier colis. La fiche est maintenant
+  créée la première fois que le client ouvre un onglet Colisly de son compte,
+  ou une page portant l'un des codes courts, si bien que le bloc d'adresse
+  avec sa référence est là dès le départ. Les fiches créées par l'opérateur
+  fonctionnent comme avant.
+* Le poids d'expédition enregistré sur la commande pour les modules
+  d'étiquettes est désormais toujours écrit avec trois décimales, quoi que
+  renvoie la base de données.
 
 = 1.24.0 =
 * La liste des clients montre maintenant ce que chaque client doit en frais

@@ -2643,6 +2643,29 @@ colisly_check( 'Ecran : le lien d export reprend recherche, filtre et jeton', 1 
 $colisly_ex_adm = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin.php' );
 colisly_check( 'Garde : l export est branche sur admin_post et verifie droit et jeton', false !== strpos( $colisly_ex_adm, "'admin_post_colisly_export_clients'" ) && false !== strpos( file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-clients.php' ), "check_admin_referer( 'colisly_export_clients' )" ) );
 
+// ---------------------------------------------------------------------------
+// 1.25.0 : la fiche client existe des la premiere visite, avant tout colis.
+// ---------------------------------------------------------------------------
+$colisly_nw_user = wp_insert_user( array( 'user_login' => 'client_neuf_' . wp_generate_password( 6, false ), 'user_email' => 'neuf+' . time() . '@example.com', 'user_pass' => wp_generate_password(), 'first_name' => 'Nina', 'last_name' => 'Neuve', 'role' => 'customer' ) );
+colisly_check( 'Nouveau client : aucune fiche apres l inscription seule', null === COLISLY_Clients::get_by_user( $colisly_nw_user ) );
+$colisly_nw_before = COLISLY_Clients::count();
+wp_set_current_user( $colisly_nw_user );
+ob_start(); COLISLY_Account::render_parcels(); $colisly_nw_tab = (string) ob_get_clean();
+$colisly_nw_client = COLISLY_Clients::get_by_user( $colisly_nw_user );
+colisly_check( 'Nouveau client : la fiche est creee a l ouverture de Mes colis', $colisly_nw_client && 1 === preg_match( '/^CL\d{6}$/', $colisly_nw_client->reference ) && COLISLY_Clients::count() === $colisly_nw_before + 1 );
+colisly_check( 'Nouveau client : l adresse de livraison et la reference sont la, sans aucun colis', false !== strpos( $colisly_nw_tab, 'colisly-my-address' ) && false !== strpos( $colisly_nw_tab, 'Nina Neuve ' . $colisly_nw_client->reference ) && false === strpos( $colisly_nw_tab, 'No client record is linked' ) );
+colisly_check( 'Nouveau client : le code court donne la reference tout de suite', '<span class="colisly-client-reference">' . $colisly_nw_client->reference . '</span>' === do_shortcode( '[colisly_client_reference]' ) && false !== strpos( do_shortcode( '[colisly_shipping_address]' ), $colisly_nw_client->reference ) );
+ob_start(); COLISLY_Account::render_request(); $colisly_nw_req = (string) ob_get_clean();
+ob_start(); COLISLY_Account::render_shipments(); COLISLY_Account::render_documents(); ob_end_clean();
+colisly_check( 'Nouveau client : une seule fiche, quel que soit le nombre d onglets ouverts', COLISLY_Clients::count() === $colisly_nw_before + 1 && (int) COLISLY_Clients::get_by_user( $colisly_nw_user )->id === (int) $colisly_nw_client->id );
+colisly_check( 'Nouveau client : la demande d expedition dit qu il n y a pas encore de colis, pas qu il n y a pas de fiche', false !== strpos( $colisly_nw_req, 'No parcels available for a shipment.' ) );
+colisly_check( 'Nouveau client : la creation est dans l historique', 1 === count( array_filter( COLISLY_History::for_client( (int) $colisly_nw_client->id ), static function ( $e ) { return 'client_created' === $e->event; } ) ) );
+wp_set_current_user( 0 );
+colisly_check( 'Nouveau client : un visiteur non connecte ne cree rien et voit le lien de connexion', '' === do_shortcode( '[colisly_client_reference]' ) && false !== strpos( do_shortcode( '[colisly_shipping_address]' ), 'wp-login.php' ) && COLISLY_Clients::count() === $colisly_nw_before + 1 );
+colisly_check( 'Nouveau client : la fiche apparait dans la liste de l administration', 1 === COLISLY_Clients::count( 'neuf+' . substr( $colisly_nw_client->reference, -1 ) ) || 1 <= COLISLY_Clients::count( COLISLY_Clients::get( (int) $colisly_nw_client->id )->reference ) );
+colisly_check( 'Nouveau client : un utilisateur inexistant ne donne rien', null === COLISLY_Clients::get_or_create_for_user( 99999999 ) );
+colisly_check( 'Poids etiquette : toujours trois decimales sur la commande', false !== strpos( file_get_contents( COLISLY_PLUGIN_DIR . 'includes/class-colisly-orders.php' ), "number_format( (float) \$shipment->total_weight, 3, '.', '' )" ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

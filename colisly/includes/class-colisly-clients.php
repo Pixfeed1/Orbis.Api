@@ -87,6 +87,29 @@ class COLISLY_Clients {
 	}
 
 	/**
+	 * The client record of a user, created on the spot when he has none.
+	 *
+	 * A forwarding client needs his reference before his first parcel: it is
+	 * what he writes on the shops' order forms so the carton reaches the
+	 * right shelf. Until now the record only existed once the operator had
+	 * created it, or booked a first parcel in, so a customer who had just
+	 * registered found an empty account and no address to shop with.
+	 *
+	 * @param int $user_id WordPress user ID.
+	 * @return object|null The record, or null when the user does not exist.
+	 */
+	public static function get_or_create_for_user( $user_id ) {
+		$client = self::get_by_user( (int) $user_id );
+		if ( $client ) {
+			return $client;
+		}
+
+		$created = self::create( (int) $user_id );
+
+		return is_wp_error( $created ) ? null : self::get( (int) $created );
+	}
+
+	/**
 	 * Formats a client reference from its numeric ID (e.g. CL000001).
 	 *
 	 * @param int $id Client ID.

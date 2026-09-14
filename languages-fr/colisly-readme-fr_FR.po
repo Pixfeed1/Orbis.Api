@@ -118,8 +118,8 @@ msgstr "Activez l'extension. WooCommerce doit être installée et active."
 msgid "Go to \"Colisly → Settings\" to configure the pricing tiers, storage fees and carriers."
 msgstr "Rendez-vous dans « Colisly → Réglages » pour configurer les paliers de tarification, les frais de stockage et les transporteurs."
 
-msgid "Create a client record from \"Colisly → Clients\", then register parcels from \"Colisly → New parcel\"."
-msgstr "Créez une fiche client depuis « Colisly → Clients », puis enregistrez des colis depuis « Colisly → Nouveau colis »."
+msgid "Register parcels from \"Colisly → New parcel\". A customer gets his client record and reference the first time he opens his account, so he can shop with them before his first parcel; you can also create records yourself from \"Colisly → Clients\"."
+msgstr "Enregistrez des colis depuis « Colisly → Nouveau colis ». Un client obtient sa fiche et sa référence la première fois qu'il ouvre son compte, pour faire ses achats avec avant son premier colis ; vous pouvez aussi créer des fiches vous-même depuis « Colisly → Clients »."
 
 msgid "Frequently Asked Questions"
 msgstr "Foire aux questions"
@@ -234,6 +234,12 @@ msgstr "Réglages : jours de stockage gratuits, frais de stockage, paliers de ta
 
 msgid "Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo."
 msgstr "Tranches de poids par transporteur, pour les transporteurs qui publient une grille plutôt qu'un tarif au kilo."
+
+msgid "Fixed: a customer who had just registered found an empty account, \"No client record is linked to your account yet\", and no delivery address to shop with. The record, and the reference that goes on every order form, only existed once the operator had created it or booked a first parcel in, which is the wrong way round: the client needs the reference to get a first parcel sent. The record is now created the first time the customer opens a Colisly tab of his account, or a page carrying one of the shortcodes, so the address block with his reference is there from the start. Records created by the operator work as before."
+msgstr "Corrigé : un client qui venait de s'inscrire trouvait un espace vide, « Aucune fiche client n'est liée à votre compte », et aucune adresse de livraison pour faire ses achats. La fiche, et la référence qui va sur chaque bon de commande, n'existait qu'une fois créée par l'opérateur ou au premier colis reçu, ce qui est à l'envers : le client a besoin de la référence pour se faire envoyer un premier colis. La fiche est maintenant créée la première fois que le client ouvre un onglet Colisly de son compte, ou une page portant l'un des codes courts, si bien que le bloc d'adresse avec sa référence est là dès le départ. Les fiches créées par l'opérateur fonctionnent comme avant."
+
+msgid "The shipment weight stored on the order for label plugins is now always written with three decimals, whatever the database returns."
+msgstr "Le poids d'expédition enregistré sur la commande pour les modules d'étiquettes est désormais toujours écrit avec trois décimales, quoi que renvoie la base de données."
 
 msgid "The clients list now shows what each client owes in storage fees, with a filter, \"Clients with storage fees due\", to list only those. A forwarder announcing a promotion on storage had no way to find who it concerned short of opening every record."
 msgstr "La liste des clients montre maintenant ce que chaque client doit en frais de stockage, avec un filtre, « Clients avec des frais de stockage dus », pour ne lister qu'eux. Un réexpéditeur qui annonce une promotion sur le stockage n'avait aucun moyen de trouver qui elle concernait, sinon ouvrir chaque fiche."

@@ -254,7 +254,7 @@ class COLISLY_Orders {
 		$order->update_meta_data( '_colisly_shipment_reference', $shipment->reference );
 		// The weight of what actually ships, in kg, for whatever tool reads
 		// order meta: a shipment order has no product to carry it.
-		$order->update_meta_data( '_colisly_total_weight', (string) $shipment->total_weight );
+		$order->update_meta_data( '_colisly_total_weight', number_format( (float) $shipment->total_weight, 3, '.', '' ) );
 		$order->add_order_note(
 			sprintf(
 				/* translators: %s: shipment reference. */

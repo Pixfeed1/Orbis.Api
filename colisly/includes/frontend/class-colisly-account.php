@@ -201,16 +201,17 @@ class COLISLY_Account {
 	}
 
 	/**
-	 * Returns the client record of the current user, if any.
+	 * Returns the client record of the current user, creating it on his
+	 * first visit: the reference has to exist before the first parcel.
 	 *
-	 * @return object|null
+	 * @return object|null Null for a visitor who is not logged in.
 	 */
 	private static function current_client() {
 		if ( ! is_user_logged_in() ) {
 			return null;
 		}
 
-		return COLISLY_Clients::get_by_user( get_current_user_id() );
+		return COLISLY_Clients::get_or_create_for_user( get_current_user_id() );
 	}
 
 	/**

@@ -28,12 +28,13 @@ class COLISLY_Shortcodes {
 	}
 
 	/**
-	 * The current user's client record, or null.
+	 * The current user's client record, created on his first visit, or null
+	 * for a visitor who is not logged in.
 	 *
 	 * @return object|null
 	 */
 	private static function client() {
-		return is_user_logged_in() ? COLISLY_Clients::get_by_user( get_current_user_id() ) : null;
+		return is_user_logged_in() ? COLISLY_Clients::get_or_create_for_user( get_current_user_id() ) : null;
 	}
 
 	/**
