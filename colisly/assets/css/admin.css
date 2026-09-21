@@ -211,6 +211,35 @@
 	width: 100%;
 }
 
+/* Six columns with two dates: wider than the tiers cap, narrower than the
+   carriers, and the checkbox column takes only what a tick needs. */
+.colisly-promotions-table {
+	max-width: none;
+	min-width: 900px;
+	width: 100%;
+}
+
+.colisly-promotions-table th:nth-child(1) {
+	width: 18%;
+}
+
+.colisly-promotions-table th:nth-child(2) {
+	width: 10%;
+}
+
+.colisly-promotions-table th:nth-child(6) {
+	width: 14%;
+}
+
+.colisly-promotions-table select {
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.colisly-promotions-table input[type="checkbox"] {
+	width: auto;
+}
+
 .colisly-carriers-table input[type="checkbox"] {
 	width: auto;
 }
