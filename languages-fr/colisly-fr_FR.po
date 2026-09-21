@@ -1,7 +1,7 @@
 # French translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.26.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.27.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
@@ -1305,22 +1305,9 @@ msgstr "En vigueur aujourd’hui : %s."
 msgid "Discounts"
 msgstr "Remises"
 
-msgid "Promotion for all clients (%)"
-msgstr "Promotion pour tous les clients (%)"
-
-msgid "Promotion dates"
-msgstr "Dates de la promotion"
-
 msgctxt "promotion start date"
 msgid "From"
 msgstr "Du"
-
-msgctxt "promotion end date"
-msgid "to"
-msgstr "au"
-
-msgid "Both dates included. Leave a date empty for a promotion with no start or no end."
-msgstr "Les deux dates incluses. Laissez une date vide pour une promotion sans début ou sans fin."
 
 msgid "Loyalty discount"
 msgstr "Remise fidélité"
@@ -1358,15 +1345,6 @@ msgstr "Un taux personnel pour ce client, déduit de chaque expédition. Transpo
 
 msgid "Percentages taken off what you charge for your own work: the handling fees, the price of the parcels themselves, or the storage fees, or both. Transport, fees advanced and insurance are never discounted. A client can also carry a personal rate on his record; when several discounts could apply, the one that takes the most off applies alone, they never add up. The discount shows as its own line on the order."
 msgstr "Pourcentages déduits de ce que vous facturez pour votre propre travail : les frais de gestion, le prix des colis eux-mêmes, ou les frais de stockage, ou les deux. Transport, frais avancés et assurance ne sont jamais remisés. Un client peut aussi porter un taux personnel sur sa fiche ; quand plusieurs remises pourraient s’appliquer, celle qui déduit le plus s’applique seule, elles ne se cumulent jamais. La remise apparaît en ligne à part sur la commande."
-
-msgid "0 for no promotion. 100% on storage fees, for instance, makes storage free for the length of the promotion."
-msgstr "0 pour aucune promotion. 100 % sur les frais de stockage, par exemple, rend le stockage gratuit le temps de la promotion."
-
-msgid "Promotion code"
-msgstr "Code promo"
-
-msgid "Optional. Empty, the promotion applies to every client by itself. Filled, a \"Promotion code\" box appears on the shipment request form and only the clients who type this code get it. Upper or lower case makes no difference."
-msgstr "Facultatif. Vide, la promotion s’applique d’elle-même à tous les clients. Renseigné, une case « Code promo » apparaît sur le formulaire de demande d’expédition et seuls les clients qui saisissent ce code l’obtiennent. Majuscules ou minuscules, sans importance."
 
 msgid "This code is not valid."
 msgstr "Ce code n’est pas valable."
@@ -1464,3 +1442,34 @@ msgstr "Votre destination l’exige. Décrivez le contenu de l’expédition dan
 
 msgid "Customs may ask for the invoice of what the shipment holds. Attach it here, PDF or image."
 msgstr "La douane peut demander la facture de ce que contient l’expédition. Joignez-la ici, PDF ou image."
+
+msgid "Promotions"
+msgstr "Promotions"
+
+msgid "As many as you need. A promotion without a code applies to every client by itself; one with a code only to the clients who type it on the shipment request form, upper or lower case alike. Dates are both included, an empty one is an open end. \"First shipment only\" makes a welcome offer: it is refused to a client who already has a shipment, cancelled ones aside."
+msgstr "Autant que nécessaire. Une promotion sans code s’applique d’elle-même à tous les clients ; une promotion avec un code seulement aux clients qui le saisissent sur le formulaire de demande d’expédition, majuscules ou minuscules. Les deux dates sont incluses, une date vide est une borne ouverte. « Première expédition seulement » fait une offre de bienvenue : elle est refusée à un client qui a déjà une expédition, annulées mises à part."
+
+msgid "Code"
+msgstr "Code"
+
+msgid "Rate (%)"
+msgstr "Taux (%)"
+
+msgid "On"
+msgstr "Sur"
+
+msgctxt "promotion end date"
+msgid "To"
+msgstr "Au"
+
+msgid "First shipment only"
+msgstr "Première expédition seulement"
+
+msgid "none: for everyone"
+msgstr "aucun : pour tous"
+
+msgid "Add a promotion"
+msgstr "Ajouter une promotion"
+
+msgid "Promotion %1$s %2$s%%"
+msgstr "Promotion %1$s %2$s %%"

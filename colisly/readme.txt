@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.26.0
+Stable tag: 1.27.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,9 +121,9 @@ A shipment order is a normal WooCommerce order with the client's delivery addres
 
 Yes, on your own fees only. WooCommerce coupons only discount products and a shipment order has none, so they do nothing there. Colisly has its own discounts: a personal rate on each client record, and in the settings a promotion for all clients between two dates and a loyalty discount once a client has had a number of shipments done. Each is a percentage of the handling fees, of the storage fees, or of both, as you choose: 100% on storage between two dates makes storage free for that time. Transport, fees advanced and insurance are always billed in full. When several could apply, the one that takes the most off applies alone, and it shows on the order as its own line, named after its reason.
 
-= Can the promotion require a code? =
+= Can I run several promotions, or promotion codes, at once? =
 
-Yes. Give the promotion a code in the settings and a "Promotion code" box appears on the shipment request form: only the clients who type it get the promotion, and the estimate updates once the code is accepted. Leave the code empty and the promotion applies to everyone by itself. The code is checked on the server and never appears in the page.
+Yes. The settings hold a table of promotions, as many as you need: each has a rate, what it applies to, optional dates, an optional code, and a "first shipment only" option for a welcome offer. A promotion without a code applies to everyone by itself; one with a code only to the clients who type it in the "Promotion code" box of the shipment request form, and the estimate updates once the code is accepted. Codes are checked on the server and never appear in the page. When several discounts could apply, the one that takes the most off applies alone.
 
 == Screenshots ==
 
@@ -135,6 +135,9 @@ Yes. Give the promotion a code in the settings and a "Promotion code" box appear
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.27.0 =
+* Promotions are now a table, as many as you need, where there was one. A forwarder wanting a welcome code for a first shipment and other codes for mailings had to choose, since typing a second code replaced the first. Each row has its rate, what it applies to, optional dates, an optional code, and a "first shipment only" option, refused to a client who already has a shipment, cancelled ones aside. Promotions without a code apply by themselves, those with a code once the client types it, and the usual rule picks the one taking the most off. The order line names the code, "Promotion WELCOME10 10%". The promotion set up in an earlier version becomes the first row on update; nothing else changes.
 
 = 1.26.0 =
 * The customs declaration is now made once per shipment, on the shipment request, whatever the number of parcels grouped in it. A client grouping ten parcels for a destination that asks for one used to face ten tables, one per parcel; he now describes what the carton that leaves holds, and its value, in one table, which is also what the customs form is about. Purchase invoices are attached to the shipment the same way. Anything declared parcel by parcel before this version pre-fills the table, still prints, and still counts. The printable customs form, the Colisly panel on the order and the client record all read the shipment's declaration. Adds a column to the declaration lines and to the documents; the migration runs by itself on update.

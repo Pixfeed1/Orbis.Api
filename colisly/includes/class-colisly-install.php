@@ -48,6 +48,9 @@ class COLISLY_Install {
 			self::migrate_legacy_prefix();
 			self::create_tables();
 			self::add_capabilities();
+			// The single promotion of 1.22.0 to 1.26.0 becomes a row of the
+			// promotions table; a no-op once done.
+			COLISLY_Discounts::migrate_promotion();
 			update_option( 'colisly_db_version', COLISLY_VERSION );
 			// An update can add or remove an account endpoint; the rules
 			// are rebuilt on the next load, once the endpoints are registered.

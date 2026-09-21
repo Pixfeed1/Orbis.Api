@@ -59,27 +59,117 @@ class COLISLY_Discounts {
 	}
 
 	/**
-	 * Whether a promotion is running today, whatever its code.
+	 * The promotions set up in the settings, cleaned.
+	 *
+	 * Since 1.27.0 there can be any number of them: one for all clients, a
+	 * welcome code for a first shipment, a code for a mailing. Each carries
+	 * a rate, what it applies to, optional dates, an optional code and
+	 * whether it is for a client's first shipment only.
+	 *
+	 * @return array[] Each with code, rate, scope, start, end, first_only.
+	 */
+	public static function promotions() {
+		$promotions = array();
+
+		foreach ( (array) COLISLY_Settings::get( 'promotions', array() ) as $promotion ) {
+			$promotion = self::sanitize_promotion( $promotion );
+			if ( $promotion['rate'] > 0 ) {
+				$promotions[] = $promotion;
+			}
+		}
+
+		return $promotions;
+	}
+
+	/**
+	 * Cleans one promotion row, from the settings or a posted form.
+	 *
+	 * @param mixed $promotion Raw row.
+	 * @return array code, rate, scope, start, end, first_only.
+	 */
+	public static function sanitize_promotion( $promotion ) {
+		$promotion = is_array( $promotion ) ? $promotion : array();
+
+		return array(
+			'code'       => self::normalize_code( isset( $promotion['code'] ) ? $promotion['code'] : '' ),
+			'rate'       => self::rate( isset( $promotion['rate'] ) ? $promotion['rate'] : 0 ),
+			'scope'      => self::scope( isset( $promotion['scope'] ) ? $promotion['scope'] : 'handling' ),
+			'start'      => self::sanitize_date( isset( $promotion['start'] ) ? $promotion['start'] : '' ),
+			'end'        => self::sanitize_date( isset( $promotion['end'] ) ? $promotion['end'] : '' ),
+			'first_only' => empty( $promotion['first_only'] ) ? 0 : 1,
+		);
+	}
+
+	/**
+	 * Keeps a date only when it is a real Y-m-d one, otherwise empties it.
+	 *
+	 * @param mixed $value Raw value.
+	 * @return string
+	 */
+	public static function sanitize_date( $value ) {
+		$value = sanitize_text_field( (string) $value );
+
+		if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $value ) ) {
+			return '';
+		}
+
+		list( $y, $m, $d ) = array_map( 'intval', explode( '-', $value ) );
+
+		return checkdate( $m, $d, $y ) ? $value : '';
+	}
+
+	/**
+	 * Turns the single promotion of versions 1.22.0 to 1.26.0 into the first
+	 * row of the promotions table. Runs once, on update.
+	 *
+	 * @return void
+	 */
+	public static function migrate_promotion() {
+		$settings = COLISLY_Settings::all();
+
+		if ( ! isset( $settings['promo_rate'] ) ) {
+			return;
+		}
+
+		if ( self::rate( $settings['promo_rate'] ) > 0 ) {
+			$promotions   = isset( $settings['promotions'] ) && is_array( $settings['promotions'] ) ? $settings['promotions'] : array();
+			$promotions[] = array(
+				'code'       => isset( $settings['promo_code'] ) ? $settings['promo_code'] : '',
+				'rate'       => $settings['promo_rate'],
+				'scope'      => isset( $settings['promo_scope'] ) ? $settings['promo_scope'] : 'handling',
+				'start'      => isset( $settings['promo_start'] ) ? $settings['promo_start'] : '',
+				'end'        => isset( $settings['promo_end'] ) ? $settings['promo_end'] : '',
+				'first_only' => 0,
+			);
+			$settings['promotions'] = $promotions;
+		}
+
+		unset( $settings['promo_rate'], $settings['promo_code'], $settings['promo_scope'], $settings['promo_start'], $settings['promo_end'] );
+
+		COLISLY_Settings::update( $settings );
+	}
+
+	/**
+	 * Whether a promotion is running on a given day.
 	 *
 	 * A promotion with no start date has already started, one with no end
 	 * date never ends: an empty bound is an open one.
 	 *
-	 * @param string $today Optional date (Y-m-d) to evaluate against, for tests.
+	 * @param array  $promotion Promotion row.
+	 * @param string $today     Optional date (Y-m-d) to evaluate against, for tests.
 	 * @return bool
 	 */
-	public static function promo_running( $today = '' ) {
-		if ( self::rate( COLISLY_Settings::get( 'promo_rate', 0 ) ) <= 0 ) {
+	public static function promotion_running( $promotion, $today = '' ) {
+		if ( $promotion['rate'] <= 0 ) {
 			return false;
 		}
 
 		$today = '' === $today ? current_time( 'Y-m-d' ) : $today;
-		$start = (string) COLISLY_Settings::get( 'promo_start', '' );
-		$end   = (string) COLISLY_Settings::get( 'promo_end', '' );
 
-		if ( '' !== $start && $today < $start ) {
+		if ( '' !== $promotion['start'] && $today < $promotion['start'] ) {
 			return false;
 		}
-		if ( '' !== $end && $today > $end ) {
+		if ( '' !== $promotion['end'] && $today > $promotion['end'] ) {
 			return false;
 		}
 
@@ -87,27 +177,40 @@ class COLISLY_Discounts {
 	}
 
 	/**
-	 * The code the promotion asks for, empty when it asks for none.
+	 * Whether a promotion is open to a client today: running, and, when it
+	 * is for a first shipment only, the client has none yet.
 	 *
-	 * @return string
+	 * @param array  $promotion Promotion row.
+	 * @param object $client    Client row.
+	 * @param string $today     Optional date (Y-m-d), for tests.
+	 * @return bool
 	 */
-	public static function promo_code() {
-		return self::normalize_code( COLISLY_Settings::get( 'promo_code', '' ) );
+	public static function promotion_open_to( $promotion, $client, $today = '' ) {
+		if ( ! self::promotion_running( $promotion, $today ) ) {
+			return false;
+		}
+
+		if ( $promotion['first_only'] && ( ! $client || self::shipments_started( (int) $client->id ) > 0 ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
-	 * Whether a code typed by a client unlocks the promotion.
+	 * Whether any running promotion asks for a code, which decides whether
+	 * the request form shows the code box at all.
 	 *
-	 * Compared without regard to case or surrounding spaces: a code is read
-	 * off a mailing and typed by hand, not pasted from a form.
-	 *
-	 * @param string $code Code typed by the client.
-	 * @return bool True when the promotion asks for no code, or for this one.
+	 * @return bool
 	 */
-	public static function code_matches( $code ) {
-		$expected = self::promo_code();
+	public static function any_code_asked() {
+		foreach ( self::promotions() as $promotion ) {
+			if ( '' !== $promotion['code'] && self::promotion_running( $promotion ) ) {
+				return true;
+			}
+		}
 
-		return '' === $expected || self::normalize_code( $code ) === $expected;
+		return false;
 	}
 
 	/**
@@ -121,19 +224,22 @@ class COLISLY_Discounts {
 	}
 
 	/**
-	 * The shop-wide promotion rate, when a promotion is running today and
-	 * the code, if it asks for one, was given.
+	 * Counts the shipments a client has made, cancelled ones aside: what a
+	 * "first shipment" promotion looks at.
 	 *
-	 * @param string $today Optional date (Y-m-d) to evaluate against, for tests.
-	 * @param string $code  Code typed by the client, if any.
-	 * @return float Percentage, 0 outside the promotion or without the code.
+	 * @param int $client_id Client ID.
+	 * @return int
 	 */
-	public static function promo_rate( $today = '', $code = '' ) {
-		if ( ! self::promo_running( $today ) || ! self::code_matches( $code ) ) {
-			return 0.0;
-		}
+	public static function shipments_started( $client_id ) {
+		global $wpdb;
 
-		return self::rate( COLISLY_Settings::get( 'promo_rate', 0 ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		return (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$wpdb->prefix}colisly_shipments WHERE client_id = %d AND status <> 'cancelled'",
+				(int) $client_id
+			)
+		);
 	}
 
 	/**
@@ -190,9 +296,18 @@ class COLISLY_Discounts {
 			$candidates[] = self::candidate( 'client', $rate, isset( $client->discount_scope ) ? $client->discount_scope : 'handling' );
 		}
 
-		$rate = self::promo_rate( '', $code );
-		if ( $rate > 0 ) {
-			$candidates[] = self::candidate( 'promo', $rate, COLISLY_Settings::get( 'promo_scope', 'handling' ) );
+		// Promotions without a code apply by themselves; one with a code
+		// only once the client typed it. Several can be open at once, and
+		// the usual rule then picks the one taking the most off.
+		$typed = self::normalize_code( $code );
+		foreach ( self::promotions() as $promotion ) {
+			if ( ! self::promotion_open_to( $promotion, $client ) ) {
+				continue;
+			}
+			if ( '' !== $promotion['code'] && $promotion['code'] !== $typed ) {
+				continue;
+			}
+			$candidates[] = self::candidate( 'promo', $promotion['rate'], $promotion['scope'], $promotion['code'] );
 		}
 
 		$rate = self::loyalty_rate( $client );
@@ -216,16 +331,18 @@ class COLISLY_Discounts {
 	 * @param string $kind  'client', 'promo' or 'loyalty'.
 	 * @param float  $rate  Percentage.
 	 * @param string $scope What it applies to.
+	 * @param string $code  Promotion code, if any.
 	 * @return array
 	 */
-	private static function candidate( $kind, $rate, $scope ) {
+	private static function candidate( $kind, $rate, $scope, $code = '' ) {
 		$scope = self::scope( $scope );
 
 		return array(
 			'kind'  => $kind,
 			'rate'  => self::rate( $rate ),
 			'scope' => $scope,
-			'label' => self::label( $kind, $rate, $scope ),
+			'code'  => (string) $code,
+			'label' => self::label( $kind, $rate, $scope, $code ),
 		);
 	}
 
@@ -292,15 +409,20 @@ class COLISLY_Discounts {
 	 * @param string $kind  Source of the discount.
 	 * @param float  $rate  Percentage.
 	 * @param string $scope What it applies to.
+	 * @param string $code  Promotion code, named on the line so the client
+	 *                      recognises the one he typed.
 	 * @return string
 	 */
-	public static function label( $kind, $rate, $scope = 'handling' ) {
+	public static function label( $kind, $rate, $scope = 'handling', $code = '' ) {
 		$rate = self::format_rate( $rate );
 
 		switch ( $kind ) {
 			case 'promo':
-				/* translators: %s: discount rate. */
-				$label = sprintf( __( 'Promotion %s%%', 'colisly' ), $rate );
+				$label = '' !== (string) $code
+					/* translators: 1: promotion code, 2: discount rate. */
+					? sprintf( __( 'Promotion %1$s %2$s%%', 'colisly' ), $code, $rate )
+					/* translators: %s: discount rate. */
+					: sprintf( __( 'Promotion %s%%', 'colisly' ), $rate );
 				break;
 			case 'loyalty':
 				/* translators: %s: discount rate. */

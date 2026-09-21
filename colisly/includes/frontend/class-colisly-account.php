@@ -600,7 +600,7 @@ class COLISLY_Account {
 		// behind a code is not among them until the code is typed and
 		// checked; the code itself never reaches the page.
 		$colisly_discounts = COLISLY_Discounts::candidates( $client );
-		$colisly_asks_code = COLISLY_Discounts::promo_running() && '' !== COLISLY_Discounts::promo_code();
+		$colisly_asks_code = COLISLY_Discounts::any_code_asked();
 		?>
 		<form method="post" class="colisly-request-form" enctype="multipart/form-data" data-discounts="<?php echo esc_attr( wp_json_encode( array_values( $colisly_discounts ) ) ); ?>">
 			<?php wp_nonce_field( 'colisly_request_shipment' ); ?>

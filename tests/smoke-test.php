@@ -2354,7 +2354,16 @@ COLISLY_Shipments::set_status( (int) $colisly_lw_ship->id, 'cancelled' );
 // 1.22.0 : remises sur les frais de gestion (client, promotion, fidelite).
 // ---------------------------------------------------------------------------
 $colisly_di_settings = COLISLY_Settings::all();
-$colisly_di_off      = array( 'promo_rate' => 0, 'promo_start' => '', 'promo_end' => '', 'loyalty_shipments' => 0, 'loyalty_rate' => 0 );
+$colisly_di_off      = array( 'promotions' => array(), 'loyalty_shipments' => 0, 'loyalty_rate' => 0 );
+/**
+ * Une promotion pour les reglages, avec ses valeurs par defaut.
+ *
+ * @param array $fields Champs a poser.
+ * @return array
+ */
+function colisly_promo( $fields ) {
+	return array_merge( array( 'code' => '', 'rate' => 0, 'scope' => 'handling', 'start' => '', 'end' => '', 'first_only' => 0 ), $fields );
+}
 COLISLY_Settings::update( array_merge( $colisly_di_settings, $colisly_di_off ) );
 $colisly_di_user = wp_insert_user( array( 'user_login' => 'client_remise_' . wp_generate_password( 6, false ), 'user_email' => 'remise+' . time() . '@example.com', 'user_pass' => wp_generate_password(), 'first_name' => 'Rémi', 'last_name' => 'Fidèle', 'role' => 'customer' ) );
 foreach ( array( 'shipping_first_name' => 'Rémi', 'shipping_last_name' => 'Fidèle', 'shipping_address_1' => '1 rue Haute', 'shipping_city' => 'Lille', 'shipping_postcode' => '59000', 'shipping_country' => 'FR' ) as $colisly_di_k => $colisly_di_v ) {
@@ -2364,7 +2373,7 @@ $colisly_di_client_id = COLISLY_Clients::create( $colisly_di_user );
 $colisly_di_client    = COLISLY_Clients::get( $colisly_di_client_id );
 
 // Les taux.
-colisly_check( 'Remise : rien par defaut', 0.0 === COLISLY_Discounts::client_rate( $colisly_di_client ) && 0.0 === COLISLY_Discounts::promo_rate() && 0.0 === COLISLY_Discounts::loyalty_rate( $colisly_di_client ) && array() === COLISLY_Discounts::candidates( $colisly_di_client ) && 0.0 === COLISLY_Discounts::best( $colisly_di_client, 100, 100 )['amount'] );
+colisly_check( 'Remise : rien par defaut', 0.0 === COLISLY_Discounts::client_rate( $colisly_di_client ) && array() === COLISLY_Discounts::promotions() && 0.0 === COLISLY_Discounts::loyalty_rate( $colisly_di_client ) && array() === COLISLY_Discounts::candidates( $colisly_di_client ) && 0.0 === COLISLY_Discounts::best( $colisly_di_client, 100, 100 )['amount'] );
 colisly_check( 'Remise : un taux se borne entre 0 et 100 et accepte la virgule', 100.0 === COLISLY_Discounts::rate( '250' ) && 0.0 === COLISLY_Discounts::rate( -3 ) && 12.5 === COLISLY_Discounts::rate( '12,5' ) );
 colisly_check( 'Remise : le montant est un pourcentage des frais de gestion, arrondi au centime, jamais plus que les frais', 1.13 === COLISLY_Discounts::amount( 7.5, 15 ) && 7.5 === COLISLY_Discounts::amount( 7.5, 100 ) && 0.0 === COLISLY_Discounts::amount( 7.5, 0 ) );
 colisly_check( 'Remise : le taux s affiche sans zeros inutiles', '10' === COLISLY_Discounts::format_rate( 10 ) && '12.5' === str_replace( ',', '.', COLISLY_Discounts::format_rate( 12.5 ) ) );
@@ -2377,14 +2386,13 @@ $colisly_di_best = COLISLY_Discounts::best( $colisly_di_client, 50, 30 );
 colisly_check( 'Remise client : retenue, nommee, sur les frais de gestion seuls', 10.0 === $colisly_di_best['rate'] && 'client' === $colisly_di_best['kind'] && 'Client discount 10%' === $colisly_di_best['label'] && 5.0 === $colisly_di_best['amount'] );
 
 // Promotion generale, bornee par ses dates.
-COLISLY_Settings::update( array_merge( $colisly_di_settings, $colisly_di_off, array( 'promo_rate' => 15 ) ) );
-colisly_check( 'Promotion : sans dates, elle court', 15.0 === COLISLY_Discounts::promo_rate() );
-COLISLY_Settings::update( array_merge( $colisly_di_settings, $colisly_di_off, array( 'promo_rate' => 15, 'promo_start' => '2020-01-01', 'promo_end' => '2020-01-31' ) ) );
-colisly_check( 'Promotion : finie hier, elle ne s applique plus', 0.0 === COLISLY_Discounts::promo_rate() && 15.0 === COLISLY_Discounts::promo_rate( '2020-01-31' ) && 15.0 === COLISLY_Discounts::promo_rate( '2020-01-01' ) && 0.0 === COLISLY_Discounts::promo_rate( '2019-12-31' ) );
-COLISLY_Settings::update( array_merge( $colisly_di_settings, $colisly_di_off, array( 'promo_rate' => 15, 'promo_start' => '2999-01-01' ) ) );
-colisly_check( 'Promotion : pas encore commencee, elle ne s applique pas', 0.0 === COLISLY_Discounts::promo_rate() );
-COLISLY_Settings::update( array_merge( $colisly_di_settings, $colisly_di_off, array( 'promo_rate' => 15, 'promo_end' => '2999-12-31' ) ) );
-colisly_check( 'Promotion : sans debut et finissant plus tard, elle court', 15.0 === COLISLY_Discounts::promo_rate() );
+COLISLY_Settings::update( array_merge( $colisly_di_settings, $colisly_di_off, array( 'promotions' => array( colisly_promo( array( 'rate' => 15 ) ) ) ) ) );
+colisly_check( 'Promotion : sans dates, elle court', COLISLY_Discounts::promotion_running( COLISLY_Discounts::promotions()[0] ) && 15.0 === COLISLY_Discounts::promotions()[0]['rate'] );
+$colisly_di_p = colisly_promo( array( 'rate' => 15, 'start' => '2020-01-01', 'end' => '2020-01-31' ) );
+colisly_check( 'Promotion : finie hier, elle ne s applique plus', ! COLISLY_Discounts::promotion_running( $colisly_di_p ) && COLISLY_Discounts::promotion_running( $colisly_di_p, '2020-01-31' ) && COLISLY_Discounts::promotion_running( $colisly_di_p, '2020-01-01' ) && ! COLISLY_Discounts::promotion_running( $colisly_di_p, '2019-12-31' ) );
+colisly_check( 'Promotion : pas encore commencee, elle ne s applique pas', ! COLISLY_Discounts::promotion_running( colisly_promo( array( 'rate' => 15, 'start' => '2999-01-01' ) ) ) );
+COLISLY_Settings::update( array_merge( $colisly_di_settings, $colisly_di_off, array( 'promotions' => array( colisly_promo( array( 'rate' => 15, 'end' => '2999-12-31' ) ) ) ) ) );
+colisly_check( 'Promotion : sans debut et finissant plus tard, elle court', COLISLY_Discounts::promotion_running( COLISLY_Discounts::promotions()[0] ) );
 $colisly_di_best = COLISLY_Discounts::best( $colisly_di_client, 50, 30 );
 colisly_check( 'Remise : la plus forte gagne seule, elles ne se cumulent pas (promotion 15 contre client 10)', 15.0 === $colisly_di_best['rate'] && 'promo' === $colisly_di_best['kind'] && 'Promotion 15%' === $colisly_di_best['label'] && 7.5 === $colisly_di_best['amount'] );
 if ( ! class_exists( 'COLISLY_Admin_Settings' ) ) {
@@ -2450,7 +2458,7 @@ $colisly_di_p3 = COLISLY_Parcels::create( array( 'client_id' => $colisly_di_clie
 wp_set_current_user( $colisly_di_user );
 ob_start(); COLISLY_Account::render_request(); $colisly_di_form = (string) ob_get_clean();
 // Le taux client de 10 est toujours sur la fiche : les deux remises possibles voyagent, l estimation choisira.
-colisly_check( 'Remise : le formulaire porte les remises possibles pour l estimation en direct', false !== strpos( $colisly_di_form, 'data-discounts="' . esc_attr( wp_json_encode( array( array( 'kind' => 'client', 'rate' => 10.0, 'scope' => 'handling', 'label' => 'Client discount 10%' ), array( 'kind' => 'loyalty', 'rate' => 20.0, 'scope' => 'handling', 'label' => 'Loyalty discount 20%' ) ) ) ) . '"' ) );
+colisly_check( 'Remise : le formulaire porte les remises possibles pour l estimation en direct', false !== strpos( $colisly_di_form, 'data-discounts="' . esc_attr( wp_json_encode( array( array( 'kind' => 'client', 'rate' => 10.0, 'scope' => 'handling', 'code' => '', 'label' => 'Client discount 10%' ), array( 'kind' => 'loyalty', 'rate' => 20.0, 'scope' => 'handling', 'code' => '', 'label' => 'Loyalty discount 20%' ) ) ) ) . '"' ) );
 colisly_check( 'Remise : le client est prevenu avant de demander, et sait qu elles ne se cumulent pas', false !== strpos( $colisly_di_form, '<strong id="colisly-discount-names">Client discount 10%, Loyalty discount 20%</strong>: taken off this shipment' ) && false !== strpos( $colisly_di_form, 'id="colisly-discount-several" >' ) && false === strpos( $colisly_di_form, 'id="colisly-promo-code"' ) );
 ob_start(); COLISLY_Account::render_shipments(); $colisly_di_mine = (string) ob_get_clean();
 colisly_check( 'Remise : Mes expeditions la montre sous le total', false !== strpos( $colisly_di_mine, 'colisly-discount' ) && false !== strpos( $colisly_di_mine, 'Loyalty discount 20%' ) );
@@ -2479,7 +2487,7 @@ COLISLY_Settings::update( array_merge( $colisly_di_settings, $colisly_di_off ) )
 $colisly_di_js = file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/front.js' );
 colisly_check( 'Garde : l estimation en direct applique la meme regle que le serveur', false !== strpos( $colisly_di_js, "'data-discounts'" ) && false !== strpos( $colisly_di_js, "'storage' === d.scope ? storage : ( 'both' === d.scope ? handling + storage : handling )" ) && false !== strpos( $colisly_di_js, 'Math.min( base, Math.round( base * parseFloat( d.rate' ) );
 $colisly_di_set = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-settings.php' );
-colisly_check( 'Garde : les reglages ont la promotion, ses dates et la fidelite', false !== strpos( $colisly_di_set, 'name="promo_rate"' ) && false !== strpos( $colisly_di_set, 'name="promo_start"' ) && false !== strpos( $colisly_di_set, 'name="promo_end"' ) && false !== strpos( $colisly_di_set, 'name="loyalty_shipments"' ) && false !== strpos( $colisly_di_set, 'name="loyalty_rate"' ) );
+colisly_check( 'Garde : les reglages ont le tableau des promotions et la fidelite', false !== strpos( $colisly_di_set, 'name="promo_rate[]"' ) && false !== strpos( $colisly_di_set, 'name="promo_start[]"' ) && false !== strpos( $colisly_di_set, 'name="promo_end[]"' ) && false !== strpos( $colisly_di_set, 'name="loyalty_shipments"' ) && false !== strpos( $colisly_di_set, 'name="loyalty_rate"' ) );
 $colisly_di_cli = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-clients.php' );
 colisly_check( 'Garde : la fiche client a le taux personnel, enregistre a la sauvegarde', false !== strpos( $colisly_di_cli, 'name="discount_rate"' ) && 1 === preg_match( "/'discount_rate'\s+=> isset\( \\\$_POST\['discount_rate'\] \)/", $colisly_di_cli ) );
 
@@ -2487,7 +2495,7 @@ colisly_check( 'Garde : la fiche client a le taux personnel, enregistre a la sau
 // 1.23.0 : remise sur le stockage ou les deux, et code promo.
 // ---------------------------------------------------------------------------
 $colisly_dc_settings = COLISLY_Settings::all();
-$colisly_dc_off      = array( 'promo_rate' => 0, 'promo_scope' => 'handling', 'promo_code' => '', 'promo_start' => '', 'promo_end' => '', 'loyalty_shipments' => 0, 'loyalty_rate' => 0, 'loyalty_scope' => 'handling' );
+$colisly_dc_off      = array( 'promotions' => array(), 'loyalty_shipments' => 0, 'loyalty_rate' => 0, 'loyalty_scope' => 'handling' );
 COLISLY_Settings::update( array_merge( $colisly_dc_settings, $colisly_dc_off ) );
 $colisly_dc_client = COLISLY_Clients::get( $colisly_di_client_id );
 colisly_check( 'Perimetre : trois valeurs, tout le reste retombe sur les frais de gestion', array( 'handling', 'storage', 'both' ) === array_keys( COLISLY_Discounts::scopes() ) && 'storage' === COLISLY_Discounts::scope( 'storage' ) && 'handling' === COLISLY_Discounts::scope( 'transport' ) );
@@ -2507,24 +2515,25 @@ colisly_check( 'Perimetre client : 10 % du stockage seul', 3.0 === $colisly_dc_b
 colisly_check( 'Perimetre client : sans stockage a remiser, rien', 0.0 === COLISLY_Discounts::best( $colisly_dc_client, 50, 0 )['amount'] );
 
 // Celle qui fait economiser le plus gagne, pas le taux le plus haut.
-COLISLY_Settings::update( array_merge( $colisly_dc_settings, $colisly_dc_off, array( 'promo_rate' => 5, 'promo_scope' => 'both' ) ) );
+COLISLY_Settings::update( array_merge( $colisly_dc_settings, $colisly_dc_off, array( 'promotions' => array( colisly_promo( array( 'rate' => 5, 'scope' => 'both' ) ) ) ) ) );
 $colisly_dc_best = COLISLY_Discounts::best( $colisly_dc_client, 50, 30 );
 colisly_check( 'Choix : promotion 5 % sur tout (4,00) bat client 10 % sur le stockage (3,00)', 4.0 === $colisly_dc_best['amount'] && 'promo' === $colisly_dc_best['kind'] && 'Promotion 5% on handling and storage fees' === $colisly_dc_best['label'] );
 $colisly_dc_best = COLISLY_Discounts::best( $colisly_dc_client, 10, 100 );
 colisly_check( 'Choix : sur une autre expedition, client 10 % du stockage (10,00) bat promotion 5 % sur tout (5,50)', 10.0 === $colisly_dc_best['amount'] && 'client' === $colisly_dc_best['kind'] );
-COLISLY_Settings::update( array_merge( $colisly_dc_settings, $colisly_dc_off, array( 'promo_rate' => 10, 'promo_scope' => 'storage' ) ) );
+COLISLY_Settings::update( array_merge( $colisly_dc_settings, $colisly_dc_off, array( 'promotions' => array( colisly_promo( array( 'rate' => 10, 'scope' => 'storage' ) ) ) ) ) );
 colisly_check( 'Choix : a egalite, le taux client passe avant la promotion', 'client' === COLISLY_Discounts::best( $colisly_dc_client, 50, 30 )['kind'] );
 colisly_check( 'Choix : la fiche client liste tout ce qui est en vigueur', array( 'client', 'promo' ) === wp_list_pluck( COLISLY_Discounts::candidates( $colisly_dc_client ), 'kind' ) );
 
 // Code promo.
-COLISLY_Settings::update( array_merge( $colisly_dc_settings, $colisly_dc_off, array( 'promo_rate' => 100, 'promo_scope' => 'storage', 'promo_code' => ' remise10 ' ) ) );
-colisly_check( 'Code : enregistre en majuscules, sans espaces', 'REMISE10' === COLISLY_Discounts::promo_code() && 'REMISE10' === COLISLY_Discounts::normalize_code( ' Remise10 ' ) );
-colisly_check( 'Code : la promotion court mais ne s applique pas sans le code', COLISLY_Discounts::promo_running() && 0.0 === COLISLY_Discounts::promo_rate() && array() === COLISLY_Discounts::candidates( COLISLY_Clients::get( $client_id ) ) );
-colisly_check( 'Code : un mauvais code ne l ouvre pas', ! COLISLY_Discounts::code_matches( 'REMISE20' ) && 0.0 === COLISLY_Discounts::promo_rate( '', 'REMISE20' ) );
-colisly_check( 'Code : le bon code l ouvre, quelle que soit la casse', COLISLY_Discounts::code_matches( 'remise10' ) && 100.0 === COLISLY_Discounts::promo_rate( '', 'Remise10' ) );
-COLISLY_Settings::update( array_merge( $colisly_dc_settings, $colisly_dc_off, array( 'promo_rate' => 100, 'promo_scope' => 'storage' ) ) );
-colisly_check( 'Code : sans code exige, n importe quoi ou rien passe', COLISLY_Discounts::code_matches( '' ) && COLISLY_Discounts::code_matches( 'XYZ' ) );
-COLISLY_Settings::update( array_merge( $colisly_dc_settings, $colisly_dc_off, array( 'promo_rate' => 100, 'promo_scope' => 'storage', 'promo_code' => 'REMISE10' ) ) );
+COLISLY_Settings::update( array_merge( $colisly_dc_settings, $colisly_dc_off, array( 'promotions' => array( colisly_promo( array( 'rate' => 100, 'scope' => 'storage', 'code' => ' remise10 ' ) ) ) ) ) );
+$colisly_dc_plain = COLISLY_Clients::get( $client_id );
+colisly_check( 'Code : enregistre en majuscules, sans espaces', 'REMISE10' === COLISLY_Discounts::promotions()[0]['code'] && 'REMISE10' === COLISLY_Discounts::normalize_code( ' Remise10 ' ) );
+colisly_check( 'Code : la promotion court mais ne s applique pas sans le code', COLISLY_Discounts::promotion_running( COLISLY_Discounts::promotions()[0] ) && COLISLY_Discounts::any_code_asked() && array() === COLISLY_Discounts::candidates( $colisly_dc_plain ) );
+colisly_check( 'Code : un mauvais code ne l ouvre pas', array() === COLISLY_Discounts::candidates( $colisly_dc_plain, 'REMISE20' ) );
+colisly_check( 'Code : le bon code l ouvre, quelle que soit la casse', 100.0 === COLISLY_Discounts::candidates( $colisly_dc_plain, 'Remise10' )[0]['rate'] && 'REMISE10' === COLISLY_Discounts::candidates( $colisly_dc_plain, 'Remise10' )[0]['code'] );
+COLISLY_Settings::update( array_merge( $colisly_dc_settings, $colisly_dc_off, array( 'promotions' => array( colisly_promo( array( 'rate' => 100, 'scope' => 'storage' ) ) ) ) ) );
+colisly_check( 'Code : sans code exige, n importe quoi ou rien passe', ! COLISLY_Discounts::any_code_asked() && 1 === count( COLISLY_Discounts::candidates( $colisly_dc_plain ) ) && 1 === count( COLISLY_Discounts::candidates( $colisly_dc_plain, 'XYZ' ) ) );
+COLISLY_Settings::update( array_merge( $colisly_dc_settings, $colisly_dc_off, array( 'promotions' => array( colisly_promo( array( 'rate' => 100, 'scope' => 'storage', 'code' => 'REMISE10' ) ) ) ) ) );
 
 // L expedition : stockage offert avec le code, facture sans.
 COLISLY_Clients::update( $colisly_di_client_id, array( 'discount_rate' => '0', 'discount_scope' => 'handling' ) );
@@ -2538,13 +2547,13 @@ colisly_check( 'Code : du stockage est du sur le colis de test', $colisly_dc_sto
 $colisly_dc_without = COLISLY_Shipments::get( COLISLY_Shipments::request( $colisly_di_client_id, array( (int) $colisly_dc_p1 ), 'colissimo', 0, 'FR' ) );
 colisly_check( 'Code : sans le code, le stockage est facture', 0.0 === (float) $colisly_dc_without->discount && abs( (float) $colisly_dc_without->storage_fees - $colisly_dc_storage ) < 0.001 );
 $colisly_dc_with = COLISLY_Shipments::get( COLISLY_Shipments::request( $colisly_di_client_id, array( (int) $colisly_dc_p2 ), 'colissimo', 0, 'FR', 'remise10' ) );
-colisly_check( 'Code : avec le code, 100 % du stockage est deduit, la ligne stockage reste et la remise la compense', abs( (float) $colisly_dc_with->discount - $colisly_dc_storage ) < 0.001 && 'Promotion 100% on storage fees' === $colisly_dc_with->discount_label && abs( (float) $colisly_dc_with->total_price - ( (float) $colisly_dc_without->total_price - $colisly_dc_storage ) ) < 0.001 );
+colisly_check( 'Code : avec le code, 100 % du stockage est deduit, la ligne stockage reste et la remise la compense', abs( (float) $colisly_dc_with->discount - $colisly_dc_storage ) < 0.001 && 'Promotion REMISE10 100% on storage fees' === $colisly_dc_with->discount_label && abs( (float) $colisly_dc_with->total_price - ( (float) $colisly_dc_without->total_price - $colisly_dc_storage ) ) < 0.001 );
 $colisly_dc_order = wc_get_order( (int) $colisly_dc_with->order_id );
 $colisly_dc_lines = array();
 foreach ( $colisly_dc_order->get_fees() as $colisly_dc_fee ) {
 	$colisly_dc_lines[ $colisly_dc_fee->get_name() ] = (float) $colisly_dc_fee->get_total();
 }
-colisly_check( 'Code : sur la commande, la ligne stockage pleine et la ligne negative a son nom', isset( $colisly_dc_lines['Storage fees'], $colisly_dc_lines['Promotion 100% on storage fees'] ) && abs( $colisly_dc_lines['Storage fees'] + $colisly_dc_lines['Promotion 100% on storage fees'] ) < 0.001 && abs( (float) $colisly_dc_order->get_total() - (float) $colisly_dc_with->total_price ) < 0.001 );
+colisly_check( 'Code : sur la commande, la ligne stockage pleine et la ligne negative a son nom', isset( $colisly_dc_lines['Storage fees'], $colisly_dc_lines['Promotion REMISE10 100% on storage fees'] ) && abs( $colisly_dc_lines['Storage fees'] + $colisly_dc_lines['Promotion REMISE10 100% on storage fees'] ) < 0.001 && abs( (float) $colisly_dc_order->get_total() - (float) $colisly_dc_with->total_price ) < 0.001 );
 colisly_check( 'Code : le transport reste plein', abs( (float) $colisly_dc_order->get_shipping_total() - (float) $colisly_dc_with->carrier_price ) < 0.001 && (float) $colisly_dc_with->carrier_price > 0 );
 
 // Le formulaire : la case code, la promotion absente de la page tant que le code n est pas saisi.
@@ -2572,7 +2581,7 @@ $colisly_dc_nonce = wp_create_nonce( 'colisly_front' );
 $colisly_dc_bad = colisly_run_ajax( array( 'COLISLY_Ajax', 'check_code' ), array( 'nonce' => $colisly_dc_nonce, 'code' => 'REMISE20' ) );
 colisly_check( 'Code AJAX : un mauvais code est refuse', is_array( $colisly_dc_bad ) && empty( $colisly_dc_bad['success'] ) && 'This code is not valid.' === $colisly_dc_bad['data']['message'] );
 $colisly_dc_ok = colisly_run_ajax( array( 'COLISLY_Ajax', 'check_code' ), array( 'nonce' => $colisly_dc_nonce, 'code' => ' remise10 ' ) );
-colisly_check( 'Code AJAX : le bon code renvoie la promotion pour l estimation', is_array( $colisly_dc_ok ) && ! empty( $colisly_dc_ok['success'] ) && 'promo' === $colisly_dc_ok['data']['discount']['kind'] && 'storage' === $colisly_dc_ok['data']['discount']['scope'] && 100.0 === (float) $colisly_dc_ok['data']['discount']['rate'] && 'Code accepted: Promotion 100% on storage fees.' === $colisly_dc_ok['data']['message'] );
+colisly_check( 'Code AJAX : le bon code renvoie la promotion pour l estimation', is_array( $colisly_dc_ok ) && ! empty( $colisly_dc_ok['success'] ) && 'promo' === $colisly_dc_ok['data']['discount']['kind'] && 'storage' === $colisly_dc_ok['data']['discount']['scope'] && 100.0 === (float) $colisly_dc_ok['data']['discount']['rate'] && 'Code accepted: Promotion REMISE10 100% on storage fees.' === $colisly_dc_ok['data']['message'] );
 wp_set_current_user( 0 );
 $colisly_dc_anon = colisly_run_ajax( array( 'COLISLY_Ajax', 'check_code' ), array( 'nonce' => $colisly_dc_nonce, 'code' => 'REMISE10' ) );
 colisly_check( 'Code AJAX : un visiteur non connecte est refuse', ! is_array( $colisly_dc_anon ) || empty( $colisly_dc_anon['success'] ) );
@@ -2582,7 +2591,7 @@ COLISLY_Settings::update( array_merge( $colisly_dc_settings, $colisly_dc_off ) )
 $colisly_dc_js = file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/front.js' );
 colisly_check( 'Garde : le code est verifie par le serveur, jamais compare dans la page', false !== strpos( $colisly_dc_js, "'colisly_check_code'" ) && false === strpos( $colisly_dc_js, 'promo_code' ) );
 $colisly_dc_set = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-settings.php' );
-colisly_check( 'Garde : les reglages ont le perimetre et le code', false !== strpos( $colisly_dc_set, 'name="promo_scope"' ) && false !== strpos( $colisly_dc_set, 'name="promo_code"' ) && false !== strpos( $colisly_dc_set, 'name="loyalty_scope"' ) );
+colisly_check( 'Garde : les reglages ont le perimetre et le code', false !== strpos( $colisly_dc_set, 'name="promo_scope[]"' ) && false !== strpos( $colisly_dc_set, 'name="promo_code[]"' ) && false !== strpos( $colisly_dc_set, 'name="loyalty_scope"' ) );
 $colisly_dc_cli = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-clients.php' );
 colisly_check( 'Garde : la fiche client a le perimetre', false !== strpos( $colisly_dc_cli, 'name="discount_scope"' ) && false !== strpos( $colisly_dc_cli, "'discount_scope' => isset( \$_POST['discount_scope'] )" ) );
 
@@ -2763,6 +2772,69 @@ $colisly_sc_set = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-
 colisly_check( 'Garde : le reglage Mes documents existe et se sauve', false !== strpos( $colisly_sc_set, 'name="account_show_documents"' ) && false !== strpos( $colisly_sc_set, "\$settings['account_show_documents']  = empty( \$_POST['account_show_documents'] ) ? 0 : 1;" ) );
 $colisly_sc_inst = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/class-colisly-install.php' );
 colisly_check( 'Garde : une mise a jour reconstruit les regles de reecriture', 2 === substr_count( $colisly_sc_inst, "update_option( 'colisly_flush_rewrite_rules', 'yes' );" ) );
+
+// ---------------------------------------------------------------------------
+// 1.27.0 : plusieurs promotions, code de bienvenue, migration.
+// ---------------------------------------------------------------------------
+$colisly_pm_settings = COLISLY_Settings::all();
+$colisly_pm_off      = array( 'promotions' => array(), 'loyalty_shipments' => 0, 'loyalty_rate' => 0, 'loyalty_scope' => 'handling' );
+$colisly_pm_user = wp_insert_user( array( 'user_login' => 'client_promo_' . wp_generate_password( 6, false ), 'user_email' => 'promo+' . time() . '@example.com', 'user_pass' => wp_generate_password(), 'first_name' => 'Paul', 'last_name' => 'Promo', 'role' => 'customer' ) );
+foreach ( array( 'shipping_first_name' => 'Paul', 'shipping_last_name' => 'Promo', 'shipping_address_1' => '5 rue Neuve', 'shipping_city' => 'Lille', 'shipping_postcode' => '59000', 'shipping_country' => 'FR' ) as $colisly_pm_k => $colisly_pm_v ) {
+	update_user_meta( $colisly_pm_user, $colisly_pm_k, $colisly_pm_v );
+}
+$colisly_pm_client = COLISLY_Clients::get_or_create_for_user( $colisly_pm_user );
+COLISLY_Settings::update( array_merge( $colisly_pm_settings, $colisly_pm_off, array( 'promotions' => array(
+	colisly_promo( array( 'code' => 'bienvenue10', 'rate' => 10, 'first_only' => 1 ) ),
+	colisly_promo( array( 'code' => 'ETE20', 'rate' => 20, 'scope' => 'storage' ) ),
+	colisly_promo( array( 'rate' => 5 ) ),
+	colisly_promo( array( 'code' => 'FINI', 'rate' => 50, 'end' => '2020-01-01' ) ),
+	colisly_promo( array( 'code' => 'SANSTAUX', 'rate' => 0 ) ),
+	array( 'code' => 'abc', 'rate' => '250', 'scope' => 'transport', 'start' => '2026-02-30' ),
+) ) ) );
+$colisly_pm_list = COLISLY_Discounts::promotions();
+colisly_check( 'Promotions : les lignes se nettoient, celle sans taux tombe', 5 === count( $colisly_pm_list ) && 'BIENVENUE10' === $colisly_pm_list[0]['code'] && 1 === $colisly_pm_list[0]['first_only'] && 100.0 === $colisly_pm_list[4]['rate'] && 'handling' === $colisly_pm_list[4]['scope'] && '' === $colisly_pm_list[4]['start'] && 'ABC' === $colisly_pm_list[4]['code'] );
+colisly_check( 'Promotions : plusieurs codes coexistent, un seul champ code sur le formulaire', COLISLY_Discounts::any_code_asked() );
+$colisly_pm_c = COLISLY_Discounts::candidates( $colisly_pm_client );
+colisly_check( 'Promotions : sans code, seule la promotion automatique s applique', 1 === count( $colisly_pm_c ) && 5.0 === $colisly_pm_c[0]['rate'] && '' === $colisly_pm_c[0]['code'] && 'Promotion 5%' === $colisly_pm_c[0]['label'] );
+$colisly_pm_c = COLISLY_Discounts::candidates( $colisly_pm_client, ' bienvenue10 ' );
+colisly_check( 'Promotions : le code de bienvenue ouvre sa promotion pour un client sans expedition, a cote de l automatique', 2 === count( $colisly_pm_c ) && 'BIENVENUE10' === $colisly_pm_c[0]['code'] && 'Promotion BIENVENUE10 10%' === $colisly_pm_c[0]['label'] && 5.0 === $colisly_pm_c[1]['rate'] );
+colisly_check( 'Promotions : la meilleure gagne, la bienvenue 10 % bat l automatique 5 %', 'BIENVENUE10' === COLISLY_Discounts::best( $colisly_pm_client, 50, 0, 'bienvenue10' )['code'] && 5.0 === COLISLY_Discounts::best( $colisly_pm_client, 50, 0, 'bienvenue10' )['amount'] );
+colisly_check( 'Promotions : un code fini ou sans taux n ouvre rien', 1 === count( COLISLY_Discounts::candidates( $colisly_pm_client, 'FINI' ) ) && 1 === count( COLISLY_Discounts::candidates( $colisly_pm_client, 'SANSTAUX' ) ) );
+colisly_check( 'Promotions : un autre code ouvre la sienne, sur le stockage', 'ETE20' === COLISLY_Discounts::candidates( $colisly_pm_client, 'ete20' )[0]['code'] && 'storage' === COLISLY_Discounts::candidates( $colisly_pm_client, 'ete20' )[0]['scope'] );
+// La demande d expedition fixe le code sur la ligne, puis la bienvenue se ferme.
+$colisly_pm_p1 = (int) COLISLY_Parcels::create( array( 'client_id' => (int) $colisly_pm_client->id, 'weight' => 1, 'allow_grouping' => 1 ) );
+$colisly_pm_p2 = (int) COLISLY_Parcels::create( array( 'client_id' => (int) $colisly_pm_client->id, 'weight' => 1, 'allow_grouping' => 1 ) );
+$colisly_pm_ship = COLISLY_Shipments::get( COLISLY_Shipments::request( (int) $colisly_pm_client->id, array( $colisly_pm_p1 ), 'colissimo', 0, 'FR', 'Bienvenue10' ) );
+colisly_check( 'Promotions : la premiere expedition porte la bienvenue, code compris', 'Promotion BIENVENUE10 10%' === $colisly_pm_ship->discount_label && abs( (float) $colisly_pm_ship->discount - round( (float) COLISLY_Parcels::get( $colisly_pm_p1 )->price * 0.1, 2 ) ) < 0.001 );
+colisly_check( 'Promotions : une expedition en cours ferme la bienvenue', 1 === COLISLY_Discounts::shipments_started( (int) $colisly_pm_client->id ) && ! COLISLY_Discounts::promotion_open_to( $colisly_pm_list[0], $colisly_pm_client ) && 1 === count( COLISLY_Discounts::candidates( $colisly_pm_client, 'bienvenue10' ) ) );
+$colisly_pm_ship2 = COLISLY_Shipments::get( COLISLY_Shipments::request( (int) $colisly_pm_client->id, array( $colisly_pm_p2 ), 'colissimo', 0, 'FR', 'bienvenue10' ) );
+colisly_check( 'Promotions : la seconde expedition retombe sur l automatique', 'Promotion 5%' === $colisly_pm_ship2->discount_label );
+COLISLY_Shipments::set_status( (int) $colisly_pm_ship->id, 'cancelled' );
+COLISLY_Shipments::set_status( (int) $colisly_pm_ship2->id, 'cancelled' );
+colisly_check( 'Promotions : des expeditions annulees ne comptent pas, la bienvenue se rouvre', 0 === COLISLY_Discounts::shipments_started( (int) $colisly_pm_client->id ) && COLISLY_Discounts::promotion_open_to( $colisly_pm_list[0], $colisly_pm_client ) );
+// L AJAX ne dit pas pourquoi un code de bienvenue est refuse a un ancien client.
+$colisly_pm_old = COLISLY_Clients::get( $client_id );
+wp_set_current_user( (int) $colisly_pm_old->user_id );
+$colisly_pm_nonce = wp_create_nonce( 'colisly_front' );
+$colisly_pm_ajax  = colisly_run_ajax( array( 'COLISLY_Ajax', 'check_code' ), array( 'nonce' => $colisly_pm_nonce, 'code' => 'bienvenue10' ) );
+colisly_check( 'Promotions AJAX : bienvenue refusee a un client qui a deja expedie, comme un code inconnu', is_array( $colisly_pm_ajax ) && empty( $colisly_pm_ajax['success'] ) && 'This code is not valid.' === $colisly_pm_ajax['data']['message'] && COLISLY_Discounts::shipments_started( (int) $colisly_pm_old->id ) > 0 );
+$colisly_pm_ajax = colisly_run_ajax( array( 'COLISLY_Ajax', 'check_code' ), array( 'nonce' => $colisly_pm_nonce, 'code' => 'ete20' ) );
+colisly_check( 'Promotions AJAX : l autre code passe et renvoie la sienne', is_array( $colisly_pm_ajax ) && ! empty( $colisly_pm_ajax['success'] ) && 'ETE20' === $colisly_pm_ajax['data']['discount']['code'] && 'Code accepted: Promotion ETE20 20% on storage fees.' === $colisly_pm_ajax['data']['message'] );
+wp_set_current_user( 0 );
+// Migration de la promotion unique des versions precedentes.
+COLISLY_Settings::update( array_merge( $colisly_pm_settings, $colisly_pm_off, array( 'promo_rate' => 15, 'promo_scope' => 'both', 'promo_code' => 'vieux', 'promo_start' => '2026-01-01', 'promo_end' => '' ) ) );
+COLISLY_Discounts::migrate_promotion();
+$colisly_pm_all = COLISLY_Settings::all();
+colisly_check( 'Migration : la promotion unique devient une ligne du tableau et les anciennes cles disparaissent', 1 === count( COLISLY_Discounts::promotions() ) && 'VIEUX' === COLISLY_Discounts::promotions()[0]['code'] && 15.0 === COLISLY_Discounts::promotions()[0]['rate'] && 'both' === COLISLY_Discounts::promotions()[0]['scope'] && '2026-01-01' === COLISLY_Discounts::promotions()[0]['start'] && ! isset( $colisly_pm_all['promo_rate'] ) );
+COLISLY_Discounts::migrate_promotion();
+colisly_check( 'Migration : rejouee, elle ne double rien', 1 === count( COLISLY_Discounts::promotions() ) );
+COLISLY_Settings::update( array_merge( $colisly_pm_settings, $colisly_pm_off, array( 'promo_rate' => 0, 'promo_code' => 'RIEN' ) ) );
+COLISLY_Discounts::migrate_promotion();
+colisly_check( 'Migration : une promotion a 0 ne cree pas de ligne', array() === COLISLY_Discounts::promotions() && ! isset( COLISLY_Settings::all()['promo_code'] ) );
+COLISLY_Settings::update( array_merge( $colisly_pm_settings, $colisly_pm_off ) );
+$colisly_pm_set = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-settings.php' );
+colisly_check( 'Garde : le tableau des promotions a code, taux, perimetre, dates et premiere expedition, avec un bouton d ajout', false !== strpos( $colisly_pm_set, 'name="promo_code[]"' ) && false !== strpos( $colisly_pm_set, 'name="promo_scope[]"' ) && false !== strpos( $colisly_pm_set, 'name="promo_first[]"' ) && false !== strpos( $colisly_pm_set, "esc_html_e( 'Add a promotion', 'colisly' )" ) );
+colisly_check( 'Garde : la migration tourne a la mise a jour', false !== strpos( file_get_contents( COLISLY_PLUGIN_DIR . 'includes/class-colisly-install.php' ), 'COLISLY_Discounts::migrate_promotion();' ) );
 
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 

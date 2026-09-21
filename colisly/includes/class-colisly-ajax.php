@@ -25,12 +25,13 @@ class COLISLY_Ajax {
 	}
 
 	/**
-	 * Tells a client whether the promotion code he typed unlocks the promotion.
+	 * Tells a client whether the promotion code he typed unlocks a promotion.
 	 *
-	 * Checked here rather than in the page so the code is never in the
-	 * page's source. The answer is the promotion as a discount candidate,
-	 * for the live estimate; the request itself checks the code again when
-	 * the form is posted.
+	 * Checked here rather than in the page so no code is ever in the page's
+	 * source. The answer is the promotion as a discount candidate, for the
+	 * live estimate; the request itself checks the code again when the form
+	 * is posted. A code for a first shipment is refused to a client who
+	 * already has one, like an unknown code: he is not told why.
 	 *
 	 * @return void
 	 */
@@ -44,14 +45,13 @@ class COLISLY_Ajax {
 
 		$code = isset( $_POST['code'] ) ? sanitize_text_field( wp_unslash( $_POST['code'] ) ) : '';
 
-		if ( '' === trim( $code ) || ! COLISLY_Discounts::promo_running() || ! COLISLY_Discounts::code_matches( $code ) ) {
-			wp_send_json_error( array( 'message' => __( 'This code is not valid.', 'colisly' ) ) );
-		}
-
+		$typed = COLISLY_Discounts::normalize_code( $code );
 		$promo = null;
-		foreach ( COLISLY_Discounts::candidates( $client, $code ) as $candidate ) {
-			if ( 'promo' === $candidate['kind'] ) {
-				$promo = $candidate;
+		if ( '' !== $typed ) {
+			foreach ( COLISLY_Discounts::candidates( $client, $code ) as $candidate ) {
+				if ( 'promo' === $candidate['kind'] && $candidate['code'] === $typed ) {
+					$promo = $candidate;
+				}
 			}
 		}
 

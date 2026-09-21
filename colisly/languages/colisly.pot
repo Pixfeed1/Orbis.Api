@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.26.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.27.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-21T10:00:28+00:00\n"
+"POT-Creation-Date: 2026-09-21T12:56:12+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.11.0\n"
 "X-Domain: colisly\n"
@@ -56,8 +56,8 @@ msgstr ""
 #: includes/admin/class-colisly-admin-parcels.php:490
 #: includes/admin/class-colisly-admin-parcels.php:579
 #: includes/admin/class-colisly-admin-settings.php:24
-#: includes/admin/class-colisly-admin-settings.php:691
-#: includes/class-colisly-ajax.php:42
+#: includes/admin/class-colisly-admin-settings.php:715
+#: includes/class-colisly-ajax.php:43
 #: includes/class-colisly-ajax.php:80
 #: includes/class-colisly-downloads.php:120
 #: includes/class-colisly-downloads.php:137
@@ -248,8 +248,7 @@ msgid "Personal discount"
 msgstr ""
 
 #: includes/admin/class-colisly-admin-clients.php:281
-#: includes/admin/class-colisly-admin-settings.php:487
-#: includes/admin/class-colisly-admin-settings.php:520
+#: includes/admin/class-colisly-admin-settings.php:552
 msgid "on"
 msgstr ""
 
@@ -396,6 +395,7 @@ msgstr ""
 #: includes/admin/class-colisly-admin-clients.php:405
 #: includes/admin/class-colisly-admin-parcels.php:119
 #: includes/admin/class-colisly-admin-parcels.php:261
+#: includes/admin/class-colisly-admin-settings.php:534
 #: includes/admin/class-colisly-admin.php:133
 #: includes/class-colisly-privacy.php:247
 #: includes/frontend/class-colisly-account.php:295
@@ -1124,114 +1124,127 @@ msgstr ""
 msgid "Percentages taken off what you charge for your own work: the handling fees, the price of the parcels themselves, or the storage fees, or both. Transport, fees advanced and insurance are never discounted. A client can also carry a personal rate on his record; when several discounts could apply, the one that takes the most off applies alone, they never add up. The discount shows as its own line on the order."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:484
-msgid "Promotion for all clients (%)"
+#: includes/admin/class-colisly-admin-settings.php:485
+msgid "Promotions"
+msgstr ""
+
+#: includes/admin/class-colisly-admin-settings.php:486
+msgid "As many as you need. A promotion without a code applies to every client by itself; one with a code only to the clients who type it on the shipment request form, upper or lower case alike. Dates are both included, an empty one is an open end. \"First shipment only\" makes a welcome offer: it is refused to a client who already has a shipment, cancelled ones aside."
+msgstr ""
+
+#: includes/admin/class-colisly-admin-settings.php:491
+#: includes/admin/class-colisly-admin-settings.php:507
+msgid "Code"
+msgstr ""
+
+#: includes/admin/class-colisly-admin-settings.php:492
+#: includes/admin/class-colisly-admin-settings.php:511
+msgid "Rate (%)"
 msgstr ""
 
 #: includes/admin/class-colisly-admin-settings.php:493
-msgid "0 for no promotion. 100% on storage fees, for instance, makes storage free for the length of the promotion."
+#: includes/admin/class-colisly-admin-settings.php:515
+msgid "On"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:497
-msgid "Promotion dates"
-msgstr ""
-
-#: includes/admin/class-colisly-admin-settings.php:499
+#: includes/admin/class-colisly-admin-settings.php:494
+#: includes/admin/class-colisly-admin-settings.php:523
 msgctxt "promotion start date"
 msgid "From"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:501
+#: includes/admin/class-colisly-admin-settings.php:495
+#: includes/admin/class-colisly-admin-settings.php:527
 msgctxt "promotion end date"
-msgid "to"
+msgid "To"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:503
-msgid "Both dates included. Leave a date empty for a promotion with no start or no end."
+#: includes/admin/class-colisly-admin-settings.php:496
+msgid "First shipment only"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:507
-msgid "Promotion code"
+#: includes/admin/class-colisly-admin-settings.php:508
+msgid "none: for everyone"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:510
-msgid "Optional. Empty, the promotion applies to every client by itself. Filled, a \"Promotion code\" box appears on the shipment request form and only the clients who type this code get it. Upper or lower case makes no difference."
+#: includes/admin/class-colisly-admin-settings.php:542
+msgid "Add a promotion"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:514
+#: includes/admin/class-colisly-admin-settings.php:546
 msgid "Loyalty discount"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:516
+#: includes/admin/class-colisly-admin-settings.php:548
 msgctxt "number of shipments done"
 msgid "From"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:518
+#: includes/admin/class-colisly-admin-settings.php:550
 msgid "shipments done, take off"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:526
+#: includes/admin/class-colisly-admin-settings.php:558
 msgid "Shipments done are those marked as shipped. 0 shipments or 0% switches the loyalty discount off."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:531
+#: includes/admin/class-colisly-admin-settings.php:563
 msgid "Client area"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:534
+#: includes/admin/class-colisly-admin-settings.php:566
 msgid "Tabs"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:538
+#: includes/admin/class-colisly-admin-settings.php:570
 msgid "Show the \"My documents\" tab in the client account"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:540
+#: includes/admin/class-colisly-admin-settings.php:572
 msgid "Untick it if you never hand documents to your clients. The purchase invoices they attach to a customs declaration are kept either way."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:545
+#: includes/admin/class-colisly-admin-settings.php:577
 msgid "Orders"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:548
+#: includes/admin/class-colisly-admin-settings.php:580
 msgid "Taxes"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:552
+#: includes/admin/class-colisly-admin-settings.php:584
 msgid "Apply the shop taxes to shipment orders (parcels, storage and transport lines)"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:554
+#: includes/admin/class-colisly-admin-settings.php:586
 msgid "When unchecked, shipment orders are created tax-free."
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:559
+#: includes/admin/class-colisly-admin-settings.php:591
 msgid "Notifications"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:562
+#: includes/admin/class-colisly-admin-settings.php:594
 msgid "E-mails"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:566
+#: includes/admin/class-colisly-admin-settings.php:598
 msgid "Notify the client when a parcel is received"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:571
+#: includes/admin/class-colisly-admin-settings.php:603
 msgid "Notify the administrator when a shipment is requested"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:576
+#: includes/admin/class-colisly-admin-settings.php:608
 msgid "Send the WooCommerce invoice (with payment link) when a shipment is requested"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:582
+#: includes/admin/class-colisly-admin-settings.php:614
 msgid "Save settings"
 msgstr ""
 
-#: includes/admin/class-colisly-admin-settings.php:831
+#: includes/admin/class-colisly-admin-settings.php:877
 msgid "Settings saved."
 msgstr ""
 
@@ -1263,7 +1276,6 @@ msgstr ""
 msgid "unrecognised: %s"
 msgstr ""
 
-#: includes/class-colisly-ajax.php:48
 #: includes/class-colisly-ajax.php:59
 msgid "This code is not valid."
 msgstr ""
@@ -1429,28 +1441,33 @@ msgstr ""
 msgid "Handling and storage fees"
 msgstr ""
 
+#. translators: 1: promotion code, 2: discount rate.
+#: includes/class-colisly-discounts.php:423
+msgid "Promotion %1$s %2$s%%"
+msgstr ""
+
 #. translators: %s: discount rate.
-#: includes/class-colisly-discounts.php:303
+#: includes/class-colisly-discounts.php:425
 msgid "Promotion %s%%"
 msgstr ""
 
 #. translators: %s: discount rate.
-#: includes/class-colisly-discounts.php:307
+#: includes/class-colisly-discounts.php:429
 msgid "Loyalty discount %s%%"
 msgstr ""
 
 #. translators: %s: discount rate.
-#: includes/class-colisly-discounts.php:311
+#: includes/class-colisly-discounts.php:433
 msgid "Client discount %s%%"
 msgstr ""
 
 #. translators: %s: name of the discount and its rate, e.g. "Promotion 10%".
-#: includes/class-colisly-discounts.php:320
+#: includes/class-colisly-discounts.php:442
 msgid "%s on storage fees"
 msgstr ""
 
 #. translators: %s: name of the discount and its rate, e.g. "Promotion 10%".
-#: includes/class-colisly-discounts.php:323
+#: includes/class-colisly-discounts.php:445
 msgid "%s on handling and storage fees"
 msgstr ""
 

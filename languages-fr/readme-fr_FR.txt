@@ -217,13 +217,17 @@ facturés plein. Quand plusieurs pourraient s'appliquer, celle qui déduit le
 plus s'applique seule, et elle apparaît sur la commande en ligne à part, à son
 nom.
 
-= La promotion peut-elle exiger un code ? =
+= Puis-je lancer plusieurs promotions, ou codes promo, à la fois ? =
 
-Oui. Donnez un code à la promotion dans les réglages et une case « Code promo »
-apparaît sur le formulaire de demande d'expédition : seuls les clients qui le
-saisissent ont la promotion, et l'estimation se met à jour dès que le code est
-accepté. Laissez le code vide et la promotion s'applique à tous d'elle-même. Le
-code est vérifié par le serveur et n'apparaît jamais dans la page.
+Oui. Les réglages ont un tableau de promotions, autant que nécessaire : chacune
+a son taux, ce sur quoi elle porte, des dates facultatives, un code facultatif
+et une option « première expédition seulement » pour une offre de bienvenue.
+Une promotion sans code s'applique à tous d'elle-même ; une promotion avec un
+code seulement aux clients qui le saisissent dans la case « Code promo » du
+formulaire de demande d'expédition, et l'estimation se met à jour dès que le
+code est accepté. Les codes sont vérifiés par le serveur et n'apparaissent
+jamais dans la page. Quand plusieurs remises pourraient s'appliquer, celle qui
+déduit le plus s'applique seule.
 
 == Captures d'écran ==
 ================================================================================
@@ -242,6 +246,20 @@ code est vérifié par le serveur et n'apparaît jamais dans la page.
 ================================================================================
 == Journal des modifications ==
 ================================================================================
+
+= 1.27.0 =
+* Les promotions sont maintenant un tableau, autant que nécessaire, là où il
+  n'y en avait qu'une. Un réexpéditeur qui voulait un code de bienvenue pour
+  une première expédition et d'autres codes pour ses mailings devait choisir,
+  puisque saisir un second code remplaçait le premier. Chaque ligne a son
+  taux, ce sur quoi elle porte, des dates facultatives, un code facultatif
+  et une option « Première expédition seulement », refusée à un client qui a
+  déjà une expédition, annulées mises à part. Les promotions sans code
+  s'appliquent d'elles-mêmes, celles avec un code dès que le client le
+  saisit, et la règle habituelle retient celle qui déduit le plus. La ligne
+  de commande porte le code, « Promotion BIENVENUE10 10 % ». La promotion
+  réglée dans une version précédente devient la première ligne à la mise à
+  jour ; rien d'autre ne change.
 
 = 1.26.0 =
 * La déclaration en douane se fait maintenant une seule fois par expédition,

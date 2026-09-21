@@ -480,36 +480,68 @@ class COLISLY_Admin_Settings {
 				<h2><?php esc_html_e( 'Discounts', 'colisly' ); ?></h2>
 				<p class="description"><?php esc_html_e( 'Percentages taken off what you charge for your own work: the handling fees, the price of the parcels themselves, or the storage fees, or both. Transport, fees advanced and insurance are never discounted. A client can also carry a personal rate on his record; when several discounts could apply, the one that takes the most off applies alone, they never add up. The discount shows as its own line on the order.', 'colisly' ); ?></p>
 				<table class="form-table" role="presentation">
-					<tr>
-						<th scope="row"><label for="colisly-promo-rate"><?php esc_html_e( 'Promotion for all clients (%)', 'colisly' ); ?></label></th>
-						<td>
-							<input type="number" id="colisly-promo-rate" name="promo_rate" min="0" max="100" step="0.01" value="<?php echo esc_attr( COLISLY_Discounts::format_rate( $settings['promo_rate'] ) ); ?>" class="small-text" /> %
-							<label for="colisly-promo-scope"><?php esc_html_e( 'on', 'colisly' ); ?></label>
-							<select id="colisly-promo-scope" name="promo_scope">
-								<?php foreach ( COLISLY_Discounts::scopes() as $colisly_scope => $colisly_scope_label ) : ?>
-									<option value="<?php echo esc_attr( $colisly_scope ); ?>" <?php selected( COLISLY_Discounts::scope( $settings['promo_scope'] ), $colisly_scope ); ?>><?php echo esc_html( $colisly_scope_label ); ?></option>
-								<?php endforeach; ?>
-							</select>
-							<p class="description"><?php esc_html_e( '0 for no promotion. 100% on storage fees, for instance, makes storage free for the length of the promotion.', 'colisly' ); ?></p>
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="colisly-promo-start"><?php esc_html_e( 'Promotion dates', 'colisly' ); ?></label></th>
-						<td>
-							<?php echo esc_html_x( 'From', 'promotion start date', 'colisly' ); ?>
-							<input type="date" id="colisly-promo-start" name="promo_start" value="<?php echo esc_attr( (string) $settings['promo_start'] ); ?>" />
-							<label for="colisly-promo-end"><?php echo esc_html_x( 'to', 'promotion end date', 'colisly' ); ?></label>
-							<input type="date" id="colisly-promo-end" name="promo_end" value="<?php echo esc_attr( (string) $settings['promo_end'] ); ?>" />
-							<p class="description"><?php esc_html_e( 'Both dates included. Leave a date empty for a promotion with no start or no end.', 'colisly' ); ?></p>
-						</td>
-					</tr>
-					<tr>
-						<th scope="row"><label for="colisly-promo-code"><?php esc_html_e( 'Promotion code', 'colisly' ); ?></label></th>
-						<td>
-							<input type="text" id="colisly-promo-code" name="promo_code" value="<?php echo esc_attr( (string) $settings['promo_code'] ); ?>" class="regular-text" autocomplete="off" />
-							<p class="description"><?php esc_html_e( 'Optional. Empty, the promotion applies to every client by itself. Filled, a "Promotion code" box appears on the shipment request form and only the clients who type this code get it. Upper or lower case makes no difference.', 'colisly' ); ?></p>
-						</td>
-					</tr>
+				</table>
+
+				<h3><?php esc_html_e( 'Promotions', 'colisly' ); ?></h3>
+				<p class="description"><?php esc_html_e( 'As many as you need. A promotion without a code applies to every client by itself; one with a code only to the clients who type it on the shipment request form, upper or lower case alike. Dates are both included, an empty one is an open end. "First shipment only" makes a welcome offer: it is refused to a client who already has a shipment, cancelled ones aside.', 'colisly' ); ?></p>
+				<div class="colisly-table-wrap">
+					<table class="widefat fixed striped colisly-tiers-table colisly-promotions-table">
+						<thead>
+							<tr>
+								<th><?php esc_html_e( 'Code', 'colisly' ); ?></th>
+								<th><?php esc_html_e( 'Rate (%)', 'colisly' ); ?></th>
+								<th><?php esc_html_e( 'On', 'colisly' ); ?></th>
+								<th><?php echo esc_html_x( 'From', 'promotion start date', 'colisly' ); ?></th>
+								<th><?php echo esc_html_x( 'To', 'promotion end date', 'colisly' ); ?></th>
+								<th><?php esc_html_e( 'First shipment only', 'colisly' ); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php
+							$colisly_promotions   = COLISLY_Discounts::promotions();
+							$colisly_promotions[] = COLISLY_Discounts::sanitize_promotion( array() ); // Extra empty row to add one.
+							foreach ( $colisly_promotions as $k => $colisly_promo ) :
+								?>
+								<tr>
+									<td>
+										<label class="screen-reader-text" for="colisly-promo-code-<?php echo esc_attr( (string) $k ); ?>"><?php esc_html_e( 'Code', 'colisly' ); ?></label>
+										<input type="text" id="colisly-promo-code-<?php echo esc_attr( (string) $k ); ?>" name="promo_code[]" value="<?php echo esc_attr( $colisly_promo['code'] ); ?>" autocomplete="off" placeholder="<?php esc_attr_e( 'none: for everyone', 'colisly' ); ?>" />
+									</td>
+									<td>
+										<label class="screen-reader-text" for="colisly-promo-rate-<?php echo esc_attr( (string) $k ); ?>"><?php esc_html_e( 'Rate (%)', 'colisly' ); ?></label>
+										<input type="number" id="colisly-promo-rate-<?php echo esc_attr( (string) $k ); ?>" name="promo_rate[]" min="0" max="100" step="0.01" value="<?php echo esc_attr( $colisly_promo['rate'] > 0 ? COLISLY_Discounts::format_rate( $colisly_promo['rate'] ) : '' ); ?>" />
+									</td>
+									<td>
+										<label class="screen-reader-text" for="colisly-promo-scope-<?php echo esc_attr( (string) $k ); ?>"><?php esc_html_e( 'On', 'colisly' ); ?></label>
+										<select id="colisly-promo-scope-<?php echo esc_attr( (string) $k ); ?>" name="promo_scope[]">
+											<?php foreach ( COLISLY_Discounts::scopes() as $colisly_scope => $colisly_scope_label ) : ?>
+												<option value="<?php echo esc_attr( $colisly_scope ); ?>" <?php selected( $colisly_promo['scope'], $colisly_scope ); ?>><?php echo esc_html( $colisly_scope_label ); ?></option>
+											<?php endforeach; ?>
+										</select>
+									</td>
+									<td>
+										<label class="screen-reader-text" for="colisly-promo-start-<?php echo esc_attr( (string) $k ); ?>"><?php echo esc_html_x( 'From', 'promotion start date', 'colisly' ); ?></label>
+										<input type="date" id="colisly-promo-start-<?php echo esc_attr( (string) $k ); ?>" name="promo_start[]" value="<?php echo esc_attr( $colisly_promo['start'] ); ?>" />
+									</td>
+									<td>
+										<label class="screen-reader-text" for="colisly-promo-end-<?php echo esc_attr( (string) $k ); ?>"><?php echo esc_html_x( 'To', 'promotion end date', 'colisly' ); ?></label>
+										<input type="date" id="colisly-promo-end-<?php echo esc_attr( (string) $k ); ?>" name="promo_end[]" value="<?php echo esc_attr( $colisly_promo['end'] ); ?>" />
+									</td>
+									<td>
+										<input type="hidden" name="promo_first[]" value="<?php echo $colisly_promo['first_only'] ? '1' : '0'; ?>" class="colisly-toggle-value" />
+										<label>
+											<input type="checkbox" class="colisly-toggle" <?php checked( (bool) $colisly_promo['first_only'] ); ?> />
+											<?php esc_html_e( 'Yes', 'colisly' ); ?>
+										</label>
+									</td>
+								</tr>
+							<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+				<p><button type="button" class="button colisly-add-row"><?php esc_html_e( 'Add a promotion', 'colisly' ); ?></button></p>
+
+				<table class="form-table" role="presentation">
 					<tr>
 						<th scope="row"><label for="colisly-loyalty-shipments"><?php esc_html_e( 'Loyalty discount', 'colisly' ); ?></label></th>
 						<td>
@@ -670,15 +702,7 @@ class COLISLY_Admin_Settings {
 	 * @return string
 	 */
 	public static function sanitize_date( $value ) {
-		$value = sanitize_text_field( (string) $value );
-
-		if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $value ) ) {
-			return '';
-		}
-
-		list( $y, $m, $d ) = array_map( 'intval', explode( '-', $value ) );
-
-		return checkdate( $m, $d, $y ) ? $value : '';
+		return COLISLY_Discounts::sanitize_date( $value );
 	}
 
 	/**
@@ -811,12 +835,34 @@ class COLISLY_Admin_Settings {
 			$settings[ $key ] = isset( $_POST[ $key ] ) && '1' === (string) wp_unslash( $_POST[ $key ] ) ? 1 : 0;
 		}
 
-		$settings['promo_rate']        = isset( $_POST['promo_rate'] ) ? COLISLY_Discounts::rate( sanitize_text_field( wp_unslash( $_POST['promo_rate'] ) ) ) : 0;
-		$settings['promo_scope']       = isset( $_POST['promo_scope'] ) ? COLISLY_Discounts::scope( wp_unslash( $_POST['promo_scope'] ) ) : 'handling'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised by scope().
-		$settings['promo_code']        = isset( $_POST['promo_code'] ) ? COLISLY_Discounts::normalize_code( wp_unslash( $_POST['promo_code'] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised by normalize_code().
+		// One promotion per row; a row without a rate is an empty one and
+		// is dropped, as the blank row for adding the next always posts.
+		$promo_codes  = isset( $_POST['promo_code'] ) ? (array) wp_unslash( $_POST['promo_code'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in sanitize_promotion().
+		$promo_rates  = isset( $_POST['promo_rate'] ) ? (array) wp_unslash( $_POST['promo_rate'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in sanitize_promotion().
+		$promo_scopes = isset( $_POST['promo_scope'] ) ? (array) wp_unslash( $_POST['promo_scope'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in sanitize_promotion().
+		$promo_starts = isset( $_POST['promo_start'] ) ? (array) wp_unslash( $_POST['promo_start'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in sanitize_promotion().
+		$promo_ends   = isset( $_POST['promo_end'] ) ? (array) wp_unslash( $_POST['promo_end'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in sanitize_promotion().
+		$promo_firsts = isset( $_POST['promo_first'] ) ? (array) wp_unslash( $_POST['promo_first'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in sanitize_promotion().
+		$promotions   = array();
+		foreach ( $promo_rates as $i => $promo_rate ) {
+			$promotion = COLISLY_Discounts::sanitize_promotion(
+				array(
+					'code'       => isset( $promo_codes[ $i ] ) ? $promo_codes[ $i ] : '',
+					'rate'       => $promo_rate,
+					'scope'      => isset( $promo_scopes[ $i ] ) ? $promo_scopes[ $i ] : 'handling',
+					'start'      => isset( $promo_starts[ $i ] ) ? $promo_starts[ $i ] : '',
+					'end'        => isset( $promo_ends[ $i ] ) ? $promo_ends[ $i ] : '',
+					'first_only' => isset( $promo_firsts[ $i ] ) && '1' === (string) $promo_firsts[ $i ] ? 1 : 0,
+				)
+			);
+			if ( $promotion['rate'] > 0 ) {
+				$promotions[] = $promotion;
+			}
+		}
+		$settings['promotions'] = $promotions;
+		unset( $settings['promo_rate'], $settings['promo_code'], $settings['promo_scope'], $settings['promo_start'], $settings['promo_end'] );
+
 		$settings['loyalty_scope']     = isset( $_POST['loyalty_scope'] ) ? COLISLY_Discounts::scope( wp_unslash( $_POST['loyalty_scope'] ) ) : 'handling'; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised by scope().
-		$settings['promo_start']       = isset( $_POST['promo_start'] ) ? self::sanitize_date( wp_unslash( $_POST['promo_start'] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised by sanitize_date().
-		$settings['promo_end']         = isset( $_POST['promo_end'] ) ? self::sanitize_date( wp_unslash( $_POST['promo_end'] ) ) : ''; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised by sanitize_date().
 		$settings['loyalty_shipments'] = isset( $_POST['loyalty_shipments'] ) ? absint( $_POST['loyalty_shipments'] ) : 0;
 		$settings['loyalty_rate']      = isset( $_POST['loyalty_rate'] ) ? COLISLY_Discounts::rate( sanitize_text_field( wp_unslash( $_POST['loyalty_rate'] ) ) ) : 0;
 
