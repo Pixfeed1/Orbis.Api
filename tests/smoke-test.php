@@ -1432,7 +1432,7 @@ $colisly_render->setAccessible( true );
  */
 function colisly_render_declaration( $method, $parcel ) {
 	ob_start();
-	$method->invoke( null, $parcel, 'customs' );
+	$method->invoke( null, COLISLY_Customs::items( (int) $parcel->id ), 'customs' );
 	return (string) ob_get_clean();
 }
 
@@ -1736,7 +1736,7 @@ $colisly_val_ref = COLISLY_Parcels::get( $colisly_val_parcel )->reference;
 
 $colisly_val_err = COLISLY_Customs::save( $colisly_val_parcel, array( array( 'description' => 'Montre' ) ) );
 colisly_check( 'Valeur obligatoire : une ligne sans valeur est refusee', is_wp_error( $colisly_val_err ) );
-colisly_check( 'Valeur obligatoire : le refus nomme le colis', is_wp_error( $colisly_val_err ) && false !== strpos( $colisly_val_err->get_error_message(), $colisly_val_ref ) );
+colisly_check( 'Valeur obligatoire : le refus nomme la ligne', is_wp_error( $colisly_val_err ) && false !== strpos( $colisly_val_err->get_error_message(), 'Montre' ) );
 colisly_check( 'Valeur obligatoire : le refus nomme le contenu', is_wp_error( $colisly_val_err ) && false !== strpos( $colisly_val_err->get_error_message(), 'Montre' ) );
 colisly_check( 'Valeur obligatoire : zero vaut absence', is_wp_error( COLISLY_Customs::save( $colisly_val_parcel, array( array( 'description' => 'Montre', 'unit_value' => '0' ) ) ) ) );
 colisly_check( 'Valeur obligatoire : rien n a ete enregistre', ! COLISLY_Customs::declared( $colisly_val_parcel ) );
@@ -1812,9 +1812,9 @@ colisly_check( 'Facture : l export RGPD cite le colis', $colisly_inv_found );
 // Gardes : les deux formulaires envoient des fichiers et portent le champ.
 $colisly_inv_src = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/frontend/class-colisly-account.php' );
 colisly_check( 'Garde : la demande d expedition accepte les fichiers', false !== strpos( $colisly_inv_src, 'class="colisly-request-form" enctype="multipart/form-data"' ) );
-colisly_check( 'Garde : l onglet douane accepte les fichiers', false !== strpos( $colisly_inv_src, 'class="colisly-customs-form" enctype="multipart/form-data"' ) );
+colisly_check( 'Garde : les factures sont attachees a l expedition une fois creee', false !== strpos( $colisly_inv_src, 'COLISLY_Customs::attach_invoices_to_shipment( (int) $result, $entries )' ) );
 colisly_check( 'Garde : le champ facture est present', false !== strpos( $colisly_inv_src, 'name="colisly_invoices[' ) );
-colisly_check( 'Garde : une declaration refusee arrete la demande', false !== strpos( $colisly_inv_src, 'is_wp_error( $colisly_saved )' ) );
+colisly_check( 'Garde : une declaration refusee arrete la demande avant toute ecriture', false !== strpos( file_get_contents( COLISLY_PLUGIN_DIR . 'includes/class-colisly-shipments.php' ), 'if ( is_wp_error( $customs_lines ) ) {' ) );
 
 $colisly_js_src = file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/front.js' );
 colisly_check( 'Garde : chaque transporteur affiche son prix', false !== strpos( $colisly_js_src, 'updateCarrierPrices' ) && false !== strpos( $colisly_inv_src, 'data-name=' ) );
@@ -2665,6 +2665,104 @@ colisly_check( 'Nouveau client : un visiteur non connecte ne cree rien et voit l
 colisly_check( 'Nouveau client : la fiche apparait dans la liste de l administration', 1 === COLISLY_Clients::count( 'neuf+' . substr( $colisly_nw_client->reference, -1 ) ) || 1 <= COLISLY_Clients::count( COLISLY_Clients::get( (int) $colisly_nw_client->id )->reference ) );
 colisly_check( 'Nouveau client : un utilisateur inexistant ne donne rien', null === COLISLY_Clients::get_or_create_for_user( 99999999 ) );
 colisly_check( 'Poids etiquette : toujours trois decimales sur la commande', false !== strpos( file_get_contents( COLISLY_PLUGIN_DIR . 'includes/class-colisly-orders.php' ), "number_format( (float) \$shipment->total_weight, 3, '.', '' )" ) );
+
+// ---------------------------------------------------------------------------
+// 1.26.0 : une declaration en douane par expedition, l onglet douane retire,
+// l onglet Mes documents reglable.
+// ---------------------------------------------------------------------------
+$colisly_sc_settings = COLISLY_Settings::all();
+$colisly_sc_zones    = $colisly_sc_settings['zones'];
+$colisly_sc_settings['zones'] = array( array( 'slug' => 'dom', 'name' => 'DOM', 'countries' => array( 'GP' ), 'customs' => 1 ) );
+COLISLY_Settings::update( $colisly_sc_settings );
+$colisly_sc_user = wp_insert_user( array( 'user_login' => 'client_douane_' . wp_generate_password( 6, false ), 'user_email' => 'douane+' . time() . '@example.com', 'user_pass' => wp_generate_password(), 'first_name' => 'Dora', 'last_name' => 'Douane', 'role' => 'customer' ) );
+foreach ( array( 'shipping_first_name' => 'Dora', 'shipping_last_name' => 'Douane', 'shipping_address_1' => '2 rue du Port', 'shipping_city' => 'Pointe-a-Pitre', 'shipping_postcode' => '97110', 'shipping_country' => 'GP' ) as $colisly_sc_k => $colisly_sc_v ) {
+	update_user_meta( $colisly_sc_user, $colisly_sc_k, $colisly_sc_v );
+}
+$colisly_sc_client = COLISLY_Clients::create( $colisly_sc_user );
+$colisly_sc_p = array();
+for ( $colisly_sc_i = 0; $colisly_sc_i < 3; $colisly_sc_i++ ) {
+	$colisly_sc_p[] = (int) COLISLY_Parcels::create( array( 'client_id' => $colisly_sc_client, 'weight' => 1, 'allow_grouping' => 1 ) );
+}
+// L onglet douane n existe plus, Mes documents se regle.
+colisly_check( 'Onglets : plus d onglet Declaration en douane', ! array_key_exists( 'customs', COLISLY_Account::endpoints() ) );
+$colisly_sc_menu = COLISLY_Account::menu_items( array( 'dashboard' => 'Dashboard', 'customer-logout' => 'Logout' ) );
+colisly_check( 'Onglets : le menu n a plus la douane et a Mes documents par defaut', ! in_array( 'Customs declaration', $colisly_sc_menu, true ) && in_array( 'My documents', $colisly_sc_menu, true ) && 'Logout' === end( $colisly_sc_menu ) );
+$colisly_sc_settings['account_show_documents'] = 0;
+COLISLY_Settings::update( $colisly_sc_settings );
+$colisly_sc_menu = COLISLY_Account::menu_items( array( 'dashboard' => 'Dashboard', 'customer-logout' => 'Logout' ) );
+colisly_check( 'Onglets : Mes documents retire du menu par le reglage, les autres restent', ! in_array( 'My documents', $colisly_sc_menu, true ) && in_array( 'My parcels', $colisly_sc_menu, true ) && in_array( 'Shipment request', $colisly_sc_menu, true ) );
+$colisly_sc_settings['account_show_documents'] = 1;
+COLISLY_Settings::update( $colisly_sc_settings );
+// Le formulaire de demande : un seul tableau pour tout le groupage.
+wp_set_current_user( $colisly_sc_user );
+ob_start(); COLISLY_Account::render_request(); $colisly_sc_form = (string) ob_get_clean();
+wp_set_current_user( 0 );
+colisly_check( 'Douane groupee : un seul tableau de declaration, pas un par colis', 1 === substr_count( $colisly_sc_form, 'name="colisly_customs[0][description]"' ) && false === strpos( $colisly_sc_form, 'colisly_customs[' . $colisly_sc_p[0] . ']' ) && false !== strpos( $colisly_sc_form, 'the customs form covers the carton that leaves' ) );
+colisly_check( 'Douane groupee : un seul champ de factures, pour l expedition', 1 === substr_count( $colisly_sc_form, 'name="colisly_invoices[shipment][]"' ) );
+// La demande : refusee sans declaration, refusee sans valeur, acceptee avec, et la declaration est sur l expedition.
+$colisly_sc_err = COLISLY_Shipments::request( $colisly_sc_client, $colisly_sc_p, 'colissimo', 0, 'GP' );
+colisly_check( 'Douane groupee : sans declaration, la demande est refusee en nommant la raison', is_wp_error( $colisly_sc_err ) && 'colisly_customs_missing' === $colisly_sc_err->get_error_code() );
+$colisly_sc_err = COLISLY_Shipments::request( $colisly_sc_client, $colisly_sc_p, 'colissimo', 0, 'GP', '', array( array( 'description' => 'Livres', 'quantity' => 3 ) ) );
+colisly_check( 'Douane groupee : une ligne sans valeur est refusee avant toute ecriture', is_wp_error( $colisly_sc_err ) && 'colisly_customs_value' === $colisly_sc_err->get_error_code() && 'available' === COLISLY_Parcels::get( $colisly_sc_p[0] )->status );
+colisly_check( 'Douane groupee : vers une destination sans exigence, aucune declaration demandee', ! is_wp_error( $colisly_sc_tmp = COLISLY_Shipments::request( $colisly_sc_client, array( $colisly_sc_p[2] ), 'colissimo', 0, 'FR' ) ) );
+COLISLY_Shipments::set_status( (int) $colisly_sc_tmp, 'cancelled' );
+$colisly_sc_ship = COLISLY_Shipments::request( $colisly_sc_client, array( $colisly_sc_p[0], $colisly_sc_p[1] ), 'colissimo', 0, 'GP', '', array( array( 'description' => 'Livres', 'quantity' => 3, 'unit_value' => '12,50' ), array( 'description' => 'T-shirts', 'quantity' => 2, 'unit_value' => 20, 'origin_country' => 'fr' ), array( 'description' => '', 'unit_value' => 5 ) ) );
+colisly_check( 'Douane groupee : la demande passe avec la declaration', is_int( $colisly_sc_ship ) );
+$colisly_sc_ship  = COLISLY_Shipments::get( (int) $colisly_sc_ship );
+$colisly_sc_items = COLISLY_Customs::shipment_items( (int) $colisly_sc_ship->id );
+colisly_check( 'Douane groupee : deux lignes sur l expedition, aucune sur les colis, la vide ignoree', 2 === count( $colisly_sc_items ) && 'Livres' === $colisly_sc_items[0]->description && 12.5 === (float) $colisly_sc_items[0]->unit_value && 'FR' === $colisly_sc_items[1]->origin_country && 0 === (int) $colisly_sc_items[0]->parcel_id && ! COLISLY_Customs::declared( $colisly_sc_p[0] ) && ! COLISLY_Customs::declared( $colisly_sc_p[1] ) );
+colisly_check( 'Douane groupee : le total est celui de l envoi', 77.5 === COLISLY_Customs::totals( $colisly_sc_items )['value'] && 5 === COLISLY_Customs::totals( $colisly_sc_items )['quantity'] );
+colisly_check( 'Douane groupee : items_for_shipment lit la declaration de l expedition', 2 === count( COLISLY_Customs::items_for_shipment( $colisly_sc_ship ) ) );
+colisly_check( 'Douane groupee : l historique de la fiche note la declaration de l expedition', 1 === count( array_filter( COLISLY_History::for_client( $colisly_sc_client ), static function ( $e ) use ( $colisly_sc_ship ) { return 'customs_declared' === $e->event && (int) $e->shipment_id === (int) $colisly_sc_ship->id; } ) ) );
+// Factures sur l expedition.
+$colisly_sc_pdf = wp_tempnam( 'facture.pdf' ); file_put_contents( $colisly_sc_pdf, "%PDF-1.4\n%test\n" );
+$colisly_sc_inv = COLISLY_Customs::attach_invoices_to_shipment( (int) $colisly_sc_ship->id, array( array( 'name' => 'facture-groupee.pdf', 'type' => 'application/pdf', 'tmp_name' => $colisly_sc_pdf, 'error' => 0, 'size' => filesize( $colisly_sc_pdf ) ) ), true );
+colisly_check( 'Douane groupee : une facture s attache a l expedition', 1 === $colisly_sc_inv && 1 === count( COLISLY_Documents::for_shipment( (int) $colisly_sc_ship->id, 'invoice' ) ) && 1 === count( COLISLY_Customs::invoices_for_shipment( $colisly_sc_ship ) ) && 0 === strpos( COLISLY_Customs::invoices_for_shipment( $colisly_sc_ship )[0]->title, 'Purchase invoice, shipment ' . $colisly_sc_ship->reference ) );
+// Le formulaire douanier imprime pour l expedition.
+ob_start(); COLISLY_Customs::render_shipment_form( $colisly_sc_ship ); $colisly_sc_print = (string) ob_get_clean();
+colisly_check( 'Douane groupee : le formulaire imprime porte l expedition, ses colis, ses lignes, son poids brut et sa facture', false !== strpos( $colisly_sc_print, 'Shipment ' . $colisly_sc_ship->reference . ', 2 parcels: ' ) && false !== strpos( $colisly_sc_print, 'T-shirts' ) && false !== strpos( $colisly_sc_print, 'Gross weight of the shipment (kg)' ) && false !== strpos( $colisly_sc_print, '1 purchase invoice attached' ) );
+// L encart de commande et la fiche client lisent la declaration de l expedition.
+$colisly_sc_order = wc_get_order( (int) $colisly_sc_ship->order_id );
+ob_start(); COLISLY_Admin_Orders::render( $colisly_sc_order ); $colisly_sc_panel = (string) ob_get_clean();
+colisly_check( 'Douane groupee : l encart de commande montre une declaration, un lien de formulaire par expedition, la facture', 1 === substr_count( $colisly_sc_panel, 'colisly-order-customs' ) && false !== strpos( $colisly_sc_panel, 'action=colisly_customs_form&#038;shipment=' . (int) $colisly_sc_ship->id ) && false !== strpos( $colisly_sc_panel, 'Total declared: ' ) && false !== strpos( $colisly_sc_panel, 'facture-groupee.pdf' ) && false === strpos( $colisly_sc_panel, 'No customs declaration for this parcel' ) );
+wp_set_current_user( 1 );
+$_GET = array( 'page' => 'colisly-clients', 'client' => (string) $colisly_sc_client );
+ob_start(); COLISLY_Admin_Clients::render(); $colisly_sc_record = (string) ob_get_clean();
+$_GET = array();
+wp_set_current_user( 0 );
+colisly_check( 'Douane groupee : la fiche client montre la declaration de l expedition et son formulaire', false !== strpos( $colisly_sc_record, 'Livres x3' ) && false !== strpos( $colisly_sc_record, 'action=colisly_customs_form&#038;shipment=' . (int) $colisly_sc_ship->id ) );
+// Ce qui avait ete declare colis par colis avant 1.26.0 pre-remplit et compte toujours.
+$colisly_sc_old = (int) COLISLY_Parcels::create( array( 'client_id' => $colisly_sc_client, 'weight' => 1, 'allow_grouping' => 1 ) );
+COLISLY_Customs::save( $colisly_sc_old, array( array( 'description' => 'Ancienne declaration', 'unit_value' => 9 ) ) );
+wp_set_current_user( $colisly_sc_user );
+ob_start(); COLISLY_Account::render_request(); $colisly_sc_form2 = (string) ob_get_clean();
+wp_set_current_user( 0 );
+colisly_check( 'Douane groupee : une declaration par colis d avant pre-remplit le tableau', false !== strpos( $colisly_sc_form2, 'value="Ancienne declaration"' ) );
+$colisly_sc_ship2 = COLISLY_Shipments::request( $colisly_sc_client, array( $colisly_sc_old ), 'colissimo', 0, 'GP' );
+colisly_check( 'Douane groupee : elle suffit encore pour partir, et le formulaire l imprime', is_int( $colisly_sc_ship2 ) && 1 === count( COLISLY_Customs::items_for_shipment( COLISLY_Shipments::get( (int) $colisly_sc_ship2 ) ) ) );
+// RGPD.
+$colisly_sc_export = COLISLY_Privacy::export( get_userdata( $colisly_sc_user )->user_email, 1 );
+$colisly_sc_found  = false;
+foreach ( $colisly_sc_export['data'] as $colisly_sc_group ) {
+	foreach ( $colisly_sc_group['data'] as $colisly_sc_field ) {
+		if ( false !== strpos( (string) $colisly_sc_field['value'], 'T-shirts' ) ) {
+			$colisly_sc_found = true;
+		}
+	}
+}
+colisly_check( 'Douane groupee : la declaration de l expedition est dans l export RGPD', $colisly_sc_found );
+COLISLY_Privacy::erase( get_userdata( $colisly_sc_user )->user_email, 1 );
+colisly_check( 'Douane groupee : effacee par l effaceur RGPD', ! COLISLY_Customs::shipment_declared( (int) $colisly_sc_ship->id ) );
+COLISLY_Shipments::set_status( (int) $colisly_sc_ship->id, 'cancelled' );
+COLISLY_Shipments::set_status( (int) $colisly_sc_ship2, 'cancelled' );
+$colisly_sc_settings['zones'] = $colisly_sc_zones;
+COLISLY_Settings::update( $colisly_sc_settings );
+$colisly_sc_acc = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/frontend/class-colisly-account.php' );
+colisly_check( 'Garde : plus de rendu ni de traitement de l onglet douane', false === strpos( $colisly_sc_acc, 'render_customs' ) && false === strpos( $colisly_sc_acc, 'handle_customs_submit' ) && false !== strpos( $colisly_sc_acc, "COLISLY_Files::entries( 'colisly_invoices', 'shipment' )" ) );
+$colisly_sc_set = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-settings.php' );
+colisly_check( 'Garde : le reglage Mes documents existe et se sauve', false !== strpos( $colisly_sc_set, 'name="account_show_documents"' ) && false !== strpos( $colisly_sc_set, "\$settings['account_show_documents']  = empty( \$_POST['account_show_documents'] ) ? 0 : 1;" ) );
+$colisly_sc_inst = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/class-colisly-install.php' );
+colisly_check( 'Garde : une mise a jour reconstruit les regles de reecriture', 2 === substr_count( $colisly_sc_inst, "update_option( 'colisly_flush_rewrite_rules', 'yes' );" ) );
 
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 

@@ -196,6 +196,27 @@ class COLISLY_Privacy {
 						'name'  => __( 'Total', 'colisly' ),
 						'value' => $shipment->total_price,
 					),
+					array(
+						// The eraser removes the declaration, so the export has
+						// to disclose it.
+						'name'  => __( 'Customs declaration', 'colisly' ),
+						'value' => implode(
+							'; ',
+							array_map(
+								static function ( $item ) {
+									return sprintf(
+										/* translators: 1: item description, 2: quantity, 3: unit weight, 4: unit value. */
+										__( '%1$s (x%2$d, %3$s kg each, %4$s each)', 'colisly' ),
+										$item->description,
+										(int) $item->quantity,
+										number_format_i18n( (float) $item->unit_weight, 3 ),
+										COLISLY_Format::price( (float) $item->unit_value )
+									);
+								},
+								COLISLY_Customs::shipment_items( (int) $shipment->id )
+							)
+						),
+					),
 				),
 			);
 		}
@@ -314,6 +335,14 @@ class COLISLY_Privacy {
 			);
 		}
 
+		// The declaration of a shipment, since 1.26.0, is the person's too.
+		foreach ( COLISLY_Shipments::for_client( $client_id ) as $shipment ) {
+			if ( COLISLY_Customs::shipment_declared( (int) $shipment->id ) ) {
+				COLISLY_Customs::delete_for_shipment( (int) $shipment->id );
+				$removed = true;
+			}
+		}
+
 		// Blank free-text history messages, keep the event trail.
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->query(
@@ -363,6 +392,9 @@ class COLISLY_Privacy {
 				COLISLY_Files::delete( $parcel->photo_path );
 			}
 			COLISLY_Customs::delete_for_parcel( (int) $parcel->id );
+		}
+		foreach ( COLISLY_Shipments::for_client( $client_id ) as $shipment ) {
+			COLISLY_Customs::delete_for_shipment( (int) $shipment->id );
 		}
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching

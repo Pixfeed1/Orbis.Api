@@ -50,10 +50,11 @@ class COLISLY_Documents {
 				'visibility'  => 'admin' === $visibility ? 'admin' : 'client',
 				'uploaded_by' => get_current_user_id(),
 				'parcel_id'   => isset( $extra['parcel_id'] ) ? (int) $extra['parcel_id'] : 0,
+				'shipment_id' => isset( $extra['shipment_id'] ) ? (int) $extra['shipment_id'] : 0,
 				'kind'        => isset( $extra['kind'] ) ? sanitize_key( $extra['kind'] ) : '',
 				'created_at'  => current_time( 'mysql', true ),
 			),
-			array( '%d', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s' )
+			array( '%d', '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%s', '%s' )
 		);
 
 		if ( ! $inserted ) {
@@ -83,6 +84,33 @@ class COLISLY_Documents {
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		return $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}colisly_documents WHERE id = %d", (int) $document_id )
+		);
+	}
+
+	/**
+	 * Returns the documents attached to a shipment, oldest first.
+	 *
+	 * @param int    $shipment_id Shipment ID.
+	 * @param string $kind        Optional kind to filter on.
+	 * @return object[]
+	 */
+	public static function for_shipment( $shipment_id, $kind = '' ) {
+		global $wpdb;
+
+		if ( '' !== $kind ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+			return $wpdb->get_results(
+				$wpdb->prepare(
+					"SELECT * FROM {$wpdb->prefix}colisly_documents WHERE shipment_id = %d AND kind = %s ORDER BY id ASC",
+					(int) $shipment_id,
+					sanitize_key( $kind )
+				)
+			);
+		}
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		return $wpdb->get_results(
+			$wpdb->prepare( "SELECT * FROM {$wpdb->prefix}colisly_documents WHERE shipment_id = %d ORDER BY id ASC", (int) $shipment_id )
 		);
 	}
 

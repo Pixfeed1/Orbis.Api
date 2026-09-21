@@ -111,6 +111,7 @@ class COLISLY_Settings {
 			'notify_admin_on_request' => 1,
 			'send_invoice_on_request' => 1,
 			'orders_taxable'          => 0,
+			'account_show_documents'  => 1,
 		);
 	}
 

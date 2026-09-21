@@ -478,23 +478,15 @@ class COLISLY_Admin_Clients {
 							// What the whole shipment declares, gathered from its
 							// parcels: this is the sheet the operator copies onto
 							// the carrier's own customs form.
-							$colisly_declared = array();
-							$colisly_declared_value = 0.0;
-							$colisly_invoices = array();
-							foreach ( COLISLY_Shipments::parcels( (int) $shipment->id ) as $colisly_sp ) {
-								foreach ( COLISLY_Customs::items( (int) $colisly_sp->id ) as $colisly_ci ) {
-									$colisly_declared[]      = $colisly_ci;
-									$colisly_declared_value += (int) $colisly_ci->quantity * (float) $colisly_ci->unit_value;
-								}
-								foreach ( COLISLY_Customs::invoices( (int) $colisly_sp->id ) as $colisly_inv ) {
-									$colisly_invoices[] = $colisly_inv;
-								}
-							}
+							$colisly_declared       = COLISLY_Customs::items_for_shipment( $shipment );
+							$colisly_declared_value = COLISLY_Customs::totals( $colisly_declared )['value'];
+							$colisly_invoices       = COLISLY_Customs::invoices_for_shipment( $shipment );
 							?>
 							<tr>
 								<td>
 									<strong><?php echo esc_html( $shipment->reference ); ?></strong>
 									<?php if ( $colisly_declared ) : ?>
+										<div class="row-actions"><span class="customs"><a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=colisly_customs_form&shipment=' . (int) $shipment->id ), 'colisly_customs_form_s' . (int) $shipment->id ) ); ?>" target="_blank"><?php esc_html_e( 'Customs form', 'colisly' ); ?></a></span></div>
 										<div class="colisly-declared">
 											<?php
 											foreach ( $colisly_declared as $colisly_ci ) {

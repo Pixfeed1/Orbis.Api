@@ -528,6 +528,20 @@ class COLISLY_Admin_Settings {
 					</tr>
 				</table>
 
+				<h2><?php esc_html_e( 'Client area', 'colisly' ); ?></h2>
+				<table class="form-table" role="presentation">
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Tabs', 'colisly' ); ?></th>
+						<td>
+							<label>
+								<input type="checkbox" name="account_show_documents" value="1" <?php checked( ! empty( $settings['account_show_documents'] ) ); ?> />
+								<?php esc_html_e( 'Show the "My documents" tab in the client account', 'colisly' ); ?>
+							</label>
+							<p class="description"><?php esc_html_e( 'Untick it if you never hand documents to your clients. The purchase invoices they attach to a customs declaration are kept either way.', 'colisly' ); ?></p>
+						</td>
+					</tr>
+				</table>
+
 				<h2><?php esc_html_e( 'Orders', 'colisly' ); ?></h2>
 				<table class="form-table" role="presentation">
 					<tr>
@@ -807,6 +821,7 @@ class COLISLY_Admin_Settings {
 		$settings['loyalty_rate']      = isset( $_POST['loyalty_rate'] ) ? COLISLY_Discounts::rate( sanitize_text_field( wp_unslash( $_POST['loyalty_rate'] ) ) ) : 0;
 
 		$settings['orders_taxable']          = empty( $_POST['orders_taxable'] ) ? 0 : 1;
+		$settings['account_show_documents']  = empty( $_POST['account_show_documents'] ) ? 0 : 1;
 		$settings['notify_client_on_parcel'] = empty( $_POST['notify_client_on_parcel'] ) ? 0 : 1;
 		$settings['notify_admin_on_request'] = empty( $_POST['notify_admin_on_request'] ) ? 0 : 1;
 		$settings['send_invoice_on_request'] = empty( $_POST['send_invoice_on_request'] ) ? 0 : 1;

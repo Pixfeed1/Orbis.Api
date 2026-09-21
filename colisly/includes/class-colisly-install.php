@@ -49,6 +49,9 @@ class COLISLY_Install {
 			self::create_tables();
 			self::add_capabilities();
 			update_option( 'colisly_db_version', COLISLY_VERSION );
+			// An update can add or remove an account endpoint; the rules
+			// are rebuilt on the next load, once the endpoints are registered.
+			update_option( 'colisly_flush_rewrite_rules', 'yes' );
 		}
 
 		if ( 'yes' === get_option( 'colisly_flush_rewrite_rules' ) ) {
@@ -246,7 +249,8 @@ CREATE TABLE {$wpdb->prefix}colisly_shipments (
 ) $collate;
 CREATE TABLE {$wpdb->prefix}colisly_customs_items (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
-	parcel_id BIGINT UNSIGNED NOT NULL,
+	parcel_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+	shipment_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
 	description VARCHAR(255) NOT NULL DEFAULT '',
 	quantity INT UNSIGNED NOT NULL DEFAULT 1,
 	unit_weight DECIMAL(10,3) NOT NULL DEFAULT 0,
@@ -257,7 +261,8 @@ CREATE TABLE {$wpdb->prefix}colisly_customs_items (
 	created_at DATETIME NOT NULL,
 	updated_at DATETIME NOT NULL,
 	PRIMARY KEY  (id),
-	KEY parcel_id (parcel_id)
+	KEY parcel_id (parcel_id),
+	KEY shipment_id (shipment_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}colisly_documents (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -270,11 +275,13 @@ CREATE TABLE {$wpdb->prefix}colisly_documents (
 	visibility VARCHAR(20) NOT NULL DEFAULT 'client',
 	uploaded_by BIGINT UNSIGNED NOT NULL DEFAULT 0,
 	parcel_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
+	shipment_id BIGINT UNSIGNED NOT NULL DEFAULT 0,
 	kind VARCHAR(20) NOT NULL DEFAULT '',
 	created_at DATETIME NOT NULL,
 	PRIMARY KEY  (id),
 	KEY client_id (client_id),
-	KEY parcel_id (parcel_id)
+	KEY parcel_id (parcel_id),
+	KEY shipment_id (shipment_id)
 ) $collate;
 CREATE TABLE {$wpdb->prefix}colisly_history (
 	id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

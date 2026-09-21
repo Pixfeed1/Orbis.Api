@@ -371,6 +371,21 @@ class COLISLY_Admin_Parcels {
 			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
 		}
 
+		// The form covers a shipment since 1.26.0; a parcel declared on its
+		// own before that still prints as it did.
+		$shipment_id = isset( $_GET['shipment'] ) ? absint( $_GET['shipment'] ) : 0;
+		if ( $shipment_id ) {
+			check_admin_referer( 'colisly_customs_form_s' . $shipment_id );
+
+			$shipment = COLISLY_Shipments::get( $shipment_id );
+			if ( ! $shipment ) {
+				wp_die( esc_html__( 'Shipment not found.', 'colisly' ), '', array( 'response' => 404 ) );
+			}
+
+			COLISLY_Customs::render_shipment_form( $shipment );
+			exit;
+		}
+
 		$parcel_id = isset( $_GET['parcel'] ) ? absint( $_GET['parcel'] ) : 0;
 
 		check_admin_referer( 'colisly_customs_form_' . $parcel_id );

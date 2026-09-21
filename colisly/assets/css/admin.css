@@ -107,6 +107,7 @@
 }
 
 /* Address and weight to paste on a carrier's website. */
+.colisly-order-customs,
 .colisly-order-copy {
 	background: #f6f7f7;
 	border: 1px solid #dcdcde;

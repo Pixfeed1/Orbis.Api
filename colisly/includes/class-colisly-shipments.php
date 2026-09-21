@@ -58,9 +58,14 @@ class COLISLY_Shipments {
 	 *                                      address.
 	 * @param string       $promo_code      Promotion code typed by the client,
 	 *                                      if the promotion asks for one.
+	 * @param array|null   $customs         Declaration lines for the whole
+	 *                                      shipment, when the destination
+	 *                                      asks for one. Null: what the
+	 *                                      parcels declared before 1.26.0,
+	 *                                      if anything.
 	 * @return int|WP_Error Shipment ID on success.
 	 */
-	public static function request( $client_id, $parcel_ids, $carrier, $insurance_cover = 0, $country = '', $promo_code = '' ) {
+	public static function request( $client_id, $parcel_ids, $carrier, $insurance_cover = 0, $country = '', $promo_code = '', $customs = null ) {
 		global $wpdb;
 
 		$client = COLISLY_Clients::get( $client_id );
@@ -121,20 +126,6 @@ class COLISLY_Shipments {
 				return new WP_Error( 'colisly_grouping_forbidden', sprintf( __( 'Parcel %s must be shipped alone (grouping forbidden).', 'colisly' ), $parcel->reference ) );
 			}
 
-			// A destination that asks for a declaration will not let an
-			// undeclared parcel through, so the request stops here rather than
-			// at the counter.
-			if ( COLISLY_Customs::required_for( $country ) && ! COLISLY_Customs::declared( (int) $parcel->id ) ) {
-				return new WP_Error(
-					'colisly_customs_missing',
-					sprintf(
-						/* translators: %s: parcel reference. */
-						__( 'Parcel %s is going to a destination that requires a customs declaration. Declare its contents before requesting the shipment.', 'colisly' ),
-						$parcel->reference
-					)
-				);
-			}
-
 			$allowed = COLISLY_Parcels::allowed_carrier_slugs( $parcel );
 			if ( ! empty( $allowed ) && ! in_array( $carrier, $allowed, true ) ) {
 				/* translators: %s: parcel reference. */
@@ -152,6 +143,25 @@ class COLISLY_Shipments {
 		$fit = COLISLY_Carriers::fits( $carrier, $parcels );
 		if ( is_wp_error( $fit ) ) {
 			return $fit;
+		}
+
+		// One declaration for the carton that leaves. A destination that asks
+		// for one will not let an undeclared shipment through, so the request
+		// stops here, before anything is written, rather than at the counter.
+		// Lines the client typed win; failing that, what the parcels declared
+		// one by one before 1.26.0 still counts.
+		$customs_lines = null;
+		if ( COLISLY_Customs::required_for( $country ) ) {
+			$customs_lines = COLISLY_Customs::clean_lines( null === $customs ? array() : $customs );
+			if ( is_wp_error( $customs_lines ) ) {
+				return $customs_lines;
+			}
+			if ( empty( $customs_lines ) && empty( COLISLY_Customs::merged_items( $parcel_ids ) ) ) {
+				return new WP_Error(
+					'colisly_customs_missing',
+					__( 'This destination requires a customs declaration: describe what the shipment holds and its value before requesting it.', 'colisly' )
+				);
+			}
 		}
 
 		$storage_fees  = COLISLY_Storage::fees_for_parcels( $parcels );
@@ -220,6 +230,10 @@ class COLISLY_Shipments {
 		);
 
 		COLISLY_Parcels::attach_to_shipment( $parcel_ids, $shipment_id );
+
+		if ( ! empty( $customs_lines ) ) {
+			COLISLY_Customs::save_for_shipment( $shipment_id, $customs_lines );
+		}
 
 		// Native WooCommerce payment: the request becomes a real order and the
 		// shipment waits for its payment. Without WooCommerce, it stays

@@ -187,10 +187,54 @@ class COLISLY_Admin_Orders {
 				</p>
 			</div>
 
+			<?php
+			// What the shipment declares, as one list: the customs form
+			// covers the carton that leaves. Shipments made before 1.26.0
+			// show what their parcels declared one by one.
+			$colisly_items    = COLISLY_Customs::items_for_shipment( $shipment );
+			$colisly_invoices = COLISLY_Customs::invoices_for_shipment( $shipment );
+			?>
+			<?php if ( $colisly_items || $colisly_invoices ) : ?>
+				<div class="colisly-order-customs">
+					<p class="colisly-order-copy-title">
+						<?php esc_html_e( 'Customs declaration', 'colisly' ); ?>
+						<?php if ( $colisly_items ) : ?>
+							· <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=colisly_customs_form&shipment=' . (int) $shipment->id ), 'colisly_customs_form_s' . (int) $shipment->id ) ); ?>" target="_blank"><?php esc_html_e( 'Customs form', 'colisly' ); ?></a>
+						<?php endif; ?>
+					</p>
+					<?php if ( $colisly_items ) : ?>
+						<ul class="colisly-order-declaration">
+							<?php foreach ( $colisly_items as $item ) : ?>
+								<li>
+									<?php
+									echo esc_html(
+										sprintf(
+											/* translators: 1: contents, 2: quantity, 3: total value of the line, 4: country of origin. */
+											__( '%1$s x%2$d, %3$s, origin %4$s', 'colisly' ),
+											$item->description,
+											(int) $item->quantity,
+											COLISLY_Format::price( (int) $item->quantity * (float) $item->unit_value ),
+											$item->origin_country ? $item->origin_country : '–'
+										)
+									);
+									?>
+								</li>
+							<?php endforeach; ?>
+							<li><strong><?php echo esc_html( sprintf( /* translators: %s: total declared value. */ __( 'Total declared: %s', 'colisly' ), COLISLY_Format::price( COLISLY_Customs::totals( $colisly_items )['value'] ) ) ); ?></strong></li>
+						</ul>
+					<?php endif; ?>
+					<?php if ( $colisly_invoices ) : ?>
+						<ul class="colisly-order-invoices">
+							<?php foreach ( $colisly_invoices as $invoice ) : ?>
+								<li><a href="<?php echo esc_url( COLISLY_Downloads::document_url( $invoice ) ); ?>"><?php echo esc_html( sprintf( /* translators: %s: file name. */ __( 'Invoice: %s', 'colisly' ), $invoice->file_name ? $invoice->file_name : $invoice->title ) ); ?></a></li>
+							<?php endforeach; ?>
+						</ul>
+					<?php endif; ?>
+				</div>
+			<?php endif; ?>
+
 			<?php foreach ( COLISLY_Shipments::parcels( (int) $shipment->id ) as $parcel ) : ?>
 				<?php
-				$items    = COLISLY_Customs::items( (int) $parcel->id );
-				$invoices = COLISLY_Customs::invoices( (int) $parcel->id );
 				$dims     = ( (float) $parcel->length > 0 && (float) $parcel->width > 0 && (float) $parcel->height > 0 )
 					? sprintf( '%s × %s × %s cm', number_format_i18n( (float) $parcel->length, 1 ), number_format_i18n( (float) $parcel->width, 1 ), number_format_i18n( (float) $parcel->height, 1 ) )
 					: '';
@@ -201,9 +245,6 @@ class COLISLY_Admin_Orders {
 						<?php echo esc_html( ' · ' . number_format_i18n( (float) $parcel->weight, 3 ) . ' kg' . ( $dims ? ' · ' . $dims : '' ) ); ?>
 						<?php if ( $parcel->tracking_number ) : ?>
 							<?php echo esc_html( ' · ' . $parcel->tracking_number ); ?>
-						<?php endif; ?>
-						<?php if ( $items ) : ?>
-							· <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=colisly_customs_form&parcel=' . (int) $parcel->id ), 'colisly_customs_form_' . (int) $parcel->id ) ); ?>" target="_blank"><?php esc_html_e( 'Customs form', 'colisly' ); ?></a>
 						<?php endif; ?>
 					</p>
 
@@ -221,44 +262,6 @@ class COLISLY_Admin_Orders {
 						<p class="colisly-order-note"><?php echo esc_html( sprintf( /* translators: %s: internal comment. */ __( 'Internal comment: %s', 'colisly' ), $parcel->internal_note ) ); ?></p>
 					<?php endif; ?>
 
-					<?php if ( $items ) : ?>
-						<ul class="colisly-order-declaration">
-							<?php
-							$total = 0.0;
-							foreach ( $items as $item ) :
-								$line_value = (int) $item->quantity * (float) $item->unit_value;
-								$total     += $line_value;
-								?>
-								<li>
-									<?php
-									echo esc_html(
-										sprintf(
-											/* translators: 1: contents, 2: quantity, 3: total value of the line, 4: country of origin. */
-											__( '%1$s x%2$d, %3$s, origin %4$s', 'colisly' ),
-											$item->description,
-											(int) $item->quantity,
-											COLISLY_Format::price( $line_value ),
-											$item->origin_country ? $item->origin_country : '–'
-										)
-									);
-									?>
-								</li>
-							<?php endforeach; ?>
-							<li><strong><?php echo esc_html( sprintf( /* translators: %s: total declared value. */ __( 'Total declared: %s', 'colisly' ), COLISLY_Format::price( $total ) ) ); ?></strong></li>
-						</ul>
-					<?php else : ?>
-						<p class="description"><?php esc_html_e( 'No customs declaration for this parcel.', 'colisly' ); ?></p>
-					<?php endif; ?>
-
-					<?php if ( $invoices ) : ?>
-						<ul class="colisly-order-invoices">
-							<?php foreach ( $invoices as $invoice ) : ?>
-								<li><a href="<?php echo esc_url( COLISLY_Downloads::document_url( $invoice ) ); ?>"><?php echo esc_html( sprintf( /* translators: %s: file name. */ __( 'Invoice: %s', 'colisly' ), $invoice->file_name ? $invoice->file_name : $invoice->title ) ); ?></a></li>
-							<?php endforeach; ?>
-						</ul>
-					<?php else : ?>
-						<p class="description"><?php esc_html_e( 'No purchase invoice attached.', 'colisly' ); ?></p>
-					<?php endif; ?>
 				</div>
 			<?php endforeach; ?>
 		</div>

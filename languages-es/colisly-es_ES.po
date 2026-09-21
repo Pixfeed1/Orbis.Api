@@ -1,7 +1,7 @@
 # Spanish translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.25.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.26.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -275,12 +275,6 @@ msgstr "Envío Colisly"
 
 msgid "Internal comment: %s"
 msgstr "Comentario interno: %s"
-
-msgid "No customs declaration for this parcel."
-msgstr "Este paquete no tiene declaración de aduana."
-
-msgid "No purchase invoice attached."
-msgstr "No se ha adjuntado ninguna factura de compra."
 
 msgid "Parcels"
 msgstr "Paquetes"
@@ -650,9 +644,6 @@ msgstr "No se ha podido crear la ficha de cliente."
 msgid "Client record %s created."
 msgstr "Ficha de cliente %s creada."
 
-msgid "Parcel %1$s: enter the value of “%2$s”. Customs assess duty on it, so a declaration cannot go without."
-msgstr "Paquete %1$s: indique el valor de «%2$s». La aduana calcula los derechos sobre él, así que una declaración no puede prescindir de él."
-
 msgid "Customs declaration of parcel %1$s updated: %2$d line."
 msgid_plural "Customs declaration of parcel %1$s updated: %2$d lines."
 msgstr[0] "Declaración de aduana del paquete %1$s actualizada: %2$d línea."
@@ -926,9 +917,6 @@ msgstr "El paquete %s ya no está disponible."
 msgid "Parcel %s must be shipped alone (grouping forbidden)."
 msgstr "El paquete %s debe enviarse solo (agrupación prohibida)."
 
-msgid "Parcel %s is going to a destination that requires a customs declaration. Declare its contents before requesting the shipment."
-msgstr "El paquete %s va a un destino que exige una declaración de aduana. Declare su contenido antes de solicitar el envío."
-
 msgid "The chosen carrier is not allowed for parcel %s."
 msgstr "El transportista elegido no está permitido para el paquete %s."
 
@@ -992,10 +980,6 @@ msgstr "mis-documentos"
 msgctxt "My Account endpoint slug"
 msgid "shipment-request"
 msgstr "solicitud-de-envio"
-
-msgctxt "My Account endpoint slug"
-msgid "customs-declaration"
-msgstr "declaracion-de-aduana"
 
 msgid "My parcels"
 msgstr "Mis paquetes"
@@ -1124,9 +1108,6 @@ msgstr "Total estimado:"
 msgid "(parcels + storage fees + transport, confirmed on the payment page)"
 msgstr "(paquetes + gastos de almacenamiento + transporte, se confirma en la página de pago)"
 
-msgid "Required for some destinations. Declare the contents of the parcels you are sending; a parcel left undeclared will be refused if its destination asks for one."
-msgstr "Obligatorio para algunos destinos. Declare el contenido de los paquetes que envía; un paquete sin declarar será rechazado si su destino lo exige."
-
 msgid "Only carriers compatible with every selected parcel can be accepted."
 msgstr "Solo se pueden aceptar transportistas compatibles con todos los paquetes seleccionados."
 
@@ -1147,21 +1128,6 @@ msgstr "Añadir una línea"
 
 msgid "Purchase invoices"
 msgstr "Facturas de compra"
-
-msgid "Customs may ask for the invoice of what the parcel holds. Attach it here, PDF or image."
-msgstr "La aduana puede pedir la factura de lo que contiene el paquete. Adjúntela aquí, en PDF o imagen."
-
-msgid "You have no parcel in stock to declare."
-msgstr "No tiene ningún paquete en stock que declarar."
-
-msgid "Declaration saved."
-msgstr "Declaración guardada."
-
-msgid "Some destinations require the contents of a parcel to be declared before it can be shipped. Describe what each parcel holds, item by item, filling every column shown."
-msgstr "Algunos destinos exigen declarar el contenido de un paquete antes de poder enviarlo. Describa lo que contiene cada paquete, artículo por artículo, rellenando todas las columnas mostradas."
-
-msgid "Save the declaration"
-msgstr "Guardar la declaración"
 
 msgid "Hello,"
 msgstr "Hola,"
@@ -1455,3 +1421,46 @@ msgstr "Exportar a CSV"
 
 msgid "Stored weight (kg)"
 msgstr "Peso almacenado (kg)"
+
+msgid "Client area"
+msgstr "Área de cliente"
+
+msgid "Tabs"
+msgstr "Pestañas"
+
+msgid "Show the \"My documents\" tab in the client account"
+msgstr "Mostrar la pestaña «Mis documentos» en la cuenta del cliente"
+
+msgid "Untick it if you never hand documents to your clients. The purchase invoices they attach to a customs declaration are kept either way."
+msgstr "Desmárquela si nunca entrega documentos a sus clientes. Las facturas de compra que adjuntan a una declaración de aduana se conservan de todos modos."
+
+msgid "Enter the value of “%s”. Customs assess duty on it, so a declaration cannot go without."
+msgstr "Indique el valor de «%s». La aduana calcula los derechos sobre él, una declaración no puede prescindir de él."
+
+msgid "Customs declaration of shipment %1$s saved: %2$d line."
+msgid_plural "Customs declaration of shipment %1$s saved: %2$d lines."
+msgstr[0] "Declaración de aduana del envío %1$s guardada: %2$d línea."
+msgstr[1] "Declaración de aduana del envío %1$s guardada: %2$d líneas."
+
+msgid "Purchase invoice, shipment %1$s: %2$s"
+msgstr "Factura de compra, envío %1$s: %2$s"
+
+msgid "Shipment %1$s, %2$d parcel: %3$s"
+msgid_plural "Shipment %1$s, %2$d parcels: %3$s"
+msgstr[0] "Envío %1$s, %2$d paquete: %3$s"
+msgstr[1] "Envío %1$s, %2$d paquetes: %3$s"
+
+msgid "Gross weight of the shipment (kg)"
+msgstr "Peso bruto del envío (kg)"
+
+msgid "Nothing declared for this shipment."
+msgstr "Nada declarado para este envío."
+
+msgid "This destination requires a customs declaration: describe what the shipment holds and its value before requesting it."
+msgstr "Este destino exige una declaración de aduana: describa el contenido del envío y su valor antes de solicitarlo."
+
+msgid "Your destination requires one. Describe what the shipment holds as a whole, item by item with its value, whatever the number of parcels grouped in it: the customs form covers the carton that leaves."
+msgstr "Su destino la exige. Describa el contenido del envío en su conjunto, artículo por artículo con su valor, sea cual sea el número de paquetes agrupados: el formulario de aduana se refiere a la caja que sale."
+
+msgid "Customs may ask for the invoice of what the shipment holds. Attach it here, PDF or image."
+msgstr "La aduana puede pedir la factura de lo que contiene el envío. Adjúntela aquí, PDF o imagen."

@@ -243,6 +243,26 @@ code est vérifié par le serveur et n'apparaît jamais dans la page.
 == Journal des modifications ==
 ================================================================================
 
+= 1.26.0 =
+* La déclaration en douane se fait maintenant une seule fois par expédition,
+  sur la demande d'expédition, quel que soit le nombre de colis regroupés. Un
+  client qui regroupait dix colis vers une destination qui l'exige avait dix
+  tableaux devant lui, un par colis ; il décrit désormais ce que contient le
+  carton qui part, et sa valeur, dans un seul tableau, ce qui est aussi
+  l'objet du formulaire douanier. Les factures d'achat se joignent à
+  l'expédition de la même façon. Ce qui avait été déclaré colis par colis
+  avant cette version pré-remplit le tableau, s'imprime toujours et compte
+  toujours. Le formulaire douanier imprimable, l'encart Colisly de la
+  commande et la fiche client lisent la déclaration de l'expédition. Ajoute
+  une colonne aux lignes de déclaration et aux documents ; la migration se
+  fait seule à la mise à jour.
+* L'onglet « Déclaration en douane » de l'espace client disparaît : la
+  demande d'expédition demande la déclaration au seul moment où elle compte,
+  et seulement pour les destinations qui l'exigent.
+* Nouveau réglage, « Espace client » : l'onglet « Mes documents » peut être
+  retiré du menu du compte, pour les réexpéditeurs qui ne remettent jamais de
+  document à leurs clients.
+
 = 1.25.0 =
 * Corrigé : un client qui venait de s'inscrire trouvait un espace vide,
   « Aucune fiche client n'est liée à votre compte », et aucune adresse de

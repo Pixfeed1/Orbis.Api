@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.25.0
+Stable tag: 1.26.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -135,6 +135,11 @@ Yes. Give the promotion a code in the settings and a "Promotion code" box appear
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.26.0 =
+* The customs declaration is now made once per shipment, on the shipment request, whatever the number of parcels grouped in it. A client grouping ten parcels for a destination that asks for one used to face ten tables, one per parcel; he now describes what the carton that leaves holds, and its value, in one table, which is also what the customs form is about. Purchase invoices are attached to the shipment the same way. Anything declared parcel by parcel before this version pre-fills the table, still prints, and still counts. The printable customs form, the Colisly panel on the order and the client record all read the shipment's declaration. Adds a column to the declaration lines and to the documents; the migration runs by itself on update.
+* The "Customs declaration" tab of the client account is gone: the shipment request asks for the declaration at the only moment it matters, and only for the destinations that require one.
+* New setting, "Client area": the "My documents" tab can be left out of the account menu, for forwarders who never hand documents to their clients.
 
 = 1.25.0 =
 * Fixed: a customer who had just registered found an empty account, "No client record is linked to your account yet", and no delivery address to shop with. The record, and the reference that goes on every order form, only existed once the operator had created it or booked a first parcel in, which is the wrong way round: the client needs the reference to get a first parcel sent. The record is now created the first time the customer opens a Colisly tab of his account, or a page carrying one of the shortcodes, so the address block with his reference is there from the start. Records created by the operator work as before.

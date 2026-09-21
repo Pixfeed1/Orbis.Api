@@ -37,7 +37,6 @@ class COLISLY_Account {
 			'shipments' => apply_filters( 'colisly_endpoint_shipments', sanitize_title( _x( 'my-shipments', 'My Account endpoint slug', 'colisly' ) ) ),
 			'documents' => apply_filters( 'colisly_endpoint_documents', sanitize_title( _x( 'my-documents', 'My Account endpoint slug', 'colisly' ) ) ),
 			'request'   => apply_filters( 'colisly_endpoint_request', sanitize_title( _x( 'shipment-request', 'My Account endpoint slug', 'colisly' ) ) ),
-			'customs'   => apply_filters( 'colisly_endpoint_customs', sanitize_title( _x( 'customs-declaration', 'My Account endpoint slug', 'colisly' ) ) ),
 		);
 	}
 
@@ -66,7 +65,6 @@ class COLISLY_Account {
 		add_filter( 'woocommerce_account_menu_items', array( __CLASS__, 'menu_items' ) );
 
 		add_action( 'template_redirect', array( __CLASS__, 'handle_request_submit' ) );
-		add_action( 'template_redirect', array( __CLASS__, 'handle_customs_submit' ) );
 		add_action( 'template_redirect', array( __CLASS__, 'handle_cancel_submit' ) );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
 	}
@@ -87,7 +85,6 @@ class COLISLY_Account {
 		add_action( 'woocommerce_account_' . $endpoints['shipments'] . '_endpoint', array( __CLASS__, 'render_shipments' ) );
 		add_action( 'woocommerce_account_' . $endpoints['documents'] . '_endpoint', array( __CLASS__, 'render_documents' ) );
 		add_action( 'woocommerce_account_' . $endpoints['request'] . '_endpoint', array( __CLASS__, 'render_request' ) );
-		add_action( 'woocommerce_account_' . $endpoints['customs'] . '_endpoint', array( __CLASS__, 'render_customs' ) );
 	}
 
 	/**
@@ -114,17 +111,14 @@ class COLISLY_Account {
 
 		$items[ $endpoints['parcels'] ]   = __( 'My parcels', 'colisly' );
 		$items[ $endpoints['shipments'] ] = __( 'My shipments', 'colisly' );
-		$items[ $endpoints['documents'] ] = __( 'My documents', 'colisly' );
-		$items[ $endpoints['request'] ]   = __( 'Shipment request', 'colisly' );
 
-		// The tab only appears when it is of any use, that is when at least one
-		// destination the shop serves asks for a declaration.
-		foreach ( COLISLY_Zones::all() as $colisly_zone ) {
-			if ( ! empty( $colisly_zone['customs'] ) ) {
-				$items[ $endpoints['customs'] ] = __( 'Customs declaration', 'colisly' );
-				break;
-			}
+		// A forwarder who never hands documents to his clients can leave the
+		// tab out of the menu; the page itself stays reachable by its address.
+		if ( COLISLY_Settings::get( 'account_show_documents', 1 ) ) {
+			$items[ $endpoints['documents'] ] = __( 'My documents', 'colisly' );
 		}
+
+		$items[ $endpoints['request'] ] = __( 'Shipment request', 'colisly' );
 
 		return array_merge( $items, $logout );
 	}
@@ -830,20 +824,13 @@ class COLISLY_Account {
 			?>
 			<?php if ( $needs_customs ) : ?>
 				<h3><?php esc_html_e( 'Customs declaration', 'colisly' ); ?></h3>
-				<p class="colisly-note"><?php esc_html_e( 'Required for some destinations. Declare the contents of the parcels you are sending; a parcel left undeclared will be refused if its destination asks for one.', 'colisly' ); ?></p>
-				<?php foreach ( $parcels as $parcel ) : ?>
-					<h4>
-						<?php
-						printf(
-							/* translators: 1: parcel reference, 2: weight in kg. */
-							esc_html__( 'Parcel %1$s (%2$s kg)', 'colisly' ),
-							esc_html( $parcel->reference ),
-							esc_html( number_format_i18n( (float) $parcel->weight, 3 ) )
-						);
-						?>
-					</h4>
-					<?php self::customs_lines_table( $parcel, 'colisly_customs[' . (int) $parcel->id . ']' ); ?>
-				<?php endforeach; ?>
+				<p class="colisly-note"><?php esc_html_e( 'Your destination requires one. Describe what the shipment holds as a whole, item by item with its value, whatever the number of parcels grouped in it: the customs form covers the carton that leaves.', 'colisly' ); ?></p>
+				<?php
+				// One table for the whole shipment. What the client may have
+				// declared parcel by parcel, before 1.26.0, fills it in.
+				self::customs_lines_table( COLISLY_Customs::merged_items( wp_list_pluck( $parcels, 'id' ) ), 'colisly_customs' );
+				self::invoices_field( 'shipment', array() );
+				?>
 			<?php endif; ?>
 
 			<p class="colisly-note"><?php esc_html_e( 'Only carriers compatible with every selected parcel can be accepted.', 'colisly' ); ?></p>
@@ -911,20 +898,16 @@ class COLISLY_Account {
 	 * @return void
 	 */
 	/**
-	 * Renders the declaration lines of one parcel as an editable table.
+	 * Renders declaration lines as an editable table.
 	 *
-	 * Shared by the dedicated tab and by the shipment request, so a client
-	 * meets the same fields wherever he declares.
-	 *
-	 * @param object $parcel Parcel row.
-	 * @param string $prefix Field name prefix, so several parcels can be
-	 *                       posted from the same form.
+	 * @param object[] $items  Lines already declared, to pre-fill the table.
+	 * @param string   $prefix Field name prefix.
 	 * @return void
 	 */
-	private static function customs_lines_table( $parcel, $prefix ) {
+	private static function customs_lines_table( $items, $prefix ) {
 		$categories = COLISLY_Customs::categories();
 		$max        = COLISLY_Customs::max_lines();
-		$items      = COLISLY_Customs::items( (int) $parcel->id );
+		$items      = array_values( (array) $items );
 
 		$ask_quantity = COLISLY_Customs::asks( 'quantity' );
 		$ask_weight   = COLISLY_Customs::asks( 'weight' );
@@ -1026,15 +1009,24 @@ class COLISLY_Account {
 			</p>
 		<?php endif; ?>
 		<?php
-		// Customs outside the EU want the purchase invoice next to the
-		// declaration, and only the client has it. It is attached here, to
-		// the parcel it concerns, so the forwarder finds it on the parcel.
-		$invoices = COLISLY_Customs::invoices( (int) $parcel->id );
+	}
+
+	/**
+	 * Renders the purchase invoices field of a declaration.
+	 *
+	 * Customs outside the EU want the purchase invoice next to the
+	 * declaration, and only the client has it: he bought the goods.
+	 *
+	 * @param string   $key      Sub key of the colisly_invoices file field.
+	 * @param object[] $invoices Invoices already attached, listed above the field.
+	 * @return void
+	 */
+	private static function invoices_field( $key, $invoices ) {
 		?>
 		<div class="colisly-invoices">
 			<p>
-				<label for="colisly-invoices-<?php echo esc_attr( (string) $parcel->id ); ?>"><strong><?php esc_html_e( 'Purchase invoices', 'colisly' ); ?></strong></label>
-				<span class="colisly-note"><?php esc_html_e( 'Customs may ask for the invoice of what the parcel holds. Attach it here, PDF or image.', 'colisly' ); ?></span>
+				<label for="colisly-invoices-<?php echo esc_attr( $key ); ?>"><strong><?php esc_html_e( 'Purchase invoices', 'colisly' ); ?></strong></label>
+				<span class="colisly-note"><?php esc_html_e( 'Customs may ask for the invoice of what the shipment holds. Attach it here, PDF or image.', 'colisly' ); ?></span>
 			</p>
 			<?php if ( $invoices ) : ?>
 				<ul class="colisly-documents-list">
@@ -1049,8 +1041,8 @@ class COLISLY_Account {
 			<p>
 				<input
 					type="file"
-					id="colisly-invoices-<?php echo esc_attr( (string) $parcel->id ); ?>"
-					name="colisly_invoices[<?php echo esc_attr( (string) $parcel->id ); ?>][]"
+					id="colisly-invoices-<?php echo esc_attr( $key ); ?>"
+					name="colisly_invoices[<?php echo esc_attr( $key ); ?>][]"
 					multiple
 					accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp"
 				/>
@@ -1091,132 +1083,10 @@ class COLISLY_Account {
 	}
 
 	/**
-	 * Attaches the invoices posted for a parcel, if any.
-	 *
-	 * @param object $parcel Parcel row, already checked to belong to the client.
-	 * @return int|WP_Error Number attached, or the first failure.
-	 */
-	private static function attach_posted_invoices( $parcel ) {
-		$entries = COLISLY_Files::entries( 'colisly_invoices', (int) $parcel->id );
-
-		if ( empty( $entries ) ) {
-			return 0;
-		}
-
-		return COLISLY_Customs::attach_invoices( (int) $parcel->id, $entries );
-	}
-
-	/**
-	 * Renders the customs declaration screen.
+	 * Processes the shipment request form.
 	 *
 	 * @return void
 	 */
-	public static function render_customs() {
-		$client = self::current_client();
-
-		echo '<h2>' . esc_html__( 'Customs declaration', 'colisly' ) . '</h2>';
-
-		if ( ! $client ) {
-			echo '<p>' . esc_html__( 'No client record is linked to your account yet.', 'colisly' ) . '</p>';
-			return;
-		}
-
-		$parcels = COLISLY_Parcels::in_stock_for_client( (int) $client->id );
-
-		if ( ! $parcels ) {
-			echo '<p>' . esc_html__( 'You have no parcel in stock to declare.', 'colisly' ) . '</p>';
-			return;
-		}
-
-		if ( ! empty( $_GET['colisly_customs'] ) && 'saved' === $_GET['colisly_customs'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
-			wc_print_notice( __( 'Declaration saved.', 'colisly' ), 'success' );
-		}
-
-		if ( ! empty( $_GET['colisly_error'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- display only.
-			wc_print_notice( sanitize_text_field( wp_unslash( $_GET['colisly_error'] ) ), 'error' ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		}
-
-		// The columns the forwarder actually asks for are his choice, so the
-		// wording cannot promise a quantity and a weight that may not be there.
-		echo '<p>' . esc_html__( 'Some destinations require the contents of a parcel to be declared before it can be shipped. Describe what each parcel holds, item by item, filling every column shown.', 'colisly' ) . '</p>';
-
-		foreach ( $parcels as $parcel ) :
-			?>
-			<form method="post" class="colisly-customs-form" enctype="multipart/form-data">
-				<?php wp_nonce_field( 'colisly_save_customs_' . $parcel->id ); ?>
-				<input type="hidden" name="colisly_action" value="save_customs" />
-				<input type="hidden" name="parcel_id" value="<?php echo esc_attr( (string) $parcel->id ); ?>" />
-
-				<h3>
-					<?php
-					printf(
-						/* translators: 1: parcel reference, 2: weight in kg. */
-						esc_html__( 'Parcel %1$s (%2$s kg)', 'colisly' ),
-						esc_html( $parcel->reference ),
-						esc_html( number_format_i18n( (float) $parcel->weight, 3 ) )
-					);
-					?>
-				</h3>
-
-				<?php self::customs_lines_table( $parcel, 'customs' ); ?>
-
-				<p><button type="submit" class="woocommerce-button button"><?php esc_html_e( 'Save the declaration', 'colisly' ); ?></button></p>
-			</form>
-			<?php
-		endforeach;
-	}
-
-	/**
-	 * Saves a customs declaration posted from the account area.
-	 *
-	 * @return void
-	 */
-	public static function handle_customs_submit() {
-		if ( empty( $_POST['colisly_action'] ) || 'save_customs' !== $_POST['colisly_action'] ) {
-			return;
-		}
-
-		$parcel_id = isset( $_POST['parcel_id'] ) ? absint( $_POST['parcel_id'] ) : 0;
-
-		check_admin_referer( 'colisly_save_customs_' . $parcel_id );
-
-		$client = self::current_client();
-		$parcel = COLISLY_Parcels::get( $parcel_id );
-
-		// A declaration may only be written by the client the parcel belongs to.
-		if ( ! $client || ! $parcel || (int) $parcel->client_id !== (int) $client->id ) {
-			wp_die( esc_html__( 'Access denied.', 'colisly' ), '', array( 'response' => 403 ) );
-		}
-
-		$lines = array();
-		if ( isset( $_POST['customs'] ) && is_array( $_POST['customs'] ) ) {
-			foreach ( wp_unslash( $_POST['customs'] ) as $line ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in COLISLY_Customs::save().
-				if ( is_array( $line ) ) {
-					$lines[] = $line;
-				}
-			}
-		}
-
-		$saved = COLISLY_Customs::save( $parcel_id, $lines );
-
-		$url = wc_get_account_endpoint_url( self::endpoint( 'customs' ) );
-
-		if ( is_wp_error( $saved ) ) {
-			wp_safe_redirect( add_query_arg( 'colisly_error', rawurlencode( $saved->get_error_message() ), $url ) );
-			exit;
-		}
-
-		$attached = self::attach_posted_invoices( $parcel );
-
-		if ( is_wp_error( $attached ) ) {
-			wp_safe_redirect( add_query_arg( 'colisly_error', rawurlencode( $attached->get_error_message() ), $url ) );
-			exit;
-		}
-
-		wp_safe_redirect( add_query_arg( 'colisly_customs', 'saved', $url ) );
-		exit;
-	}
-
 	public static function handle_request_submit() {
 		if ( empty( $_POST['colisly_action'] ) || 'request_shipment' !== $_POST['colisly_action'] ) {
 			return;
@@ -1261,44 +1131,32 @@ class COLISLY_Account {
 			exit;
 		}
 
-		// Declarations are saved before the request is built, so the request
-		// sees them and a parcel declared in the same submission is not
-		// refused as undeclared.
+		// The declaration travels with the request: checked before the
+		// shipment is written, saved on it once it exists.
+		$customs = null;
 		if ( isset( $_POST['colisly_customs'] ) && is_array( $_POST['colisly_customs'] ) ) {
-			foreach ( wp_unslash( $_POST['colisly_customs'] ) as $colisly_pid => $colisly_lines ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in COLISLY_Customs::save().
-				$colisly_pid    = absint( $colisly_pid );
-				$colisly_parcel = COLISLY_Parcels::get( $colisly_pid );
-
-				// Only the parcels of the client posting the form.
-				if ( ! $colisly_parcel || (int) $colisly_parcel->client_id !== (int) $client->id ) {
-					continue;
-				}
-
-				$colisly_saved = COLISLY_Customs::save( $colisly_pid, is_array( $colisly_lines ) ? $colisly_lines : array() );
-
-				// A refused declaration stops the request here, with the
-				// reason, rather than letting it fail later as "undeclared".
-				if ( is_wp_error( $colisly_saved ) ) {
-					wp_safe_redirect( add_query_arg( 'colisly_error', rawurlencode( $colisly_saved->get_error_message() ), $url ) );
-					exit;
-				}
-
-				$colisly_attached = self::attach_posted_invoices( $colisly_parcel );
-
-				if ( is_wp_error( $colisly_attached ) ) {
-					wp_safe_redirect( add_query_arg( 'colisly_error', rawurlencode( $colisly_attached->get_error_message() ), $url ) );
-					exit;
-				}
-			}
+			$customs = wp_unslash( $_POST['colisly_customs'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised in COLISLY_Customs::clean_lines().
 		}
 
 		$promo_code = isset( $_POST['colisly_promo_code'] ) ? sanitize_text_field( wp_unslash( $_POST['colisly_promo_code'] ) ) : '';
 
-		$result = COLISLY_Shipments::request( (int) $client->id, $parcel_ids, $carrier, $insurance, $country, $promo_code );
+		$result = COLISLY_Shipments::request( (int) $client->id, $parcel_ids, $carrier, $insurance, $country, $promo_code, $customs );
 
 		if ( is_wp_error( $result ) ) {
 			wp_safe_redirect( add_query_arg( 'colisly_error', rawurlencode( $result->get_error_message() ), $url ) );
 			exit;
+		}
+
+		// The invoices need the shipment to hang on, so they come last. A
+		// file refused does not undo a request already made and paid for:
+		// the client is told and can send it again from his account.
+		$entries = COLISLY_Files::entries( 'colisly_invoices', 'shipment' );
+		if ( ! empty( $entries ) ) {
+			$attached = COLISLY_Customs::attach_invoices_to_shipment( (int) $result, $entries );
+			if ( is_wp_error( $attached ) ) {
+				wp_safe_redirect( add_query_arg( 'colisly_error', rawurlencode( $attached->get_error_message() ), $url ) );
+				exit;
+			}
 		}
 
 		// Send the customer straight to the native WooCommerce payment page.

@@ -136,17 +136,87 @@ class COLISLY_Customs {
 	}
 
 	/**
+	 * Returns the declared contents of a shipment, in the order entered.
+	 *
+	 * Since 1.26.0 the declaration belongs to the shipment: the customs
+	 * form covers the carton that leaves, not the cartons that arrived, so
+	 * a client grouping ten parcels fills one table, not ten.
+	 *
+	 * @param int $shipment_id Shipment ID.
+	 * @return object[]
+	 */
+	public static function shipment_items( $shipment_id ) {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		return $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$wpdb->prefix}colisly_customs_items WHERE shipment_id = %d ORDER BY position ASC, id ASC",
+				(int) $shipment_id
+			)
+		);
+	}
+
+	/**
+	 * Whether a shipment carries a declaration.
+	 *
+	 * @param int $shipment_id Shipment ID.
+	 * @return bool
+	 */
+	public static function shipment_declared( $shipment_id ) {
+		return ! empty( self::shipment_items( $shipment_id ) );
+	}
+
+	/**
+	 * What a shipment declares, from its own lines or, for shipments made
+	 * before 1.26.0, from the lines of its parcels.
+	 *
+	 * @param object $shipment Shipment row.
+	 * @return object[]
+	 */
+	public static function items_for_shipment( $shipment ) {
+		$items = self::shipment_items( (int) $shipment->id );
+
+		if ( ! empty( $items ) ) {
+			return $items;
+		}
+
+		return self::merged_items( wp_list_pluck( COLISLY_Shipments::parcels( (int) $shipment->id ), 'id' ) );
+	}
+
+	/**
+	 * The lines of several parcels, one after the other.
+	 *
+	 * Pre-fills the shipment declaration with what a client declared parcel
+	 * by parcel before 1.26.0, so nothing typed is typed again.
+	 *
+	 * @param int[] $parcel_ids Parcel IDs.
+	 * @return object[]
+	 */
+	public static function merged_items( $parcel_ids ) {
+		$items = array();
+
+		foreach ( (array) $parcel_ids as $parcel_id ) {
+			foreach ( self::items( (int) $parcel_id ) as $item ) {
+				$items[] = $item;
+			}
+		}
+
+		return $items;
+	}
+
+	/**
 	 * Returns the totals a customs form asks for.
 	 *
-	 * @param int $parcel_id Parcel ID.
+	 * @param int|object[] $items Parcel ID, or lines to total.
 	 * @return array { quantity: int, weight: float, value: float }
 	 */
-	public static function totals( $parcel_id ) {
+	public static function totals( $items ) {
 		$quantity = 0;
 		$weight   = 0.0;
 		$value    = 0.0;
 
-		foreach ( self::items( $parcel_id ) as $item ) {
+		foreach ( is_array( $items ) ? $items : self::items( (int) $items ) as $item ) {
 			$quantity += (int) $item->quantity;
 			$weight   += (int) $item->quantity * (float) $item->unit_weight;
 			$value    += (int) $item->quantity * (float) $item->unit_value;
@@ -160,29 +230,20 @@ class COLISLY_Customs {
 	}
 
 	/**
-	 * Replaces the declaration of a parcel with the given lines.
+	 * Checks and cleans posted declaration lines.
 	 *
-	 * The whole declaration is rewritten rather than patched line by line,
-	 * because the form posts it whole and a half-applied declaration would be
-	 * worse than none.
-	 *
-	 * @param int   $parcel_id Parcel ID.
-	 * @param array $lines     Lines: description, quantity, unit_weight,
-	 *                         unit_value, origin_country, hs_code.
-	 * @return int|WP_Error Number of lines saved.
+	 * @param array $lines Lines: description, quantity, unit_weight,
+	 *                     unit_value, origin_country, hs_code.
+	 * @return array|WP_Error Clean lines, or the first refusal.
 	 */
-	public static function save( $parcel_id, $lines ) {
-		global $wpdb;
-
-		$parcel = COLISLY_Parcels::get( $parcel_id );
-		if ( ! $parcel ) {
-			return new WP_Error( 'colisly_parcel_not_found', __( 'Parcel not found.', 'colisly' ) );
-		}
-
-		$now   = current_time( 'mysql', true );
+	public static function clean_lines( $lines ) {
 		$clean = array();
 
 		foreach ( (array) $lines as $line ) {
+			if ( ! is_array( $line ) ) {
+				continue;
+			}
+
 			$description = isset( $line['description'] ) ? sanitize_text_field( $line['description'] ) : '';
 
 			// A line without a description declares nothing, and the form
@@ -199,9 +260,8 @@ class COLISLY_Customs {
 				return new WP_Error(
 					'colisly_customs_value',
 					sprintf(
-						/* translators: 1: parcel reference, 2: contents of the line. */
-						__( 'Parcel %1$s: enter the value of “%2$s”. Customs assess duty on it, so a declaration cannot go without.', 'colisly' ),
-						$parcel->reference,
+						/* translators: %s: contents of the line. */
+						__( 'Enter the value of “%s”. Customs assess duty on it, so a declaration cannot go without.', 'colisly' ),
 						$description
 					)
 				);
@@ -225,14 +285,109 @@ class COLISLY_Customs {
 			$clean = array_slice( $clean, 0, $max );
 		}
 
+		return $clean;
+	}
+
+	/**
+	 * Replaces the declaration of a shipment with the given lines.
+	 *
+	 * @param int   $shipment_id Shipment ID.
+	 * @param array $lines       Posted or already cleaned lines.
+	 * @return int|WP_Error Number of lines saved.
+	 */
+	public static function save_for_shipment( $shipment_id, $lines ) {
+		global $wpdb;
+
+		$shipment = COLISLY_Shipments::get( (int) $shipment_id );
+		if ( ! $shipment ) {
+			return new WP_Error( 'colisly_shipment_not_found', __( 'Shipment not found.', 'colisly' ) );
+		}
+
+		$clean = self::clean_lines( $lines );
+		if ( is_wp_error( $clean ) ) {
+			return $clean;
+		}
+
+		$now = current_time( 'mysql', true );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->delete( self::table(), array( 'shipment_id' => (int) $shipment->id ), array( '%d' ) );
+
+		foreach ( $clean as $position => $line ) {
+			$line['parcel_id']   = 0;
+			$line['shipment_id'] = (int) $shipment->id;
+			$line['position']    = $position;
+			$line['created_at']  = $now;
+			$line['updated_at']  = $now;
+
+			$wpdb->insert( self::table(), $line );
+		}
+
+		COLISLY_History::log(
+			(int) $shipment->client_id,
+			'customs_declared',
+			sprintf(
+				/* translators: 1: shipment reference, 2: number of declared lines. */
+				_n(
+					'Customs declaration of shipment %1$s saved: %2$d line.',
+					'Customs declaration of shipment %1$s saved: %2$d lines.',
+					count( $clean ),
+					'colisly'
+				),
+				$shipment->reference,
+				count( $clean )
+			),
+			0,
+			(int) $shipment->id
+		);
+
+		/**
+		 * Fires after a shipment's customs declaration has been saved.
+		 *
+		 * @param int   $shipment_id Shipment ID.
+		 * @param array $lines       Lines actually stored.
+		 */
+		do_action( 'colisly_shipment_customs_saved', (int) $shipment->id, $clean );
+
+		return count( $clean );
+	}
+
+	/**
+	 * Replaces the declaration of a parcel with the given lines.
+	 *
+	 * The whole declaration is rewritten rather than patched line by line,
+	 * because the form posts it whole and a half-applied declaration would be
+	 * worse than none.
+	 *
+	 * @param int   $parcel_id Parcel ID.
+	 * @param array $lines     Lines: description, quantity, unit_weight,
+	 *                         unit_value, origin_country, hs_code.
+	 * @return int|WP_Error Number of lines saved.
+	 */
+	public static function save( $parcel_id, $lines ) {
+		global $wpdb;
+
+		$parcel = COLISLY_Parcels::get( $parcel_id );
+		if ( ! $parcel ) {
+			return new WP_Error( 'colisly_parcel_not_found', __( 'Parcel not found.', 'colisly' ) );
+		}
+
+		$clean = self::clean_lines( $lines );
+		if ( is_wp_error( $clean ) ) {
+			return $clean;
+		}
+
+		$now = current_time( 'mysql', true );
+
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->delete( self::table(), array( 'parcel_id' => (int) $parcel->id ), array( '%d' ) );
 
 		foreach ( $clean as $position => $line ) {
-			$line['parcel_id']  = (int) $parcel->id;
-			$line['position']   = $position;
-			$line['created_at'] = $now;
-			$line['updated_at'] = $now;
+			$line['parcel_id']   = (int) $parcel->id;
+			$line['shipment_id'] = 0;
+			$line['position']    = $position;
+			$line['created_at']  = $now;
+			$line['updated_at']  = $now;
 
 			$wpdb->insert( self::table(), $line );
 		}
@@ -353,6 +508,110 @@ class COLISLY_Customs {
 	}
 
 	/**
+	 * Returns the purchase invoices attached to a shipment, plus those its
+	 * parcels received before 1.26.0.
+	 *
+	 * @param object $shipment Shipment row.
+	 * @return object[] Document rows.
+	 */
+	public static function invoices_for_shipment( $shipment ) {
+		$invoices = COLISLY_Documents::for_shipment( (int) $shipment->id, 'invoice' );
+
+		foreach ( COLISLY_Shipments::parcels( (int) $shipment->id ) as $parcel ) {
+			foreach ( self::invoices( (int) $parcel->id ) as $invoice ) {
+				$invoices[] = $invoice;
+			}
+		}
+
+		return $invoices;
+	}
+
+	/**
+	 * Attaches purchase invoices to a shipment.
+	 *
+	 * @param int     $shipment_id Shipment ID.
+	 * @param array[] $entries     File entries, as returned by COLISLY_Files::entries().
+	 * @param bool    $sideload    Take local files rather than HTTP uploads.
+	 * @return int|WP_Error Number of invoices attached, or the first failure.
+	 */
+	public static function attach_invoices_to_shipment( $shipment_id, $entries, $sideload = false ) {
+		$shipment = COLISLY_Shipments::get( (int) $shipment_id );
+		if ( ! $shipment ) {
+			return new WP_Error( 'colisly_shipment_not_found', __( 'Shipment not found.', 'colisly' ) );
+		}
+
+		/** This filter is documented in attach_invoices(). */
+		$max     = max( 1, (int) apply_filters( 'colisly_invoices_per_submission', 10 ) );
+		$entries = array_slice( (array) $entries, 0, $max );
+		$count   = 0;
+
+		foreach ( $entries as $entry ) {
+			$file = COLISLY_Files::upload_entry( $entry, COLISLY_Files::invoice_mimes(), self::invoice_max_bytes(), $sideload );
+
+			if ( is_wp_error( $file ) ) {
+				return $file;
+			}
+
+			$added = COLISLY_Documents::add(
+				(int) $shipment->client_id,
+				$file,
+				sprintf(
+					/* translators: 1: shipment reference, 2: file name. */
+					__( 'Purchase invoice, shipment %1$s: %2$s', 'colisly' ),
+					$shipment->reference,
+					$file['name']
+				),
+				'client',
+				array(
+					'shipment_id' => (int) $shipment->id,
+					'kind'        => 'invoice',
+				)
+			);
+
+			if ( is_wp_error( $added ) ) {
+				COLISLY_Files::delete( $file['path'] );
+				return $added;
+			}
+
+			$count++;
+		}
+
+		return $count;
+	}
+
+	/**
+	 * Outputs the printable customs declaration of a shipment: what the
+	 * carton that leaves holds, whatever the parcels it was grouped from.
+	 *
+	 * @param object $shipment Shipment row.
+	 * @return void
+	 */
+	public static function render_shipment_form( $shipment ) {
+		$parcels  = COLISLY_Shipments::parcels( (int) $shipment->id );
+		$tracking = array_filter( wp_list_pluck( $parcels, 'tracking_number' ) );
+
+		self::print_form(
+			array(
+				'client_id'    => (int) $shipment->client_id,
+				/* translators: %s: shipment reference. */
+				'title'        => sprintf( __( 'Customs declaration %s', 'colisly' ), $shipment->reference ),
+				'subtitle'     => sprintf(
+					/* translators: 1: shipment reference, 2: number of parcels, 3: parcel references. */
+					_n( 'Shipment %1$s, %2$d parcel: %3$s', 'Shipment %1$s, %2$d parcels: %3$s', count( $parcels ), 'colisly' ),
+					$shipment->reference,
+					count( $parcels ),
+					implode( ', ', wp_list_pluck( $parcels, 'reference' ) )
+				) . ( $tracking ? ' · ' . implode( ', ', $tracking ) : '' ),
+				'items'        => self::items_for_shipment( $shipment ),
+				'gross_weight' => (float) $shipment->total_weight,
+				'gross_label'  => __( 'Gross weight of the shipment (kg)', 'colisly' ),
+				'empty'        => __( 'Nothing declared for this shipment.', 'colisly' ),
+				'invoices'     => count( self::invoices_for_shipment( $shipment ) ),
+			)
+		);
+	}
+
+	/**
 	 * Outputs the printable customs declaration of a parcel.
 	 *
 	 * A standalone page rather than an admin screen: it is meant to be printed
@@ -363,10 +622,43 @@ class COLISLY_Customs {
 	 * @return void
 	 */
 	public static function render_form( $parcel ) {
-		$client = COLISLY_Clients::get( (int) $parcel->client_id );
+		self::print_form(
+			array(
+				'client_id'    => (int) $parcel->client_id,
+				/* translators: %s: parcel reference. */
+				'title'        => sprintf( __( 'Customs declaration %s', 'colisly' ), $parcel->reference ),
+				'subtitle'     => sprintf(
+					/* translators: 1: parcel reference, 2: tracking number. */
+					__( 'Parcel %1$s, tracking %2$s', 'colisly' ),
+					$parcel->reference,
+					$parcel->tracking_number ? $parcel->tracking_number : '–'
+				),
+				'items'        => self::items( (int) $parcel->id ),
+				'gross_weight' => (float) $parcel->weight,
+				'gross_label'  => __( 'Gross weight of the parcel (kg)', 'colisly' ),
+				'empty'        => __( 'Nothing declared for this parcel.', 'colisly' ),
+				'invoices'     => count( self::invoices( (int) $parcel->id ) ),
+			)
+		);
+	}
+
+	/**
+	 * Prints a customs declaration as a standalone page.
+	 *
+	 * A standalone page rather than an admin screen: it is meant to be printed
+	 * and folded into the pouch, so the WordPress chrome would only get in the
+	 * way and waste a sheet.
+	 *
+	 * @param array $args client_id, title, subtitle, items, gross_weight,
+	 *                    gross_label, empty, invoices.
+	 * @return void
+	 */
+	private static function print_form( $args ) {
+		$client = COLISLY_Clients::get( (int) $args['client_id'] );
 		$user   = $client ? get_userdata( (int) $client->user_id ) : null;
-		$items  = self::items( (int) $parcel->id );
-		$totals = self::totals( (int) $parcel->id );
+		$items  = $args['items'];
+		$totals = self::totals( $items );
+		$gross  = (float) $args['gross_weight'];
 
 		$shipping = array();
 		if ( $client && class_exists( 'WC_Customer' ) ) {
@@ -405,7 +697,7 @@ class COLISLY_Customs {
 		<html <?php language_attributes(); ?>>
 		<head>
 			<meta charset="<?php bloginfo( 'charset' ); ?>" />
-			<title><?php echo esc_html( sprintf( /* translators: %s: parcel reference. */ __( 'Customs declaration %s', 'colisly' ), $parcel->reference ) ); ?></title>
+			<title><?php echo esc_html( $args['title'] ); ?></title>
 			<style>
 				body { color: #000; font-family: DejaVu Sans, Arial, sans-serif; font-size: 12px; margin: 24px; }
 				h1 { font-size: 18px; margin: 0 0 4px; }
@@ -430,19 +722,13 @@ class COLISLY_Customs {
 			<h1><?php esc_html_e( 'Customs declaration', 'colisly' ); ?></h1>
 			<p class="colisly-sub">
 				<?php
-				printf(
-					/* translators: 1: parcel reference, 2: tracking number. */
-					esc_html__( 'Parcel %1$s, tracking %2$s', 'colisly' ),
-					esc_html( $parcel->reference ),
-					esc_html( $parcel->tracking_number ? $parcel->tracking_number : '–' )
-				);
-				$invoice_count = count( self::invoices( (int) $parcel->id ) );
-				if ( $invoice_count ) {
+				echo esc_html( $args['subtitle'] );
+				if ( $args['invoices'] ) {
 					echo ' · ';
 					printf(
 						/* translators: %d: number of invoices. */
-						esc_html( _n( '%d purchase invoice attached', '%d purchase invoices attached', $invoice_count, 'colisly' ) ),
-						(int) $invoice_count
+						esc_html( _n( '%d purchase invoice attached', '%d purchase invoices attached', (int) $args['invoices'], 'colisly' ) ),
+						(int) $args['invoices']
 					);
 				}
 				?>
@@ -482,7 +768,7 @@ class COLISLY_Customs {
 						</tr>
 					<?php endforeach; ?>
 					<?php if ( ! $items ) : ?>
-						<tr><td colspan="6"><?php esc_html_e( 'Nothing declared for this parcel.', 'colisly' ); ?></td></tr>
+						<tr><td colspan="6"><?php echo esc_html( $args['empty'] ); ?></td></tr>
 					<?php endif; ?>
 				</tbody>
 				<tfoot>
@@ -494,23 +780,23 @@ class COLISLY_Customs {
 						<td colspan="2"></td>
 					</tr>
 					<tr>
-						<td colspan="2"><?php esc_html_e( 'Gross weight of the parcel (kg)', 'colisly' ); ?></td>
-						<td class="num"><?php echo esc_html( number_format_i18n( (float) $parcel->weight, 3 ) ); ?></td>
+						<td colspan="2"><?php echo esc_html( $args['gross_label'] ); ?></td>
+						<td class="num"><?php echo esc_html( number_format_i18n( $gross, 3 ) ); ?></td>
 						<td colspan="3"></td>
 					</tr>
 				</tfoot>
 			</table>
 
-			<?php if ( $totals['weight'] > (float) $parcel->weight + 0.001 ) : ?>
+			<?php if ( $totals['weight'] > $gross + 0.001 ) : ?>
 				<p class="colisly-warn">
 					<?php
-					// Declared contents cannot weigh more than the parcel they
-					// travel in; customs will stop on that before anything else.
+					// Declared contents cannot weigh more than what they travel
+					// in; customs will stop on that before anything else.
 					printf(
-						/* translators: 1: declared net weight, 2: parcel gross weight. */
+						/* translators: 1: declared net weight, 2: gross weight. */
 						esc_html__( 'Warning: the declared contents weigh %1$s kg, more than the parcel itself (%2$s kg). Check the declaration before shipping.', 'colisly' ),
 						esc_html( number_format_i18n( $totals['weight'], 3 ) ),
-						esc_html( number_format_i18n( (float) $parcel->weight, 3 ) )
+						esc_html( number_format_i18n( $gross, 3 ) )
 					);
 					?>
 				</p>
@@ -536,5 +822,18 @@ class COLISLY_Customs {
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 		$wpdb->delete( self::table(), array( 'parcel_id' => (int) $parcel_id ), array( '%d' ) );
+	}
+
+	/**
+	 * Removes the declaration of a shipment.
+	 *
+	 * @param int $shipment_id Shipment ID.
+	 * @return void
+	 */
+	public static function delete_for_shipment( $shipment_id ) {
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		$wpdb->delete( self::table(), array( 'shipment_id' => (int) $shipment_id ), array( '%d' ) );
 	}
 }

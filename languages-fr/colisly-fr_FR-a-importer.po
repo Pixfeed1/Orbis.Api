@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly 1.20.2 to 1.24.0 additions\n"
+"Project-Id-Version: Colisly 1.20.2 to 1.26.0 additions\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -210,3 +210,46 @@ msgstr "Exporter en CSV"
 
 msgid "Stored weight (kg)"
 msgstr "Poids stocké (kg)"
+
+msgid "Client area"
+msgstr "Espace client"
+
+msgid "Tabs"
+msgstr "Onglets"
+
+msgid "Show the \"My documents\" tab in the client account"
+msgstr "Afficher l’onglet « Mes documents » dans l’espace client"
+
+msgid "Untick it if you never hand documents to your clients. The purchase invoices they attach to a customs declaration are kept either way."
+msgstr "Décochez-la si vous ne remettez jamais de document à vos clients. Les factures d’achat qu’ils joignent à une déclaration en douane sont conservées dans tous les cas."
+
+msgid "Enter the value of “%s”. Customs assess duty on it, so a declaration cannot go without."
+msgstr "Indiquez la valeur de « %s ». La douane calcule les droits dessus, une déclaration ne peut pas s’en passer."
+
+msgid "Customs declaration of shipment %1$s saved: %2$d line."
+msgid_plural "Customs declaration of shipment %1$s saved: %2$d lines."
+msgstr[0] "Déclaration en douane de l’expédition %1$s enregistrée : %2$d ligne."
+msgstr[1] "Déclaration en douane de l’expédition %1$s enregistrée : %2$d lignes."
+
+msgid "Purchase invoice, shipment %1$s: %2$s"
+msgstr "Facture d’achat, expédition %1$s : %2$s"
+
+msgid "Shipment %1$s, %2$d parcel: %3$s"
+msgid_plural "Shipment %1$s, %2$d parcels: %3$s"
+msgstr[0] "Expédition %1$s, %2$d colis : %3$s"
+msgstr[1] "Expédition %1$s, %2$d colis : %3$s"
+
+msgid "Gross weight of the shipment (kg)"
+msgstr "Poids brut de l’expédition (kg)"
+
+msgid "Nothing declared for this shipment."
+msgstr "Rien de déclaré pour cette expédition."
+
+msgid "This destination requires a customs declaration: describe what the shipment holds and its value before requesting it."
+msgstr "Cette destination exige une déclaration en douane : décrivez le contenu de l’expédition et sa valeur avant de la demander."
+
+msgid "Your destination requires one. Describe what the shipment holds as a whole, item by item with its value, whatever the number of parcels grouped in it: the customs form covers the carton that leaves."
+msgstr "Votre destination l’exige. Décrivez le contenu de l’expédition dans son ensemble, article par article avec sa valeur, quel que soit le nombre de colis regroupés : le formulaire douanier concerne le carton qui part."
+
+msgid "Customs may ask for the invoice of what the shipment holds. Attach it here, PDF or image."
+msgstr "La douane peut demander la facture de ce que contient l’expédition. Joignez-la ici, PDF ou image."
