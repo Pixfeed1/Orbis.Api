@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly 1.20.2 to 1.28.0 additions\n"
+"Project-Id-Version: Colisly 1.20.2 to 1.29.0 additions\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -277,3 +277,6 @@ msgstr "Affiché à côté du transporteur sur la demande d’expédition, sur l
 
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
+
+msgid "When unchecked, shipment orders are created tax-free. When checked, your tariffs are what the client pays: typed with tax in if WooCommerce is set to \"prices entered inclusive of tax\", before tax otherwise; the tax then shows as its own line, at the rate of the client’s location. To leave the transport untaxed, set the WooCommerce shipping tax class to \"Zero rate\"."
+msgstr "Décochée, les commandes d’expédition sont créées hors taxes. Cochée, vos tarifs sont ce que le client paie : saisis TTC si WooCommerce est réglé sur « prix saisis TTC », HT sinon ; la taxe apparaît alors en ligne à part, au taux du lieu du client. Pour laisser le transport sans taxe, réglez la classe de taxe pour l’expédition de WooCommerce sur « Taux zéro »."

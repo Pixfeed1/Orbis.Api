@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.28.1
+Stable tag: 1.29.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,10 @@ A shipment order is a normal WooCommerce order with the client's delivery addres
 
 Yes, on your own fees only. WooCommerce coupons only discount products and a shipment order has none, so they do nothing there. Colisly has its own discounts: a personal rate on each client record, and in the settings a promotion for all clients between two dates and a loyalty discount once a client has had a number of shipments done. Each is a percentage of the handling fees, of the storage fees, or of both, as you choose: 100% on storage between two dates makes storage free for that time. Transport, fees advanced and insurance are always billed in full. When several could apply, the one that takes the most off applies alone, and it shows on the order as its own line, named after its reason.
 
+= How is VAT handled? =
+
+Through the WooCommerce tax settings. Enable taxes in WooCommerce, add your rate (name it "VAT 20%", that name is what the client sees), then tick "Apply the shop taxes to shipment orders" in the Colisly settings: handling, storage and insurance lines are taxed at the rate of the client's location, and the order shows the tax as its own line. Fees advanced, such as customs duties paid on the client's behalf, stay untaxed. To leave the transport untaxed, set the WooCommerce shipping tax class to "Zero rate". Your tariffs are what the client pays: if WooCommerce is set to "prices entered inclusive of tax", type them with tax in and Colisly takes it out for the order; otherwise type them before tax.
+
 = Can I run several promotions, or promotion codes, at once? =
 
 Yes. The settings hold a table of promotions, as many as you need: each has a rate, what it applies to, optional dates, an optional code, and a "first shipment only" option for a welcome offer. A promotion without a code applies to everyone by itself; one with a code only to the clients who type it in the "Promotion code" box of the shipment request form, and the estimate updates once the code is accepted. Codes are checked on the server and never appear in the page. When several discounts could apply, the one that takes the most off applies alone.
@@ -135,6 +139,10 @@ Yes. The settings hold a table of promotions, as many as you need: each has a ra
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.29.0 =
+* Tariffs typed with tax in are now honoured. WooCommerce only applies its "prices entered inclusive of tax" setting to products: a shipment order is made of fee lines, always taxed on top of their amount, so a forwarder who had typed his whole tariff with VAT in and then switched taxes on billed the VAT twice. When that WooCommerce setting is on and shipment orders carry the shop taxes, Colisly now writes each taxable line net of the shop's base tax, the way WooCommerce does for a product price, and the order adds the tax of the client's location: a French client pays exactly the tariff typed, a client the shop does not tax pays it net. The estimate on the request form and the tariffs shown stay as typed. Fees advanced stay untaxed, the transport follows the WooCommerce shipping tax class. A new FAQ entry says how to set VAT up. No database change.
+* Fixed: with taxes on, the discount line carried no tax, since WooCommerce spreads the tax of a negative fee over products and a shipment order has none, so the tax line was that of the fees before discount. The discount now carries the share of tax it takes off, and the tax line is right.
 
 = 1.28.1 =
 * Fixed: the carriers table always showed a blank last row ticked "Enabled", which read as an active carrier nobody could delete. A row without a name was never saved, but the impression was wrong: the blank row now only appears when there is no carrier at all, and the "Add a carrier" button does the rest.

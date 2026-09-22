@@ -217,6 +217,20 @@ facturés plein. Quand plusieurs pourraient s'appliquer, celle qui déduit le
 plus s'applique seule, et elle apparaît sur la commande en ligne à part, à son
 nom.
 
+= Comment la TVA est-elle gérée ? =
+
+Par les réglages de TVA de WooCommerce. Activez les taxes dans WooCommerce,
+ajoutez votre taux (nommez-le « TVA 20 % », ce nom est celui que le client
+voit), puis cochez « Appliquer les taxes de la boutique aux commandes
+d'expédition » dans les réglages de Colisly : les lignes de gestion, de
+stockage et d'assurance sont taxées au taux du lieu du client, et la commande
+affiche la taxe en ligne à part. Les frais avancés, comme des droits de douane
+payés pour le compte du client, restent sans taxe. Pour laisser le transport
+sans taxe, réglez la classe de taxe pour l'expédition de WooCommerce sur
+« Taux zéro ». Vos tarifs sont ce que le client paie : si WooCommerce est
+réglé sur « prix saisis TTC », saisissez-les TTC et Colisly en retire la taxe
+pour la commande ; sinon saisissez-les HT.
+
 = Puis-je lancer plusieurs promotions, ou codes promo, à la fois ? =
 
 Oui. Les réglages ont un tableau de promotions, autant que nécessaire : chacune
@@ -246,6 +260,27 @@ déduit le plus s'applique seule.
 ================================================================================
 == Journal des modifications ==
 ================================================================================
+
+= 1.29.0 =
+* Les tarifs saisis TTC sont maintenant respectés. WooCommerce n'applique son
+  réglage « prix saisis TTC » qu'aux produits : une commande d'expédition est
+  faite de lignes de frais, toujours taxées en plus de leur montant, si bien
+  qu'un réexpéditeur qui avait saisi toute sa grille TTC puis activé les taxes
+  facturait la TVA deux fois. Quand ce réglage WooCommerce est actif et que les
+  commandes d'expédition portent les taxes de la boutique, Colisly écrit
+  maintenant chaque ligne taxable nette de la taxe de base de la boutique,
+  comme WooCommerce le fait pour un prix de produit, et la commande ajoute la
+  taxe du lieu du client : un client en France paie exactement le tarif saisi,
+  un client que la boutique ne taxe pas le paie net. L'estimation sur la
+  demande d'expédition et les tarifs affichés restent ceux saisis. Les frais
+  avancés restent sans taxe, le transport suit la classe de taxe d'expédition
+  de WooCommerce. Une nouvelle entrée de FAQ explique comment régler la TVA.
+  Aucun changement de base de données.
+* Corrigé : taxes activées, la ligne de remise ne portait aucune taxe, car
+  WooCommerce répartit la taxe d'une ligne négative sur des produits et une
+  commande d'expédition n'en a pas, si bien que la ligne de TVA était celle
+  des frais avant remise. La remise porte maintenant la part de taxe qu'elle
+  retire, et la ligne de TVA est juste.
 
 = 1.28.1 =
 * Corrigé : le tableau des transporteurs montrait toujours une dernière ligne

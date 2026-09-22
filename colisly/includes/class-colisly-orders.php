@@ -122,6 +122,99 @@ class COLISLY_Orders {
 	}
 
 	/**
+	 * Whether the tariffs typed in the settings are read as including tax.
+	 *
+	 * True when shipment orders carry the shop taxes and WooCommerce is set
+	 * to "prices entered with tax". WooCommerce only honours that setting
+	 * for products: a fee line is always taxed on top of its amount, so a
+	 * forwarder who typed 15.00 with tax in would have billed 18.00.
+	 *
+	 * @return bool
+	 */
+	public static function tariffs_include_tax() {
+		return (bool) COLISLY_Settings::get( 'orders_taxable', 0 )
+			&& function_exists( 'wc_tax_enabled' ) && wc_tax_enabled()
+			&& function_exists( 'wc_prices_include_tax' ) && wc_prices_include_tax();
+	}
+
+	/**
+	 * The amount a taxable fee line is written as, from a tariff.
+	 *
+	 * With tariffs including tax, the shop's own base tax is taken out, the
+	 * way WooCommerce does for a product price, and the order then adds the
+	 * tax of the client's location: a French client pays the tariff as typed,
+	 * a client the shop does not tax pays it net. Unrounded on purpose, as
+	 * WooCommerce keeps inclusive prices, so the total lands on the cent.
+	 *
+	 * @param float $amount Tariff as typed in the settings.
+	 * @return float
+	 */
+	public static function net_amount( $amount ) {
+		$amount = (float) $amount;
+
+		if ( $amount <= 0 || ! self::tariffs_include_tax() ) {
+			return $amount;
+		}
+
+		$rates = WC_Tax::get_base_tax_rates( '' );
+		if ( empty( $rates ) ) {
+			return $amount;
+		}
+
+		return $amount - array_sum( WC_Tax::calc_inclusive_tax( $amount, $rates ) );
+	}
+
+	/**
+	 * Gives the discount line the tax it takes off.
+	 *
+	 * WooCommerce apportions the tax of a negative fee over the products of
+	 * the order, and a shipment order has none: the discount came out with
+	 * no tax at all, so the tax line was that of the fees before discount.
+	 * The discount is a share of the taxable fee lines it reduces, so it
+	 * carries the same share of their taxes, rate by rate.
+	 *
+	 * @param WC_Order $order Order whose totals were just calculated.
+	 * @return void
+	 */
+	private static function tax_discount_line( $order ) {
+		if ( ! function_exists( 'wc_tax_enabled' ) || ! wc_tax_enabled() ) {
+			return;
+		}
+
+		$discount = null;
+		$base     = 0.0;
+		$taxes    = array();
+
+		foreach ( $order->get_fees() as $fee ) {
+			if ( 'taxable' !== $fee->get_tax_status() ) {
+				continue;
+			}
+			if ( (float) $fee->get_total() < 0 ) {
+				$discount = $fee;
+				continue;
+			}
+			$base += (float) $fee->get_total();
+			$fee_taxes = $fee->get_taxes();
+			foreach ( isset( $fee_taxes['total'] ) ? (array) $fee_taxes['total'] : array() as $rate_id => $amount ) {
+				$taxes[ $rate_id ] = ( isset( $taxes[ $rate_id ] ) ? $taxes[ $rate_id ] : 0.0 ) + (float) $amount;
+			}
+		}
+
+		if ( ! $discount || $base <= 0 || empty( $taxes ) ) {
+			return;
+		}
+
+		$share = (float) $discount->get_total() / $base;
+		foreach ( $taxes as $rate_id => $amount ) {
+			$taxes[ $rate_id ] = wc_round_tax_total( $amount * $share );
+		}
+
+		$discount->set_taxes( array( 'total' => $taxes ) );
+		$order->update_taxes();
+		$order->calculate_totals( false );
+	}
+
+	/**
 	 * Creates the WooCommerce order for a freshly requested shipment.
 	 *
 	 * @param object $shipment Shipment row.
@@ -166,6 +259,13 @@ class COLISLY_Orders {
 		// Fees follow the shop tax setting chosen in the plugin settings.
 		$tax_status = COLISLY_Settings::get( 'orders_taxable', 0 ) ? 'taxable' : 'none';
 
+		// What a fee line is written as depends on how the shop enters its
+		// prices, see net_amount(): a tariff typed with tax in has the tax
+		// taken out here so WooCommerce can put the client's own back.
+		$net = static function ( $amount ) {
+			return self::net_amount( (float) $amount );
+		};
+
 		// One fee line per parcel, priced at reception time.
 		foreach ( COLISLY_Shipments::parcels( (int) $shipment->id ) as $parcel ) {
 			$fee = new WC_Order_Item_Fee();
@@ -178,7 +278,7 @@ class COLISLY_Orders {
 				)
 			);
 			$fee->set_tax_status( $tax_status );
-			$fee->set_total( (string) $parcel->price );
+			$fee->set_total( (string) $net( $parcel->price ) );
 			$order->add_item( $fee );
 
 			// Duties or taxes the forwarder paid to take delivery of this
@@ -212,7 +312,7 @@ class COLISLY_Orders {
 			$fee = new WC_Order_Item_Fee();
 			$fee->set_name( __( 'Storage fees', 'colisly' ) );
 			$fee->set_tax_status( $tax_status );
-			$fee->set_total( (string) $shipment->storage_fees );
+			$fee->set_total( (string) $net( $shipment->storage_fees ) );
 			$order->add_item( $fee );
 		}
 
@@ -227,7 +327,7 @@ class COLISLY_Orders {
 				)
 			);
 			$fee->set_tax_status( $tax_status );
-			$fee->set_total( (string) $shipment->insurance_price );
+			$fee->set_total( (string) $net( $shipment->insurance_price ) );
 			$order->add_item( $fee );
 		}
 
@@ -238,7 +338,7 @@ class COLISLY_Orders {
 			$fee = new WC_Order_Item_Fee();
 			$fee->set_name( '' !== (string) $shipment->discount_label ? (string) $shipment->discount_label : __( 'Discount', 'colisly' ) );
 			$fee->set_tax_status( $tax_status );
-			$fee->set_total( '-' . (string) $shipment->discount );
+			$fee->set_total( '-' . (string) $net( $shipment->discount ) );
 			$order->add_item( $fee );
 		}
 
@@ -263,6 +363,7 @@ class COLISLY_Orders {
 			)
 		);
 		$order->calculate_totals( (bool) COLISLY_Settings::get( 'orders_taxable', 0 ) );
+		self::tax_discount_line( $order );
 		$order->update_status( 'pending' );
 		$order->save();
 

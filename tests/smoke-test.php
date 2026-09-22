@@ -2902,6 +2902,55 @@ $colisly_bl_js = file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/admin.js' );
 colisly_check( 'Garde : une ligne clonee aligne le champ cache sur la case', false !== strpos( $colisly_bl_js, '$scope.find( \'.colisly-toggle-value\' ).first().val( $box.is( \':checked\' ) ? \'1\' : \'0\' );' ) && false !== strpos( $colisly_bl_js, '\'0\' !== $input.attr( \'data-default\' )' ) );
 colisly_check( 'Garde : la promotion clonee demarre sans Premiere expedition seulement', false !== strpos( file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-settings.php' ), 'class="colisly-toggle" data-default="0"' ) );
 
+// ---------------------------------------------------------------------------
+// 1.29.0 : tarifs saisis TTC, TVA extraite puis remise par WooCommerce.
+// ---------------------------------------------------------------------------
+$colisly_tx_opts = array( 'woocommerce_calc_taxes' => get_option( 'woocommerce_calc_taxes' ), 'woocommerce_prices_include_tax' => get_option( 'woocommerce_prices_include_tax' ), 'woocommerce_shipping_tax_class' => get_option( 'woocommerce_shipping_tax_class' ), 'woocommerce_default_country' => get_option( 'woocommerce_default_country' ) );
+$colisly_tx_settings = COLISLY_Settings::all();
+$colisly_tx_rates_before = $wpdb->get_results( "SELECT * FROM {$wpdb->prefix}woocommerce_tax_rates", ARRAY_A );
+$wpdb->query( "DELETE FROM {$wpdb->prefix}woocommerce_tax_rates" );
+update_option( 'woocommerce_calc_taxes', 'yes' ); update_option( 'woocommerce_prices_include_tax', 'yes' ); update_option( 'woocommerce_shipping_tax_class', 'zero-rate' ); update_option( 'woocommerce_default_country', 'FR' );
+WC_Tax::_insert_tax_rate( array( 'tax_rate_country' => 'FR', 'tax_rate' => '20.0000', 'tax_rate_name' => 'TVA 20 %', 'tax_rate_priority' => 1, 'tax_rate_shipping' => 0, 'tax_rate_class' => '' ) );
+if ( class_exists( 'WC_Cache_Helper' ) ) { WC_Cache_Helper::invalidate_cache_group( 'taxes' ); }
+$colisly_tx_new = $colisly_tx_settings; $colisly_tx_new['orders_taxable'] = 1; $colisly_tx_new['zones'] = array(); $colisly_tx_new['promotions'] = array(); $colisly_tx_new['loyalty_shipments'] = 0;
+COLISLY_Settings::update( $colisly_tx_new );
+colisly_check( 'TTC : les tarifs sont lus TTC quand WooCommerce et Colisly le disent', COLISLY_Orders::tariffs_include_tax() );
+colisly_check( 'TTC : 15,00 saisi devient 12,50 net, un montant nul ou negatif ne bouge pas', abs( COLISLY_Orders::net_amount( 15 ) - 12.5 ) < 0.0001 && 0.0 === COLISLY_Orders::net_amount( 0 ) );
+$colisly_tx_user = wp_insert_user( array( 'user_login' => 'client_tva_' . wp_generate_password( 6, false ), 'user_email' => 'tva+' . time() . '@example.com', 'user_pass' => wp_generate_password(), 'first_name' => 'Théo', 'last_name' => 'Taxe', 'role' => 'customer' ) );
+foreach ( array( 'shipping_first_name' => 'Théo', 'shipping_last_name' => 'Taxe', 'shipping_address_1' => '1 rue', 'shipping_city' => 'Paris', 'shipping_postcode' => '75001', 'shipping_country' => 'FR', 'billing_country' => 'FR' ) as $colisly_tx_k => $colisly_tx_v ) { update_user_meta( $colisly_tx_user, $colisly_tx_k, $colisly_tx_v ); }
+$colisly_tx_client = COLISLY_Clients::get_or_create_for_user( $colisly_tx_user );
+COLISLY_Clients::update( (int) $colisly_tx_client->id, array( 'discount_rate' => '10', 'discount_scope' => 'handling' ) );
+$colisly_tx_client = COLISLY_Clients::get( (int) $colisly_tx_client->id );
+$colisly_tx_p = (int) COLISLY_Parcels::create( array( 'client_id' => (int) $colisly_tx_client->id, 'weight' => 2, 'allow_grouping' => 1 ) );
+$colisly_tx_price = (float) COLISLY_Parcels::get( $colisly_tx_p )->price;
+$colisly_tx_ship = COLISLY_Shipments::get( COLISLY_Shipments::request( (int) $colisly_tx_client->id, array( $colisly_tx_p ), 'colissimo', 0, 'FR' ) );
+$colisly_tx_order = wc_get_order( (int) $colisly_tx_ship->order_id );
+$colisly_tx_lines = array();
+foreach ( $colisly_tx_order->get_fees() as $colisly_tx_fee ) { $colisly_tx_lines[ $colisly_tx_fee->get_name() ] = array( (float) $colisly_tx_fee->get_total(), (float) $colisly_tx_fee->get_total_tax() ); }
+$colisly_tx_parcel_line = null; foreach ( $colisly_tx_lines as $colisly_tx_n => $colisly_tx_l ) { if ( 0 === strpos( $colisly_tx_n, 'Parcel ' ) ) { $colisly_tx_parcel_line = $colisly_tx_l; } }
+colisly_check( 'TTC : la ligne colis est nette et sa taxe la complete au tarif saisi', $colisly_tx_parcel_line && abs( $colisly_tx_parcel_line[0] - $colisly_tx_price / 1.2 ) < 0.001 && abs( $colisly_tx_parcel_line[0] + $colisly_tx_parcel_line[1] - $colisly_tx_price ) < 0.005 );
+colisly_check( 'TTC : la remise est nette aussi, 10 % du tarif saisi une fois la taxe remise', isset( $colisly_tx_lines['Client discount 10%'] ) && abs( $colisly_tx_lines['Client discount 10%'][0] + $colisly_tx_lines['Client discount 10%'][1] + round( $colisly_tx_price * 0.1, 2 ) ) < 0.005 );
+colisly_check( 'TTC : le transport reste plein et sans taxe', abs( (float) $colisly_tx_order->get_shipping_total() - (float) $colisly_tx_ship->carrier_price ) < 0.001 && 0.0 === (float) $colisly_tx_order->get_shipping_tax() );
+colisly_check( 'TTC : le total de la commande est celui de l expedition tel que saisi, au centime', abs( (float) $colisly_tx_order->get_total() - (float) $colisly_tx_ship->total_price ) < 0.005 && (float) $colisly_tx_order->get_total_tax() > 0 );
+colisly_check( 'TTC : la taxe est nommee comme dans WooCommerce', in_array( 'TVA 20 %', wp_list_pluck( $colisly_tx_order->get_tax_totals(), 'label' ), true ) );
+COLISLY_Shipments::set_status( (int) $colisly_tx_ship->id, 'cancelled' );
+// Un client que la boutique ne taxe pas paie net.
+update_user_meta( $colisly_tx_user, 'shipping_country', 'US' ); update_user_meta( $colisly_tx_user, 'billing_country', 'US' );
+$colisly_tx_p2 = (int) COLISLY_Parcels::create( array( 'client_id' => (int) $colisly_tx_client->id, 'weight' => 2, 'allow_grouping' => 1 ) );
+$colisly_tx_ship2 = COLISLY_Shipments::get( COLISLY_Shipments::request( (int) $colisly_tx_client->id, array( $colisly_tx_p2 ), 'colissimo', 0, 'US' ) );
+$colisly_tx_order2 = wc_get_order( (int) $colisly_tx_ship2->order_id );
+colisly_check( 'TTC : hors taxe pour un client non taxe, le tarif net sans taxe ajoutee', 0.0 === (float) $colisly_tx_order2->get_total_tax() && abs( (float) $colisly_tx_order2->get_total() - ( (float) $colisly_tx_ship2->total_price - ( $colisly_tx_price - $colisly_tx_price / 1.2 ) * 0.9 ) ) < 0.01 );
+COLISLY_Shipments::set_status( (int) $colisly_tx_ship2->id, 'cancelled' );
+// Prix saisis HT : rien ne change.
+update_option( 'woocommerce_prices_include_tax', 'no' );
+colisly_check( 'HT : les tarifs restent tels quels', ! COLISLY_Orders::tariffs_include_tax() && 15.0 === COLISLY_Orders::net_amount( 15 ) );
+// Remise en etat.
+$wpdb->query( "DELETE FROM {$wpdb->prefix}woocommerce_tax_rates" );
+foreach ( $colisly_tx_rates_before as $colisly_tx_r ) { $wpdb->insert( "{$wpdb->prefix}woocommerce_tax_rates", $colisly_tx_r ); }
+if ( class_exists( 'WC_Cache_Helper' ) ) { WC_Cache_Helper::invalidate_cache_group( 'taxes' ); }
+foreach ( $colisly_tx_opts as $colisly_tx_k => $colisly_tx_v ) { update_option( $colisly_tx_k, $colisly_tx_v ); }
+COLISLY_Settings::update( $colisly_tx_settings );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 # Spanish translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.28.1\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.29.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -586,9 +586,6 @@ msgstr "Impuestos"
 
 msgid "Apply the shop taxes to shipment orders (parcels, storage and transport lines)"
 msgstr "Aplicar los impuestos de la tienda a los pedidos de envío (líneas de paquetes, almacenamiento y transporte)"
-
-msgid "When unchecked, shipment orders are created tax-free."
-msgstr "Si no está marcado, los pedidos de envío se crean sin impuestos."
 
 msgid "Notifications"
 msgstr "Notificaciones"
@@ -1488,3 +1485,6 @@ msgstr "Se muestra junto al transportista en la solicitud de envío, en los env�
 
 msgid "%1$s, %2$s"
 msgstr "%1$s, %2$s"
+
+msgid "When unchecked, shipment orders are created tax-free. When checked, your tariffs are what the client pays: typed with tax in if WooCommerce is set to \"prices entered inclusive of tax\", before tax otherwise; the tax then shows as its own line, at the rate of the client’s location. To leave the transport untaxed, set the WooCommerce shipping tax class to \"Zero rate\"."
+msgstr "Sin marcar, los pedidos de envío se crean sin impuestos. Marcada, sus tarifas son lo que el cliente paga: con impuestos incluidos si WooCommerce está configurado en «precios introducidos con impuestos», sin impuestos en caso contrario; el impuesto aparece entonces en su propia línea, al tipo de la ubicación del cliente. Para dejar el transporte sin impuestos, ponga la clase de impuesto de envío de WooCommerce en «Tipo cero»."

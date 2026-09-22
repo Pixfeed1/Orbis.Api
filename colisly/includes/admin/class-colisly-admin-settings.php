@@ -599,7 +599,7 @@ class COLISLY_Admin_Settings {
 								<input type="checkbox" name="orders_taxable" value="1" <?php checked( ! empty( $settings['orders_taxable'] ) ); ?> />
 								<?php esc_html_e( 'Apply the shop taxes to shipment orders (parcels, storage and transport lines)', 'colisly' ); ?>
 							</label>
-							<p class="description"><?php esc_html_e( 'When unchecked, shipment orders are created tax-free.', 'colisly' ); ?></p>
+							<p class="description"><?php esc_html_e( 'When unchecked, shipment orders are created tax-free. When checked, your tariffs are what the client pays: typed with tax in if WooCommerce is set to "prices entered inclusive of tax", before tax otherwise; the tax then shows as its own line, at the rate of the client’s location. To leave the transport untaxed, set the WooCommerce shipping tax class to "Zero rate".', 'colisly' ); ?></p>
 						</td>
 					</tr>
 				</table>
