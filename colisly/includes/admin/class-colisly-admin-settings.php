@@ -304,6 +304,10 @@ class COLISLY_Admin_Settings {
 							);
 							?>
 						</h4>
+						<p>
+							<label for="colisly-zd-<?php echo esc_attr( $slug . '-' . $zone['slug'] ); ?>"><?php esc_html_e( 'Delivery time shown to the client', 'colisly' ); ?></label>
+							<input type="text" id="colisly-zd-<?php echo esc_attr( $slug . '-' . $zone['slug'] ); ?>" name="carrier_zone_delay[<?php echo esc_attr( $slug ); ?>][<?php echo esc_attr( $zone['slug'] ); ?>]" value="<?php echo esc_attr( isset( $carrier['delivery_times'][ $zone['slug'] ] ) ? (string) $carrier['delivery_times'][ $zone['slug'] ] : '' ); ?>" class="regular-text" placeholder="<?php esc_attr_e( '10 to 25 working days', 'colisly' ); ?>" />
+						</p>
 						<table class="widefat fixed striped colisly-tiers-table colisly-carrier-tiers-table">
 							<thead>
 								<tr>
@@ -340,6 +344,11 @@ class COLISLY_Admin_Settings {
 						?>
 					</h4>
 					<p class="description"><?php esc_html_e( 'Applies to any destination in no zone, or in a zone this carrier has no grid for. Leave empty if every destination you serve is in a zone above.', 'colisly' ); ?></p>
+					<p>
+						<label for="colisly-cd-<?php echo esc_attr( $slug ); ?>"><?php esc_html_e( 'Delivery time shown to the client', 'colisly' ); ?></label>
+						<input type="text" id="colisly-cd-<?php echo esc_attr( $slug ); ?>" name="carrier_delay[<?php echo esc_attr( $slug ); ?>]" value="<?php echo esc_attr( isset( $carrier['delivery_time'] ) ? (string) $carrier['delivery_time'] : '' ); ?>" class="regular-text" placeholder="<?php esc_attr_e( '48 hours', 'colisly' ); ?>" />
+						<span class="description"><?php esc_html_e( 'Shown next to the carrier on the shipment request, on the client’s shipments and in the confirmation e-mail, for the destinations the zones above do not name. Leave empty to show nothing.', 'colisly' ); ?></span>
+					</p>
 					<table class="widefat fixed striped colisly-tiers-table colisly-carrier-tiers-table">
 						<thead>
 							<tr>
@@ -696,6 +705,29 @@ class COLISLY_Admin_Settings {
 	}
 
 	/**
+	 * Keeps the delivery times posted for the zones that exist, non-empty ones only.
+	 *
+	 * @param array $delays Zone slug => text.
+	 * @param array $zones  Zones as saved.
+	 * @return array
+	 */
+	private static function sanitize_zone_delays( $delays, $zones ) {
+		$known = wp_list_pluck( $zones, 'slug' );
+		$clean = array();
+
+		foreach ( $delays as $zone_slug => $delay ) {
+			$zone_slug = sanitize_key( $zone_slug );
+			$delay     = sanitize_text_field( (string) $delay );
+
+			if ( in_array( $zone_slug, $known, true ) && '' !== $delay ) {
+				$clean[ $zone_slug ] = $delay;
+			}
+		}
+
+		return $clean;
+	}
+
+	/**
 	 * Keeps a date only when it is a real Y-m-d one, otherwise empties it.
 	 *
 	 * @param mixed $value Posted value.
@@ -766,6 +798,8 @@ class COLISLY_Admin_Settings {
 		// or reordered in the same save without its grid following the wrong row.
 		$zone_weights = isset( $_POST['carrier_zone_max_weight'] ) ? (array) wp_unslash( $_POST['carrier_zone_max_weight'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
 		$zone_prices  = isset( $_POST['carrier_zone_price'] ) ? (array) wp_unslash( $_POST['carrier_zone_price'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
+		$zone_delays  = isset( $_POST['carrier_zone_delay'] ) ? (array) wp_unslash( $_POST['carrier_zone_delay'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
+		$delays       = isset( $_POST['carrier_delay'] ) ? (array) wp_unslash( $_POST['carrier_delay'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
 
 		$tier_weights = isset( $_POST['carrier_tier_max_weight'] ) ? (array) wp_unslash( $_POST['carrier_tier_max_weight'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
 		$tier_prices  = isset( $_POST['carrier_tier_price'] ) ? (array) wp_unslash( $_POST['carrier_tier_price'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitised per value below.
@@ -801,6 +835,8 @@ class COLISLY_Admin_Settings {
 					isset( $zone_prices[ $slug ] ) ? (array) $zone_prices[ $slug ] : array(),
 					$zones
 				),
+				'delivery_time'      => isset( $delays[ $slug ] ) ? sanitize_text_field( $delays[ $slug ] ) : '',
+				'delivery_times'     => self::sanitize_zone_delays( isset( $zone_delays[ $slug ] ) ? (array) $zone_delays[ $slug ] : array(), $zones ),
 			);
 		}
 		$settings['carriers'] = $carriers;

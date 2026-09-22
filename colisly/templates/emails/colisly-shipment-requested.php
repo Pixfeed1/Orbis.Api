@@ -38,7 +38,7 @@ $colisly_user    = get_userdata( (int) $client->user_id );
 <table cellspacing="0" cellpadding="6" border="1" style="width: 100%; border: 1px solid #e5e5e5; border-collapse: collapse;">
 	<tr>
 		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Carrier', 'colisly' ); ?></th>
-		<td><?php echo esc_html( COLISLY_Carriers::name( $shipment->carrier ) ); ?></td>
+		<td><?php echo esc_html( COLISLY_Carriers::name_with_delivery_time( $shipment->carrier, $shipment->destination_country ) ); ?></td>
 	</tr>
 	<tr>
 		<th scope="row" style="text-align: left;"><?php esc_html_e( 'Parcels', 'colisly' ); ?></th>

@@ -61,6 +61,46 @@ class COLISLY_Carriers {
 	}
 
 	/**
+	 * The delivery time a carrier announces for a destination, as text.
+	 *
+	 * Since 1.28.0 each zone grid can carry one, and the "all other
+	 * destinations" grid another: Colissimo takes two days to Paris and three
+	 * weeks to Guadeloupe, and a client is told the one that is his. Empty
+	 * when the forwarder wrote none.
+	 *
+	 * @param string $slug    Carrier slug.
+	 * @param string $country Destination ISO country code, empty for none.
+	 * @return string
+	 */
+	public static function delivery_time( $slug, $country = '' ) {
+		$carrier = self::get( $slug );
+		if ( ! $carrier ) {
+			return '';
+		}
+
+		$zone = '' !== (string) $country ? COLISLY_Zones::for_country( $country ) : null;
+		if ( $zone && ! empty( $carrier['delivery_times'][ $zone['slug'] ] ) ) {
+			return (string) $carrier['delivery_times'][ $zone['slug'] ];
+		}
+
+		return isset( $carrier['delivery_time'] ) ? (string) $carrier['delivery_time'] : '';
+	}
+
+	/**
+	 * A carrier name with its delivery time for a destination, when there
+	 * is one: "Colissimo, 10 to 25 working days".
+	 *
+	 * @param string $slug    Carrier slug.
+	 * @param string $country Destination ISO country code.
+	 * @return string
+	 */
+	public static function name_with_delivery_time( $slug, $country = '' ) {
+		$time = self::delivery_time( $slug, $country );
+
+		return '' === $time ? self::name( $slug ) : sprintf( /* translators: 1: carrier name, 2: delivery time. */ __( '%1$s, %2$s', 'colisly' ), self::name( $slug ), $time );
+	}
+
+	/**
 	 * Returns a carrier row by slug.
 	 *
 	 * @param string $slug Carrier slug.

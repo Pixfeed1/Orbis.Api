@@ -213,8 +213,10 @@
 			}
 
 			var name = option.getAttribute( 'data-name' ) || label;
+			var delay = option.getAttribute( 'data-delay' ) || '';
 
-			option.textContent = name + ' · ' + formatPrice( carrierPrice( option, chargeableWeight( option, selected ) ) );
+			// The delivery time for this destination stays after the price.
+			option.textContent = name + ' · ' + formatPrice( carrierPrice( option, chargeableWeight( option, selected ) ) ) + ( delay ? ' · ' + delay : '' );
 		} );
 	}
 

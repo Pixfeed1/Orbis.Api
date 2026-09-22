@@ -247,6 +247,18 @@ déduit le plus s'applique seule.
 == Journal des modifications ==
 ================================================================================
 
+= 1.28.0 =
+* Nouveau : un délai de livraison par transporteur et par zone de destination,
+  affiché au client. Colissimo met deux jours vers la métropole et trois
+  semaines vers la Guadeloupe, et le seul moyen de le dire au client était de
+  créer un transporteur par zone avec le délai dans son nom. Chaque grille de
+  zone d'un transporteur, et sa grille pour toutes les autres destinations,
+  a maintenant un champ « Délai de livraison affiché au client », en texte
+  libre. Le client voit le délai de sa propre destination à côté du
+  transporteur sur la demande d'expédition, sur ses expéditions et dans
+  l'e-mail de confirmation. Vide par défaut, donc rien ne change tant qu'il
+  n'est pas rempli. Aucun changement de base de données.
+
 = 1.27.0 =
 * Les promotions sont maintenant un tableau, autant que nécessaire, là où il
   n'y en avait qu'une. Un réexpéditeur qui voulait un code de bienvenue pour

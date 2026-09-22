@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.27.0
+Stable tag: 1.28.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -135,6 +135,9 @@ Yes. The settings hold a table of promotions, as many as you need: each has a ra
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.28.0 =
+* New: a delivery time per carrier and per destination zone, shown to the client. Colissimo takes two days to mainland France and three weeks to Guadeloupe, and the only way to tell the client which was to create one carrier per zone with the time in its name. Each zone grid of a carrier, and its grid for all other destinations, now has a "Delivery time shown to the client" field, free text. The client sees the time for his own destination next to the carrier on the shipment request, on his shipments and in the confirmation e-mail. Empty by default, so nothing changes until it is filled. No database change.
 
 = 1.27.0 =
 * Promotions are now a table, as many as you need, where there was one. A forwarder wanting a welcome code for a first shipment and other codes for mailings had to choose, since typing a second code replaced the first. Each row has its rate, what it applies to, optional dates, an optional code, and a "first shipment only" option, refused to a client who already has a shipment, cancelled ones aside. Promotions without a code apply by themselves, those with a code once the client types it, and the usual rule picks the one taking the most off. The order line names the code, "Promotion WELCOME10 10%". The promotion set up in an earlier version becomes the first row on update; nothing else changes.

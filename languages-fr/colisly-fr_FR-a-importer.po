@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly 1.20.2 to 1.27.0 additions\n"
+"Project-Id-Version: Colisly 1.20.2 to 1.28.0 additions\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -262,3 +262,18 @@ msgstr "Ajouter une promotion"
 
 msgid "Promotion %1$s %2$s%%"
 msgstr "Promotion %1$s %2$s %%"
+
+msgid "Delivery time shown to the client"
+msgstr "Délai de livraison affiché au client"
+
+msgid "10 to 25 working days"
+msgstr "10 à 25 jours ouvrés"
+
+msgid "48 hours"
+msgstr "48 heures"
+
+msgid "Shown next to the carrier on the shipment request, on the client’s shipments and in the confirmation e-mail, for the destinations the zones above do not name. Leave empty to show nothing."
+msgstr "Affiché à côté du transporteur sur la demande d’expédition, sur les expéditions du client et dans l’e-mail de confirmation, pour les destinations que les zones ci-dessus ne nomment pas. Laissez vide pour ne rien afficher."
+
+msgid "%1$s, %2$s"
+msgstr "%1$s, %2$s"

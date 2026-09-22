@@ -439,7 +439,7 @@ class COLISLY_Account {
 						<tr>
 							<td data-title="<?php esc_attr_e( 'Reference', 'colisly' ); ?>"><strong><?php echo esc_html( $shipment->reference ); ?></strong></td>
 							<td data-title="<?php esc_attr_e( 'Requested on', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Format::date( $shipment->requested_at ) ); ?></td>
-							<td data-title="<?php esc_attr_e( 'Carrier', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Carriers::name( $shipment->carrier ) ); ?></td>
+							<td data-title="<?php esc_attr_e( 'Carrier', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Carriers::name_with_delivery_time( $shipment->carrier, $shipment->destination_country ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Parcels', 'colisly' ); ?>"><?php echo esc_html( implode( ', ', $refs ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Weight (kg)', 'colisly' ); ?>"><?php echo esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Insured for', 'colisly' ); ?>"><?php echo (float) $shipment->insured_value > 0 ? esc_html( COLISLY_Format::price( (float) $shipment->insured_value ) ) : '–'; ?></td>
@@ -728,6 +728,7 @@ class COLISLY_Account {
 						<option
 							value="<?php echo esc_attr( $carrier['slug'] ); ?>"
 							data-name="<?php echo esc_attr( $carrier['name'] ); ?>"
+							data-delay="<?php echo esc_attr( COLISLY_Carriers::delivery_time( $carrier['slug'], $address['country'] ) ); ?>"
 							data-max-weight="<?php echo esc_attr( (string) COLISLY_Carriers::limits( $carrier )['max_weight'] ); ?>"
 							data-base="<?php echo esc_attr( (string) $base ); ?>"
 							data-rate="<?php echo esc_attr( (string) $rate ); ?>"
@@ -740,16 +741,27 @@ class COLISLY_Account {
 							if ( $tiers ) {
 								// Announcing "base + per kg" for a carrier billed
 								// by bracket would state a price it never charges.
-								echo esc_html( $carrier['name'] );
+								$colisly_carrier_label = $carrier['name'];
 							} else {
-								printf(
+								$colisly_carrier_label = sprintf(
 									/* translators: 1: carrier name, 2: base price, 3: price per kg. */
-									esc_html__( '%1$s: %2$s + %3$s/kg', 'colisly' ),
-									esc_html( $carrier['name'] ),
-									esc_html( COLISLY_Format::price( $base ) ),
-									esc_html( COLISLY_Format::price( $rate ) )
+									__( '%1$s: %2$s + %3$s/kg', 'colisly' ),
+									$carrier['name'],
+									COLISLY_Format::price( $base ),
+									COLISLY_Format::price( $rate )
 								);
 							}
+							// The delivery time is the one for where this client
+							// ships to: a carrier can take two days to one zone and
+							// three weeks to another. It comes last, after the
+							// price, and the script keeps it there when it
+							// rewrites the price live.
+							$colisly_delay = COLISLY_Carriers::delivery_time( $carrier['slug'], $address['country'] );
+							if ( '' !== $colisly_delay ) {
+								/* translators: 1: carrier name and price, 2: delivery time. */
+								$colisly_carrier_label = sprintf( __( '%1$s, %2$s', 'colisly' ), $colisly_carrier_label, $colisly_delay );
+							}
+							echo esc_html( $colisly_carrier_label );
 							?>
 						</option>
 					<?php endforeach; ?>

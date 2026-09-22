@@ -1,7 +1,7 @@
 # Spanish translation for Colisly Parcel Forwarding.
 msgid ""
 msgstr ""
-"Project-Id-Version: Colisly Parcel Forwarding 1.27.0\n"
+"Project-Id-Version: Colisly Parcel Forwarding 1.28.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/colisly\n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
@@ -1473,3 +1473,18 @@ msgstr "Añadir una promoción"
 
 msgid "Promotion %1$s %2$s%%"
 msgstr "Promoción %1$s %2$s%%"
+
+msgid "Delivery time shown to the client"
+msgstr "Plazo de entrega mostrado al cliente"
+
+msgid "10 to 25 working days"
+msgstr "10 a 25 días laborables"
+
+msgid "48 hours"
+msgstr "48 horas"
+
+msgid "Shown next to the carrier on the shipment request, on the client’s shipments and in the confirmation e-mail, for the destinations the zones above do not name. Leave empty to show nothing."
+msgstr "Se muestra junto al transportista en la solicitud de envío, en los envíos del cliente y en el correo de confirmación, para los destinos que las zonas anteriores no nombran. Déjelo vacío para no mostrar nada."
+
+msgid "%1$s, %2$s"
+msgstr "%1$s, %2$s"

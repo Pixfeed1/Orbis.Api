@@ -21,7 +21,7 @@ $colisly_user    = get_userdata( (int) $client->user_id );
 /* translators: 1: shipment reference, 2: client reference, 3: client name. */
 echo esc_html( sprintf( __( 'Shipment request %1$s has just been created by client %2$s (%3$s).', 'colisly' ), $shipment->reference, $client->reference, $colisly_user ? $colisly_user->display_name : '' ) ) . "\n\n";
 
-echo esc_html__( 'Carrier:', 'colisly' ) . ' ' . esc_html( COLISLY_Carriers::name( $shipment->carrier ) ) . "\n";
+echo esc_html__( 'Carrier:', 'colisly' ) . ' ' . esc_html( COLISLY_Carriers::name_with_delivery_time( $shipment->carrier, $shipment->destination_country ) ) . "\n";
 echo esc_html__( 'Parcels:', 'colisly' ) . ' ' . esc_html( implode( ', ', wp_list_pluck( $colisly_parcels, 'reference' ) ) ) . "\n";
 echo esc_html__( 'Total weight:', 'colisly' ) . ' ' . esc_html( number_format_i18n( (float) $shipment->total_weight, 3 ) ) . " kg\n";
 echo esc_html__( 'Total:', 'colisly' ) . ' ' . esc_html( COLISLY_Format::price( (float) $shipment->total_price ) ) . "\n\n";

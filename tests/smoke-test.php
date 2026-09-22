@@ -2836,6 +2836,53 @@ $colisly_pm_set = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-
 colisly_check( 'Garde : le tableau des promotions a code, taux, perimetre, dates et premiere expedition, avec un bouton d ajout', false !== strpos( $colisly_pm_set, 'name="promo_code[]"' ) && false !== strpos( $colisly_pm_set, 'name="promo_scope[]"' ) && false !== strpos( $colisly_pm_set, 'name="promo_first[]"' ) && false !== strpos( $colisly_pm_set, "esc_html_e( 'Add a promotion', 'colisly' )" ) );
 colisly_check( 'Garde : la migration tourne a la mise a jour', false !== strpos( file_get_contents( COLISLY_PLUGIN_DIR . 'includes/class-colisly-install.php' ), 'COLISLY_Discounts::migrate_promotion();' ) );
 
+// ---------------------------------------------------------------------------
+// 1.28.0 : delai de livraison par transporteur et par zone, montre au client.
+// ---------------------------------------------------------------------------
+$colisly_dl_settings = COLISLY_Settings::all();
+$colisly_dl_new      = $colisly_dl_settings;
+$colisly_dl_new['zones'] = array( array( 'slug' => 'dom', 'name' => 'DOM-TOM', 'countries' => array( 'GP', 'MQ' ), 'customs' => 0 ), array( 'slug' => 'metro', 'name' => 'Metropole', 'countries' => array( 'FR' ), 'customs' => 0 ) );
+foreach ( $colisly_dl_new['carriers'] as &$colisly_dl_c ) {
+	if ( 'colissimo' === $colisly_dl_c['slug'] ) {
+		$colisly_dl_c['delivery_times'] = array( 'dom' => '10 to 25 working days', 'metro' => '48 hours' );
+		$colisly_dl_c['delivery_time']  = '';
+	}
+	if ( 'ups' === $colisly_dl_c['slug'] ) {
+		$colisly_dl_c['delivery_times'] = array();
+		$colisly_dl_c['delivery_time']  = '3 to 5 days';
+	}
+}
+unset( $colisly_dl_c );
+COLISLY_Settings::update( $colisly_dl_new );
+colisly_check( 'Delai : celui de la zone de la destination', '10 to 25 working days' === COLISLY_Carriers::delivery_time( 'colissimo', 'GP' ) && '48 hours' === COLISLY_Carriers::delivery_time( 'colissimo', 'FR' ) );
+colisly_check( 'Delai : hors zone, celui des autres destinations, vide s il n y en a pas', '' === COLISLY_Carriers::delivery_time( 'colissimo', 'BE' ) && '3 to 5 days' === COLISLY_Carriers::delivery_time( 'ups', 'GP' ) && '3 to 5 days' === COLISLY_Carriers::delivery_time( 'ups', '' ) && '' === COLISLY_Carriers::delivery_time( 'dhl', 'FR' ) && '' === COLISLY_Carriers::delivery_time( 'inconnu', 'FR' ) );
+colisly_check( 'Delai : le nom le porte quand il existe, seul sinon', 'Colissimo, 48 hours' === COLISLY_Carriers::name_with_delivery_time( 'colissimo', 'FR' ) && 'Colissimo' === COLISLY_Carriers::name_with_delivery_time( 'colissimo', 'BE' ) );
+// Le formulaire de demande, Mes expeditions et l e-mail le montrent pour la destination du client.
+$colisly_dl_user = (int) COLISLY_Clients::get( $client_id )->user_id;
+$colisly_dl_prev = get_user_meta( $colisly_dl_user, 'shipping_country', true );
+update_user_meta( $colisly_dl_user, 'shipping_country', 'GP' );
+foreach ( array( 'shipping_first_name' => 'Jean', 'shipping_last_name' => 'Dupont', 'shipping_address_1' => '4 rue', 'shipping_city' => 'Lyon', 'shipping_postcode' => '69001' ) as $colisly_dl_k => $colisly_dl_v ) {
+	if ( '' === get_user_meta( $colisly_dl_user, $colisly_dl_k, true ) ) { update_user_meta( $colisly_dl_user, $colisly_dl_k, $colisly_dl_v ); }
+}
+COLISLY_Parcels::create( array( 'client_id' => $client_id, 'weight' => 1, 'allow_grouping' => 1 ) );
+wp_set_current_user( $colisly_dl_user );
+ob_start(); COLISLY_Account::render_request(); $colisly_dl_form = (string) ob_get_clean();
+colisly_check( 'Delai : le formulaire nomme le delai de la destination du client a cote du transporteur', 1 === preg_match( '/<option[^>]*value="colissimo"[^>]*data-delay="10 to 25 working days"[^>]*>\s*Colissimo[^<]*, 10 to 25 working days\s*<\/option>/s', $colisly_dl_form ) && false === strpos( $colisly_dl_form, '48 hours' ) && false !== strpos( file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/front.js' ), "'data-delay'" ) );
+$colisly_dl_p   = (int) COLISLY_Parcels::create( array( 'client_id' => $client_id, 'weight' => 1, 'allow_grouping' => 1 ) );
+$colisly_dl_sid = COLISLY_Shipments::request( $client_id, array( $colisly_dl_p ), 'colissimo', 0, 'GP' );
+ob_start(); COLISLY_Account::render_shipments(); $colisly_dl_mine = (string) ob_get_clean();
+wp_set_current_user( 0 );
+colisly_check( 'Delai : Mes expeditions le rappelle', is_int( $colisly_dl_sid ) && false !== strpos( $colisly_dl_mine, 'Colissimo, 10 to 25 working days' ) );
+$colisly_dl_ship = COLISLY_Shipments::get( (int) $colisly_dl_sid );
+$colisly_dl_txt = file_get_contents( COLISLY_PLUGIN_DIR . 'templates/emails/plain/colisly-shipment-requested.php' );
+$colisly_dl_tpl = file_get_contents( COLISLY_PLUGIN_DIR . 'templates/emails/colisly-shipment-requested.php' );
+colisly_check( 'Garde : les deux e-mails de demande nomment le delai', false !== strpos( $colisly_dl_txt, 'name_with_delivery_time( $shipment->carrier, $shipment->destination_country )' ) && false !== strpos( $colisly_dl_tpl, 'name_with_delivery_time( $shipment->carrier, $shipment->destination_country )' ) );
+COLISLY_Shipments::set_status( (int) $colisly_dl_ship->id, 'cancelled' );
+if ( '' === $colisly_dl_prev ) { delete_user_meta( $colisly_dl_user, 'shipping_country' ); } else { update_user_meta( $colisly_dl_user, 'shipping_country', $colisly_dl_prev ); }
+COLISLY_Settings::update( $colisly_dl_settings );
+$colisly_dl_set = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-settings.php' );
+colisly_check( 'Garde : un champ de delai par grille de zone et pour les autres destinations, nettoye a la sauvegarde', false !== strpos( $colisly_dl_set, 'name="carrier_zone_delay[' ) && false !== strpos( $colisly_dl_set, 'name="carrier_delay[' ) && false !== strpos( $colisly_dl_set, "'delivery_times'     => self::sanitize_zone_delays(" ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------
