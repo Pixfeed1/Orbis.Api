@@ -247,6 +247,20 @@ déduit le plus s'applique seule.
 == Journal des modifications ==
 ================================================================================
 
+= 1.28.1 =
+* Corrigé : le tableau des transporteurs montrait toujours une dernière ligne
+  vide cochée « Actif », qui se lisait comme un transporteur actif que
+  personne ne pouvait supprimer. Une ligne sans nom n'était jamais
+  enregistrée, mais l'impression était fausse : la ligne vide n'apparaît plus
+  que lorsqu'il n'y a aucun transporteur, et le bouton « Ajouter un
+  transporteur » fait le reste.
+* Corrigé : un transporteur, une zone ou une promotion ajoutés avec le bouton
+  « Ajouter » montraient leurs cases cochées mais les enregistraient
+  décochées, la ligne clonée vidant le champ caché que la case représente. Un
+  transporteur ajouté ainsi est maintenant actif à l'enregistrement, comme
+  affiché ; une nouvelle promotion démarre avec « Première expédition
+  seulement » décochée.
+
 = 1.28.0 =
 * Nouveau : un délai de livraison par transporteur et par zone de destination,
   affiché au client. Colissimo met deux jours vers la métropole et trois

@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.28.0
+Stable tag: 1.28.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -135,6 +135,10 @@ Yes. The settings hold a table of promotions, as many as you need: each has a ra
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.28.1 =
+* Fixed: the carriers table always showed a blank last row ticked "Enabled", which read as an active carrier nobody could delete. A row without a name was never saved, but the impression was wrong: the blank row now only appears when there is no carrier at all, and the "Add a carrier" button does the rest.
+* Fixed: a carrier, zone or promotion added with the "Add" button showed its boxes ticked but saved them unticked, since the cloned row cleared the hidden field the checkbox stands for. A new carrier added that way is now enabled on save, as shown; a new promotion starts with "First shipment only" unticked.
 
 = 1.28.0 =
 * New: a delivery time per carrier and per destination zone, shown to the client. Colissimo takes two days to mainland France and three weeks to Guadeloupe, and the only way to tell the client which was to create one carrier per zone with the time in its name. Each zone grid of a carrier, and its grid for all other destinations, now has a "Delivery time shown to the client" field, free text. The client sees the time for his own destination next to the carrier on the shipment request, on his shipments and in the confirmation e-mail. Empty by default, so nothing changes until it is filled. No database change.

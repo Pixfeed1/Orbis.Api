@@ -2883,6 +2883,25 @@ COLISLY_Settings::update( $colisly_dl_settings );
 $colisly_dl_set = file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-settings.php' );
 colisly_check( 'Garde : un champ de delai par grille de zone et pour les autres destinations, nettoye a la sauvegarde', false !== strpos( $colisly_dl_set, 'name="carrier_zone_delay[' ) && false !== strpos( $colisly_dl_set, 'name="carrier_delay[' ) && false !== strpos( $colisly_dl_set, "'delivery_times'     => self::sanitize_zone_delays(" ) );
 
+// ---------------------------------------------------------------------------
+// 1.28.1 : plus de ligne vide "active" dans les transporteurs, lignes clonees coherentes.
+// ---------------------------------------------------------------------------
+$colisly_bl_settings = COLISLY_Settings::all();
+wp_set_current_user( 1 );
+$_GET = array( 'page' => 'colisly-settings' );
+ob_start(); COLISLY_Admin_Settings::render(); $colisly_bl_html = (string) ob_get_clean();
+colisly_check( 'Transporteurs : avec des transporteurs, autant de lignes que de transporteurs, pas de ligne vide', count( $colisly_bl_settings['carriers'] ) === substr_count( $colisly_bl_html, 'name="carrier_enabled[]"' ) && count( $colisly_bl_settings['carriers'] ) > 0 );
+$colisly_bl_none = $colisly_bl_settings; $colisly_bl_none['carriers'] = array();
+COLISLY_Settings::update( $colisly_bl_none );
+ob_start(); COLISLY_Admin_Settings::render(); $colisly_bl_html = (string) ob_get_clean();
+colisly_check( 'Transporteurs : sans transporteur, une ligne vide pour commencer, cochee Actif', 1 === substr_count( $colisly_bl_html, 'name="carrier_enabled[]" value="1"' ) );
+COLISLY_Settings::update( $colisly_bl_settings );
+$_GET = array();
+wp_set_current_user( 0 );
+$colisly_bl_js = file_get_contents( COLISLY_PLUGIN_DIR . 'assets/js/admin.js' );
+colisly_check( 'Garde : une ligne clonee aligne le champ cache sur la case', false !== strpos( $colisly_bl_js, '$scope.find( \'.colisly-toggle-value\' ).first().val( $box.is( \':checked\' ) ? \'1\' : \'0\' );' ) && false !== strpos( $colisly_bl_js, '\'0\' !== $input.attr( \'data-default\' )' ) );
+colisly_check( 'Garde : la promotion clonee demarre sans Premiere expedition seulement', false !== strpos( file_get_contents( COLISLY_PLUGIN_DIR . 'includes/admin/class-colisly-admin-settings.php' ), 'class="colisly-toggle" data-default="0"' ) );
+
 colisly_check( 'Tous les statuts du cahier des charges presents', $expected_statuses === array_keys( COLISLY_Parcels::statuses() ) );
 
 // ---------------------------------------------------------------------------

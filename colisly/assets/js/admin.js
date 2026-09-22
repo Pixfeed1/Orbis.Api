@@ -45,14 +45,28 @@
 			var $input = $( this );
 
 			if ( $input.is( ':checkbox' ) ) {
-				$input.prop( 'checked', true );
-			} else {
+				// On by default, unless the box says otherwise (a welcome
+				// promotion is the exception, not the rule).
+				$input.prop( 'checked', '0' !== $input.attr( 'data-default' ) );
+			} else if ( ! $input.hasClass( 'colisly-toggle-value' ) ) {
 				$input.val( '' );
 			}
 
 			// Ids only serve the screen-reader labels; duplicating them would
 			// point every label at the first row.
 			$input.removeAttr( 'id' );
+		} );
+
+		// The hidden field is what gets saved, the checkbox what is seen: a
+		// cloned row used to clear the one and tick the other, so a carrier
+		// added with the button showed "Enabled" and saved disabled.
+		$row.find( '.colisly-toggle' ).each( function () {
+			var $box = $( this );
+			var $scope = $box.closest( 'p' );
+			if ( ! $scope.length || ! $scope.find( '.colisly-toggle-value' ).length ) {
+				$scope = $box.closest( 'td' );
+			}
+			$scope.find( '.colisly-toggle-value' ).first().val( $box.is( ':checked' ) ? '1' : '0' );
 		} );
 		$row.find( 'label' ).removeAttr( 'for' );
 		$row.find( '.colisly-country-preview' ).text( '' ).removeClass( 'colisly-country-unknown' );

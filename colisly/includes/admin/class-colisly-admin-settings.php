@@ -202,15 +202,22 @@ class COLISLY_Admin_Settings {
 					</thead>
 					<tbody>
 						<?php
-						$carriers   = is_array( $settings['carriers'] ) ? $settings['carriers'] : array();
-						$carriers[] = array(
-							'slug'         => '',
-							'name'         => '',
-							'enabled'      => 1,
-							'price_base'   => '',
-							'price_per_kg' => '',
-							'volumetric'   => 0,
-						); // Extra empty row to add a carrier.
+						$carriers = is_array( $settings['carriers'] ) ? $settings['carriers'] : array();
+						// A blank row only when there is no carrier at all: the
+						// "Add a carrier" button clones a row and needs one. With
+						// carriers, a permanent blank row ticked "Enabled" read
+						// as an active carrier nobody could delete, though a row
+						// without a name is never saved.
+						if ( ! $carriers ) {
+							$carriers[] = array(
+								'slug'         => '',
+								'name'         => '',
+								'enabled'      => 1,
+								'price_base'   => '',
+								'price_per_kg' => '',
+								'volumetric'   => 0,
+							);
+						}
 						foreach ( $carriers as $i => $carrier ) :
 							?>
 							<tr>
@@ -539,7 +546,7 @@ class COLISLY_Admin_Settings {
 									<td>
 										<input type="hidden" name="promo_first[]" value="<?php echo $colisly_promo['first_only'] ? '1' : '0'; ?>" class="colisly-toggle-value" />
 										<label>
-											<input type="checkbox" class="colisly-toggle" <?php checked( (bool) $colisly_promo['first_only'] ); ?> />
+											<input type="checkbox" class="colisly-toggle" data-default="0" <?php checked( (bool) $colisly_promo['first_only'] ); ?> />
 											<?php esc_html_e( 'Yes', 'colisly' ); ?>
 										</label>
 									</td>
