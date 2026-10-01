@@ -57,6 +57,25 @@ class COLISLY_Account {
 	 *
 	 * @return void
 	 */
+	/**
+	 * Class the active theme gives its buttons, if any.
+	 *
+	 * Block themes declare their button styles in theme.json and WooCommerce
+	 * then leaves `.button` alone, so a button carrying only that class came
+	 * out as the browser's raw grey control next to the theme's typography.
+	 * WooCommerce's own templates append this class for the same reason.
+	 *
+	 * @return string Leading space plus the class, or an empty string.
+	 */
+	private static function button_class() {
+		if ( ! function_exists( 'wc_wp_theme_get_element_class_name' ) ) {
+			return '';
+		}
+		$class = wc_wp_theme_get_element_class_name( 'button' );
+
+		return $class ? ' ' . $class : '';
+	}
+
 	public static function init() {
 		// Endpoints (and their content hooks) are registered on init, after the
 		// text domain has loaded, so translated slugs are taken into account.
@@ -148,6 +167,11 @@ class COLISLY_Account {
 			'colislyFront',
 			array(
 				'currencySymbol' => function_exists( 'get_woocommerce_currency_symbol' ) ? html_entity_decode( get_woocommerce_currency_symbol(), ENT_QUOTES, 'UTF-8' ) : '€',
+				'decimals'       => function_exists( 'wc_get_price_decimals' ) ? (int) wc_get_price_decimals() : 2,
+				'decimalSep'     => function_exists( 'wc_get_price_decimal_separator' ) ? wc_get_price_decimal_separator() : '.',
+				'thousandSep'    => function_exists( 'wc_get_price_thousand_separator' ) ? wc_get_price_thousand_separator() : '',
+				// "%2$s" is the amount and "%1$s" the symbol, as WooCommerce lays them out.
+				'priceFormat'    => function_exists( 'get_woocommerce_price_format' ) ? html_entity_decode( get_woocommerce_price_format(), ENT_QUOTES, 'UTF-8' ) : '%2$s %1$s',
 				'copied'         => __( 'Copied', 'colisly' ),
 				'copy'           => __( 'Copy the address', 'colisly' ),
 				'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
@@ -186,7 +210,7 @@ class COLISLY_Account {
 				<?php endforeach; ?>
 			</address>
 			<p class="colisly-my-address-actions">
-				<button type="button" class="button colisly-copy" data-colisly-copy="<?php echo esc_attr( implode( "\n", $lines ) ); ?>"><?php esc_html_e( 'Copy the address', 'colisly' ); ?></button>
+				<button type="button" class="button colisly-copy<?php echo esc_attr( self::button_class() ); ?>" data-colisly-copy="<?php echo esc_attr( implode( "\n", $lines ) ); ?>"><?php esc_html_e( 'Copy the address', 'colisly' ); ?></button>
 				<span class="colisly-note"><?php echo esc_html( sprintf( /* translators: %s: client reference. */ __( 'Give this address to the shops you order from. Your reference %s must appear on every parcel.', 'colisly' ), $client->reference ) ); ?></span>
 			</p>
 		</div>
@@ -355,7 +379,7 @@ class COLISLY_Account {
 		?>
 		<div class="woocommerce-pagination woocommerce-pagination--without-numbers woocommerce-Pagination colisly-pagination">
 			<?php if ( $paged > 1 ) : ?>
-				<a class="woocommerce-button woocommerce-button--previous woocommerce-Button woocommerce-Button--previous button" href="<?php echo esc_url( add_query_arg( 'colisly_page', $paged - 1, $base_url ) ); ?>"><?php esc_html_e( 'Previous', 'colisly' ); ?></a>
+				<a class="woocommerce-button woocommerce-button--previous woocommerce-Button woocommerce-Button--previous button<?php echo esc_attr( self::button_class() ); ?>" href="<?php echo esc_url( add_query_arg( 'colisly_page', $paged - 1, $base_url ) ); ?>"><?php esc_html_e( 'Previous', 'colisly' ); ?></a>
 			<?php endif; ?>
 			<span class="colisly-pagination-state">
 				<?php
@@ -368,7 +392,7 @@ class COLISLY_Account {
 				?>
 			</span>
 			<?php if ( $paged < $pages ) : ?>
-				<a class="woocommerce-button woocommerce-button--next woocommerce-Button woocommerce-Button--next button" href="<?php echo esc_url( add_query_arg( 'colisly_page', $paged + 1, $base_url ) ); ?>"><?php esc_html_e( 'Next', 'colisly' ); ?></a>
+				<a class="woocommerce-button woocommerce-button--next woocommerce-Button woocommerce-Button--next button<?php echo esc_attr( self::button_class() ); ?>" href="<?php echo esc_url( add_query_arg( 'colisly_page', $paged + 1, $base_url ) ); ?>"><?php esc_html_e( 'Next', 'colisly' ); ?></a>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -452,7 +476,7 @@ class COLISLY_Account {
 							<td data-title="<?php esc_attr_e( 'Status', 'colisly' ); ?>"><?php echo esc_html( COLISLY_Shipments::status_label( $shipment->status ) ); ?></td>
 							<td data-title="<?php esc_attr_e( 'Actions', 'colisly' ); ?>">
 								<?php if ( $order && $order->needs_payment() ) : ?>
-									<a class="woocommerce-button button pay" href="<?php echo esc_url( $order->get_checkout_payment_url() ); ?>"><?php esc_html_e( 'Pay', 'colisly' ); ?></a>
+									<a class="woocommerce-button button pay<?php echo esc_attr( self::button_class() ); ?>" href="<?php echo esc_url( $order->get_checkout_payment_url() ); ?>"><?php esc_html_e( 'Pay', 'colisly' ); ?></a>
 								<?php elseif ( $order ) : ?>
 									<a href="<?php echo esc_url( $order->get_view_order_url() ); ?>">
 										<?php
@@ -477,7 +501,7 @@ class COLISLY_Account {
 										<input type="hidden" name="colisly_shipment" value="<?php echo esc_attr( (string) $shipment->id ); ?>" />
 										<button
 											type="submit"
-											class="woocommerce-button button colisly-cancel"
+											class="woocommerce-button button colisly-cancel<?php echo esc_attr( self::button_class() ); ?>"
 											data-colisly-confirm="<?php esc_attr_e( 'Withdraw this shipment request? The parcels go back into your stock.', 'colisly' ); ?>"
 										><?php esc_html_e( 'Cancel', 'colisly' ); ?></button>
 									</form>
@@ -583,7 +607,8 @@ class COLISLY_Account {
 
 			if ( $address_url ) {
 				printf(
-					'<p><a class="woocommerce-button button" href="%s">%s</a></p>',
+					'<p><a class="woocommerce-button button%s" href="%s">%s</a></p>',
+					esc_attr( self::button_class() ),
 					esc_url( $address_url ),
 					esc_html__( 'Complete my delivery address', 'colisly' )
 				);
@@ -791,7 +816,7 @@ class COLISLY_Account {
 				<p class="colisly-promo-code">
 					<label for="colisly-promo-code"><?php esc_html_e( 'Promotion code:', 'colisly' ); ?></label>
 					<input type="text" name="colisly_promo_code" id="colisly-promo-code" autocomplete="off" />
-					<button type="button" class="button" id="colisly-promo-apply"><?php esc_html_e( 'Apply', 'colisly' ); ?></button>
+					<button type="button" class="button<?php echo esc_attr( self::button_class() ); ?>" id="colisly-promo-apply"><?php esc_html_e( 'Apply', 'colisly' ); ?></button>
 					<span id="colisly-promo-status" class="colisly-note" aria-live="polite"></span>
 				</p>
 			<?php endif; ?>
@@ -847,7 +872,7 @@ class COLISLY_Account {
 
 			<p class="colisly-note"><?php esc_html_e( 'Only carriers compatible with every selected parcel can be accepted.', 'colisly' ); ?></p>
 
-			<button type="submit" class="woocommerce-button button"><?php esc_html_e( 'Send the request', 'colisly' ); ?></button>
+			<button type="submit" class="woocommerce-button button<?php echo esc_attr( self::button_class() ); ?>"><?php esc_html_e( 'Send the request', 'colisly' ); ?></button>
 		</form>
 		<?php
 	}
@@ -1017,7 +1042,7 @@ class COLISLY_Account {
 		</div>
 		<?php if ( 0 === $max ) : ?>
 			<p>
-				<button type="button" class="button colisly-add-customs-line"><?php esc_html_e( 'Add a line', 'colisly' ); ?></button>
+				<button type="button" class="button colisly-add-customs-line<?php echo esc_attr( self::button_class() ); ?>"><?php esc_html_e( 'Add a line', 'colisly' ); ?></button>
 			</p>
 		<?php endif; ?>
 		<?php

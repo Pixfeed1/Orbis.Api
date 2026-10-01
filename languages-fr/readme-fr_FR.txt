@@ -261,6 +261,27 @@ déduit le plus s'applique seule.
 == Journal des modifications ==
 ================================================================================
 
+= 1.29.1 =
+* Correction : dans les thèmes en blocs comme Twenty Twenty-Five, les boutons
+  de l’espace client (Copier l’adresse, Envoyer la demande, Ajouter une ligne,
+  Payer, Annuler, Appliquer) s’affichaient comme les contrôles gris bruts du
+  navigateur, et les listes, champs et cases à cocher du formulaire de demande
+  gardaient la taille par défaut du navigateur à côté du texte plus grand du
+  thème. WooCommerce laisse la classe de bouton au thème dans ces thèmes : les
+  boutons de l’extension portent maintenant la classe de bouton du thème,
+  comme ceux de WooCommerce, et ses contrôles de formulaire suivent le texte
+  qui les entoure. Les thèmes qui habillent leurs contrôles gardent la main.
+* Correction : quand la colonne du compte est trop étroite pour les tableaux
+  de colis et qu’ils s’empilent, chaque colis se terminait par une case vide
+  sous sa dernière ligne. Un fin bandeau teinté sépare désormais deux colis.
+* Correction : les prix de l’estimation en direct du formulaire de demande
+  (prix des transporteurs, total estimé, remise) suivaient la langue du
+  navigateur plutôt que les réglages de prix de la boutique : une boutique
+  française vue depuis un navigateur anglais affichait « 55.65 € » à côté de
+  lignes « 12,40 € ». Ils utilisent maintenant les décimales, séparateurs et
+  position de la devise de la boutique. Aucun changement de base de
+  données.
+
 = 1.29.0 =
 * Les tarifs saisis TTC sont maintenant respectés. WooCommerce n'applique son
   réglage « prix saisis TTC » qu'aux produits : une commande d'expédition est

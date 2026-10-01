@@ -20,6 +20,29 @@
 	opacity: .85;
 }
 
+/*
+ * Block themes leave form controls to the browser, which draws a select or a
+ * button at 13px next to text set at 20px. These follow the surrounding text
+ * instead. :where() keeps the specificity at zero so a theme that does style
+ * its controls still wins.
+ */
+.colisly-request-form :where(select, textarea, button, input:not([type="checkbox"]):not([type="radio"]):not([type="file"])),
+.colisly-my-address :where(button),
+.colisly-inline-form :where(button) {
+	font: inherit;
+}
+
+.colisly-request-form :where(select, textarea, input:not([type="checkbox"]):not([type="radio"]):not([type="file"])) {
+	padding: 0.3em 0.5em;
+}
+
+.colisly-request-form :where(input[type="checkbox"]) {
+	font-size: inherit;
+	height: 1em;
+	vertical-align: middle;
+	width: 1em;
+}
+
 /* Whatever is left over stays reachable rather than being clipped. */
 .colisly-table-wrap {
 	container-type: inline-size;
@@ -44,13 +67,11 @@
 		}
 
 		/* Stacked, each parcel is a block of its own and needs to read as
-		   one, otherwise six labelled lines per parcel run into the next. */
-		.colisly-front-table tbody tr {
-			margin-bottom: 1.75em;
-		}
-
-		.colisly-front-table tbody tr:last-child {
-			margin-bottom: 0;
+		   one, otherwise six labelled lines per parcel run into the next. A
+		   margin did that but left a blank box inside the table border; a
+		   tinted band between two parcels separates them without one. */
+		.colisly-front-table tbody tr + tr {
+			border-top: 0.5em solid rgba(0, 0, 0, 0.06);
 		}
 
 		.colisly-front-table td {

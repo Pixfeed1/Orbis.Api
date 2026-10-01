@@ -5,7 +5,7 @@ Requires at least: 6.2
 Tested up to: 7.0
 Requires PHP: 7.4
 Requires Plugins: woocommerce
-Stable tag: 1.29.0
+Stable tag: 1.29.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -139,6 +139,11 @@ Yes. The settings hold a table of promotions, as many as you need: each has a ra
 6. Per-carrier weight brackets, for carriers that publish a grid rather than a price per kilo.
 
 == Changelog ==
+
+= 1.29.1 =
+* Fixed: in block themes such as Twenty Twenty-Five, the buttons of the client area (Copy the address, Send the request, Add a line, Pay, Cancel, Apply) came out as the browser's raw grey controls, and the selects, fields and tick boxes of the request form kept the browser's default size next to the theme's larger text. WooCommerce leaves the button class to the theme in those themes: the plugin's buttons now carry the theme's button class the way WooCommerce's own do, and its form controls follow the surrounding text. Themes that style their controls keep the upper hand.
+* Fixed: when the account column is too narrow for the parcel tables and they stack, each parcel ended with an empty box under its last line. A thin tinted band separates two parcels instead.
+* Fixed: the prices in the live estimate of the request form (carrier prices, estimated total, discount) followed the browser's language rather than the shop's price settings, so a French shop viewed from an English browser showed "55.65 €" next to lines reading "12,40 €". They now use the shop's decimals, separators and currency position. No database change.
 
 = 1.29.0 =
 * Tariffs typed with tax in are now honoured. WooCommerce only applies its "prices entered inclusive of tax" setting to products: a shipment order is made of fee lines, always taxed on top of their amount, so a forwarder who had typed his whole tariff with VAT in and then switched taxes on billed the VAT twice. When that WooCommerce setting is on and shipment orders carry the shop taxes, Colisly now writes each taxable line net of the shop's base tax, the way WooCommerce does for a product price, and the order adds the tax of the client's location: a French client pays exactly the tariff typed, a client the shop does not tax pays it net. The estimate on the request form and the tariffs shown stay as typed. Fees advanced stay untaxed, the transport follows the WooCommerce shipping tax class. A new FAQ entry says how to set VAT up. No database change.

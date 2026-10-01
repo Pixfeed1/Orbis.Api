@@ -124,7 +124,7 @@ echo wp_json_encode(
 		'alternateName'       => 'Colisly',
 		'applicationCategory' => 'BusinessApplication',
 		'operatingSystem'     => 'WordPress, WooCommerce',
-		'softwareVersion'     => '1.20.0',
+		'softwareVersion'     => '1.29.1',
 		'inLanguage'          => array( 'fr', 'en', 'es' ),
 		'license'             => 'https://www.gnu.org/licenses/gpl-2.0.html',
 		'url'                 => $url,

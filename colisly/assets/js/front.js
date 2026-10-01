@@ -71,11 +71,23 @@
 		}
 	}
 
+	/*
+	 * Prices follow the shop's own settings (decimals, separators, where the
+	 * symbol goes), the same ones WooCommerce applies on the payment page.
+	 * The browser's locale was used before, so a French shop viewed from an
+	 * English browser estimated "55.65 €" next to lines reading "12,40 €".
+	 */
 	function formatPrice( value ) {
-		var symbol = window.colislyFront && window.colislyFront.currencySymbol ? window.colislyFront.currencySymbol : '';
-		var amount = value.toLocaleString( undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 } );
+		var cfg = window.colislyFront || {};
+		var decimals = typeof cfg.decimals === 'number' ? cfg.decimals : 2;
+		var decimalSep = typeof cfg.decimalSep === 'string' ? cfg.decimalSep : '.';
+		var thousandSep = typeof cfg.thousandSep === 'string' ? cfg.thousandSep : '';
+		var pattern = typeof cfg.priceFormat === 'string' && cfg.priceFormat ? cfg.priceFormat : '%2$s %1$s';
+		var fixed = Math.abs( value ).toFixed( decimals ).split( '.' );
+		var whole = fixed[ 0 ].replace( /\B(?=(\d{3})+(?!\d))/g, thousandSep );
+		var amount = ( value < 0 ? '-' : '' ) + whole + ( fixed[ 1 ] ? decimalSep + fixed[ 1 ] : '' );
 
-		return symbol ? amount + ' ' + symbol : amount;
+		return pattern.replace( '%1$s', cfg.currencySymbol || '' ).replace( '%2$s', amount ).trim();
 	}
 
 	function selectedBoxes() {
