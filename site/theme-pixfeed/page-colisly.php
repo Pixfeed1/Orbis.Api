@@ -21,6 +21,10 @@ $ver = file_exists( get_stylesheet_directory() . '/css/colisly.css' ) ? (string)
 $url = get_permalink();
 $og  = $u . 'img/hero-poster-l.jpg';
 
+// La page anglaise, pour le lien de langue et la paire hreflang.
+$pixfeed_colisly_en_page = get_page_by_path( 'colisly-parcel-forwarding-plugin-woocommerce' );
+$pixfeed_colisly_en_url  = $pixfeed_colisly_en_page ? get_permalink( $pixfeed_colisly_en_page ) : '';
+
 $pixfeed_colisly_seo = array(
 	'title'       => 'Colisly, extension WooCommerce de réexpédition de colis | Pixfeed',
 	'description' => 'Colisly transforme une boutique WooCommerce en plateforme de réexpédition de colis : réception, stockage, groupage, réexpédition et espace client. Extension WordPress gratuite, GPL.',
@@ -76,6 +80,20 @@ add_filter(
 	},
 	20
 );
+
+// La paire de langues est écrite quel que soit le module SEO : sans
+// extension multilingue, Yoast ignore l’existence de la page anglaise.
+if ( $pixfeed_colisly_en_url ) {
+	add_action(
+		'wp_head',
+		static function () use ( $url, $pixfeed_colisly_en_url ) {
+			echo '<link rel="alternate" hreflang="fr" href="' . esc_url( $url ) . '">' . "\n";
+			echo '<link rel="alternate" hreflang="en" href="' . esc_url( $pixfeed_colisly_en_url ) . '">' . "\n";
+			echo '<link rel="alternate" hreflang="x-default" href="' . esc_url( $pixfeed_colisly_en_url ) . '">' . "\n";
+		},
+		3
+	);
+}
 
 // Avec Yoast : ses champs sont préremplis une fois, puis modifiables dans
 // l’encart Yoast de la page. Sans Yoast : les balises sont écrites ici.
@@ -160,6 +178,7 @@ echo wp_json_encode(
     <li><a href="#client">Espace client</a></li>
     <li><a href="#tarif">Tarif</a></li>
     <li><a href="#faq">FAQ</a></li>
+    <?php if ( $pixfeed_colisly_en_url ) : ?><li><a href="<?php echo esc_url( $pixfeed_colisly_en_url ); ?>" hreflang="en" lang="en">English</a></li><?php endif; ?>
   </ul>
   <a class="btn btn-primary" href="https://fr.wordpress.org/plugins/colisly/">Télécharger</a>
 </header>
@@ -322,7 +341,7 @@ echo wp_json_encode(
     <div><b>62 × 30</b><span>mm, l’étiquette par défaut, réglable</span></div>
     <div><b>15 j</b><span>de stockage offert, selon votre politique</span></div>
     <div><b>3</b><span>langues livrées : français, anglais, espagnol</span></div>
-    <div><b>426</b><span>vérifications automatiques à chaque version</span></div>
+    <div><b>600</b><span>vérifications automatiques à chaque version</span></div>
   </section>
 
   <section>
@@ -383,7 +402,7 @@ echo wp_json_encode(
   </div>
 
   <footer class="foot">
-    <span>Colisly, une extension <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Pixfeed</a>, agence web. Licence GPL v2 ou ultérieure.</span>
+    <span>Colisly, une extension <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Pixfeed</a>, agence web. Licence GPL v2 ou ultérieure.<?php if ( $pixfeed_colisly_en_url ) : ?> <a href="<?php echo esc_url( $pixfeed_colisly_en_url ); ?>" hreflang="en" lang="en">English version</a><?php endif; ?></span>
     <span><a href="https://fr.wordpress.org/plugins/colisly/">wordpress.org</a> · <a href="https://wordpress.org/support/plugin/colisly/">Support</a></span>
   </footer>
 </main>
