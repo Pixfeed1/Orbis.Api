@@ -17,7 +17,7 @@ Colisly turns a WooCommerce store into a working package forwarding platform. Ea
 
 It runs on your hosting, with your carrier contracts and your prices. Nothing leaves your database.
 
-Presentation, screenshots and a video of the plugin in action: [pixfeed.net/colisly](https://pixfeed.net/colisly-extension-woocommerce-de-reexpedition-de-colis/)
+Presentation, screenshots and a video of the plugin in action: [pixfeed.net/colisly](https://pixfeed.net/colisly-package-forwarding-plugin-for-woocommerce/)
 
 = Who it is for =
 
