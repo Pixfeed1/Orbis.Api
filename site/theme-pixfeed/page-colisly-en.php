@@ -4,7 +4,7 @@
  *
  * English presentation page of Colisly, the counterpart of page-colisly.php.
  * Pick it in "Template" for the page whose slug is
- * "colisly-parcel-forwarding-plugin-woocommerce". Full screen: no theme header
+ * "colisly-package-forwarding-plugin-for-woocommerce". Full screen: no theme header
  * or footer, but wp_head() and wp_footer() are called, so Yoast and Site Kit
  * keep working. The two pages point at each other through hreflang links.
  *

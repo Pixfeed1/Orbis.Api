@@ -22,7 +22,7 @@ $url = get_permalink();
 $og  = $u . 'img/hero-poster-l.jpg';
 
 // La page anglaise, pour le lien de langue et la paire hreflang.
-$pixfeed_colisly_en_page = get_page_by_path( 'colisly-parcel-forwarding-plugin-woocommerce' );
+$pixfeed_colisly_en_page = get_page_by_path( 'colisly-package-forwarding-plugin-for-woocommerce' );
 $pixfeed_colisly_en_url  = $pixfeed_colisly_en_page ? get_permalink( $pixfeed_colisly_en_page ) : '';
 
 $pixfeed_colisly_seo = array(
